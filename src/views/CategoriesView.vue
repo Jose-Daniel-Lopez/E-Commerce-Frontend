@@ -5,7 +5,15 @@ import axios from 'axios'
 interface Category {
   id: number
   name: string
-  products?: Array<any>
+  products?: Array<Product>
+}
+
+export interface Product {
+  id: number
+  name: string
+  description: string
+  basePrice: number
+  totalStock: number
 }
 
 const categories = ref<Category[]>([])
@@ -86,7 +94,9 @@ const getCategoryIcon = (categoryName: string) => {
           class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden cursor-pointer"
         >
           <!-- Category Icon Header -->
-          <div class="h-32 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-blue-900/30 dark:to-purple-800/30 flex items-center justify-center">
+          <div
+            class="h-32 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-blue-900/30 dark:to-purple-800/30 flex items-center justify-center"
+          >
             <div class="text-6xl">{{ getCategoryIcon(category.name) }}</div>
           </div>
 
@@ -101,7 +111,9 @@ const getCategoryIcon = (categoryName: string) => {
               <div class="flex items-center space-x-2">
                 <div class="w-2 h-2 rounded-full bg-blue-500"></div>
                 <span class="text-sm text-gray-600 dark:text-gray-300 font-medium">
-                  {{ getProductCount(category) }} producto{{ getProductCount(category) !== 1 ? 's' : '' }}
+                  {{ getProductCount(category) }} producto{{
+                    getProductCount(category) !== 1 ? 's' : ''
+                  }}
                 </span>
               </div>
             </div>
@@ -129,9 +141,7 @@ const getCategoryIcon = (categoryName: string) => {
 
             <!-- Category ID -->
             <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-              <span class="text-xs text-gray-500 dark:text-gray-400">
-                ID: {{ category.id }}
-              </span>
+              <span class="text-xs text-gray-500 dark:text-gray-400"> ID: {{ category.id }} </span>
             </div>
           </div>
         </div>
