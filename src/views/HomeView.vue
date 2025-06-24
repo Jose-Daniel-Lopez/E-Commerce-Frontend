@@ -12,11 +12,19 @@
         class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-lg font-semibold text-base md:text-lg transition-all duration-300 ease-in-out shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/40 hover:-translate-y-0.5 no-underline"
       >
         Ver Usuarios
+        <span
+          v-if="usersStore.userCount > 0"
+          class="ml-2 bg-white/20 px-2 py-1 rounded-full text-sm"
+        >
+          {{ usersStore.userCount }}
+        </span>
       </router-link>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// At this point, no additional script logic is needed.
+import { useUsersStore } from '@/stores/users'
+
+const usersStore = useUsersStore()
 </script>
