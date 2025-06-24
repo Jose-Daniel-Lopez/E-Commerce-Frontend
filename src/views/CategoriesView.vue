@@ -21,6 +21,11 @@ const viewCategoryProducts = (categoryId: number) => {
     <div class="max-w-6xl mx-auto">
       <!-- Header -->
       <div class="text-center mb-12">
+        <div class="flex justify-center mb-4">
+          <div class="bg-purple-100 dark:bg-purple-900/30 p-4 rounded-full">
+            <v-icon name="hi-view-grid" scale="2.5" class="text-purple-600 dark:text-purple-400" />
+          </div>
+        </div>
         <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Categorías</h2>
         <p class="text-lg text-gray-600 dark:text-gray-300">
           Explora nuestras categorías de productos organizadas
@@ -36,14 +41,19 @@ const viewCategoryProducts = (categoryId: number) => {
       <!-- Error State -->
       <div
         v-else-if="categoriesStore.error"
-        class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-500 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-center"
+        class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-500 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2"
       >
-        {{ categoriesStore.error }}
+        <v-icon name="hi-exclamation-circle" scale="1.2" />
+        <span>{{ categoriesStore.error }}</span>
       </div>
 
       <!-- Empty State -->
       <div v-else-if="categoriesStore.categories.length === 0" class="text-center py-12">
-        <div class="text-6xl mb-4">📋</div>
+        <div class="flex justify-center mb-4">
+          <div class="bg-gray-100 dark:bg-gray-800 p-6 rounded-full">
+            <v-icon name="hi-view-grid" scale="3" class="text-gray-400 dark:text-gray-600" />
+          </div>
+        </div>
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No hay categorías</h3>
         <p class="text-gray-600 dark:text-gray-300">
           Aún no hay categorías disponibles en el sistema
@@ -86,20 +96,23 @@ const viewCategoryProducts = (categoryId: number) => {
             <div class="space-y-2">
               <button
                 @click="viewCategoryProducts(category.id)"
-                class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors"
+                class="w-full flex items-center justify-center space-x-2 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors"
               >
-                Ver productos
+                <v-icon name="hi-eye" scale="1" />
+                <span>Ver productos</span>
               </button>
               <div class="flex space-x-2">
                 <button
-                  class="flex-1 py-2 px-4 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm"
+                  class="flex-1 flex items-center justify-center space-x-1 py-2 px-4 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm"
                 >
-                  ✏️ Editar
+                  <v-icon name="hi-pencil" scale="0.9" />
+                  <span>Editar</span>
                 </button>
                 <button
-                  class="flex-1 py-2 px-4 rounded-lg border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-sm"
+                  class="flex-1 flex items-center justify-center space-x-1 py-2 px-4 rounded-lg border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-sm"
                 >
-                  🗑️ Eliminar
+                  <v-icon name="hi-trash" scale="0.9" />
+                  <span>Eliminar</span>
                 </button>
               </div>
             </div>
@@ -115,10 +128,10 @@ const viewCategoryProducts = (categoryId: number) => {
       <!-- Add New Category Button -->
       <div class="mt-12 text-center">
         <button
-          class="inline-flex items-center px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
+          class="inline-flex items-center space-x-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
         >
-          <span class="mr-2">➕</span>
-          Agregar nueva categoría
+          <v-icon name="hi-plus" scale="1.1" />
+          <span>Agregar nueva categoría</span>
         </button>
       </div>
 
