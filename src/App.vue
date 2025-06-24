@@ -3,79 +3,42 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <h1>E-Commerce Frontend</h1>
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/users">Users</RouterLink>
-      </nav>
+  <!-- Modern Header with Tailwind -->
+  <header
+    class="bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <!-- Logo/Brand -->
+        <div class="flex-shrink-0">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+            <span class="text-emerald-600 dark:text-emerald-400">E</span>-Commerce
+          </h1>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex space-x-8">
+          <RouterLink
+            to="/"
+            class="text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
+            active-class="text-emerald-600 dark:text-emerald-400 border-emerald-500"
+          >
+            Home
+          </RouterLink>
+          <RouterLink
+            to="/users"
+            class="text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
+            active-class="text-emerald-600 dark:text-emerald-400 border-emerald-500"
+          >
+            Users
+          </RouterLink>
+        </nav>
+      </div>
     </div>
   </header>
 
-  <RouterView />
+  <!-- Main Content -->
+  <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <RouterView />
+  </main>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style>

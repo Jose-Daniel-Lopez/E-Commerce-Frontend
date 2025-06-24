@@ -6,26 +6,115 @@ interface User {
   id: number
   name: string
   email: string
+  role?: string
 }
 
 const users = ref<User[]>([])
+const loading = ref(true)
+const error = ref('')
 
 onMounted(async () => {
   try {
     const response = await axios.get('http://localhost:8080/api/users')
     // Si usas Spring Data REST, los usuarios están en response.data._embedded.users
     users.value = response.data._embedded ? response.data._embedded.users : response.data
-  } catch (error) {
-    console.error('Error fetching users:', error)
+  } catch (err) {
+    console.error('Error fetching users:', err)
+    error.value = 'Error al cargar los usuarios'
+  } finally {
+    loading.value = false
   }
 })
 </script>
 
 <template>
-  <div>
-    <h2>User List</h2>
-    <ul>
-      <li v-for="user in users" :key="user.id">{{ user.name }} - {{ user.email }}</li>
-    </ul>
+  <div class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Lista de Usuarios</h2>
+        <p class="text-lg text-gray-600 dark:text-gray-300">
+          Gestiona todos los usuarios de tu plataforma
+        </p>
+      </div>
+
+      <!-- Loading State -->
+      <div v-if="loading" class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
+        <span class="ml-3 text-gray-600 dark:text-gray-300">Cargando usuarios...</span>
+      </div>
+
+      <!-- Error State -->
+      <div
+        v-else-if="error"
+        class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-500 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-center"
+      >
+        {{ error }}
+      </div>
+
+      <!-- Empty State -->
+      <div v-else-if="users.length === 0" class="text-center py-12">
+        <div class="text-6xl mb-4">👥</div>
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No hay usuarios</h3>
+        <p class="text-gray-600 dark:text-gray-300">
+          Aún no se han registrado usuarios en la plataforma
+        </p>
+      </div>
+
+      <!-- Users Grid -->
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          v-for="user in users"
+          :key="user.id ? user.id : user.email"
+          class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 p-6 border border-gray-200 dark:border-gray-700 relative"
+        >
+          <!-- User Role -->
+          <div class="absolute top-4 right-4">
+            <span
+              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200"
+            >
+              {{ user.role ? user.role : 'Sin rol' }}
+            </span>
+          </div>
+
+          <!-- User Avatar -->
+          <div
+            class="flex items-center justify-center w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full mx-auto mb-4"
+          >
+            <span class="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+              {{ user.name.charAt(0).toUpperCase() }}
+            </span>
+          </div>
+
+          <!-- User Info -->
+          <div class="text-center">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              {{ user.name }}
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+              {{ user.email }}
+            </p>
+
+            <!-- User ID Badge -->
+            <span
+              class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+            >
+              ID: {{ user.id ? user.id : 'No ID' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Users Count -->
+      <div v-if="users.length > 0" class="mt-12 text-center">
+        <div
+          class="inline-flex items-center px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-full"
+        >
+          <span class="text-emerald-600 dark:text-emerald-400 font-semibold">
+            Total: {{ users.length }} usuario{{ users.length !== 1 ? 's' : '' }}
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>

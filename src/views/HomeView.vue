@@ -1,9 +1,18 @@
 <template>
-  <div class="home">
-    <div class="hero">
-      <h1>Bienvenido a E-Commerce</h1>
-      <p>Gestiona tu tienda online de manera fácil y eficiente</p>
-      <router-link to="/users" class="btn-primary"> Ver Usuarios </router-link>
+  <div class="flex justify-center items-center min-h-[70vh] p-8">
+    <div class="text-center max-w-2xl">
+      <h1 class="text-3xl md:text-5xl mb-4 text-gray-900 dark:text-gray-100">
+        Bienvenido a E-Commerce
+      </h1>
+      <p class="text-base md:text-xl mb-8 text-gray-600 dark:text-gray-300 opacity-80">
+        Gestiona tu tienda online de manera fácil y eficiente
+      </p>
+      <router-link
+        to="/users"
+        class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-lg font-semibold text-base md:text-lg transition-all duration-300 ease-in-out shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/40 hover:-translate-y-0.5 no-underline"
+      >
+        Ver Usuarios
+      </router-link>
     </div>
   </div>
 </template>
@@ -11,65 +20,3 @@
 <script setup lang="ts">
 // At this point, no additional script logic is needed.
 </script>
-
-<style scoped>
-.home {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 70vh;
-  padding: 2rem;
-}
-
-.hero {
-  text-align: center;
-  max-width: 600px;
-}
-
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  color: var(--color-heading);
-}
-
-.hero p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  color: var(--color-text);
-  opacity: 0.8;
-}
-
-.btn-primary {
-  display: inline-block;
-  background-color: #42b883;
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1.1rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(66, 184, 131, 0.3);
-}
-
-.btn-primary:hover {
-  background-color: #369870;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px rgba(66, 184, 131, 0.4);
-}
-
-@media (max-width: 768px) {
-  .hero h1 {
-    font-size: 2rem;
-  }
-
-  .hero p {
-    font-size: 1rem;
-  }
-
-  .btn-primary {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-  }
-}
-</style>
