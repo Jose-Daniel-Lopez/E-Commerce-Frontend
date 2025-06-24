@@ -24,12 +24,16 @@ const error = ref('')
 
 onMounted(async () => {
   const categoryId = route.params.categoryId as string
-  
+
   try {
     // Obtener productos de la categoría
-    const productsResponse = await axios.get(`http://localhost:8080/api/categories/${categoryId}/products`)
-    products.value = productsResponse.data._embedded ? productsResponse.data._embedded.products : productsResponse.data
-    
+    const productsResponse = await axios.get(
+      `http://localhost:8080/api/categories/${categoryId}/products`,
+    )
+    products.value = productsResponse.data._embedded
+      ? productsResponse.data._embedded.products
+      : productsResponse.data
+
     // Obtener información de la categoría
     const categoryResponse = await axios.get(`http://localhost:8080/api/categories/${categoryId}`)
     category.value = categoryResponse.data
@@ -44,7 +48,7 @@ onMounted(async () => {
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('es-ES', {
     style: 'currency',
-    currency: 'EUR'
+    currency: 'EUR',
   }).format(price)
 }
 </script>
@@ -93,7 +97,9 @@ const formatPrice = (price: number) => {
           class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden"
         >
           <!-- Product Image Placeholder -->
-          <div class="h-48 bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-900/30 dark:to-emerald-800/30 flex items-center justify-center">
+          <div
+            class="h-48 bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-900/30 dark:to-emerald-800/30 flex items-center justify-center"
+          >
             <div class="text-4xl">🛍️</div>
           </div>
 
@@ -117,8 +123,11 @@ const formatPrice = (price: number) => {
                 <div
                   :class="[
                     'w-2 h-2 rounded-full',
-                    product.totalStock > 10 ? 'bg-green-500' : 
-                    product.totalStock > 0 ? 'bg-yellow-500' : 'bg-red-500'
+                    product.totalStock > 10
+                      ? 'bg-green-500'
+                      : product.totalStock > 0
+                        ? 'bg-yellow-500'
+                        : 'bg-red-500',
                   ]"
                 ></div>
                 <span class="text-sm text-gray-600 dark:text-gray-300">
@@ -135,7 +144,7 @@ const formatPrice = (price: number) => {
                   'flex-1 py-2 px-4 rounded-lg font-medium text-sm transition-colors',
                   product.totalStock > 0
                     ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                    : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                    : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed',
                 ]"
               >
                 {{ product.totalStock > 0 ? 'Agregar al carrito' : 'Agotado' }}
