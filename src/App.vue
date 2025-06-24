@@ -20,31 +20,35 @@ import { RouterLink, RouterView } from 'vue-router'
         <nav class="flex space-x-8">
           <RouterLink
             to="/"
-            class="text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
+            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
             active-class="text-emerald-600 dark:text-emerald-400 border-emerald-500"
           >
-            Home
+            <v-icon name="hi-home" scale="1.1" />
+            <span>Home</span>
           </RouterLink>
           <RouterLink
             to="/users"
-            class="text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
+            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
             active-class="text-emerald-600 dark:text-emerald-400 border-emerald-500"
           >
-            Users
+            <v-icon name="hi-users" scale="1.1" />
+            <span>Users</span>
           </RouterLink>
           <RouterLink
             to="/products"
-            class="text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
+            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
             active-class="text-emerald-600 dark:text-emerald-400 border-emerald-500"
           >
-            Products
+            <v-icon name="hi-shopping-bag" scale="1.1" />
+            <span>Products</span>
           </RouterLink>
           <RouterLink
             to="/categories"
-            class="text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
+            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
             active-class="text-emerald-600 dark:text-emerald-400 border-emerald-500"
           >
-            Categories
+            <v-icon name="hi-view-grid" scale="1.1" />
+            <span>Categories</span>
           </RouterLink>
         </nav>
       </div>
