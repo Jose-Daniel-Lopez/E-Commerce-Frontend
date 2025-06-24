@@ -75,14 +75,19 @@ const formatPrice = (price: number) => {
       <!-- Error State -->
       <div
         v-else-if="error"
-        class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-500 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-center"
+        class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-500 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2"
       >
-        {{ error }}
+        <v-icon name="hi-exclamation-circle" scale="1.2" />
+        <span>{{ error }}</span>
       </div>
 
       <!-- Empty State -->
       <div v-else-if="products.length === 0" class="text-center py-12">
-        <div class="text-6xl mb-4">📦</div>
+        <div class="flex justify-center mb-4">
+          <div class="bg-gray-100 dark:bg-gray-800 p-6 rounded-full">
+            <v-icon name="hi-shopping-bag" scale="3" class="text-gray-400 dark:text-gray-600" />
+          </div>
+        </div>
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No hay productos</h3>
         <p class="text-gray-600 dark:text-gray-300">
           No hay productos disponibles en esta categoría
@@ -100,7 +105,11 @@ const formatPrice = (price: number) => {
           <div
             class="h-48 bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-900/30 dark:to-emerald-800/30 flex items-center justify-center"
           >
-            <div class="text-4xl">🛍️</div>
+            <v-icon
+              name="hi-shopping-cart"
+              scale="3"
+              class="text-emerald-600 dark:text-emerald-400"
+            />
           </div>
 
           <div class="p-6">
@@ -158,10 +167,10 @@ const formatPrice = (price: number) => {
       <div class="mt-12 text-center">
         <button
           @click="$router.go(-1)"
-          class="inline-flex items-center px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
+          class="inline-flex items-center space-x-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
         >
-          <span class="mr-2">←</span>
-          Volver a categorías
+          <v-icon name="hi-arrow-left" scale="1.1" />
+          <span>Volver a categorías</span>
         </button>
       </div>
     </div>
