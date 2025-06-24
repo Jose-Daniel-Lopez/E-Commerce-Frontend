@@ -14,6 +14,11 @@ onMounted(async () => {
     <div class="max-w-4xl mx-auto">
       <!-- Header -->
       <div class="text-center mb-12">
+        <div class="flex justify-center mb-4">
+          <div class="bg-emerald-100 dark:bg-emerald-900/30 p-4 rounded-full">
+            <v-icon name="hi-users" scale="2.5" class="text-emerald-600 dark:text-emerald-400" />
+          </div>
+        </div>
         <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Lista de Usuarios</h2>
         <p class="text-lg text-gray-600 dark:text-gray-300">
           Gestiona todos los usuarios de tu plataforma
@@ -29,14 +34,19 @@ onMounted(async () => {
       <!-- Error State -->
       <div
         v-else-if="usersStore.error"
-        class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-500 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-center"
+        class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-500 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2"
       >
-        {{ usersStore.error }}
+        <v-icon name="hi-exclamation-circle" scale="1.2" />
+        <span>{{ usersStore.error }}</span>
       </div>
 
       <!-- Empty State -->
       <div v-else-if="usersStore.users.length === 0" class="text-center py-12">
-        <div class="text-6xl mb-4">👥</div>
+        <div class="flex justify-center mb-4">
+          <div class="bg-gray-100 dark:bg-gray-800 p-6 rounded-full">
+            <v-icon name="hi-users" scale="3" class="text-gray-400 dark:text-gray-600" />
+          </div>
+        </div>
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No hay usuarios</h3>
         <p class="text-gray-600 dark:text-gray-300">
           Aún no se han registrado usuarios en la plataforma
