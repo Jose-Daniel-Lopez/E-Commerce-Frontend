@@ -1,19 +1,14 @@
-<template>
-  <div>
-    <h2>User List</h2>
-    <ul>
-      <li v-for="user in users" :key="user.id">
-        {{ user.name }} - {{ user.email }}
-      </li>
-    </ul>
-  </div>
-</template>
-
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
-const users = ref([])
+interface User {
+  id: number
+  name: string
+  email: string
+}
+
+const users = ref<User[]>([])
 
 onMounted(async () => {
   try {
@@ -25,3 +20,12 @@ onMounted(async () => {
   }
 })
 </script>
+
+<template>
+  <div>
+    <h2>User List</h2>
+    <ul>
+      <li v-for="user in users" :key="user.id">{{ user.name }} - {{ user.email }}</li>
+    </ul>
+  </div>
+</template>
