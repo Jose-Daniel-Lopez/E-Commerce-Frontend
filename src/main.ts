@@ -3,10 +3,10 @@ import './assets/base.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { OhVueIcon, addIcons } from 'oh-vue-icons'
-import { 
-  HiHome, 
-  HiUsers, 
-  HiViewGrid, 
+import {
+  HiHome,
+  HiUsers,
+  HiViewGrid,
   HiShoppingBag,
   HiPlus,
   HiPencil,
@@ -20,7 +20,10 @@ import {
   HiShoppingCart,
   HiArrowLeft,
   HiStar,
-  HiCalendar
+  HiCalendar,
+  FaUserCircle,
+  MdLogoutOutlined,
+  IoPersonAddSharp
 } from 'oh-vue-icons/icons'
 
 import App from './App.vue'
@@ -28,9 +31,9 @@ import router from './router'
 
 // Add icons to the library
 addIcons(
-  HiHome, 
-  HiUsers, 
-  HiViewGrid, 
+  HiHome,
+  HiUsers,
+  HiViewGrid,
   HiShoppingBag,
   HiPlus,
   HiPencil,
@@ -44,7 +47,10 @@ addIcons(
   HiShoppingCart,
   HiArrowLeft,
   HiStar,
-  HiCalendar
+  HiCalendar,
+  FaUserCircle,
+  MdLogoutOutlined,
+  IoPersonAddSharp
 )
 
 const app = createApp(App)

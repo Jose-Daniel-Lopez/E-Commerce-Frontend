@@ -30,22 +30,22 @@ const showPassword = ref(false)
 
 const validateForm = () => {
   if (!form.value.email) {
-    error.value = 'El email es requerido'
+    error.value = 'Email is required'
     return false
   }
 
   if (!form.value.email.includes('@')) {
-    error.value = 'Por favor ingresa un email válido'
+    error.value = 'Please enter a valid email'
     return false
   }
 
   if (!form.value.password) {
-    error.value = 'La contraseña es requerida'
+    error.value = 'Password is required'
     return false
   }
 
   if (form.value.password.length < 6) {
-    error.value = 'La contraseña debe tener al menos 6 caracteres'
+    error.value = 'Password must be at least 6 characters'
     return false
   }
 
@@ -62,35 +62,35 @@ const handleSubmit = async () => {
   loading.value = true
 
   try {
-    const response = await api.post<LoginResponse>('/auth/login', { // Usar api en lugar de axios
+    const response = await api.post<LoginResponse>('/auth/login', { // Use api instead of axios
       email: form.value.email,
       password: form.value.password
     })
 
-    console.log('Login exitoso:', response.data)
+    console.log('Login successful:', response.data)
 
-    // Guardar token si existe
+    // Save token if exists
     if (response.data.token) {
       localStorage.setItem('authToken', response.data.token)
     }
 
-    // Guardar información del usuario
+    // Save user information
     if (response.data.user) {
       localStorage.setItem('user', JSON.stringify(response.data.user))
     }
 
-    // Redirigir al home
-    router.push({ name: 'users' }) // Cambiar a 'users' para probar
+    // Redirect to home
+    router.push({ name: 'users' }) // Change to 'users' for testing
 
   } catch (err: any) {
-    console.error('Error en login:', err)
+    console.error('Login error:', err)
 
     if (err.response?.status === 401) {
-      error.value = 'Credenciales incorrectas'
+      error.value = 'Incorrect credentials'
     } else if (err.response?.status === 404) {
-      error.value = 'Usuario no encontrado'
+      error.value = 'User not found'
     } else {
-      error.value = 'Error al iniciar sesión. Intenta de nuevo.'
+      error.value = 'Login error. Please try again.'
     }
   } finally {
     loading.value = false
@@ -119,10 +119,10 @@ const clearError = () => {
           </div>
         </div>
         <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Iniciar Sesión
+          Sign In
         </h2>
         <p class="text-gray-600 dark:text-gray-300">
-          Ingresa a tu cuenta para continuar
+          Enter your account to continue
         </p>
       </div>
 
@@ -164,7 +164,7 @@ const clearError = () => {
                 required
                 autocomplete="email"
                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
-                placeholder="tu@email.com"
+                placeholder="your@email.com"
                 :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': error && !form.email }"
                 @input="clearError"
               />
@@ -179,7 +179,7 @@ const clearError = () => {
           <!-- Password Field -->
           <div>
             <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Contraseña
+              Password
             </label>
             <div class="relative">
               <input
@@ -218,12 +218,12 @@ const clearError = () => {
                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700"
               />
               <label for="remember-me" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                Recordarme
+                Remember me
               </label>
             </div>
             <div class="text-sm">
               <a href="#" class="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-                ¿Olvidaste tu contraseña?
+                Forgot your password?
               </a>
             </div>
           </div>
@@ -240,9 +240,9 @@ const clearError = () => {
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Iniciando sesión...
+                Signing in...
               </div>
-              <span v-else>Iniciar Sesión</span>
+              <span v-else>Sign In</span>
             </button>
           </div>
         </form>
@@ -250,9 +250,9 @@ const clearError = () => {
         <!-- Sign Up Link -->
         <div class="mt-6 text-center">
           <p class="text-sm text-gray-600 dark:text-gray-400">
-            ¿No tienes una cuenta?
+            Don't have an account?
             <a href="#" class="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">
-              Regístrate aquí
+              Sign up here
             </a>
           </p>
         </div>
@@ -261,7 +261,7 @@ const clearError = () => {
       <!-- Footer -->
       <div class="text-center">
         <p class="text-xs text-gray-500 dark:text-gray-400">
-          Al iniciar sesión, aceptas nuestros términos de servicio y política de privacidad
+          By signing in, you agree to our terms of service and privacy policy
         </p>
       </div>
     </div>
@@ -269,5 +269,5 @@ const clearError = () => {
 </template>
 
 <style scoped>
-/* Estilos adicionales si necesitas personalización específica */
+/* Additional styles if you need specific customization */
 </style>

@@ -16,7 +16,7 @@ import { RouterLink, RouterView } from 'vue-router'
           </h1>
         </div>
 
-        <!-- Navigation -->
+        <!-- Main Navigation -->
         <nav class="flex space-x-8">
           <RouterLink
             to="/"
@@ -50,15 +50,35 @@ import { RouterLink, RouterView } from 'vue-router'
             <v-icon name="hi-view-grid" scale="1.1" />
             <span>Categories</span>
           </RouterLink>
+        </nav>
+
+        <!-- Auth Navigation (Right Side) -->
+        <div class="flex items-center space-x-4">
           <RouterLink
             to="/login"
-            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
+            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border border-transparent hover:border-emerald-500"
             active-class="text-emerald-600 dark:text-emerald-400 border-emerald-500"
           >
-            <v-icon name="hi-user-follow" scale="1.1" />
+            <v-icon name="fa-user-circle" scale="1.1" />
             <span>Login</span>
           </RouterLink>
-        </nav>
+          <RouterLink
+            to="/register"
+            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border border-transparent hover:border-red-500"
+            active-class="text-red-600 dark:text-red-400 border-red-500"
+          >
+            <v-icon name="io-person-add-sharp" scale="1.1" />
+            <span>Register</span>
+          </RouterLink>
+          <RouterLink
+            to="/logout"
+            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border border-transparent hover:border-red-500"
+            active-class="text-red-600 dark:text-red-400 border-red-500"
+          >
+            <v-icon name="md-logout-outlined" scale="1.1" />
+            <span>Logout</span>
+          </RouterLink>
+        </div>
       </div>
     </div>
   </header>
