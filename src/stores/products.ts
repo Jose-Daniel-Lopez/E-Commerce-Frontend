@@ -51,8 +51,8 @@ export const useProductsStore = defineStore('products', () => {
     currentCategoryId.value = categoryId
 
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/categories/${categoryId}/products`,
+      const response = await api.get(
+        `/categories/${categoryId}/products`,
       )
       products.value = response.data._embedded ? response.data._embedded.products : response.data
     } catch (err) {
@@ -65,7 +65,7 @@ export const useProductsStore = defineStore('products', () => {
 
   const fetchProductById = async (productId: number) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/products/${productId}`)
+      const response = await api.get(`/products/${productId}`)
       return response.data
     } catch (err) {
       console.error(`Error fetching product ${productId}:`, err)
