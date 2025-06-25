@@ -25,7 +25,7 @@ import {
   HiMoon,
   FaUserCircle,
   MdLogoutOutlined,
-  IoPersonAddSharp,,
+  IoPersonAddSharp,
   FaBoxes
 } from 'oh-vue-icons/icons'
 
@@ -55,7 +55,8 @@ addIcons(
   HiMoon,
   FaUserCircle,
   MdLogoutOutlined,
-  IoPersonAddSharp
+  IoPersonAddSharp,
+  FaBoxes
 )
 
 const app = createApp(App)
