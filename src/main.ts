@@ -23,7 +23,8 @@ import {
   HiCalendar,
   FaUserCircle,
   MdLogoutOutlined,
-  IoPersonAddSharp
+  IoPersonAddSharp,
+  FaBoxes
 } from 'oh-vue-icons/icons'
 
 import App from './App.vue'
@@ -50,7 +51,8 @@ addIcons(
   HiCalendar,
   FaUserCircle,
   MdLogoutOutlined,
-  IoPersonAddSharp
+  IoPersonAddSharp,
+  FaBoxes
 )
 
 const app = createApp(App)

@@ -57,8 +57,8 @@ export const useCategoriesStore = defineStore('categories', () => {
 
   const fetchCategoryWithProducts = async (categoryId: number) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/categories/${categoryId}/products`,
+      const response = await api.get(
+        `/categories/${categoryId}/products`,
       )
       const products = response.data._embedded ? response.data._embedded.products : response.data
 

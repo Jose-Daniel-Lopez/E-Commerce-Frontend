@@ -50,6 +50,14 @@ import { RouterLink, RouterView } from 'vue-router'
             <v-icon name="hi-view-grid" scale="1.1" />
             <span>Categories</span>
           </RouterLink>
+          <RouterLink
+            to="/orders"
+            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
+            active-class="text-emerald-600 dark:text-emerald-400 border-emerald-500"
+          >
+            <v-icon name="fa-boxes" scale="1.1" />
+            <span>Orders</span>
+          </RouterLink>
         </nav>
 
         <!-- Auth Navigation (Right Side) -->
