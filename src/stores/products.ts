@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
 import type { Product } from './categories'
+import api from '@/lib/axios'
 
 export const useProductsStore = defineStore('products', () => {
   // State
@@ -34,7 +34,7 @@ export const useProductsStore = defineStore('products', () => {
     error.value = ''
 
     try {
-      const response = await axios.get('http://localhost:8080/api/products')
+      const response = await api.get('/products')
       products.value = response.data._embedded ? response.data._embedded.products : response.data
       currentCategoryId.value = null
     } catch (err) {

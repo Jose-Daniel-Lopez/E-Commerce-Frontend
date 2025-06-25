@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
+import api from '@/lib/axios'
 
 interface User {
   id: number
-  name: string
+  username: string
   email: string
   role?: string
 }
@@ -25,7 +25,8 @@ export const useUsersStore = defineStore('users', () => {
     error.value = ''
 
     try {
-      const response = await axios.get('http://localhost:8080/api/users')
+      // Cambiar de 'http://localhost:8080/api/users' a solo '/users'
+      const response = await api.get('/users')
       // Si usas Spring Data REST, los usuarios están en response.data._embedded.users
       users.value = response.data._embedded ? response.data._embedded.users : response.data
     } catch (err) {

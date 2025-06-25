@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
+import api from '@/lib/axios'
 
 export interface Product {
   id: number
@@ -42,7 +42,7 @@ export const useCategoriesStore = defineStore('categories', () => {
     error.value = ''
 
     try {
-      const response = await axios.get('http://localhost:8080/api/categories')
+      const response = await api.get('/categories')
       // Si usas Spring Data REST, las categorías están en response.data._embedded.categories
       categories.value = response.data._embedded
         ? response.data._embedded.categories

@@ -74,17 +74,17 @@ onMounted(async () => {
             class="flex items-center justify-center w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full mx-auto mb-4"
           >
             <span class="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-              {{ user.name.charAt(0).toUpperCase() }}
+              {{ (user.username && user.username.length > 0) ? user.username.charAt(0).toUpperCase() : '?' }}
             </span>
           </div>
 
           <!-- User Info -->
           <div class="text-center">
             <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              {{ user.name }}
+              {{ user.username || 'Sin nombre' }}
             </h3>
             <p class="text-gray-600 dark:text-gray-300 mb-4">
-              {{ user.email }}
+              {{ user.email || 'Sin email' }}
             </p>
 
             <!-- User ID Badge -->
