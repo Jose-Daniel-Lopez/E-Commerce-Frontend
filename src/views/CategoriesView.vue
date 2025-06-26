@@ -12,7 +12,7 @@ onMounted(async () => {
 
 const viewCategoryProducts = (categoryId: number) => {
   // Navegar a la vista de productos con el ID de categoría
-  router.push({ name: 'CategoryProducts', params: { categoryId: categoryId.toString() } })
+  router.push({ name: 'categoryProducts', params: { categoryId: categoryId.toString() } })
 }
 </script>
 

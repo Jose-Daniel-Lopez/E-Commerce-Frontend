@@ -9,14 +9,14 @@ onMounted(async () => {
 })
 
 const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('es-ES', {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'EUR',
   }).format(price)
 }
 
 const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString('es-ES', {
+  return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
@@ -37,14 +37,8 @@ const getStatusColor = (status: string) => {
 }
 
 const getStatusText = (status: string) => {
-  const texts = {
-    CREATED: 'Creado',
-    PAID: 'Pagado',
-    SHIPPED: 'Enviado',
-    DELIVERED: 'Entregado',
-    CANCELED: 'Cancelado'
-  }
-  return texts[status as keyof typeof texts] || status
+  // Return status as it comes from API
+  return status
 }
 
 const getStatusIcon = (status: string) => {
@@ -69,16 +63,16 @@ const getStatusIcon = (status: string) => {
             <v-icon name="hi-clipboard-list" scale="2.5" class="text-blue-600 dark:text-blue-400" />
           </div>
         </div>
-        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Lista de Pedidos</h2>
+        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Orders List</h2>
         <p class="text-lg text-gray-600 dark:text-gray-300">
-          Gestiona y supervisa todos los pedidos realizados
+          Manage and monitor all placed orders
         </p>
       </div>
 
       <!-- Loading State -->
       <div v-if="ordersStore.loading" class="flex justify-center items-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-        <span class="ml-3 text-gray-600 dark:text-gray-300">Cargando pedidos...</span>
+        <span class="ml-3 text-gray-600 dark:text-gray-300">Loading orders...</span>
       </div>
 
       <!-- Error State -->
@@ -97,8 +91,8 @@ const getStatusIcon = (status: string) => {
             <v-icon name="hi-clipboard-list" scale="3" class="text-gray-400 dark:text-gray-600" />
           </div>
         </div>
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No hay pedidos</h3>
-        <p class="text-gray-600 dark:text-gray-300">No se encontraron pedidos en el sistema</p>
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No orders found</h3>
+        <p class="text-gray-600 dark:text-gray-300">No orders were found in the system</p>
       </div>
 
       <!-- Orders Grid -->
@@ -113,7 +107,7 @@ const getStatusIcon = (status: string) => {
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-2">
                 <v-icon :name="getStatusIcon(order.status)" scale="1.2" class="text-blue-600 dark:text-blue-400" />
-                <span class="font-semibold text-gray-900 dark:text-white">Pedido #{{ order.id }}</span>
+                <span class="font-semibold text-gray-900 dark:text-white">Order #{{ order.id }}</span>
               </div>
               <span :class="`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`">
                 {{ getStatusText(order.status) }}
@@ -145,7 +139,7 @@ const getStatusIcon = (status: string) => {
                 <div class="text-lg font-bold text-blue-600 dark:text-blue-400">
                   {{ order.orderItems?.length || 0 }}
                 </div>
-                <div class="text-xs text-gray-500 dark:text-gray-400">Artículos</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">Items</div>
               </div>
             </div>
 
@@ -155,7 +149,7 @@ const getStatusIcon = (status: string) => {
                 class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200"
               >
                 <v-icon name="hi-tag" scale="0.8" class="mr-1" />
-                Descuento aplicado
+                Discount applied
               </span>
             </div>
 
@@ -164,7 +158,7 @@ const getStatusIcon = (status: string) => {
               <div class="flex items-center space-x-2 text-sm">
                 <v-icon name="hi-credit-card" scale="1" class="text-gray-500 dark:text-gray-400" />
                 <span class="text-gray-600 dark:text-gray-300">
-                  Pago: {{ order.payment.paymentMethod }}
+                  Payment: {{ order.payment.paymentMethod }}
                 </span>
               </div>
             </div>
@@ -185,7 +179,7 @@ const getStatusIcon = (status: string) => {
                 class="w-full flex items-center justify-center space-x-2 py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-sm transition-colors"
               >
                 <v-icon name="hi-eye" scale="1" />
-                <span>Ver detalles</span>
+                <span>View details</span>
               </button>
               <div class="flex space-x-2">
                 <button
@@ -193,14 +187,14 @@ const getStatusIcon = (status: string) => {
                   class="flex-1 flex items-center justify-center space-x-1 py-2 px-4 rounded-lg border border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors text-sm"
                 >
                   <v-icon name="hi-pencil" scale="0.9" />
-                  <span>Actualizar</span>
+                  <span>Update</span>
                 </button>
                 <button
                   v-if="order.status === 'CREATED' || order.status === 'PAID'"
                   class="flex-1 flex items-center justify-center space-x-1 py-2 px-4 rounded-lg border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-sm"
                 >
                   <v-icon name="hi-x-circle" scale="0.9" />
-                  <span>Cancelar</span>
+                  <span>Cancel</span>
                 </button>
               </div>
             </div>
@@ -219,7 +213,7 @@ const getStatusIcon = (status: string) => {
           class="inline-flex items-center px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-full"
         >
           <span class="text-emerald-600 dark:text-emerald-400 font-semibold">
-            Total: {{ ordersStore.orderCount }} pedido{{
+            Total: {{ ordersStore.orderCount }} order{{
               ordersStore.orderCount !== 1 ? 's' : ''
             }}
           </span>

@@ -39,14 +39,14 @@ onMounted(async () => {
     category.value = categoryResponse.data
   } catch (err) {
     console.error('Error fetching category products:', err)
-    error.value = 'Error al cargar los productos de la categoría'
+    error.value = 'Error loading category products'
   } finally {
     loading.value = false
   }
 })
 
 const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('es-ES', {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'EUR',
   }).format(price)
@@ -59,17 +59,17 @@ const formatPrice = (price: number) => {
       <!-- Header -->
       <div class="text-center mb-12">
         <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-          {{ category?.name || 'Categoría' }}
+          {{ category?.name || 'Category' }}
         </h2>
         <p class="text-lg text-gray-600 dark:text-gray-300">
-          Productos disponibles en esta categoría
+          Products available in this category
         </p>
       </div>
 
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-        <span class="ml-3 text-gray-600 dark:text-gray-300">Cargando productos...</span>
+        <span class="ml-3 text-gray-600 dark:text-gray-300">Loading products...</span>
       </div>
 
       <!-- Error State -->
@@ -88,9 +88,9 @@ const formatPrice = (price: number) => {
             <v-icon name="hi-shopping-bag" scale="3" class="text-gray-400 dark:text-gray-600" />
           </div>
         </div>
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No hay productos</h3>
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No products found</h3>
         <p class="text-gray-600 dark:text-gray-300">
-          No hay productos disponibles en esta categoría
+          No products are available in this category
         </p>
       </div>
 
@@ -140,7 +140,7 @@ const formatPrice = (price: number) => {
                   ]"
                 ></div>
                 <span class="text-sm text-gray-600 dark:text-gray-300">
-                  {{ product.totalStock }} en stock
+                  {{ product.totalStock }} in stock
                 </span>
               </div>
             </div>
@@ -156,7 +156,7 @@ const formatPrice = (price: number) => {
                     : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed',
                 ]"
               >
-                {{ product.totalStock > 0 ? 'Agregar al carrito' : 'Agotado' }}
+                {{ product.totalStock > 0 ? 'Add to cart' : 'Out of stock' }}
               </button>
             </div>
           </div>
@@ -170,7 +170,7 @@ const formatPrice = (price: number) => {
           class="inline-flex items-center space-x-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
         >
           <v-icon name="hi-arrow-left" scale="1.1" />
-          <span>Volver a categorías</span>
+          <span>Back to categories</span>
         </button>
       </div>
     </div>
