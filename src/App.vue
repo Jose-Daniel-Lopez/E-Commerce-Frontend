@@ -94,6 +94,22 @@ onMounted(() => {
             <v-icon name="ri-coupon-2-line" scale="1.1" />
             <span>Coupons</span>
           </RouterLink>
+          <RouterLink
+            to="/payments"
+            class="flex items-center space-x-2 text-text hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-primary"
+            active-class="text-primary border-primary"
+          >
+            <v-icon name="fa-credit-card" scale="1.1" />
+            <span>Payments</span>
+          </RouterLink>
+          <RouterLink
+            to="/shipping-addresses"
+            class="flex items-center space-x-2 text-text hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-primary"
+            active-class="text-primary border-primary"
+          >
+            <v-icon name="hi-location-marker" scale="1.1" />
+            <span>Shipping</span>
+          </RouterLink>
         </nav>
 
         <!-- Auth Navigation (Right Side) -->

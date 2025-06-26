@@ -31,7 +31,9 @@ import {
   HiXCircle,
   HiBadgeCheck,
   HiCheckCircle,
-  HiClipboardCopy
+  HiClipboardCopy,
+  FaCreditCard,
+  HiLocationMarker
 } from 'oh-vue-icons/icons'
 
 import App from './App.vue'
@@ -66,7 +68,9 @@ addIcons(
   HiXCircle,
   HiBadgeCheck,
   HiCheckCircle,
-  HiClipboardCopy
+  HiClipboardCopy,
+  FaCreditCard,
+  HiLocationMarker
 )
 
 const app = createApp(App)
