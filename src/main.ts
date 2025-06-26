@@ -26,7 +26,12 @@ import {
   FaUserCircle,
   MdLogoutOutlined,
   IoPersonAddSharp,
-  FaBoxes
+  FaBoxes,
+  RiCoupon2Line,
+  HiXCircle,
+  HiBadgeCheck,
+  HiCheckCircle,
+  HiClipboardCopy
 } from 'oh-vue-icons/icons'
 
 import App from './App.vue'
@@ -56,7 +61,12 @@ addIcons(
   FaUserCircle,
   MdLogoutOutlined,
   IoPersonAddSharp,
-  FaBoxes
+  FaBoxes,
+  RiCoupon2Line,
+  HiXCircle,
+  HiBadgeCheck,
+  HiCheckCircle,
+  HiClipboardCopy
 )
 
 const app = createApp(App)

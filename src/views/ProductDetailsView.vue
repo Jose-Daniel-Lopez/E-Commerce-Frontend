@@ -69,8 +69,8 @@ const fetchProductDetails = async (productId: string) => {
     // Fetch product reviews
     try {
       const reviewsResponse = await api.get(`/products/${productId}/productReviews`)
-      reviews.value = reviewsResponse.data._embedded 
-        ? reviewsResponse.data._embedded.productReviews 
+      reviews.value = reviewsResponse.data._embedded
+        ? reviewsResponse.data._embedded.productReviews
         : reviewsResponse.data
     } catch {
       console.log('No reviews found for this product')
@@ -80,8 +80,8 @@ const fetchProductDetails = async (productId: string) => {
     // Fetch product variants
     try {
       const variantsResponse = await api.get(`/products/${productId}/productVariants`)
-      variants.value = variantsResponse.data._embedded 
-        ? variantsResponse.data._embedded.productVariants 
+      variants.value = variantsResponse.data._embedded
+        ? variantsResponse.data._embedded.productVariants
         : variantsResponse.data
     } catch {
       console.log('No variants found for this product')
@@ -174,7 +174,7 @@ const getRatingStars = (rating: number) => {
                   <span class="text-4xl font-bold text-emerald-600 dark:text-emerald-400">
                     {{ formatPrice(product.basePrice) }}
                   </span>
-                  <div 
+                  <div
                     :class="`px-3 py-1 rounded-full text-sm font-medium ${getStockStatus(product.totalStock).bgColor} ${getStockStatus(product.totalStock).color}`"
                   >
                     {{ getStockStatus(product.totalStock).text }}
@@ -201,8 +201,8 @@ const getRatingStars = (rating: number) => {
                 <!-- Rating -->
                 <div v-if="reviews.length > 0" class="flex items-center space-x-2">
                   <div class="flex items-center space-x-1">
-                    <span 
-                      v-for="(filled, index) in getRatingStars(Math.floor(getAverageRating()))" 
+                    <span
+                      v-for="(filled, index) in getRatingStars(Math.floor(getAverageRating()))"
                       :key="index"
                       :class="filled ? 'text-yellow-400' : 'text-gray-300'"
                     >
@@ -353,8 +353,8 @@ const getRatingStars = (rating: number) => {
                         {{ review.user?.name || 'Anonymous' }}
                       </span>
                       <div class="flex items-center">
-                        <span 
-                          v-for="(filled, index) in getRatingStars(review.rating)" 
+                        <span
+                          v-for="(filled, index) in getRatingStars(review.rating)"
                           :key="index"
                           :class="filled ? 'text-yellow-400' : 'text-gray-300'"
                           class="text-sm"
