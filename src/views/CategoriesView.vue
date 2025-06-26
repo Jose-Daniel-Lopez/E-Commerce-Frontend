@@ -26,16 +26,16 @@ const viewCategoryProducts = (categoryId: number) => {
             <v-icon name="hi-view-grid" scale="2.5" class="text-purple-600 dark:text-purple-400" />
           </div>
         </div>
-        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Categorías</h2>
+        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Categories</h2>
         <p class="text-lg text-gray-600 dark:text-gray-300">
-          Explora nuestras categorías de productos organizadas
+          Explore our organized product categories
         </p>
       </div>
 
       <!-- Loading State -->
       <div v-if="categoriesStore.loading" class="flex justify-center items-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-        <span class="ml-3 text-gray-600 dark:text-gray-300">Cargando categorías...</span>
+        <span class="ml-3 text-gray-600 dark:text-gray-300">Loading categories...</span>
       </div>
 
       <!-- Error State -->
@@ -54,9 +54,9 @@ const viewCategoryProducts = (categoryId: number) => {
             <v-icon name="hi-view-grid" scale="3" class="text-gray-400 dark:text-gray-600" />
           </div>
         </div>
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No hay categorías</h3>
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No categories found</h3>
         <p class="text-gray-600 dark:text-gray-300">
-          Aún no hay categorías disponibles en el sistema
+          No categories are available in the system yet
         </p>
       </div>
 
@@ -85,7 +85,7 @@ const viewCategoryProducts = (categoryId: number) => {
               <div class="flex items-center space-x-2">
                 <div class="w-2 h-2 rounded-full bg-blue-500"></div>
                 <span class="text-sm text-gray-600 dark:text-gray-300 font-medium">
-                  {{ categoriesStore.getProductCount(category.id) }} producto{{
+                  {{ categoriesStore.getProductCount(category.id) }} product{{
                     categoriesStore.getProductCount(category.id) !== 1 ? 's' : ''
                   }}
                 </span>
@@ -99,20 +99,20 @@ const viewCategoryProducts = (categoryId: number) => {
                 class="w-full flex items-center justify-center space-x-2 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors"
               >
                 <v-icon name="hi-eye" scale="1" />
-                <span>Ver productos</span>
+                <span>View products</span>
               </button>
               <div class="flex space-x-2">
                 <button
                   class="flex-1 flex items-center justify-center space-x-1 py-2 px-4 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm"
                 >
                   <v-icon name="hi-pencil" scale="0.9" />
-                  <span>Editar</span>
+                  <span>Edit</span>
                 </button>
                 <button
                   class="flex-1 flex items-center justify-center space-x-1 py-2 px-4 rounded-lg border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-sm"
                 >
                   <v-icon name="hi-trash" scale="0.9" />
-                  <span>Eliminar</span>
+                  <span>Delete</span>
                 </button>
               </div>
             </div>
@@ -131,7 +131,7 @@ const viewCategoryProducts = (categoryId: number) => {
           class="inline-flex items-center space-x-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
         >
           <v-icon name="hi-plus" scale="1.1" />
-          <span>Agregar nueva categoría</span>
+          <span>Add new category</span>
         </button>
       </div>
 
@@ -141,8 +141,8 @@ const viewCategoryProducts = (categoryId: number) => {
           class="inline-flex items-center px-4 py-2 bg-blue-100 dark:bg-blue-900/30 rounded-full"
         >
           <span class="text-blue-600 dark:text-blue-400 font-semibold">
-            Total: {{ categoriesStore.categoryCount }} categoría{{
-              categoriesStore.categoryCount !== 1 ? 's' : ''
+            Total: {{ categoriesStore.categoryCount }} categor{{
+              categoriesStore.categoryCount !== 1 ? 'ies' : 'y'
             }}
           </span>
         </div>

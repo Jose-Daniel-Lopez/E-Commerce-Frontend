@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
 
 const productsStore = useProductsStore()
+const router = useRouter()
 
 onMounted(async () => {
   await productsStore.fetchProducts()
 })
 
 const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('es-ES', {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'EUR',
   }).format(price)
+}
+
+const viewProductDetails = (productId: number) => {
+  router.push({ name: 'productDetails', params: { productId: productId.toString() } })
 }
 </script>
 
@@ -26,16 +32,16 @@ const formatPrice = (price: number) => {
             <v-icon name="hi-shopping-bag" scale="2.5" class="text-blue-600 dark:text-blue-400" />
           </div>
         </div>
-        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Catálogo de Productos</h2>
+        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Product Catalog</h2>
         <p class="text-lg text-gray-600 dark:text-gray-300">
-          Explora nuestra selección de productos disponibles
+          Explore our selection of available products
         </p>
       </div>
 
       <!-- Loading State -->
       <div v-if="productsStore.loading" class="flex justify-center items-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-        <span class="ml-3 text-gray-600 dark:text-gray-300">Cargando productos...</span>
+        <span class="ml-3 text-gray-600 dark:text-gray-300">Loading products...</span>
       </div>
 
       <!-- Error State -->
@@ -54,8 +60,8 @@ const formatPrice = (price: number) => {
             <v-icon name="hi-shopping-bag" scale="3" class="text-gray-400 dark:text-gray-600" />
           </div>
         </div>
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No hay productos</h3>
-        <p class="text-gray-600 dark:text-gray-300">No se encontraron productos en el catálogo</p>
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No products found</h3>
+        <p class="text-gray-600 dark:text-gray-300">No products were found in the catalog</p>
       </div>
 
       <!-- Products Grid -->
@@ -90,7 +96,7 @@ const formatPrice = (price: number) => {
                 <div class="text-lg font-bold text-emerald-600 dark:text-emerald-400">
                   {{ formatPrice(product.basePrice) }}
                 </div>
-                <div class="text-xs text-gray-500 dark:text-gray-400">Precio base</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">Base price</div>
               </div>
 
               <!-- Stock -->
@@ -98,7 +104,7 @@ const formatPrice = (price: number) => {
                 <div class="text-lg font-bold text-blue-600 dark:text-blue-400">
                   {{ product.totalStock }}
                 </div>
-                <div class="text-xs text-gray-500 dark:text-gray-400">En stock</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">In stock</div>
               </div>
             </div>
 
@@ -114,23 +120,24 @@ const formatPrice = (price: number) => {
             <!-- Product Actions -->
             <div class="space-y-2">
               <button
+                @click="viewProductDetails(product.id)"
                 class="w-full flex items-center justify-center space-x-2 py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-sm transition-colors"
               >
                 <v-icon name="hi-eye" scale="1" />
-                <span>Ver detalles</span>
+                <span>View details</span>
               </button>
               <div class="flex space-x-2">
                 <button
                   class="flex-1 flex items-center justify-center space-x-1 py-2 px-4 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm"
                 >
                   <v-icon name="hi-pencil" scale="0.9" />
-                  <span>Editar</span>
+                  <span>Edit</span>
                 </button>
                 <button
                   class="flex-1 flex items-center justify-center space-x-1 py-2 px-4 rounded-lg border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-sm"
                 >
                   <v-icon name="hi-trash" scale="0.9" />
-                  <span>Eliminar</span>
+                  <span>Delete</span>
                 </button>
               </div>
             </div>
@@ -149,7 +156,7 @@ const formatPrice = (price: number) => {
           class="inline-flex items-center space-x-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
         >
           <v-icon name="hi-plus" scale="1.1" />
-          <span>Agregar nuevo producto</span>
+          <span>Add new product</span>
         </button>
       </div>
 
@@ -159,7 +166,7 @@ const formatPrice = (price: number) => {
           class="inline-flex items-center px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-full"
         >
           <span class="text-emerald-600 dark:text-emerald-400 font-semibold">
-            Total: {{ productsStore.productCount }} producto{{
+            Total: {{ productsStore.productCount }} product{{
               productsStore.productCount !== 1 ? 's' : ''
             }}
           </span>

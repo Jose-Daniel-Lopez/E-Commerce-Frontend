@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 
 interface Product {
@@ -17,6 +17,7 @@ interface Category {
 }
 
 const route = useRoute()
+const router = useRouter()
 const products = ref<Product[]>([])
 const category = ref<Category | null>(null)
 const loading = ref(true)
@@ -50,6 +51,10 @@ const formatPrice = (price: number) => {
     style: 'currency',
     currency: 'EUR',
   }).format(price)
+}
+
+const viewProductDetails = (productId: number) => {
+  router.push({ name: 'productDetails', params: { productId: productId.toString() } })
 }
 </script>
 
@@ -146,11 +151,18 @@ const formatPrice = (price: number) => {
             </div>
 
             <!-- Product Actions -->
-            <div class="flex space-x-2">
+            <div class="space-y-2">
+              <button
+                @click="viewProductDetails(product.id)"
+                class="w-full flex items-center justify-center space-x-2 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors"
+              >
+                <v-icon name="hi-eye" scale="1" />
+                <span>View details</span>
+              </button>
               <button
                 :disabled="product.totalStock === 0"
                 :class="[
-                  'flex-1 py-2 px-4 rounded-lg font-medium text-sm transition-colors',
+                  'w-full py-2 px-4 rounded-lg font-medium text-sm transition-colors',
                   product.totalStock > 0
                     ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
                     : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed',
@@ -181,6 +193,7 @@ const formatPrice = (price: number) => {
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -188,6 +201,7 @@ const formatPrice = (price: number) => {
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
