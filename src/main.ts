@@ -42,7 +42,11 @@ import {
   HiColorSwatch,
   HiAdjustments,
   HiArrowsExpand,
-  HiMinus
+  HiMinus,
+  HiMail,
+  HiUserCircle,
+  HiKey,
+  HiHeart
 } from 'oh-vue-icons/icons'
 
 import App from './App.vue'
@@ -88,7 +92,11 @@ addIcons(
   HiColorSwatch,
   HiAdjustments,
   HiArrowsExpand,
-  HiMinus
+  HiMinus,
+  HiMail,
+  HiUserCircle,
+  HiKey,
+  HiHeart
 )
 
 const app = createApp(App)
