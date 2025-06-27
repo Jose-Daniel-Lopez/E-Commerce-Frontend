@@ -7,12 +7,14 @@ export interface UserAddress {
   street: string
   city: string
   state: string
-  postalCode: string
+  postalCode?: string
+  zipCode?: string  // La API devuelve zipCode en lugar de postalCode
   country: string
-  isShippingAddress: boolean
-  isBillingAddress: boolean
+  isShippingAddress?: boolean
+  isBillingAddress?: boolean
   _links?: {
     self?: { href: string }
+    address?: { href: string }
     user?: { href: string }
   }
 }
@@ -32,16 +34,25 @@ export const useUserAddressesStore = defineStore('userAddresses', () => {
   async function fetchUserAddresses(userId: string | number) {
     loading.value = true
     error.value = null
+    
     try {
       const response = await api.get(`/users/${userId}/addresses`)
-      addresses.value = response.data._embedded ? response.data._embedded.userAddresses : []
-    } catch (e) {
-      if (e instanceof Error) {
-        error.value = e.message
+      
+      // Manejar diferentes estructuras de respuesta
+      if (response.data._embedded) {
+        addresses.value = response.data._embedded.userAddresses || response.data._embedded.addresses || []
+      } else if (Array.isArray(response.data)) {
+        addresses.value = response.data
       } else {
-        error.value = 'An unknown error occurred'
+        addresses.value = []
       }
+    } catch (e) {
       console.error('Failed to fetch user addresses:', e)
+      if (e instanceof Error) {
+        error.value = `Error loading addresses: ${e.message}`
+      } else {
+        error.value = 'An unknown error occurred while loading addresses'
+      }
     } finally {
       loading.value = false
     }

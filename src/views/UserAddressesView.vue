@@ -26,10 +26,16 @@ const userId = route.params.userId as string
 const loading = computed(() => addressesLoading.value || userLoading.value)
 const error = computed(() => addressesError.value || userError.value)
 
-onMounted(() => {
+onMounted(async () => {
   if (userId) {
-    usersStore.fetchUserById(userId)
-    userAddressesStore.fetchUserAddresses(userId)
+    try {
+      await usersStore.fetchUserById(userId)
+      await userAddressesStore.fetchUserAddresses(userId)
+    } catch (err) {
+      console.error('Error loading user addresses:', err)
+    }
+  } else {
+    console.error('No userId provided in route params')
   }
 })
 </script>
@@ -124,20 +130,22 @@ onMounted(() => {
                   <v-icon
                     :name="
                       address.isShippingAddress
-                        ? 'fa-shipping-fast'
+                        ? 'hi-truck'
                         : address.isBillingAddress
-                          ? 'fa-file-invoice-dollar'
+                          ? 'hi-credit-card'
                           : 'hi-location-marker'
                     "
                     scale="0.9"
                     class="mr-1.5"
                   />
                   {{
-                    address.isShippingAddress
-                      ? 'Shipping'
-                      : address.isBillingAddress
-                        ? 'Billing'
-                        : 'Address'
+                    address.isShippingAddress && address.isBillingAddress
+                      ? 'Shipping & Billing'
+                      : address.isShippingAddress
+                        ? 'Shipping Address'
+                        : address.isBillingAddress
+                          ? 'Billing Address'
+                          : 'General Address'
                   }}
                 </span>
                 <span class="text-xs text-gray-500 dark:text-gray-400">
@@ -159,30 +167,55 @@ onMounted(() => {
                 <p class="text-gray-800 dark:text-white">{{ address.city }}</p>
               </div>
               <div>
-                <p class="text-sm text-gray-500 dark:text-gray-400">State</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">State/Province</p>
                 <p class="text-gray-800 dark:text-white">{{ address.state }}</p>
               </div>
               <div>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Postal Code</p>
-                <p class="text-gray-800 dark:text-white">{{ address.postalCode }}</p>
+                <p class="text-gray-800 dark:text-white">{{ address.postalCode || address.zipCode || 'N/A' }}</p>
               </div>
               <div>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Country</p>
                 <p class="text-gray-800 dark:text-white">{{ address.country }}</p>
               </div>
             </div>
+
+            <!-- Address Actions -->
+            <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
+              <div class="flex space-x-3">
+                <button
+                  class="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+                >
+                  <v-icon name="hi-pencil" scale="0.9" />
+                  <span>Edit</span>
+                </button>
+                <button
+                  class="flex items-center space-x-2 px-4 py-2 border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 text-sm font-medium rounded-lg transition-colors"
+                >
+                  <v-icon name="hi-trash" scale="0.9" />
+                  <span>Delete</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Back Button -->
-      <div class="mt-12 text-center">
+      <!-- Back Button and Actions -->
+      <div class="mt-12 flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
         <button
           @click="$router.go(-1)"
           class="inline-flex items-center space-x-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
         >
           <v-icon name="hi-arrow-left" scale="1.1" />
           <span>Back to Users</span>
+        </button>
+
+        <button
+          class="inline-flex items-center space-x-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
+        >
+          <v-icon name="hi-plus" scale="1.1" />
+          <span>Add New Address</span>
         </button>
       </div>
 
