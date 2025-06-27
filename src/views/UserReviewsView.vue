@@ -171,7 +171,7 @@ const getRatingBadgeColor = (rating: number) => {
       <div v-else-if="reviews.length === 0" class="text-center py-12">
         <div class="flex justify-center mb-4">
           <div class="bg-yellow-100 dark:bg-yellow-900/30 p-6 rounded-full">
-            <v-icon name="hi-star" scale="3" class="text-yellow-500 dark:text-yellow-400" />
+            <v-icon name="bi-star-fill" scale="3" class="text-yellow-500 dark:text-yellow-400" />
           </div>
         </div>
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No hay reseñas</h3>
@@ -199,7 +199,7 @@ const getRatingBadgeColor = (rating: number) => {
                 >
                   <div class="flex items-center space-x-1">
                     <span>{{ review.rating || 0 }}/5</span>
-                    <v-icon name="hi-star" scale="0.8" class="text-yellow-500" />
+                    <v-icon name="bi-star-fill" scale="0.8" class="text-yellow-500" />
                   </div>
                 </span>
                 <span class="text-xs text-gray-500 dark:text-gray-400"> ID: {{ review.id }} </span>
@@ -232,7 +232,7 @@ const getRatingBadgeColor = (rating: number) => {
               <v-icon
                 v-for="star in getRatingStars(review.rating)"
                 :key="star.key"
-                name="hi-star"
+                name="bi-star-fill"
                 scale="1.2"
                 :class="star.filled ? 'text-yellow-500' : 'text-gray-300 dark:text-gray-600'"
               />

@@ -34,10 +34,10 @@ export const useUserAddressesStore = defineStore('userAddresses', () => {
   async function fetchUserAddresses(userId: string | number) {
     loading.value = true
     error.value = null
-    
+
     try {
       const response = await api.get(`/users/${userId}/addresses`)
-      
+
       // Manejar diferentes estructuras de respuesta
       if (response.data._embedded) {
         addresses.value = response.data._embedded.userAddresses || response.data._embedded.addresses || []
