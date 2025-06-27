@@ -36,7 +36,13 @@ import {
   HiLocationMarker,
   HiGlobe,
   HiOfficeBuilding,
-  HiClock
+  HiClock,
+  HiCube,
+  HiCollection,
+  HiColorSwatch,
+  HiAdjustments,
+  HiArrowsExpand,
+  HiMinus
 } from 'oh-vue-icons/icons'
 
 import App from './App.vue'
@@ -76,7 +82,13 @@ addIcons(
   HiLocationMarker,
   HiGlobe,
   HiOfficeBuilding,
-  HiClock
+  HiClock,
+  HiCube,
+  HiCollection,
+  HiColorSwatch,
+  HiAdjustments,
+  HiArrowsExpand,
+  HiMinus
 )
 
 const app = createApp(App)

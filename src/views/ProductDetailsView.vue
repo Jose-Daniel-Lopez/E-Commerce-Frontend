@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useProductVariantsStore } from '@/stores/productVariants'
 import api from '@/lib/axios'
 
 interface Product {
@@ -31,13 +32,6 @@ interface ProductReview {
   }
 }
 
-interface ProductVariant {
-  id: number
-  name: string
-  price: number
-  stock: number
-}
-
 interface Category {
   id: number
   name: string
@@ -46,8 +40,8 @@ interface Category {
 const route = useRoute()
 const product = ref<Product | null>(null)
 const reviews = ref<ProductReview[]>([])
-const variants = ref<ProductVariant[]>([])
 const category = ref<Category | null>(null)
+const productVariantsStore = useProductVariantsStore()
 const loading = ref(true)
 const error = ref('')
 const activeTab = ref('details')
@@ -77,16 +71,8 @@ const fetchProductDetails = async (productId: string) => {
       reviews.value = []
     }
 
-    // Fetch product variants
-    try {
-      const variantsResponse = await api.get(`/products/${productId}/productVariants`)
-      variants.value = variantsResponse.data._embedded
-        ? variantsResponse.data._embedded.productVariants
-        : variantsResponse.data
-    } catch {
-      console.log('No variants found for this product')
-      variants.value = []
-    }
+    // Fetch product variants using the store
+    await productVariantsStore.fetchVariantsByProduct(parseInt(productId))
 
     // Fetch category
     try {
@@ -263,7 +249,7 @@ const getRatingStars = (rating: number) => {
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 ]"
               >
-                Variants ({{ variants.length }})
+                Variants ({{ productVariantsStore.variantCount }})
               </button>
               <button
                 @click="activeTab = 'reviews'"
@@ -308,28 +294,121 @@ const getRatingStars = (rating: number) => {
                 <h4 class="text-md font-medium text-gray-900 dark:text-white mb-2">Description</h4>
                 <p class="text-gray-600 dark:text-gray-300">{{ product.description }}</p>
               </div>
+
+              <!-- Variants Summary -->
+              <div v-if="productVariantsStore.hasVariants">
+                <h4 class="text-md font-medium text-gray-900 dark:text-white mb-4">Variants Summary</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-lg">
+                    <div class="flex items-center space-x-2">
+                      <v-icon name="hi-cube" scale="1.2" class="text-emerald-600 dark:text-emerald-400" />
+                      <div>
+                        <p class="text-sm font-medium text-emerald-600 dark:text-emerald-400">Total Variants</p>
+                        <p class="text-lg font-bold text-emerald-700 dark:text-emerald-300">{{ productVariantsStore.variantCount }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                    <div class="flex items-center space-x-2">
+                      <v-icon name="hi-collection" scale="1.2" class="text-blue-600 dark:text-blue-400" />
+                      <div>
+                        <p class="text-sm font-medium text-blue-600 dark:text-blue-400">Total Stock</p>
+                        <p class="text-lg font-bold text-blue-700 dark:text-blue-300">{{ productVariantsStore.totalVariantStock }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+                    <div class="flex items-center space-x-2">
+                      <v-icon name="hi-exclamation-circle" scale="1.2" class="text-yellow-600 dark:text-yellow-400" />
+                      <div>
+                        <p class="text-sm font-medium text-yellow-600 dark:text-yellow-400">Low Stock</p>
+                        <p class="text-lg font-bold text-yellow-700 dark:text-yellow-300">{{ productVariantsStore.lowStockVariants.length }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Colors and Sizes -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                  <div>
+                    <h5 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Available Colors</h5>
+                    <div class="flex flex-wrap gap-2">
+                      <div
+                        v-for="color in productVariantsStore.uniqueColors"
+                        :key="color"
+                        class="flex items-center space-x-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full"
+                      >
+                        <div :class="`w-3 h-3 rounded-full border border-gray-300 ${productVariantsStore.getColorClass(color)}`"></div>
+                        <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ color }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h5 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Available Sizes</h5>
+                    <div class="flex flex-wrap gap-2">
+                      <span
+                        v-for="size in productVariantsStore.uniqueSizes"
+                        :key="size"
+                        class="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs font-medium text-gray-700 dark:text-gray-300"
+                      >
+                        {{ size }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Variants Tab -->
             <div v-else-if="activeTab === 'variants'">
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Product Variants</h3>
-              <div v-if="variants.length === 0" class="text-center py-8">
+              <div v-if="!productVariantsStore.hasVariants" class="text-center py-8">
                 <p class="text-gray-500 dark:text-gray-400">No variants available for this product</p>
               </div>
               <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div
-                  v-for="variant in variants"
+                  v-for="variant in productVariantsStore.variants"
                   :key="variant.id"
-                  class="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
+                  class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition-shadow"
                 >
-                  <h4 class="font-semibold text-gray-900 dark:text-white mb-2">{{ variant.name }}</h4>
-                  <div class="flex justify-between items-center">
-                    <span class="text-emerald-600 dark:text-emerald-400 font-bold">
-                      {{ formatPrice(variant.price) }}
+                  <!-- Variant Header -->
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                      <v-icon name="hi-cube" scale="1.1" class="text-emerald-600 dark:text-emerald-400" />
+                      <span class="font-semibold text-gray-900 dark:text-white">{{ variant.sku }}</span>
+                    </div>
+                    <span :class="`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${productVariantsStore.getStockStatus(variant.stock).bgColor} ${productVariantsStore.getStockStatus(variant.stock).color}`">
+                      {{ productVariantsStore.getStockStatus(variant.stock).text }}
                     </span>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">
-                      {{ variant.stock }} in stock
-                    </span>
+                  </div>
+
+                  <!-- Size & Color -->
+                  <div class="space-y-3 mb-4">
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Size:</span>
+                      <div class="flex items-center space-x-1">
+                        <v-icon :name="productVariantsStore.getSizeIcon(variant.size)" scale="0.9" class="text-gray-500" />
+                        <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ variant.size }}</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Color:</span>
+                      <div class="flex items-center space-x-2">
+                        <div :class="`w-4 h-4 rounded-full border border-gray-300 ${productVariantsStore.getColorClass(variant.color)}`"></div>
+                        <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ variant.color }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Stock -->
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600 dark:text-gray-300">Stock available:</span>
+                    <span class="font-bold text-gray-900 dark:text-white">{{ variant.stock }} units</span>
+                  </div>
+
+                  <!-- Variant ID -->
+                  <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">ID: {{ variant.id }}</span>
                   </div>
                 </div>
               </div>
