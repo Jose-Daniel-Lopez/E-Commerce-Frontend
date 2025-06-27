@@ -7,7 +7,8 @@ interface ProductReview {
   id: number
   rating: number
   comment: string
-  reviewDate: string
+  reviewDate?: string
+  createdAt?: string
   product?: {
     id: number
     name: string
@@ -205,7 +206,7 @@ const getRatingBadgeColor = (rating: number) => {
               </div>
               <div class="flex items-center space-x-1 text-sm text-gray-500 dark:text-gray-400">
                 <v-icon name="hi-calendar" scale="0.8" />
-                <span>{{ formatDate(review.reviewDate) }}</span>
+                <span>{{ formatDate(review.reviewDate || review.createdAt) }}</span>
               </div>
             </div>
 
