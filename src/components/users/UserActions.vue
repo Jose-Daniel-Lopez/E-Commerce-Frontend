@@ -31,6 +31,10 @@ const router = useRouter()
 const goToUserReviews = (userId: number) => {
   router.push({ name: 'userReviews', params: { userId } })
 }
+
+const goToUserAddresses = (userId: number) => {
+  router.push({ name: 'userAddresses', params: { userId } })
+}
 </script>
 
 <template>
@@ -53,6 +57,7 @@ const goToUserReviews = (userId: number) => {
 
       <button
         v-if="user._links?.addresses"
+        @click="goToUserAddresses(user.id)"
         class="flex items-center justify-center space-x-1 py-2 px-3 rounded-lg border border-green-300 dark:border-green-600 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors text-xs"
       >
         <v-icon name="hi-location-marker" scale="0.8" />

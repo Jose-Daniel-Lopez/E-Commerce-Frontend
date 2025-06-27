@@ -45,6 +45,7 @@ interface User {
 export const useUsersStore = defineStore('users', () => {
   // State
   const users = ref<User[]>([])
+  const selectedUser = ref<User | null>(null)
   const loading = ref(false)
   const error = ref('')
 
@@ -87,6 +88,20 @@ export const useUsersStore = defineStore('users', () => {
     }
   }
 
+  const fetchUserById = async (userId: string | number) => {
+    loading.value = true
+    error.value = ''
+    try {
+      const response = await api.get(`/users/${userId}`)
+      selectedUser.value = response.data
+    } catch (err) {
+      console.error(`Error fetching user ${userId}:`, err)
+      error.value = `Failed to fetch user ${userId}`
+    } finally {
+      loading.value = false
+    }
+  }
+
   const addUser = (user: User) => {
     users.value.push(user)
   }
@@ -105,6 +120,10 @@ export const useUsersStore = defineStore('users', () => {
   const clearUsers = () => {
     users.value = []
     error.value = ''
+  }
+
+  const clearSelectedUser = () => {
+    selectedUser.value = null
   }
 
   const getRoleColor = (role: string) => {
@@ -146,6 +165,7 @@ export const useUsersStore = defineStore('users', () => {
   return {
     // State
     users,
+    selectedUser,
     loading,
     error,
     // Getters
@@ -159,10 +179,12 @@ export const useUsersStore = defineStore('users', () => {
     usersByRole,
     // Actions
     fetchUsers,
+    fetchUserById,
     addUser,
     removeUser,
     getUserById,
     clearUsers,
+    clearSelectedUser,
     // Utility functions
     getRoleColor,
     getStatusColor,
