@@ -28,12 +28,19 @@ defineProps<Props>()
 
 const router = useRouter()
 
+// User reviews
 const goToUserReviews = (userId: number) => {
   router.push({ name: 'userReviews', params: { userId } })
 }
 
+// User addresses
 const goToUserAddresses = (userId: number) => {
   router.push({ name: 'userAddresses', params: { userId } })
+}
+
+// User cart
+const goToUserCart = (userId: number) => {
+  router.push({ name: 'userCart', params: { userId } })
 }
 </script>
 
@@ -66,6 +73,7 @@ const goToUserAddresses = (userId: number) => {
 
       <button
         v-if="user._links?.cart"
+        @click="goToUserCart(user.id)"
         class="flex items-center justify-center space-x-1 py-2 px-3 rounded-lg border border-purple-300 dark:border-purple-600 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors text-xs"
       >
         <v-icon name="hi-shopping-bag" scale="0.8" />

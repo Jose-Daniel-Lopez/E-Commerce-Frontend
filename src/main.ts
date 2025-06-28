@@ -46,7 +46,9 @@ import {
   HiMail,
   HiUserCircle,
   HiKey,
-  HiHeart
+  HiHeart,
+  HiCreditCard,
+  HiTruck
 } from 'oh-vue-icons/icons'
 
 import App from './App.vue'
