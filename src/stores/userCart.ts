@@ -137,6 +137,7 @@ export const useUserCartStore = defineStore('userCart', () => {
     }
   }
 
+  // Update the quantity of a specific cart item
   async function updateItemQuantity(cartItemId: number, newQuantity: number) {
     try {
       loading.value = true
@@ -157,6 +158,7 @@ export const useUserCartStore = defineStore('userCart', () => {
     }
   }
 
+  // Remove an item from the cart by its ID
   async function removeItem(cartItemId: number) {
     try {
       loading.value = true
