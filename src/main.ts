@@ -48,7 +48,28 @@ import {
   HiKey,
   HiHeart,
   HiCreditCard,
-  HiTruck
+  HiTruck,
+  // Category icons
+  HiDeviceMobile,
+  FaTshirt,
+  HiBookOpen,
+  MdSportssoccer,
+  HiSparkles,
+  MdSmarttoy,
+  HiCake,
+  HiMusicNote,
+  GiJoystick,
+  GiAirplane,
+  MdChair,
+  GiDiamondRing,
+  GiCat,
+  FaBaby,
+  GiCookingPot,
+  BiLaptop,
+  FcElectronics,
+  MdSettingsinputcomponent,
+  CoSettings,
+  BiHeadphones,
 } from 'oh-vue-icons/icons'
 
 import App from './App.vue'
@@ -98,7 +119,27 @@ addIcons(
   HiMail,
   HiUserCircle,
   HiKey,
-  HiHeart
+  HiHeart,
+  HiTruck,
+  // Category icons
+  HiDeviceMobile,
+  FaTshirt,
+  HiBookOpen,
+  MdSmarttoy,
+  HiSparkles,
+  MdSmarttoy,
+  HiCake,
+  HiMusicNote,
+  GiJoystick,
+  GiAirplane,
+  MdChair,
+  GiDiamondRing,
+  GiCat,
+  FaBaby,
+  GiCookingPot,
+  BiLaptop,
+  CoSettings  ,
+  BiHeadphones
 )
 
 const app = createApp(App)
