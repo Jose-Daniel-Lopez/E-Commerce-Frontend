@@ -33,6 +33,11 @@ const goToUserReviews = (userId: number) => {
   router.push({ name: 'userReviews', params: { userId } })
 }
 
+// User orders
+const goToUserOrders = (userId: number) => {
+  router.push({ name: 'userOrders', params: { userId } })
+}
+
 // User addresses
 const goToUserAddresses = (userId: number) => {
   router.push({ name: 'userAddresses', params: { userId } })
@@ -56,9 +61,10 @@ const goToUserCart = (userId: number) => {
     <div class="grid grid-cols-2 gap-2">
       <button
         v-if="user._links?.orders"
+        @click="goToUserOrders(user.id)"
         class="flex items-center justify-center space-x-1 py-2 px-3 rounded-lg border border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors text-xs"
       >
-        <v-icon name="hi-shopping-cart" scale="0.8" />
+        <v-icon name="hi-clipboard-list" scale="0.8" />
         <span>Orders</span>
       </button>
 
