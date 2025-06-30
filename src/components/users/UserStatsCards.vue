@@ -1,7 +1,25 @@
 <script setup lang="ts">
 import { useUsersStore } from '@/stores/users'
+import { computed } from 'vue'
 
 const usersStore = useUsersStore()
+
+// Usar estadísticas globales si están disponibles, sino usar la información de paginación
+const totalUsers = computed(() => 
+  usersStore.stats.totalUsers || usersStore.pagination.totalElements
+)
+
+const adminUsersCount = computed(() => 
+  usersStore.stats.adminUsers || usersStore.adminUsers.length
+)
+
+const enabledUsersCount = computed(() => 
+  usersStore.stats.enabledUsers || usersStore.enabledUsers.length
+)
+
+const disabledUsersCount = computed(() => 
+  usersStore.stats.disabledUsers || usersStore.disabledUsers.length
+)
 </script>
 
 <template>
@@ -14,7 +32,7 @@ const usersStore = useUsersStore()
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Total Users</p>
-          <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ usersStore.userCount }}</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ totalUsers }}</p>
         </div>
         <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
           <v-icon name="hi-users" scale="1.5" class="text-blue-600 dark:text-blue-400" />
@@ -30,7 +48,7 @@ const usersStore = useUsersStore()
         <div>
           <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Administrators</p>
           <p class="text-2xl font-bold text-red-600 dark:text-red-400">
-            {{ usersStore.adminUsers.length }}
+            {{ adminUsersCount }}
           </p>
         </div>
         <div class="bg-red-100 dark:bg-red-900/30 p-3 rounded-full">
@@ -47,7 +65,7 @@ const usersStore = useUsersStore()
         <div>
           <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Active Users</p>
           <p class="text-2xl font-bold text-green-600 dark:text-green-400">
-            {{ usersStore.enabledUsers.length }}
+            {{ enabledUsersCount }}
           </p>
         </div>
         <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
@@ -64,7 +82,7 @@ const usersStore = useUsersStore()
         <div>
           <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Disabled Users</p>
           <p class="text-2xl font-bold text-red-600 dark:text-red-400">
-            {{ usersStore.disabledUsers.length }}
+            {{ disabledUsersCount }}
           </p>
         </div>
         <div class="bg-red-100 dark:bg-red-900/30 p-3 rounded-full">

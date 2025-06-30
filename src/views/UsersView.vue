@@ -3,11 +3,16 @@ import { onMounted } from 'vue'
 import { useUsersStore } from '@/stores/users'
 import UserStatsCards from '@/components/users/UserStatsCards.vue'
 import UserCard from '@/components/users/UserCard.vue'
+import UserPagination from '@/components/users/UserPagination.vue'
 
 const usersStore = useUsersStore()
 
 onMounted(async () => {
-  await usersStore.fetchUsers()
+  // Cargar tanto los usuarios como las estadísticas
+  await Promise.all([
+    usersStore.fetchUsers(),
+    usersStore.fetchUserStats()
+  ])
 })
 </script>
 
@@ -57,8 +62,16 @@ onMounted(async () => {
       </div>
 
       <!-- Users Grid -->
-      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <UserCard v-for="user in usersStore.users" :key="user.id" :user="user" />
+      <div v-else class="space-y-6">
+        <!-- Pagination - Top -->
+        <UserPagination />
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <UserCard v-for="user in usersStore.users" :key="user.id" :user="user" />
+        </div>
+        
+        <!-- Pagination - Bottom -->
+        <UserPagination />
       </div>
 
       <!-- Add New User Button -->
@@ -77,7 +90,8 @@ onMounted(async () => {
           class="inline-flex items-center px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-full"
         >
           <span class="text-emerald-600 dark:text-emerald-400 font-semibold">
-            Total: {{ usersStore.userCount }} user{{ usersStore.userCount !== 1 ? 's' : '' }}
+            Showing {{ usersStore.users.length }} of {{ usersStore.pagination.totalElements }} user{{ usersStore.pagination.totalElements !== 1 ? 's' : '' }}
+            (Page {{ usersStore.pagination.page + 1 }} of {{ usersStore.pagination.totalPages }})
           </span>
         </div>
       </div>
