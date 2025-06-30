@@ -37,23 +37,32 @@ export const useCategoriesStore = defineStore('categories', () => {
   })
 
   // Actions
-  const fetchCategories = async () => {
-    loading.value = true
-    error.value = ''
+const fetchCategories = async () => {
+  loading.value = true
+  error.value = ''
 
-    try {
-      const response = await api.get('/categories')
-      // Si usas Spring Data REST, las categorías están en response.data._embedded.categories
-      categories.value = response.data._embedded
-        ? response.data._embedded.categories
-        : response.data
-    } catch (err) {
-      console.error('Error fetching categories:', err)
-      error.value = 'Error loading categories'
-    } finally {
-      loading.value = false
+  try {
+    const response = await api.get('/categories')
+    // Si usas Spring Data REST, las categorías están en response.data._embedded.categories
+    categories.value = response.data._embedded
+      ? response.data._embedded.categories
+      : response.data
+
+    // Cargar productos para cada categoría
+    for (const category of categories.value) {
+      try {
+        await fetchCategoryWithProducts(category.id)
+      } catch (err) {
+        console.warn(`Could not load products for category ${category.id}:`, err)
+      }
     }
+  } catch (err) {
+    console.error('Error fetching categories:', err)
+    error.value = 'Error loading categories'
+  } finally {
+    loading.value = false
   }
+}
 
   const fetchCategoryWithProducts = async (categoryId: number) => {
     try {
