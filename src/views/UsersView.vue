@@ -65,11 +65,11 @@ onMounted(async () => {
       <div v-else class="space-y-6">
         <!-- Pagination - Top -->
         <UserPagination />
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <UserCard v-for="user in usersStore.users" :key="user.id" :user="user" />
         </div>
-        
+
         <!-- Pagination - Bottom -->
         <UserPagination />
       </div>

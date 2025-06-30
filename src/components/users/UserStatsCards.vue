@@ -5,19 +5,19 @@ import { computed } from 'vue'
 const usersStore = useUsersStore()
 
 // Usar estadísticas globales si están disponibles, sino usar la información de paginación
-const totalUsers = computed(() => 
+const totalUsers = computed(() =>
   usersStore.stats.totalUsers || usersStore.pagination.totalElements
 )
 
-const adminUsersCount = computed(() => 
+const adminUsersCount = computed(() =>
   usersStore.stats.adminUsers || usersStore.adminUsers.length
 )
 
-const enabledUsersCount = computed(() => 
+const enabledUsersCount = computed(() =>
   usersStore.stats.enabledUsers || usersStore.enabledUsers.length
 )
 
-const disabledUsersCount = computed(() => 
+const disabledUsersCount = computed(() =>
   usersStore.stats.disabledUsers || usersStore.disabledUsers.length
 )
 </script>

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useUsersStore } from '@/stores/users'
+import { useProductsStore } from '@/stores/products'
 import { computed } from 'vue'
 
-const usersStore = useUsersStore()
+const productsStore = useProductsStore()
 
-const pagination = computed(() => usersStore.pagination)
+const pagination = computed(() => productsStore.pagination)
 
 const pageNumbers = computed(() => {
   const total = pagination.value.totalPages
@@ -51,7 +51,7 @@ const endItem = computed(() =>
         <span class="text-sm text-gray-600 dark:text-gray-300">Items per page:</span>
         <select
           :value="pagination.size"
-          @change="usersStore.changePageSize(Number(($event.target as HTMLSelectElement).value))"
+          @change="productsStore.changePageSize(Number(($event.target as HTMLSelectElement).value))"
           class="border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
         >
           <option v-for="size in pageSizeOptions" :key="size" :value="size">
@@ -62,15 +62,15 @@ const endItem = computed(() =>
 
       <!-- Pagination info text -->
       <div class="text-sm text-gray-600 dark:text-gray-300">
-        Showing {{ startItem }} to {{ endItem }} of {{ pagination.totalElements }} users
+        Showing {{ startItem }} to {{ endItem }} of {{ pagination.totalElements }} products
       </div>
 
       <!-- Pagination controls -->
       <div class="flex items-center space-x-1">
         <!-- First page -->
         <button
-          @click="usersStore.goToFirstPage()"
-          :disabled="pagination.first || usersStore.loading"
+          @click="productsStore.goToFirstPage()"
+          :disabled="pagination.first || productsStore.loading"
           class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
           <v-icon name="hi-chevron-double-left" scale="0.9" />
@@ -78,8 +78,8 @@ const endItem = computed(() =>
 
         <!-- Previous page -->
         <button
-          @click="usersStore.goToPreviousPage()"
-          :disabled="pagination.first || usersStore.loading"
+          @click="productsStore.goToPreviousPage()"
+          :disabled="pagination.first || productsStore.loading"
           class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
           <v-icon name="hi-chevron-left" scale="0.9" />
@@ -89,12 +89,12 @@ const endItem = computed(() =>
         <button
           v-for="pageNum in pageNumbers"
           :key="pageNum"
-          @click="usersStore.goToPage(pageNum)"
-          :disabled="usersStore.loading"
+          @click="productsStore.goToPage(pageNum)"
+          :disabled="productsStore.loading"
           :class="[
             'px-3 py-1 text-sm border rounded-md transition-colors',
             pageNum === pagination.page
-              ? 'bg-emerald-600 border-emerald-600 text-white'
+              ? 'bg-blue-600 border-blue-600 text-white'
               : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
           ]"
         >
@@ -103,8 +103,8 @@ const endItem = computed(() =>
 
         <!-- Next page -->
         <button
-          @click="usersStore.goToNextPage()"
-          :disabled="pagination.last || usersStore.loading"
+          @click="productsStore.goToNextPage()"
+          :disabled="pagination.last || productsStore.loading"
           class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
           <v-icon name="hi-chevron-right" scale="0.9" />
@@ -112,8 +112,8 @@ const endItem = computed(() =>
 
         <!-- Last page -->
         <button
-          @click="usersStore.goToLastPage()"
-          :disabled="pagination.last || usersStore.loading"
+          @click="productsStore.goToLastPage()"
+          :disabled="pagination.last || productsStore.loading"
           class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
           <v-icon name="hi-chevron-double-right" scale="0.9" />
@@ -122,9 +122,9 @@ const endItem = computed(() =>
     </div>
 
     <!-- Loading indicator for pagination -->
-    <div v-if="usersStore.loading" class="mt-2 flex justify-center">
+    <div v-if="productsStore.loading" class="mt-2 flex justify-center">
       <div class="flex items-center space-x-2 text-sm text-gray-500">
-        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-500"></div>
+        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
         <span>Loading...</span>
       </div>
     </div>

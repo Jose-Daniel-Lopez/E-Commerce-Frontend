@@ -114,11 +114,11 @@ export const useUsersStore = defineStore('users', () => {
           size
         }
       })
-      
+
       // Si usas Spring Data REST, los usuarios están en response.data._embedded.users
       const data = response.data
       users.value = data._embedded ? data._embedded.users : data.content
-      
+
       // Actualizar información de paginación
       pagination.value = {
         page: data.page?.number || data.number || page,

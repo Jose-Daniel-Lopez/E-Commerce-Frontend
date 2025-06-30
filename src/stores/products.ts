@@ -3,12 +3,44 @@ import { ref, computed } from 'vue'
 import type { Product } from './categories'
 import api from '@/lib/axios'
 
+interface PaginationInfo {
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+  first: boolean
+  last: boolean
+  numberOfElements: number
+}
+
+interface ProductStats {
+  totalProducts: number
+  inStockProducts: number
+  outOfStockProducts: number
+  averagePrice: number
+}
+
 export const useProductsStore = defineStore('products', () => {
   // State
   const products = ref<Product[]>([])
   const loading = ref(false)
   const error = ref('')
   const currentCategoryId = ref<number | null>(null)
+  const stats = ref<ProductStats>({
+    totalProducts: 0,
+    inStockProducts: 0,
+    outOfStockProducts: 0,
+    averagePrice: 0
+  })
+  const pagination = ref<PaginationInfo>({
+    page: 0,
+    size: 20,
+    totalElements: 0,
+    totalPages: 0,
+    first: true,
+    last: true,
+    numberOfElements: 0
+  })
 
   // Getters
   const productCount = computed(() => products.value.length)
@@ -29,14 +61,32 @@ export const useProductsStore = defineStore('products', () => {
   })
 
   // Actions
-  const fetchProducts = async () => {
+  const fetchProducts = async (page = 0, size = 20) => {
     loading.value = true
     error.value = ''
 
     try {
-      const response = await api.get('/products')
-      products.value = response.data._embedded ? response.data._embedded.products : response.data
+      const response = await api.get('/products', {
+        params: {
+          page,
+          size
+        }
+      })
+
+      const data = response.data
+      products.value = data._embedded ? data._embedded.products : data.content
       currentCategoryId.value = null
+
+      // Actualizar información de paginación
+      pagination.value = {
+        page: data.page?.number || data.number || page,
+        size: data.page?.size || data.size || size,
+        totalElements: data.page?.totalElements || data.totalElements || 0,
+        totalPages: data.page?.totalPages || data.totalPages || 0,
+        first: data.page?.first || data.first || true,
+        last: data.page?.last || data.last || true,
+        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0
+      }
     } catch (err) {
       console.error('Error fetching products:', err)
       error.value = 'Error al cargar los productos'
@@ -45,7 +95,7 @@ export const useProductsStore = defineStore('products', () => {
     }
   }
 
-  const fetchProductsByCategory = async (categoryId: number) => {
+  const fetchProductsByCategory = async (categoryId: number, page = 0, size = 20) => {
     loading.value = true
     error.value = ''
     currentCategoryId.value = categoryId
@@ -53,8 +103,27 @@ export const useProductsStore = defineStore('products', () => {
     try {
       const response = await api.get(
         `/categories/${categoryId}/products`,
+        {
+          params: {
+            page,
+            size
+          }
+        }
       )
-      products.value = response.data._embedded ? response.data._embedded.products : response.data
+
+      const data = response.data
+      products.value = data._embedded ? data._embedded.products : data.content
+
+      // Actualizar información de paginación
+      pagination.value = {
+        page: data.page?.number || data.number || page,
+        size: data.page?.size || data.size || size,
+        totalElements: data.page?.totalElements || data.totalElements || 0,
+        totalPages: data.page?.totalPages || data.totalPages || 0,
+        first: data.page?.first || data.first || true,
+        last: data.page?.last || data.last || true,
+        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0
+      }
     } catch (err) {
       console.error(`Error fetching products for category ${categoryId}:`, err)
       error.value = 'Error al cargar los productos de la categoría'
@@ -122,6 +191,81 @@ export const useProductsStore = defineStore('products', () => {
     currentCategoryId.value = null
   }
 
+  // Pagination methods
+  const goToPage = async (page: number) => {
+    if (page >= 0 && page < pagination.value.totalPages) {
+      if (currentCategoryId.value) {
+        await fetchProductsByCategory(currentCategoryId.value, page, pagination.value.size)
+      } else {
+        await fetchProducts(page, pagination.value.size)
+      }
+    }
+  }
+
+  const goToNextPage = async () => {
+    if (!pagination.value.last) {
+      if (currentCategoryId.value) {
+        await fetchProductsByCategory(currentCategoryId.value, pagination.value.page + 1, pagination.value.size)
+      } else {
+        await fetchProducts(pagination.value.page + 1, pagination.value.size)
+      }
+    }
+  }
+
+  const goToPreviousPage = async () => {
+    if (!pagination.value.first) {
+      if (currentCategoryId.value) {
+        await fetchProductsByCategory(currentCategoryId.value, pagination.value.page - 1, pagination.value.size)
+      } else {
+        await fetchProducts(pagination.value.page - 1, pagination.value.size)
+      }
+    }
+  }
+
+  const goToFirstPage = async () => {
+    if (!pagination.value.first) {
+      if (currentCategoryId.value) {
+        await fetchProductsByCategory(currentCategoryId.value, 0, pagination.value.size)
+      } else {
+        await fetchProducts(0, pagination.value.size)
+      }
+    }
+  }
+
+  const goToLastPage = async () => {
+    if (!pagination.value.last) {
+      if (currentCategoryId.value) {
+        await fetchProductsByCategory(currentCategoryId.value, pagination.value.totalPages - 1, pagination.value.size)
+      } else {
+        await fetchProducts(pagination.value.totalPages - 1, pagination.value.size)
+      }
+    }
+  }
+
+  const changePageSize = async (newSize: number) => {
+    if (currentCategoryId.value) {
+      await fetchProductsByCategory(currentCategoryId.value, 0, newSize)
+    } else {
+      await fetchProducts(0, newSize)
+    }
+  }
+
+  const fetchProductStats = async () => {
+    try {
+      const response = await api.get('/products/stats')
+      stats.value = response.data
+    } catch (err) {
+      console.error('Error fetching product stats:', err)
+      // Fallback a estadísticas basadas en la información actual de paginación
+      stats.value = {
+        totalProducts: pagination.value.totalElements,
+        inStockProducts: 0,
+        outOfStockProducts: 0,
+        averagePrice: 0
+      }
+    }
+  }
+
   const getStockStatus = (product: Product) => {
     if (product.totalStock === 0) return { status: 'out-of-stock', text: 'Sin stock', color: 'red' }
     if (product.totalStock <= 5) return { status: 'low-stock', text: 'Stock bajo', color: 'yellow' }
@@ -141,6 +285,8 @@ export const useProductsStore = defineStore('products', () => {
     loading,
     error,
     currentCategoryId,
+    pagination,
+    stats,
     // Getters
     productCount,
     hasProducts,
@@ -151,6 +297,7 @@ export const useProductsStore = defineStore('products', () => {
     fetchProducts,
     fetchProductsByCategory,
     fetchProductById,
+    fetchProductStats,
     addProduct,
     removeProduct,
     updateProduct,
@@ -159,6 +306,14 @@ export const useProductsStore = defineStore('products', () => {
     filterProductsByPrice,
     filterProductsByStock,
     clearProducts,
+    // Pagination actions
+    goToPage,
+    goToNextPage,
+    goToPreviousPage,
+    goToFirstPage,
+    goToLastPage,
+    changePageSize,
+    // Utility functions
     getStockStatus,
     formatPrice,
   }
