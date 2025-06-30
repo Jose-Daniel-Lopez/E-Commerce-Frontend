@@ -43,12 +43,13 @@ const fetchCategories = async () => {
 
   try {
     const response = await api.get('/categories')
-    // Si usas Spring Data REST, las categorías están en response.data._embedded.categories
+
+    // Check if response contains embedded categories
     categories.value = response.data._embedded
       ? response.data._embedded.categories
       : response.data
 
-    // Cargar productos para cada categoría
+    // Load products for each category
     for (const category of categories.value) {
       try {
         await fetchCategoryWithProducts(category.id)
