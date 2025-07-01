@@ -1,4 +1,9 @@
+// Importar estilos PRIMERO (orden importante)
 import './assets/base.css'
+// Importar estilos de Swiper
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -138,7 +143,7 @@ addIcons(
   FaBaby,
   GiCookingPot,
   BiLaptop,
-  CoSettings  ,
+  CoSettings,
   BiHeadphones
 )
 

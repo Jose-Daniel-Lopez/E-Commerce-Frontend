@@ -2,59 +2,503 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Basic reset & global styles */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  font-weight: normal;
-}
+/* Importar fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap');
 
-body {
-  min-height: 100vh;
-  line-height: 1.6;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
-  font-size: 15px;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
+/* Configuración de tema para Tailwind */
 @theme {
-  --color-primary: #4f46e5;
-  --color-secondary: #6366f1;
-  --color-accent: #a78bfa;
-  --color-background: #f3f4f6;
-  --color-text: #111827;
-  --color-border: #d1d5db;
+  /* Colores principales del e-commerce */
+  --color-primary: #000000;
+  --color-secondary: #333333;
+  --color-accent: #666666;
+  --color-background: #ffffff;
+  --color-text: #000000;
+  --color-border: #e5e7eb;
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
+
+  /* Colores específicos para e-commerce */
+  --color-cart: #ff6b6b;
+  --color-favorite: #ff6b6b;
+  --color-discount: #ff4757;
+  --color-price: #2ed573;
+
+  /* Variables de fuentes */
+  --font-figtree: 'Figtree', sans-serif;
+  --font-srProDisplay: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 @layer base {
+  /* Variables CSS para compatibilidad */
+  :root {
+    --background: var(--color-background);
+    --foreground: var(--color-text);
+    --font-figtree: 'Figtree', sans-serif;
+    --font-srProDisplay: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
   @variant dark {
-    --color-primary: #6366f1;
-    --color-secondary: #818cf8;
-    --color-accent: #c4b5fd;
+    --color-primary: #ffffff;
+    --color-secondary: #f3f4f6;
+    --color-accent: #d1d5db;
     --color-background: #111827;
     --color-text: #f9fafb;
     --color-border: #374151;
     --color-success: #34d399;
     --color-warning: #fbbf24;
     --color-error: #f87171;
+
+    /* Colores específicos para e-commerce en modo oscuro */
+    --color-cart: #ff7675;
+    --color-favorite: #ff7675;
+    --color-discount: #fd79a8;
+    --color-price: #00b894;
+  }
+
+  /* Reset y configuración base */
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    color: var(--color-text);
+    background: var(--color-background);
+    font-family: var(--font-srProDisplay);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Contenedor principal para evitar estiramientos */
+  #app {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* Estilos para imágenes responsivas */
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Reset para enlaces */
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Mejoras de accesibilidad */
+  button:focus,
+  a:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .active {
+    color: #000000;
+    background-color: #dbeafe;
+  }
+
+  @media (min-width: 1024px) {
+    .active {
+      background-color: transparent;
+    }
+  }
+
+  .activeTab {
+    border-bottom-width: 4px;
+    border-bottom-color: #000000;
+  }
+
+  /* Fuentes personalizadas */
+  .font-figtree {
+    font-family: var(--font-figtree);
+  }
+
+  .font-srProDisplay {
+    font-family: var(--font-srProDisplay);
+  }
+
+  /* Wrapper mejorado para controlar el ancho */
+  .wrapper-container {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .wrapper-container {
+      padding: 0 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .wrapper-container {
+      max-width: 1024px;
+      padding: 0;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .wrapper-container {
+      max-width: 1120px;
+    }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Utilidades adicionales */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Clases utilitarias para evitar estiramientos */
+  .container-fluid {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .grid-container {
+    display: grid;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  /* Responsive containers */
+  @media (max-width: 640px) {
+    .grid-container {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .grid-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .grid-container {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}
+
+/* Contenedores de sección para evitar estiramientos */
+section {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Estilos para Swiper - Browse Category */
+.browse-category {
+  width: 100%;
+  max-width: 100%;
+}
+
+.browse-category .swiper-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.browse-category .swiper-button-prev,
+.browse-category .swiper-button-next {
+  color: black !important;
+  top: -40px !important;
+  width: 40px !important;
+  height: 40px !important;
+  margin-top: 0 !important;
+  border-radius: 15% !important;
+  background: transparent !important;
+  font-size: 20px !important;
+}
+
+.browse-category .swiper-button-prev {
+  right: 40px !important;
+  left: auto !important;
+}
+
+.browse-category .swiper-button-next {
+  right: -1px !important;
+}
+
+.browse-category .swiper-button-prev:hover,
+.browse-category .swiper-button-next:hover {
+  background: ghostwhite !important;
+}
+
+.browse-category .swiper-button-prev::after,
+.browse-category .swiper-button-next::after {
+  font-size: 16px !important;
+}
+
+.browse-category .swiper-wrapper {
+  margin-top: 63px !important;
+}
+
+.browse-category .swiper-slide {
+  padding-left: 0px !important;
+  width: auto !important;
+  flex-shrink: 0 !important;
+}
+
+@media (min-width: 375px) {
+  .browse-category .swiper-slide {
+    padding-left: 5px !important;
+  }
+}
+
+@media (min-width: 412px) {
+  .browse-category .swiper-slide {
+    padding-left: 12px !important;
+  }
+}
+
+/* Estilos para Swiper - Products */
+.products {
+  width: 100%;
+  max-width: 100%;
+}
+
+.products .swiper-container {
+  width: 100%;
+  overflow: hidden;
+}
+
+.products .swiper-button-prev,
+.products .swiper-button-next {
+  color: black !important;
+  top: -48px !important;
+  width: 40px !important;
+  height: 40px !important;
+  margin-top: 0 !important;
+  border-radius: 15% !important;
+  background: transparent !important;
+  font-size: 20px !important;
+}
+
+.products .swiper-button-prev {
+  right: 40px !important;
+  left: auto !important;
+}
+
+.products .swiper-button-next {
+  right: -1px !important;
+}
+
+.products .swiper-button-prev:hover,
+.products .swiper-button-next:hover {
+  background: ghostwhite !important;
+}
+
+.products .swiper-button-prev::after,
+.products .swiper-button-next::after {
+  font-size: 16px !important;
+}
+
+.products .swiper-slide {
+  padding-left: 0px !important;
+  width: auto !important;
+  flex-shrink: 0 !important;
+}
+
+@media (min-width: 640px) {
+  .products .swiper-slide {
+    padding-left: 6px !important;
+  }
+}
+
+/* Estilos para Swiper - Product Tags */
+.productTag .swiper-button-prev,
+.productTag .swiper-button-next {
+  display: none !important;
+}
+
+/* Estilos para Swiper - Banner One */
+.bannerOne {
+  width: 100%;
+  max-width: 100%;
+}
+
+.bannerOne .swiper-pagination {
+  bottom: 20px !important;
+}
+
+.bannerOne .swiper-button-prev,
+.bannerOne .swiper-button-next {
+  display: none !important;
+}
+
+.bannerOne .swiper-slide {
+  width: auto !important;
+  flex-shrink: 0 !important;
+}
+
+/* Estilos para Swiper - Discount Products */
+.discountProduct {
+  width: 100%;
+  max-width: 100%;
+}
+
+.discountProduct .swiper-button-prev,
+.discountProduct .swiper-button-next {
+  color: black !important;
+  top: -48px !important;
+  width: 40px !important;
+  height: 40px !important;
+  margin-top: 0 !important;
+  border-radius: 15% !important;
+  background: transparent !important;
+  font-size: 20px !important;
+}
+
+.discountProduct .swiper-button-prev {
+  right: 40px !important;
+  left: auto !important;
+}
+
+.discountProduct .swiper-button-next {
+  right: -1px !important;
+}
+
+.discountProduct .swiper-button-prev:hover,
+.discountProduct .swiper-button-next:hover {
+  background: ghostwhite !important;
+}
+
+.discountProduct .swiper-button-prev::after,
+.discountProduct .swiper-button-next::after {
+  font-size: 16px !important;
+}
+
+.discountProduct .swiper-slide {
+  padding-left: 1px !important;
+  width: auto !important;
+  flex-shrink: 0 !important;
+}
+
+@media (min-width: 640px) {
+  .discountProduct .swiper-slide {
+    padding-left: 6px !important;
+  }
+}
+
+/* Estilos para botones de navegación personalizados */
+.custom-prev-carousel,
+.custom-next-carousel,
+.custom-prev-products,
+.custom-next-products {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.custom-prev-carousel,
+.custom-prev-products {
+  left: -20px;
+}
+
+.custom-next-carousel,
+.custom-next-products {
+  right: -20px;
+}
+
+.custom-prev-carousel:hover,
+.custom-next-carousel:hover,
+.custom-prev-products:hover,
+.custom-next-products:hover {
+  background: #f3f4f6;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.custom-prev-carousel:disabled,
+.custom-next-carousel:disabled,
+.custom-prev-products:disabled,
+.custom-next-products:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Estilos para paginación de Swiper */
+.swiper-pagination-bullet {
+  background: #000 !important;
+  opacity: 0.3 !important;
+}
+
+.swiper-pagination-bullet-active {
+  opacity: 1 !important;
+  background: #333 !important;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: white;
+}
+
+::-webkit-scrollbar-thumb {
+  background: grey;
+  border-radius: 80px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #242323;
+}
+
+/* Estilos para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .custom-prev-carousel,
+  .custom-next-carousel,
+  .custom-prev-products,
+  .custom-next-products {
+    background: #374151;
+    color: white;
+  }
+
+  .custom-prev-carousel:hover,
+  .custom-next-carousel:hover,
+  .custom-prev-products:hover,
+  .custom-next-products:hover {
+    background: #4b5563;
   }
 }
