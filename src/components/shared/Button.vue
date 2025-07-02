@@ -54,11 +54,11 @@ export default {
     },
     width: {
       type: String,
-      default: ''
+      default: 'auto'
     },
     height: {
       type: String,
-      default: '40px'
+      default: '40px' // Cambiar a un valor más grande si es necesario
     },
     borderWidth: {
       type: String,
@@ -81,26 +81,30 @@ export default {
   computed: {
     buttonStyle() {
       return {
-        '--btn-height': this.height,
-        '--btn-width': this.width,
-        '--bg-color': this.bgColor,
-        '--text-color': this.textColor,
-        '--font-weight': this.fontWeight,
-        '--hover-bg-color': this.hoverBgColor !== '' ? this.hoverBgColor : this.bgColor,
-        '--hover-text-color': this.hoverTextColor !== '' ? this.hoverTextColor : this.textColor,
+        height: this.height,
+        width: this.width,
+        backgroundColor: this.isHovered && this.hoverBgColor ? this.hoverBgColor : this.bgColor,
+        color: this.isHovered && this.hoverTextColor ? this.hoverTextColor : this.textColor,
         border: `${this.borderWidth === '' ? '0px' : this.borderWidth} solid ${this.borderColor}`,
         fontSize: this.textSize,
-        backgroundColor: this.isHovered && this.hoverBgColor ? this.hoverBgColor : this.bgColor,
-        color: this.isHovered && this.hoverTextColor ? this.hoverTextColor : this.textColor
+        fontWeight: this.fontWeight
       }
     },
     buttonClass() {
-      return 'flex h-[--btn-height] w-[--btn-width] items-center justify-center gap-2 rounded-md bg-[--bg-color] px-3 font-srProDisplay font-[--font-weight] text-[--text-color] outline-none hover:bg-[--hover-bg-color] hover:text-[--hover-text-color] disabled:bg-gray-600 transition-all duration-200'
+      return [
+        'flex items-center justify-center gap-2 rounded-md px-3',
+        'font-srProDisplay outline-none transition-all duration-200',
+        this.disabled ? 'bg-gray-600 cursor-not-allowed' : '',
+        // Agregar clases de hover solo si no está disabled
+        !this.disabled ? 'hover:transition-all hover:duration-200' : ''
+      ].filter(Boolean).join(' ')
     }
   },
   methods: {
     handleClick() {
-      this.$emit('click')
+      if (!this.disabled) {
+        this.$emit('click')
+      }
     }
   }
 }
