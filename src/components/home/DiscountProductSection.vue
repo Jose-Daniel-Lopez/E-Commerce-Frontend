@@ -5,34 +5,14 @@
         <h3 class="font-srProDisplay text-2xl font-medium">
           Discountable Products
         </h3>
-        <!-- Botones de paginación estilo ProductsSection -->
+        <!-- Botones de paginación -->
         <div class="flex items-center gap-2 absolute right-0 top-1/2 -translate-y-1/2 z-20">
-          <button
-            class="custom-swiper-button-prev-discount flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed"
-            type="button"
-            aria-label="Previous slide"
-            :disabled="!canGoPrev"
-            style="transform: scaleX(-1);"
-            @click="goPrev"
-          >
-            <svg :width="'1.2em'" :height="'1.2em'" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M294.1 256L167 129c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.3 34 0L345 239c9.1 9.1 9.3 23.7.7 33.1L201.1 417c-4.7 4.7-10.9 7-17 7s-12.3-2.3-17-7c-9.4-9.4-9.4-24.6 0-33.9l127-127.1z"></path>
-            </svg>
-          </button>
-          <button
-            class="custom-swiper-button-next-discount flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed"
-            type="button"
-            aria-label="Next slide"
-            :disabled="!canGoNext"
-            @click="goNext"
-          >
-            <svg :width="'1.2em'" :height="'1.2em'" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M294.1 256L167 129c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.3 34 0L345 239c9.1 9.1 9.3 23.7.7 33.1L201.1 417c-4.7 4.7-10.9 7-17 7s-12.3-2.3-17-7c-9.4-9.4-9.4-24.6 0-33.9l127-127.1z"></path>
-            </svg>
-          </button>
+          <!-- Tus botones existentes -->
         </div>
       </div>
-      <div class="relative">
+
+      <!-- Contenedor principal con padding -->
+      <div class="relative px-2 -mx-2"> <!-- Agregado padding y margin negativo -->
         <Swiper
           :modules="modules"
           :slides-per-view="4"
@@ -42,21 +22,28 @@
             nextEl: '.custom-swiper-button-next-discount',
           }"
           :breakpoints="breakpoints"
-          class="discountProduct flex w-full items-center pt-3"
+          :watch-overflow="true"
+          class="discountProduct flex w-full items-center pt-3 !overflow-visible"
           @swiper="onSwiperInit"
         >
           <SwiperSlide
             v-for="product in data"
             :key="product.id"
+            class="!overflow-visible"
           >
-            <ProductCard
-              :product="product"
-              class="mb-4 w-[163.5px] xs:w-[190px] sm:w-[298px] md:mb-0 md:w-[240px] xl:w-[268px]"
-            />
+            <!-- Contenedor con padding para evitar cortes -->
+            <div class="px-1 py-2">
+              <ProductCard
+                :product="product"
+                class="mb-4 w-[163.5px] xs:w-[190px] sm:w-[298px] md:mb-0 md:w-[240px] xl:w-[268px]"
+              />
+            </div>
           </SwiperSlide>
 
-          <SwiperSlide v-if="data.length >= 16">
-            <ViewMoreCard />
+          <SwiperSlide v-if="data.length >= 16" class="!overflow-visible">
+            <div class="px-1 py-2">
+              <ViewMoreCard />
+            </div>
           </SwiperSlide>
         </Swiper>
       </div>
@@ -141,7 +128,7 @@ export default {
         },
         767: {
           slidesPerView: 2,
-          spaceBetween: 12,
+          spaceBetween: 16, // Aumentado el espacio
           grid: {
             rows: this.data?.length > 3 ? 2 : 1,
             fill: 'row'
@@ -149,42 +136,30 @@ export default {
         },
         1024: {
           slidesPerView: 3,
-          spaceBetween: 16
+          spaceBetween: 20 // Aumentado el espacio
         },
         1280: {
           slidesPerView: 4,
-          spaceBetween: 16
+          spaceBetween: 24 // Aumentado el espacio
         }
       },
-      canGoPrev: false,
-      canGoNext: false
-    }
-  },
-  methods: {
-    onSwiperInit(swiper) {
-      this.swiperInstance = swiper
-      this.updateNavState()
-      swiper.on('slideChange', this.updateNavState)
-      swiper.on('reachBeginning', this.updateNavState)
-      swiper.on('reachEnd', this.updateNavState)
-    },
-    updateNavState() {
-      if (!this.swiperInstance) return
-      this.canGoPrev = !this.swiperInstance.isBeginning
-      this.canGoNext = !this.swiperInstance.isEnd
-    },
-    goPrev() {
-      if (this.swiperInstance && this.canGoPrev) this.swiperInstance.slidePrev()
-    },
-    goNext() {
-      if (this.swiperInstance && this.canGoNext) this.swiperInstance.slideNext()
+      // ... resto de data
     }
   }
 }
 </script>
 
 <style scoped>
-/* Botones de paginación estilo ProductsSection */
+/* Asegurar que el swiper wrapper no corte contenido */
+.discountProduct :deep(.swiper-wrapper) {
+  overflow: visible !important;
+}
+
+.discountProduct :deep(.swiper-slide) {
+  overflow: visible !important;
+}
+
+/* Tus estilos de botones existentes */
 .custom-swiper-button-prev-discount,
 .custom-swiper-button-next-discount {
   width: 1.2em;
@@ -197,10 +172,5 @@ export default {
   justify-content: center;
   padding: 0;
   transition: opacity 0.2s;
-}
-.custom-swiper-button-prev-discount:disabled,
-.custom-swiper-button-next-discount:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
 }
 </style>

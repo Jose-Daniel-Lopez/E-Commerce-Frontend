@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative px-2">
     <Swiper
       :modules="modules"
       :slides-per-view="6"
@@ -7,17 +7,21 @@
       :navigation="true"
       :breakpoints="breakpoints"
       class="category-carousel"
+      :watch-overflow="true"
     >
-      <!-- SLIDES -->
       <SwiperSlide
         v-for="category in categories"
         :key="category.id"
+        class="!overflow-visible"
       >
-        <CategoryCard :category="category" />
+        <div class="px-1 py-2">
+          <CategoryCard :category="category" />
+        </div>
       </SwiperSlide>
     </Swiper>
   </div>
 </template>
+
 
 <script setup>
 import { Swiper, SwiperSlide } from 'swiper/vue';

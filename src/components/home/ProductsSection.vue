@@ -191,7 +191,7 @@ const products = [
   },
   {
     id: 5,
-    name: "Samsung Galaxy Watch6 Classic 47mm Black",
+    name: "Samsung Galaxy Watch6",
     featureType: "New Arrival",
     originalPrice: "369",
     discountPrice: "",

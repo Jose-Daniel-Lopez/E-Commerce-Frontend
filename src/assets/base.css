@@ -501,4 +501,33 @@ section {
   .custom-next-products:hover {
     background: #4b5563;
   }
+
+  /* Prevenir cortes en carousels */
+.category-carousel,
+.discountProduct {
+  overflow: visible !important;
+}
+
+.category-carousel .swiper-wrapper,
+.discountProduct .swiper-wrapper {
+  overflow: visible !important;
+}
+
+.category-carousel .swiper-slide,
+.discountProduct .swiper-slide {
+  overflow: visible !important;
+}
+
+/* Asegurar que los elementos posicionados absolutamente (como botones de like) se vean */
+.swiper-container {
+  overflow: visible !important;
+}
+
+/* Si el botón de like está posicionado absolutamente, asegurar que tenga z-index */
+.product-card .like-button,
+.category-card .like-button {
+  z-index: 10;
+  position: relative; /* o absolute según tu implementación */
+}
+
 }
