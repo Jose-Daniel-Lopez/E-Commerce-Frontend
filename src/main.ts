@@ -16,6 +16,8 @@ import {
   HiChevronDown,
   HiChevronUp,
   HiChevronRight,
+  HiInformationCircle,
+  HiArrowRight,
 
   // User Interface Icons
   HiSearch,
@@ -25,6 +27,8 @@ import {
   HiEye,
   HiArrowsExpand,
   HiAdjustments,
+  HiShieldCheck,
+  HiChat,
 
   // User & Account Icons
   HiUsers,
@@ -63,6 +67,7 @@ import {
   HiCube,
 
   // Location & Contact Icons
+  HiPhone,
   HiLocationMarker,
   HiGlobe,
   HiOfficeBuilding,
@@ -110,6 +115,8 @@ addIcons(
   HiChevronDown,
   HiChevronUp,
   HiChevronRight,
+  HiInformationCircle,
+  HiArrowRight,
 
   // User Interface Icons
   HiSearch,
@@ -119,6 +126,8 @@ addIcons(
   HiEye,
   HiArrowsExpand,
   HiAdjustments,
+  HiShieldCheck,
+  HiChat,
 
   // User & Account Icons
   HiUsers,
@@ -157,6 +166,7 @@ addIcons(
   HiCube,
 
   // Location & Contact Icons
+  HiPhone,
   HiLocationMarker,
   HiGlobe,
   HiOfficeBuilding,

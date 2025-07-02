@@ -1,12 +1,12 @@
 <template>
-  <nav class="w-full h-12 bg-[#2E2E2E] flex items-center">
+  <nav class="w-full h-14 bg-[#2E2E2E] flex items-center">
     <div class="flex items-center h-full w-full">
       <!-- Phones -->
       <div class="flex items-center justify-center flex-1 h-full px-1 cursor-pointer hover:bg-[#404040] transition-colors" @click="navigateToCategory('phones')">
         <div class="flex flex-col items-center gap-0.5">
           <v-icon
             name="gi-smartphone"
-            scale="1.2"
+            scale="1.4"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
           <span class="text-white text-sm opacity-50 font-medium">Móviles</span>
@@ -21,7 +21,7 @@
         <div class="flex flex-col items-center gap-0.5">
           <v-icon
             name="bi-laptop"
-            scale="1.2"
+            scale="1.4"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
           <span class="text-white text-sm opacity-50 font-medium">Ordenadores</span>
@@ -36,7 +36,7 @@
         <div class="flex flex-col items-center gap-0.5">
           <v-icon
             name="bi-smartwatch"
-            scale="1.2"
+            scale="1.4"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
           <span class="text-white text-sm opacity-50 font-medium">Relojes Inteligentes</span>
@@ -51,7 +51,7 @@
         <div class="flex flex-col items-center gap-0.5">
           <v-icon
             name="bi-camera"
-            scale="1.2"
+            scale="1.4"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
           <span class="text-white text-sm opacity-50 font-medium">Cámaras</span>
@@ -66,7 +66,7 @@
         <div class="flex flex-col items-center gap-0.5">
           <v-icon
             name="la-headphones-solid"
-            scale="1.2"
+            scale="1.4"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
           <span class="text-white text-sm opacity-50 font-medium">Auriculares</span>
@@ -81,7 +81,7 @@
         <div class="flex flex-col items-center gap-0.5">
           <v-icon
             name="gi-console-controller"
-            scale="1.2"
+            scale="1.4"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
           <span class="text-white text-sm opacity-50 font-medium">Videojuegos</span>

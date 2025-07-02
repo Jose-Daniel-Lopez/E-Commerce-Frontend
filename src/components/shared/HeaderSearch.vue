@@ -7,7 +7,7 @@
     />
     <input
       v-model="searchQuery"
-      class="w-full bg-[#f5f5f5] p-1 font-srProDisplay text-sm font-medium text-black outline-none"
+      class="w-full bg-[#f5f5f5] p-0.5 font-srProDisplay text-sm font-medium text-black outline-none"
       type="search"
       id="search"
       placeholder="Buscar productos..."

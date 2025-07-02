@@ -100,7 +100,7 @@
             height="48px"
             @click="goToProducts"
           >
-            {{ $t('about.cta.shopNow') }}
+            Explorar
           </Button>
           <Button
             text-color="white"
@@ -122,9 +122,12 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import Button from '@/components/shared/Button.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+
+const router = useRouter()
 
 // Breadcrumb config
 const breadcrumbs = [
@@ -132,12 +135,20 @@ const breadcrumbs = [
 ]
 
 const goToProducts = () => {
-  // Navigate to products page
-  console.log('Navigate to products')
+
+  // Navigate to home page
+  router.push('/').then(() => {
+
+    // Scroll to top after navigation with a smooth animation
+    window.scrollTo({ top: 0, behavior: 'smooth' })})
 }
 
 const contactUs = () => {
-  // Contact action
-  console.log('Contact us action')
+
+  // Navigate to contact page
+  router.push('/contact').then(() => {
+
+    // Scroll to top after navigation with a smooth animation
+    window.scrollTo({ top: 0, behavior: 'smooth' })})
 }
 </script>
