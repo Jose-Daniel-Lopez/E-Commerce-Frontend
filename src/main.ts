@@ -12,6 +12,7 @@ import {
   // Navigation & Layout Icons
   HiHome,
   HiArrowLeft,
+  HiCheck,
   HiChevronDown,
   HiChevronUp,
   HiChevronRight,
@@ -98,12 +99,14 @@ import {
 
 import App from './App.vue'
 import router from './router'
+import { i18n } from './plugins/i18n'
 
 // Add icons to the library
 addIcons(
   // Navigation & Layout Icons
   HiHome,
   HiArrowLeft,
+  HiCheck,
   HiChevronDown,
   HiChevronUp,
   HiChevronRight,
@@ -195,5 +198,6 @@ app.component('v-icon', OhVueIcon)
 
 app.use(createPinia())
 app.use(router)
+app.use(i18n)
 
 app.mount('#app')

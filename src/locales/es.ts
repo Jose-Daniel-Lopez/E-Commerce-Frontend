@@ -1,0 +1,70 @@
+export default {
+  nav: {
+    home: 'Inicio',
+    categories: 'Categorías',
+    products: 'Productos',
+    about: 'Acerca de',
+    contact: 'Contáctanos',
+    cart: 'Carrito',
+    orders: 'Pedidos',
+    profile: 'Perfil'
+  },
+  about: {
+    title: 'Acerca de Nosotros',
+    description: 'Somos una tienda de comercio electrónico dedicada a ofrecer productos de alta calidad con un enfoque minimalista y elegante. Nuestra misión es proporcionar una experiencia de compra sencilla y agradable para todos nuestros clientes.',
+    values: {
+      quality: {
+        title: 'Calidad',
+        description: 'Productos cuidadosamente seleccionados que cumplen con los más altos estándares de calidad.'
+      },
+      innovation: {
+        title: 'Innovación',
+        description: 'Las últimas tecnologías y tendencias en dispositivos electrónicos y accesorios.'
+      },
+      support: {
+        title: 'Soporte',
+        description: 'Atención al cliente excepcional para garantizar una experiencia de compra perfecta.'
+      }
+    },
+    featuredProducts: {
+      title: 'Nuestros Productos Destacados',
+      iphone: {
+        title: 'iPhone 14 Pro',
+        description: 'Experiencia premium en móvil'
+      },
+      macbook: {
+        title: 'MacBook Pro',
+        description: 'Potencia informática profesional'
+      },
+      airpods: {
+        title: 'AirPods Pro',
+        description: 'Excelencia en audio inalámbrico'
+      }
+    },
+    cta: {
+      title: '¿Preparado para Comprar?',
+      description: 'Descubre nuestra colección completa de productos premium y encuentra el dispositivo perfecto para ti.',
+      shopNow: 'Comprar Ya',
+      contact: 'Contáctanos'
+    }
+  },
+  common: {
+    loading: 'Cargando...',
+    error: 'Error',
+    success: 'Éxito',
+    cancel: 'Cancelar',
+    confirm: 'Confirmar',
+    save: 'Guardar',
+    edit: 'Editar',
+    delete: 'Eliminar',
+    search: 'Buscar',
+    filter: 'Filtrar',
+    sort: 'Ordenar',
+    price: 'Precio',
+    category: 'Categoría',
+    brand: 'Marca',
+    stock: 'Stock',
+    addToCart: 'Añadir al Carrito',
+    buyNow: 'Comprar Ahora'
+  }
+}
