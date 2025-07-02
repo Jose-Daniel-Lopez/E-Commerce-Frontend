@@ -9,75 +9,90 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { OhVueIcon, addIcons } from 'oh-vue-icons'
 import {
+  // Navigation & Layout Icons
   HiHome,
-  HiUsers,
-  HiViewGrid,
-  HiShoppingBag,
-  HiPlus,
-  HiPencil,
-  HiTrash,
-  BiCamera,
-  HiRefresh,
-  HiSearch,
+  HiArrowLeft,
   HiChevronDown,
   HiChevronUp,
-  HiExclamationCircle,
-  HiShoppingCart,
-  HiArrowLeft,
-  BiStarFill,
-  HiCalendar,
-  HiSun,
-  HiMoon,
+
+  // User Interface Icons
+  HiSearch,
+  HiPlus,
+  HiMinus,
+  HiRefresh,
+  HiEye,
+  HiArrowsExpand,
+  HiAdjustments,
+
+  // User & Account Icons
+  HiUsers,
+  HiUserCircle,
   FaUserCircle,
-  MdLogoutOutlined,
+  HiMail,
+  HiKey,
   IoPersonAddSharp,
-  FaBoxes,
-  RiCoupon2Line,
+  MdLogoutOutlined,
+
+  // E-commerce Icons
+  HiShoppingBag,
+  HiShoppingCart,
+  HiHeart,
+  HiTruck,
+  FaCreditCard,
+  HiCreditCard,
+
+  // Status & Feedback Icons
+  HiCheckCircle,
   HiXCircle,
   HiBadgeCheck,
-  HiCheckCircle,
+  HiExclamationCircle,
+  BiStarFill,
+  HiStar,
   HiClipboardCopy,
-  FaCreditCard,
+  HiClipboardList,
+
+  // Admin & Management Icons
+  HiViewGrid,
+  HiPencil,
+  HiTrash,
+  FaBoxes,
+  RiCoupon2Line,
+  HiCollection,
+  HiCube,
+
+  // Location & Contact Icons
   HiLocationMarker,
   HiGlobe,
   HiOfficeBuilding,
+
+  // Time & Calendar Icons
+  HiCalendar,
   HiClock,
-  HiCube,
-  HiCollection,
+
+  // Theme Icons
+  HiSun,
+  HiMoon,
+
+  // Utility Icons
   HiColorSwatch,
-  HiAdjustments,
-  HiArrowsExpand,
-  HiMinus,
-  HiMail,
-  HiUserCircle,
-  HiKey,
-  HiHeart,
-  HiCreditCard,
-  HiTruck,
-  // Category icons
+
+  // Category Icons - Electronics
   GiSmartphone,
+  BiSmartwatch,
+  BiCamera,
+  LaHeadphonesSolid,
+  BiLaptop,
   CoTablet,
-  FaTshirt,
-  HiBookOpen,
+
+  // Category Icons - Gaming & Peripherals
+  GiConsoleController,
   BiKeyboard,
   BiMouse,
-  MdSportssoccer,
-  MdCable,
-  BiSmartwatch,
-  HiCake,
-  HiMusicNote,
-  GiConsoleController,
-  GiAirplane,
-  MdChair,
-  GiDiamondRing,
-  GiCat,
-  FaBaby,
-  GiCookingPot,
-  BiLaptop,
-  FcElectronics,
-  MdSettingsinputcomponent,
+
+  // Category Icons - Home & Audio
   RiHomeWifiLine,
-  LaHeadphonesSolid,
+  HiMusicNote,
+  MdCable,
 } from 'oh-vue-icons/icons'
 
 import App from './App.vue'
@@ -85,73 +100,90 @@ import router from './router'
 
 // Add icons to the library
 addIcons(
+  // Navigation & Layout Icons
   HiHome,
-  HiUsers,
-  HiViewGrid,
-  HiShoppingBag,
-  HiPlus,
-  HiPencil,
-  HiTrash,
-  BiCamera,
-  HiRefresh,
-  HiSearch,
+  HiArrowLeft,
   HiChevronDown,
   HiChevronUp,
-  HiExclamationCircle,
-  HiShoppingCart,
-  HiArrowLeft,
-  BiStarFill,
-  HiCalendar,
-  HiSun,
-  HiMoon,
+
+  // User Interface Icons
+  HiSearch,
+  HiPlus,
+  HiMinus,
+  HiRefresh,
+  HiEye,
+  HiArrowsExpand,
+  HiAdjustments,
+
+  // User & Account Icons
+  HiUsers,
+  HiUserCircle,
   FaUserCircle,
-  MdLogoutOutlined,
+  HiMail,
+  HiKey,
   IoPersonAddSharp,
-  FaBoxes,
-  RiCoupon2Line,
+  MdLogoutOutlined,
+
+  // E-commerce Icons
+  HiShoppingBag,
+  HiShoppingCart,
+  HiHeart,
+  HiTruck,
+  FaCreditCard,
+  HiCreditCard,
+
+  // Status & Feedback Icons
+  HiCheckCircle,
   HiXCircle,
   HiBadgeCheck,
-  HiCheckCircle,
+  HiExclamationCircle,
+  BiStarFill,
+  HiStar,
   HiClipboardCopy,
-  FaCreditCard,
+  HiClipboardList,
+
+  // Admin & Management Icons
+  HiViewGrid,
+  HiPencil,
+  HiTrash,
+  FaBoxes,
+  RiCoupon2Line,
+  HiCollection,
+  HiCube,
+
+  // Location & Contact Icons
   HiLocationMarker,
   HiGlobe,
   HiOfficeBuilding,
+
+  // Time & Calendar Icons
+  HiCalendar,
   HiClock,
-  CoTablet,
-  HiCube,
-  HiCollection,
+
+  // Theme Icons
+  HiSun,
+  HiMoon,
+
+  // Utility Icons
   HiColorSwatch,
-  HiAdjustments,
-  HiArrowsExpand,
-  HiMinus,
-  HiMail,
-  HiUserCircle,
-  HiKey,
-  BiKeyboard,
-  HiHeart,
-  HiTruck,
-  // Category icons
+
+  // Category Icons - Electronics
   GiSmartphone,
-  FaTshirt,
-  HiBookOpen,
   BiSmartwatch,
-  MdCable,
-  HiCake,
-  HiMusicNote,
-  GiConsoleController,
-  GiAirplane,
-  MdChair,
-  BiMouse,
-  GiDiamondRing,
-  GiCat,
-  FaBaby,
-  GiCookingPot,
+  BiCamera,
+  LaHeadphonesSolid,
   BiLaptop,
-  FcElectronics,
-  MdSettingsinputcomponent,
+  CoTablet,
+
+  // Category Icons - Gaming & Peripherals
+  GiConsoleController,
+  BiKeyboard,
+  BiMouse,
+
+  // Category Icons - Home & Audio
   RiHomeWifiLine,
-  LaHeadphonesSolid
+  HiMusicNote,
+  MdCable
 )
 
 const app = createApp(App)
