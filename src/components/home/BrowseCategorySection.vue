@@ -40,8 +40,6 @@
           :categories="data"
           :slides-per-view="6"
         />
-        <!-- Debug: Mostrar el número de categorías -->
-        <p class="text-sm text-gray-500 mt-2">Mostrando {{ data.length }} categorías</p>
       </div>
     </Wrapper>
   </section>
