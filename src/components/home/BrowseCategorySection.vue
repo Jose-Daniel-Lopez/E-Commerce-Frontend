@@ -50,10 +50,17 @@ import { ref } from 'vue'
 // Se importan los componentes y se usan directamente en el template
 import Wrapper from '../shared/Wrapper.vue'
 import CarouselWithNavigation from '../shared/CarouselWithNavigation.vue'
-import SectionHeaderWithNav from '../shared/SectionHeaderWithNav.vue'
+
+// Definir tipo para el carousel ref
+interface CarouselRef {
+  goToPrev: () => void
+  goToNext: () => void
+  canGoPrev: boolean
+  canGoNext: boolean
+}
 
 // Referencia al carousel para acceder a sus métodos
-const carouselRef = ref(null)
+const carouselRef = ref<CarouselRef | null>(null)
 
 // La data se define directamente como una constante.
 const data = [
@@ -61,91 +68,73 @@ const data = [
     id: 1,
     name: "Phones",
     slug: "phones",
-    image: {
-      url: "/images/Phones.png",
-      altText: "Phone icon",
-    },
+    icon: "gi-smartphone"
   },
   {
     id: 2,
     name: "Smart Watches",
     slug: "smart-watches",
-    image: {
-      url: "/images/Smart-watches.png",
-      altText: "Smart Watch icon",
-    },
+    icon: "bi-smartwatch"
   },
   {
     id: 3,
     name: "Cameras",
     slug: "cameras",
-    image: {
-      url: "/images/Cameras.png",
-      altText: "Cameras icon",
-    },
+    icon: "bi-camera"
   },
   {
     id: 4,
     name: "Headphones",
     slug: "headphones",
-    image: {
-      url: "/images/Headphone.png",
-      altText: "Headphone icon",
-    },
+    icon: "la-headphones-solid"
   },
   {
     id: 5,
     name: "Computers",
     slug: "computers",
-    image: {
-      url: "/images/Computers.png",
-      altText: "Computer icon",
-    },
+    icon: "bi-laptop"
   },
   {
     id: 6,
-    name: "Gaming",
-    slug: "gaming",
-    image: {
-      url: "/images/Gaming.png",
-      altText: "Gaming icon",
-    },
+    name: "Keyboards",
+    slug: "keyboards",
+    icon: "bi-keyboard"
   },
   {
     id: 7,
-    name: "Tablets",
-    slug: "tablets",
-    image: {
-      url: "/images/Apple-iPad.png",
-      altText: "Tablet icon",
-    },
+    name: "Mice",
+    slug: "mice",
+    icon: "bi-mouse"
   },
   {
     id: 8,
-    name: "Smart Home",
-    slug: "smart-home",
-    image: {
-      url: "/images/Smart-watch.png",
-      altText: "Smart Home icon",
-    },
+    name: "Gaming",
+    slug: "gaming",
+    icon: "gi-console-controller"
   },
   {
     id: 9,
-    name: "Audio",
-    slug: "audio",
-    image: {
-      url: "/images/Apple-airPods.png",
-      altText: "Audio icon",
-    },
+    name: "Tablets",
+    slug: "tablets",
+    icon: "co-tablet"
   },
   {
     id: 10,
+    name: "Smart Home",
+    slug: "smart-home",
+    icon: "ri-home-wifi-line"
+  },
+  {
+    id: 11,
+    name: "Audio",
+    slug: "audio",
+    icon: "hi-music-note"
+  },
+  {
+    id: 12,
     name: "Accessories",
     slug: "accessories",
-    image: {
-      url: "/images/Samsung-Watch.png",
-      altText: "Accessories icon",
-    },
+    icon: "md-cable"
   },
 ]
 </script>

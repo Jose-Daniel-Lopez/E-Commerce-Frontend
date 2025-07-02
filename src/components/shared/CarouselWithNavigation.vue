@@ -28,7 +28,7 @@ interface Category {
   id: number
   name: string
   slug: string
-  image: { url: string; altText: string }
+  icon: string
 }
 
 const props = defineProps<{ categories: Category[] }>()
