@@ -14,6 +14,7 @@ import {
   HiArrowLeft,
   HiChevronDown,
   HiChevronUp,
+  HiChevronRight,
 
   // User Interface Icons
   HiSearch,
@@ -105,6 +106,7 @@ addIcons(
   HiArrowLeft,
   HiChevronDown,
   HiChevronUp,
+  HiChevronRight,
 
   // User Interface Icons
   HiSearch,
