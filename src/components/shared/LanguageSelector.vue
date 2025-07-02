@@ -5,28 +5,28 @@
       class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
     >
       <v-icon name="hi-globe" class="w-4 h-4 mr-2" />
-      {{ currentLocale.name }}
+      {{ currentLocale.code.toUpperCase() }}
       <v-icon name="hi-chevron-down" class="w-4 h-4 ml-2" />
     </button>
 
     <!-- Dropdown -->
     <div
       v-if="isDropdownOpen"
-      class="absolute right-0 z-50 mt-2 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+      class="absolute right-0 z-50 mt-2 w-20 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
     >
       <div class="py-1">
         <button
           v-for="locale in availableLocales"
           :key="locale.code"
           @click="changeLocale(locale.code)"
-          class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          class="flex items-center justify-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
           :class="{ 'bg-gray-100 font-medium': locale.code === currentLocale.code }"
         >
-          {{ locale.name }}
+          {{ locale.code.toUpperCase() }}
           <v-icon
             v-if="locale.code === currentLocale.code"
             name="hi-check"
-            class="w-4 h-4 ml-auto text-green-500"
+            class="w-3 h-3 ml-2 text-green-500"
           />
         </button>
       </div>

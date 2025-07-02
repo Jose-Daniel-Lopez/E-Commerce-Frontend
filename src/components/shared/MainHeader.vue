@@ -44,16 +44,18 @@
           <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
             <router-link to="/contact">{{ $t('nav.contact') }}</router-link>
           </li>
-          <!-- Language Selector - Only visible on desktop -->
-          <li class="hidden lg:block lg:ml-4">
-            <LanguageSelector />
-          </li>
         </ul>
       </div>
       <!-- Navigation end -->
 
       <!-- icons start -->
-      <IconMenu @update-mobile-menu="setShowMobileMenu" @update-search-bar="setPositionSearchBar" />
+      <div class="flex items-center gap-3">
+        <!-- Language Selector -->
+        <div class="hidden lg:block">
+          <LanguageSelector />
+        </div>
+        <IconMenu @update-mobile-menu="setShowMobileMenu" @update-search-bar="setPositionSearchBar" />
+      </div>
       <!-- icons end -->
     </Wrapper>
   </header>
