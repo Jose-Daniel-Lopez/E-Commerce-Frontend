@@ -4,7 +4,7 @@
       to="/"
       class="flex items-center hover:text-black transition-colors duration-200 font-srProDisplay font-medium"
     >
-      Home
+      Inicio
     </router-link>
 
     <template v-for="(breadcrumb, index) in breadcrumbs" :key="index">

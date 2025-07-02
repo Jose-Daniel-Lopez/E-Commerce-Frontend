@@ -9,7 +9,7 @@
             scale="1.2"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
-          <span class="text-white text-sm opacity-50 font-medium">Phones</span>
+          <span class="text-white text-sm opacity-50 font-medium">Móviles</span>
         </div>
       </div>
 
@@ -24,7 +24,7 @@
             scale="1.2"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
-          <span class="text-white text-sm opacity-50 font-medium">Computers</span>
+          <span class="text-white text-sm opacity-50 font-medium">Ordenadores</span>
         </div>
       </div>
 
@@ -39,7 +39,7 @@
             scale="1.2"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
-          <span class="text-white text-sm opacity-50 font-medium">Smart Watches</span>
+          <span class="text-white text-sm opacity-50 font-medium">Relojes Inteligentes</span>
         </div>
       </div>
 
@@ -54,7 +54,7 @@
             scale="1.2"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
-          <span class="text-white text-sm opacity-50 font-medium">Cameras</span>
+          <span class="text-white text-sm opacity-50 font-medium">Cámaras</span>
         </div>
       </div>
 
@@ -69,7 +69,7 @@
             scale="1.2"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
-          <span class="text-white text-sm opacity-50 font-medium">Headphones</span>
+          <span class="text-white text-sm opacity-50 font-medium">Auriculares</span>
         </div>
       </div>
 
@@ -84,7 +84,7 @@
             scale="1.2"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
-          <span class="text-white text-sm opacity-50 font-medium">Gaming</span>
+          <span class="text-white text-sm opacity-50 font-medium">Videojuegos</span>
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@
           @click.prevent
           class="font-sm flex h-12 w-full items-center justify-center rounded-md border border-black px-5 font-srProDisplay font-medium hover:bg-[#1a1a1a] hover:text-white sm:w-[183px] transition-colors duration-200"
         >
-          View More...
+          Ver Más...
         </a>
       </div>
     </div>

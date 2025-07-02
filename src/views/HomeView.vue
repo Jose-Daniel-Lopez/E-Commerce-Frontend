@@ -1,28 +1,22 @@
 <template>
   <div class="pt-[85px] lg:pt-0">
-    <!-- hero section start -->
+    <!-- hero section -->
     <HeroSection />
-    <!-- hero section end -->
 
-    <!-- browse category section start -->
+    <!-- browse category section -->
     <BrowseCategorySection />
-    <!-- browse category section end -->
 
-    <!-- products section start -->
+    <!-- products section -->
     <ProductsSection />
-    <!-- products section end -->
 
-    <!-- banner section one start -->
+    <!-- banner section one -->
     <BannerSectionOne />
-    <!-- banner section one end -->
 
-    <!-- banner section Two start -->
+    <!-- banner section two -->
     <BannerSection />
-    <!-- banner section Two end -->
 
-    <!-- discount Product Section start -->
+    <!-- discount products section -->
     <DiscountProductSection />
-    <!-- discount Product Section end -->
   </div>
 </template>
 

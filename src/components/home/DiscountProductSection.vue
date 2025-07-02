@@ -3,16 +3,15 @@
     <Wrapper class="flex h-fit w-full flex-col gap-8 py-[80px]">
       <div class="relative flex h-9 w-full items-center justify-between">
         <h3 class="font-srProDisplay text-2xl font-medium">
-          Discountable Products
+          Productos en Descuento
         </h3>
-        <!-- Botones de paginación -->
+        <!-- Navigation buttons -->
         <div class="flex items-center gap-2 absolute right-0 top-1/2 -translate-y-1/2 z-20">
-          <!-- Tus botones existentes -->
         </div>
       </div>
 
-      <!-- Contenedor principal con padding -->
-      <div class="relative px-2 -mx-2"> <!-- Agregado padding y margin negativo -->
+      <!-- Main container -->
+      <div class="relative px-2 -mx-2">
         <Swiper
           :modules="modules"
           :slides-per-view="4"
@@ -31,7 +30,7 @@
             :key="product.id"
             class="!overflow-visible"
           >
-            <!-- Contenedor con padding para evitar cortes -->
+            <!-- Product container -->
             <div class="px-1 py-2">
               <ProductCard
                 :product="product"
@@ -128,7 +127,7 @@ export default {
         },
         767: {
           slidesPerView: 2,
-          spaceBetween: 16, // Aumentado el espacio
+          spaceBetween: 16,
           grid: {
             rows: this.data?.length > 3 ? 2 : 1,
             fill: 'row'
@@ -136,21 +135,20 @@ export default {
         },
         1024: {
           slidesPerView: 3,
-          spaceBetween: 20 // Aumentado el espacio
+          spaceBetween: 20
         },
         1280: {
           slidesPerView: 4,
-          spaceBetween: 24 // Aumentado el espacio
+          spaceBetween: 24
         }
       },
-      // ... resto de data
     }
   }
 }
 </script>
 
 <style scoped>
-/* Asegurar que el swiper wrapper no corte contenido */
+/* Swiper styles */
 .discountProduct :deep(.swiper-wrapper) {
   overflow: visible !important;
 }
@@ -159,7 +157,7 @@ export default {
   overflow: visible !important;
 }
 
-/* Tus estilos de botones existentes */
+/* Navigation buttons */
 .custom-swiper-button-prev-discount,
 .custom-swiper-button-next-discount {
   width: 1.2em;

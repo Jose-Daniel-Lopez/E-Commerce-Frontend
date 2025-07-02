@@ -3,13 +3,13 @@
     <Wrapper class="flex h-[448px] items-center justify-center">
       <div>
         <h1 class="text-center font-srProDisplay text-[48px] font-thin text-white md:text-[72px]">
-          Big Summer
+          Gran Venta de
           <span class="font-srProDisplay text-[48px] font-medium text-white md:text-[72px]">
-            Sale
+            Verano
           </span>
         </h1>
         <p class="text-center font-srProDisplay text-base font-normal text-[#787878]">
-          Commodo fames vitae vitae leo mauris in. Eu consequat.
+          Descubre las mejores ofertas de la temporada en todos nuestros productos.
         </p>
         <div class="mt-[40px] flex justify-center">
           <Button
@@ -20,7 +20,7 @@
             text-color="white"
             hover-bg-color="#333333"
           >
-            Shop Now
+            Comprar Ya
           </Button>
         </div>
       </div>

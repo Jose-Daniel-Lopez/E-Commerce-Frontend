@@ -4,7 +4,7 @@
       <!-- ENCABEZADO Y NAVEGACIÓN -->
       <div class="relative flex h-9 w-full items-center justify-between mb-8">
         <h3 class="font-srProDisplay text-2xl font-medium">
-          Browse By Category
+          Explorar por Categoría
         </h3>
         <div class="flex items-center gap-2 absolute right-0 top-1/2 -translate-y-1/2 z-20">
           <button
@@ -47,11 +47,10 @@
 
   <script setup lang="ts">
 import { ref } from 'vue'
-// Se importan los componentes y se usan directamente en el template
 import Wrapper from '../shared/Wrapper.vue'
 import CarouselWithNavigation from '../shared/CarouselWithNavigation.vue'
 
-// Definir tipo para el carousel ref
+// Carousel ref interface
 interface CarouselRef {
   goToPrev: () => void
   goToNext: () => void
@@ -59,50 +58,50 @@ interface CarouselRef {
   canGoNext: boolean
 }
 
-// Referencia al carousel para acceder a sus métodos
+// Carousel ref
 const carouselRef = ref<CarouselRef | null>(null)
 
-// La data se define directamente como una constante.
+// Category data
 const data = [
   {
     id: 1,
-    name: "Phones",
+    name: "Móviles",
     slug: "phones",
     icon: "gi-smartphone"
   },
   {
     id: 2,
-    name: "Smart Watches",
+    name: "Relojes Inteligentes",
     slug: "smart-watches",
     icon: "bi-smartwatch"
   },
   {
     id: 3,
-    name: "Cameras",
+    name: "Cámaras",
     slug: "cameras",
     icon: "bi-camera"
   },
   {
     id: 4,
-    name: "Headphones",
+    name: "Auriculares",
     slug: "headphones",
     icon: "la-headphones-solid"
   },
   {
     id: 5,
-    name: "Computers",
+    name: "Ordenadores",
     slug: "computers",
     icon: "bi-laptop"
   },
   {
     id: 6,
-    name: "Keyboards",
+    name: "Teclados",
     slug: "keyboards",
     icon: "bi-keyboard"
   },
   {
     id: 7,
-    name: "Mice",
+    name: "Ratones",
     slug: "mice",
     icon: "bi-mouse"
   },
@@ -120,7 +119,7 @@ const data = [
   },
   {
     id: 10,
-    name: "Smart Home",
+    name: "Hogar Inteligente",
     slug: "smart-home",
     icon: "ri-home-wifi-line"
   },
@@ -132,7 +131,7 @@ const data = [
   },
   {
     id: 12,
-    name: "Accessories",
+    name: "Accesorios",
     slug: "accessories",
     icon: "md-cable"
   },
@@ -140,8 +139,7 @@ const data = [
 </script>
 
 <style scoped>
-/* Removed CSS that hid header navigation arrows */
-/* Botones de paginación estilo ProductsSection */
+/* Navigation buttons style */
 .custom-swiper-button-prev-browse-category,
 .custom-swiper-button-next-browse-category {
   width: 1.2em;
