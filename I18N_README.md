@@ -15,8 +15,8 @@ Se ha implementado un sistema completo de internacionalización utilizando Vue I
    - Funciones para cambiar idioma
 
 2. **Traducciones**: `src/locales/`
-   - `es.ts` - Traducciones en español
-   - `en.ts` - Traducciones en inglés
+   - `es.json` - Traducciones en español
+   - `en.json` - Traducciones en inglés
    - `index.ts` - Exporta configuración y mensajes
 
 3. **Composable**: `src/composables/useLanguage.ts`
@@ -73,24 +73,22 @@ const breadcrumbs = [
 
 ## Agregar nuevas traducciones
 
-1. Agregar la clave en `src/locales/es.ts`:
-```typescript
-export default {
-  // ...existing translations
-  newSection: {
-    title: 'Nuevo Título',
-    description: 'Nueva descripción'
+1. Agregar la clave en `src/locales/es.json`:
+```json
+{
+  "newSection": {
+    "title": "Nuevo Título",
+    "description": "Nueva descripción"
   }
 }
 ```
 
-2. Agregar la misma clave en `src/locales/en.ts`:
-```typescript
-export default {
-  // ...existing translations
-  newSection: {
-    title: 'New Title',
-    description: 'New description'
+2. Agregar la misma clave en `src/locales/en.json`:
+```json
+{
+  "newSection": {
+    "title": "New Title",
+    "description": "New description"
   }
 }
 ```
@@ -103,10 +101,10 @@ export default {
 
 ## Agregar nuevos idiomas
 
-1. Crear archivo de traducción: `src/locales/fr.ts` (por ejemplo)
+1. Crear archivo de traducción: `src/locales/fr.json` (por ejemplo)
 2. Agregar al `src/locales/index.ts`:
 ```typescript
-import fr from './fr'
+import fr from './fr.json'
 
 export const messages = {
   es,
