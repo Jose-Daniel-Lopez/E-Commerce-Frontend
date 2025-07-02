@@ -2,13 +2,7 @@
   <div class="pt-[85px] lg:pt-0 bg-white text-black">
     <Wrapper class="py-8">
       <!-- Breadcrumb -->
-      <nav class="flex items-center text-sm text-[#787878] space-x-2 mb-8 p-4 bg-[#f8f8f8] rounded-lg">
-        <router-link to="/" class="flex items-center hover:text-black transition-colors duration-200 font-srProDisplay font-medium">
-          Home
-        </router-link>
-        <span class="text-[#CCCCCC] font-srProDisplay">></span>
-        <span class="text-black font-srProDisplay font-medium">About</span>
-      </nav>
+      <BreadcrumbNav :breadcrumbs="breadcrumbs" />
       <!-- Hero Section -->
       <section class="max-w-4xl mx-auto text-center mb-16">
         <h1 class="font-srProDisplay text-5xl font-medium mb-6 text-black">About Us</h1>
@@ -130,11 +124,12 @@
 <script setup lang="ts">
 import Wrapper from '@/components/shared/Wrapper.vue'
 import Button from '@/components/shared/Button.vue'
-// Removed unused router import
+import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
-const learnMore = () => {
-  // Acción de ejemplo: redirigir a sección de contacto o scroll
-}
+// Breadcrumb configuration
+const breadcrumbs = [
+  { label: 'About' }
+]
 
 const goToProducts = () => {
   // Navegar a la página de productos
