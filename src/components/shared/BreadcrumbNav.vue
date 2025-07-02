@@ -4,7 +4,7 @@
       to="/"
       class="flex items-center hover:text-black transition-colors duration-200 font-srProDisplay font-medium"
     >
-      Inicio
+      {{ $t('nav.home') }}
     </router-link>
 
     <template v-for="(breadcrumb, index) in breadcrumbs" :key="index">
@@ -15,14 +15,14 @@
         :to="breadcrumb.to"
         class="hover:text-black transition-colors duration-200 font-srProDisplay font-medium"
       >
-        {{ breadcrumb.label }}
+        {{ isTranslationKey(breadcrumb.label) ? $t(breadcrumb.label) : breadcrumb.label }}
       </router-link>
 
       <span
         v-else
         class="text-black font-srProDisplay font-medium"
       >
-        {{ breadcrumb.label }}
+        {{ isTranslationKey(breadcrumb.label) ? $t(breadcrumb.label) : breadcrumb.label }}
       </span>
     </template>
   </nav>
@@ -37,4 +37,9 @@ interface BreadcrumbItem {
 defineProps<{
   breadcrumbs: BreadcrumbItem[]
 }>()
+
+// Helper function to check if a string is a translation key
+const isTranslationKey = (str: string): boolean => {
+  return str.includes('.')
+}
 </script>

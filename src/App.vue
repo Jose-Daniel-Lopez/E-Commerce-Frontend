@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import Header from '@/components/shared/Header.vue'
+import MainHeader from '@/components/shared/MainHeader.vue'
 import SubnavBar from '@/components/shared/Subnav.vue'
 import Footer from '@/components/shared/Footer.vue'
 </script>
@@ -8,7 +8,7 @@ import Footer from '@/components/shared/Footer.vue'
 <template>
   <div id="app" class="min-h-screen bg-white">
     <!-- Header Component -->
-    <Header />
+    <MainHeader />
 
     <!-- Subnav Component -->
     <SubnavBar />
