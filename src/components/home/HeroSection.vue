@@ -45,7 +45,7 @@
             :hover-bg-color="data.left.button.buttonHoverBgColor"
             :hover-text-color="data.left.button.buttonHoverTextColor"
           >
-            Show More
+            Mostrar Más
           </Button>
         </div>
       </div>

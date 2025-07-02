@@ -20,7 +20,7 @@
             text-color="white"
             hover-bg-color="#333333"
           >
-            Comprar Ya
+            Explorar Ofertas
           </Button>
         </div>
       </div>

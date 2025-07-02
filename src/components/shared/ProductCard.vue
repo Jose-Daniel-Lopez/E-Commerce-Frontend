@@ -92,7 +92,7 @@
             :disabled="isUpcoming"
             @click="handleBuyNow"
           >
-            {{ isUpcoming ? 'Coming Soon' : 'Buy Now' }}
+            {{ isUpcoming ? 'Próximamente' : 'Comprar' }}
           </Button>
         </div>
       </div>

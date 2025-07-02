@@ -3,25 +3,25 @@
     <Wrapper class="flex h-fit w-full flex-col gap-8 py-14">
       <!-- Tabs Navigation -->
       <div class="relative flex h-9 w-full items-center justify-between">
-        <div class="h-9 w-[250px] sm:w-[440px]">
+        <div class="h-9 w-full max-w-[300px] sm:max-w-[440px]">
           <Swiper
             :modules="tabModules"
             :slides-per-view="3"
-            :space-between="16"
+            :space-between="8"
             :speed="500"
             :loop="false"
             :initial-slide="0"
             :breakpoints="tabBreakpoints"
-            class="productTag !grid !h-9 !w-full !items-center pl-3"
+            class="productTag !grid !h-9 !w-full !items-center pl-1"
           >
             <SwiperSlide
               v-for="tab in tabs"
               :key="tab"
-              class="cursor-pointer text-nowrap font-srProDisplay text-lg font-medium outline-none"
+              class="cursor-pointer !w-auto !flex-shrink-0 font-srProDisplay text-base sm:text-lg font-medium outline-none"
               @click="handleTabClick(tab)"
             >
               <span
-                class="tab"
+                class="tab whitespace-nowrap px-2 py-1"
                 :class="{ 'activeTab': value === tab }"
               >
                 {{ tab }}
@@ -95,8 +95,8 @@
           <SwiperSlide v-else>
             <div class="mb-4 ml-[2px] h-auto w-[163.5px] rounded-[9px] px-3 py-6 duration-500 hover:scale-[1.02] xs:w-[190px] sm:mb-0 sm:w-[298px] md:h-[435px] md:w-[240px] md:px-4 xl:w-[268px]">
               <div class="flex h-[355px] w-full flex-col items-center justify-center gap-4 sm:h-[330px] md:h-[390px]">
-                <div class="flex items-center justify-center font-figtree text-xl font-semibold">
-                  No data found
+                <div class="flex items-center justify-center font-srProDisplay text-xl font-semibold">
+                  No hay datos
                 </div>
               </div>
             </div>
@@ -130,7 +130,7 @@ import 'swiper/css/grid'
 // Reactive data
 import { onBeforeUnmount } from 'vue'
 const swiperInstance = ref(null)
-const value = ref('New Arrival')
+const value = ref('Nuevos')
 const canGoPrev = ref(false)
 const canGoNext = ref(false)
 const prevBtnRef = ref(null)
@@ -141,9 +141,9 @@ const tabModules = []
 const productModules = [Navigation, Grid]
 
 // Tabs
-const tabs = ['New Arrival', 'BestSeller', 'Up Coming...']
+const tabs = ['Nuevos', 'Populares', 'Próximamente']
 
-// Products data (exacta del original)
+// Products data
 const products = [
   {
     id: 1,
@@ -303,7 +303,14 @@ const products = [
 
 // Computed properties
 const filteredProducts = computed(() => {
-  return products.filter(item => item.featureType === value.value)
+  // Map Spanish tabs to English featureType
+  const featureTypeMap = {
+    'Nuevos': 'New Arrival',
+    'Populares': 'BestSeller',
+    'Próximamente': 'Up Coming...'
+  }
+  const featureType = featureTypeMap[value.value] || value.value
+  return products.filter(item => item.featureType === featureType)
 })
 
 const productLength = computed(() => filteredProducts.value.length)
@@ -328,11 +335,19 @@ const mobileRowSize = (productLength) => {
   return 1
 }
 
-// Breakpoints exactos del original
+// Breakpoints for tabs
 const tabBreakpoints = {
-  639: {
+  320: {
     slidesPerView: 2,
-    spaceBetween: 16
+    spaceBetween: 4
+  },
+  480: {
+    slidesPerView: 3,
+    spaceBetween: 8
+  },
+  639: {
+    slidesPerView: 3,
+    spaceBetween: 12
   },
   1024: {
     slidesPerView: 3,
@@ -426,7 +441,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Tab styles (exactos del original) */
+/* Tab styles */
 .activeTab {
   color: #000000;
   border-bottom: 2px solid #000000;
@@ -437,6 +452,9 @@ onMounted(() => {
   color: #6b7280;
   padding-bottom: 0.5rem;
   transition: color 0.2s ease;
+  display: block;
+  text-align: center;
+  min-width: fit-content;
 }
 
 .tab:hover {

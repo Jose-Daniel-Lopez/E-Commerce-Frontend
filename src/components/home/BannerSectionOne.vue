@@ -36,7 +36,7 @@
                 border-color="#000"
                 text-color="black"
               >
-                Shop Now
+                Comprar Ahora
               </Button>
             </div>
           </div>
@@ -68,7 +68,7 @@
                 border-color="#000"
                 text-color="black"
               >
-                Shop Now
+                Comprar Ahora
               </Button>
             </div>
           </div>
@@ -100,7 +100,7 @@
                 border-color="#000"
                 text-color="black"
               >
-                Shop Now
+                Comprar Ahora
               </Button>
             </div>
           </div>
@@ -132,7 +132,7 @@
                 border-color="#fff"
                 text-color="white"
               >
-                Shop Now
+                Comprar Ahora
               </Button>
             </div>
           </div>
