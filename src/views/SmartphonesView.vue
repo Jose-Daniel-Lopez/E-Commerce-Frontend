@@ -131,7 +131,6 @@ const brands = [
   { name: 'Analog Devices', count: 9, checked: false },
   { name: 'Infineon', count: 9, checked: false },
   { name: 'STMicroelectronics', count: 39, checked: false },
-  { name: 'MediaTek', count: 56, checked: false },
   { name: 'Marvell', count: 91, checked: false },
   { name: 'Xilinx', count: 13, checked: false },
   { name: 'Cypress', count: 4, checked: false },
