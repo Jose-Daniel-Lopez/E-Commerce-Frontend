@@ -50,7 +50,7 @@ const router = createRouter({
     },
     {
       path: '/catalog/smartphones',
-      name: 'catalog',
+      name: 'smartphones',
       component: () => import('../views/SmartphonesView.vue'),
     },
     {
