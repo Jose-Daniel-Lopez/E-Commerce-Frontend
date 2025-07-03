@@ -31,6 +31,7 @@ const error = ref('')
 const selectedColor = ref('')
 const selectedStorage = ref('')
 const selectedImageIndex = ref(0)
+const showAllDetails = ref(false)
 
 // Mock product data based on the image
 const mockProduct: Product = {
@@ -168,6 +169,12 @@ const displayedDescription = vComputed(() => {
 })
 const toggleDescription = () => {
   showFullDescription.value = !showFullDescription.value
+}
+
+// Details section collapse toggle
+const detailsCollapsed = ref(false)
+const toggleDetails = () => {
+  detailsCollapsed.value = !detailsCollapsed.value
 }
 </script>
 
@@ -416,15 +423,167 @@ const toggleDescription = () => {
 
         </div>
       </div>
-
-      <!-- Navigation Footer -->
-      <div class="flex justify-center mt-12">
-        <div class="flex items-center space-x-2 bg-gray-800 text-white px-4 py-2 rounded-full">
-          <span class="text-sm">4 / 17</span>
-        </div>
-      </div>
     </div>
+
+    <!-- Details Section -->
+    <section class="w-full flex justify-center bg-[#fafbfc] py-24">
+      <div class="w-full max-w-[1640px] bg-white rounded-2xl shadow-sm px-8 py-10">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-2xl font-bold">Details</h2>
+          <button
+            @click="toggleDetails"
+            class="p-1 hover:bg-gray-100 rounded transition-colors"
+            type="button"
+            aria-label="Toggle details section"
+          >
+            <svg
+              class="w-5 h-5 text-gray-600 transition-transform duration-200"
+              :class="{ 'rotate-180': detailsCollapsed }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+        <transition name="fade-details">
+          <div v-show="!detailsCollapsed">
+            <p class="text-gray-400 mb-8 max-w-auto">
+              Just as a book is judged by its cover, the first thing you notice when you pick up a modern smartphone is the display. Nothing surprising, because advanced technologies allow you to practically level the display frames and cutouts for the front camera and speaker, leaving no room for bold design solutions. And how good that in such realities Apple everything is fine with displays. Both critics and mass consumers always praise the quality of the picture provided by the products of the Californian brand. And last year's 6.7-inch Retina panels, which had ProMotion, caused real admiration for many.
+            </p>
+            <div :class="['transition-all duration-300 overflow-hidden', showAllDetails ? '' : 'max-h-[600px] blur-none']" style="position:relative;">
+              <div :style="showAllDetails ? '' : 'mask-image: linear-gradient(to bottom, #fff 80%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 80%, transparent 100%);'">
+            <!-- Screen Section -->
+            <h3 class="text-xl font-semibold mb-4 mt-8">Screen</h3>
+            <div class="border-t border-gray-200">
+              <div class="flex items-center py-4 border-b border-gray-100">
+                <div class="flex-1 text-gray-600">Screen diagonal</div>
+                <div class="w-48 text-right font-medium">6.7"</div>
+              </div>
+              <div class="flex items-center py-4 border-b border-gray-100">
+                <div class="flex-1 text-gray-600">The screen resolution</div>
+                <div class="w-48 text-right font-medium">2796x1290</div>
+              </div>
+              <div class="flex items-center py-4 border-b border-gray-100">
+                <div class="flex-1 text-gray-600">The screen refresh rate</div>
+                <div class="w-48 text-right font-medium">120 Hz</div>
+              </div>
+              <div class="flex items-center py-4 border-b border-gray-100">
+                <div class="flex-1 text-gray-600">The pixel density</div>
+                <div class="w-48 text-right font-medium">460 ppi</div>
+              </div>
+              <div class="flex items-center py-4 border-b border-gray-100">
+                <div class="flex-1 text-gray-600">Screen type</div>
+                <div class="w-48 text-right font-medium">OLED</div>
+              </div>
+              <div class="flex items-center py-4">
+                <div class="flex-1 text-gray-600">Additionally</div>
+                <div class="w-48 text-right font-medium space-y-1">
+                  <div>Dynamic Island</div>
+                  <div>Always-On display</div>
+                  <div>HDR display</div>
+                  <div>True Tone</div>
+                  <div>Wide color (P3)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CPU Section -->
+            <h3 class="text-xl font-semibold mb-4 mt-12">CPU</h3>
+            <div class="border-t border-gray-200">
+              <div class="flex items-center py-4 border-b border-gray-100">
+                <div class="flex-1 text-gray-600">CPU</div>
+                <div class="w-48 text-right font-medium">Apple A16 Bionic</div>
+              </div>
+              <div class="flex items-center py-4 border-b border-gray-100">
+                <div class="flex-1 text-gray-600">Number of cores</div>
+                <div class="w-48 text-right font-medium">6</div>
+              </div>
+              <div class="flex items-center py-4">
+                <div class="flex-1 text-gray-600">Memory</div>
+                <div class="w-48 text-right font-medium">6GB</div>
+              </div>
+            </div>
+
+            <!-- Camera Section -->
+            <h3 class="text-xl font-semibold mb-4 mt-12">Camera</h3>
+            <div class="border-t border-gray-200">
+              <div class="flex items-center py-4 border-b border-gray-100">
+                <div class="flex-1 text-gray-600">Rear camera</div>
+                <div class="w-48 text-right font-medium">48 MP + 12 MP + 12 MP</div>
+              </div>
+              <div class="flex items-center py-4 border-b border-gray-100">
+                <div class="flex-1 text-gray-600">Front camera</div>
+                <div class="w-48 text-right font-medium">12 MP</div>
+              </div>
+              <div class="flex items-center py-4">
+                <div class="flex-1 text-gray-600">Camera features</div>
+                <div class="w-48 text-right font-medium space-y-1">
+                  <div>Night mode</div>
+                  <div>Deep Fusion</div>
+                  <div>Smart HDR 4</div>
+                  <div>Photographic Styles</div>
+                  <div>ProRAW & ProRes</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Battery Section -->
+            <h3 class="text-xl font-semibold mb-4 mt-12">Battery</h3>
+            <div class="border-t border-gray-200">
+              <div class="flex items-center py-4 border-b border-gray-100">
+                <div class="flex-1 text-gray-600">Capacity</div>
+                <div class="w-48 text-right font-medium">4323 mAh</div>
+              </div>
+              <div class="flex items-center py-4 border-b border-gray-100">
+                <div class="flex-1 text-gray-600">Charging</div>
+                <div class="w-48 text-right font-medium">Fast charging, MagSafe wireless</div>
+              </div>
+              <div class="flex items-center py-4">
+                <div class="flex-1 text-gray-600">Battery life</div>
+                <div class="w-48 text-right font-medium">Up to 29 hours video playback</div>
+              </div>
+            </div>
+
+            <!-- Storage Section -->
+            <h3 class="text-xl font-semibold mb-4 mt-12">Storage</h3>
+            <div class="border-t border-gray-200">
+              <div class="flex items-center py-4">
+                <div class="flex-1 text-gray-600">Available options</div>
+                <div class="w-48 text-right font-medium space-y-1">
+                  <div>128GB</div>
+                  <div>256GB</div>
+                  <div>512GB</div>
+                  <div>1TB</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+              <div v-if="!showAllDetails" class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+            </div>
+            <div class="flex justify-center mt-6">
+              <button
+                @click="showAllDetails = !showAllDetails"
+                class="flex items-center justify-center gap-2 px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+              >
+                <span>{{ showAllDetails ? 'View Less' : 'View More' }}</span>
+                <svg v-if="!showAllDetails" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </transition>
+      </div>
+    </section>
+
   </div>
+
 </template>
 
 <style scoped>
