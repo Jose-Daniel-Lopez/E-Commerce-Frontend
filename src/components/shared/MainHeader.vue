@@ -55,9 +55,6 @@
                     class="group flex items-center px-4 py-3 text-sm font-srProDisplay text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 cursor-pointer transition-all duration-200 border-l-4 border-transparent hover:border-gray-700"
                   >
                     <span class="flex-1 group-hover:text-gray-800 group-hover:font-medium transition-all duration-200">{{ category.name }}</span>
-                    <svg class="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 group-hover:text-gray-700 transition-all duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
                   </div>
                 </div>
               </div>
