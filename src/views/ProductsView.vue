@@ -637,6 +637,12 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
   overflow: hidden;
 }
 
+/* Avoid that annoying tailwind blue outline */
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 /* Custom scrollbar for filter sections */
 .overflow-y-auto::-webkit-scrollbar {
   width: 2px;
