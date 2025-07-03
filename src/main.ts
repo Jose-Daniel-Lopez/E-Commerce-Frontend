@@ -82,6 +82,7 @@ import {
 
   // Utility Icons
   HiColorSwatch,
+  RiSeparator,
 
   // Category Icons - Electronics
   GiSmartphone,
@@ -99,7 +100,7 @@ import {
   // Category Icons - Home & Audio
   RiHomeWifiLine,
   HiMusicNote,
-  MdCable,
+  MdCable
 } from 'oh-vue-icons/icons'
 
 import App from './App.vue'
@@ -181,6 +182,7 @@ addIcons(
 
   // Utility Icons
   HiColorSwatch,
+  RiSeparator,
 
   // Category Icons - Electronics
   GiSmartphone,

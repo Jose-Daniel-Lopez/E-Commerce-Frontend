@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useProductsStore } from '@/stores/products'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
@@ -9,9 +9,31 @@ const productsStore = useProductsStore()
 
 // State
 const currentPage = ref(1)
-const priceRange = ref({ min: 1200, max: 1200 })
+const priceRange = ref({ min: 1200, max: 4000 })
 const sortBy = ref('rating')
 const favoriteProducts = ref(new Map<number, boolean>())
+
+// Watch for price range changes to ensure correct logic
+watch(
+  () => priceRange.value.min,
+  (newMin: number) => {
+    if (newMin > priceRange.value.max) {
+      priceRange.value.min = priceRange.value.max;
+    } else if (newMin < 0) {
+      priceRange.value.min = 0;
+    }
+  }
+)
+watch(
+  () => priceRange.value.max,
+  (newMax: number) => {
+    if (newMax < priceRange.value.min) {
+      priceRange.value.max = priceRange.value.min;
+    } else if (newMax > 5000) {
+      priceRange.value.max = 5000;
+    }
+  }
+)
 
 // Computed
 const totalPages = computed(() => Math.ceil(mockProducts.length / 9))
@@ -27,20 +49,62 @@ const brands = [
   { name: 'Samsung', count: 125, checked: false },
   { name: 'Xiaomi', count: 68, checked: false },
   { name: 'Poco', count: 44, checked: false },
-  { name: 'OPPO', count: 36, checked: false },
-  { name: 'Honor', count: 10, checked: false },
-  { name: 'Motorola', count: 34, checked: false },
-  { name: 'Nokia', count: 22, checked: false },
-  { name: 'Realme', count: 35, checked: false }
-]
+  { name: 'Google Pixel', count: 36, checked: false },
+  { name: 'Huawei', count: 10, checked: false },
+  { name: 'OnePlus', count: 34, checked: false },
+  { name: 'Sony', count: 9, checked: false },
+  { name: 'LG', count: 13, checked: false },
+  { name: 'Motorola', count: 51, checked: false },
+  { name: 'Oppo', count: 99, checked: false },
+  { name: 'Vivo', count: 82, checked: false },
+  { name: 'Realme', count: 74, checked: false },
+  { name: 'Honor', count: 30, checked: false },
+  { name: 'Nothing', count: 29, checked: false },
+  { name: 'Asus', count: 63, checked: false },
+  { name: 'Nokia', count: 29, checked: false },
+  { name: 'TCL', count: 11, checked: false },
+  { name: 'Intel', count: 79, checked: false },
+  { name: 'RedMagic', count: 32, checked: false },
+  { name: 'AMD', count: 57, checked: false },
+  { name: 'NVIDIA', count: 19, checked: false },
+  { name: 'Qualcomm', count: 49, checked: false },
+  { name: 'Broadcom', count: 60, checked: false },
+  { name: 'Texas Instruments', count: 89, checked: false },
+  { name: 'Micron', count: 43, checked: false },
+  { name: 'Analog Devices', count: 9, checked: false },
+  { name: 'Infineon', count: 9, checked: false },
+  { name: 'STMicroelectronics', count: 39, checked: false },
+  { name: 'MediaTek', count: 56, checked: false },
+  { name: 'Marvell', count: 91, checked: false },
+  { name: 'Xilinx', count: 13, checked: false },
+  { name: 'Cypress', count: 4, checked: false },
+  { name: 'Maxim Integrated', count: 85, checked: false },
+  { name: 'Intel', count: 70, checked: false },
+  { name: 'AMD', count: 70, checked: false },
+  { name: 'NVIDIA', count: 42, checked: false },
+  { name: 'Qualcomm', count: 21, checked: false },
+  { name: 'Broadcom', count: 9, checked: false },
+  { name: 'Texas Instruments', count: 14, checked: false },
+  { name: 'Micron', count: 44, checked: false },
+  { name: 'Analog Devices', count: 8, checked: false },
+  { name: 'Infineon', count: 39, checked: false },
+  { name: 'STMicroelectronics', count: 51, checked: false },
+  { name: 'MediaTek', count: 52, checked: false }
+];
 
+// Mock memory options data
 const memoryOptions = [
   { value: '16GB', count: 85, checked: false },
   { value: '32GB', count: 148, checked: false },
   { value: '64GB', count: 126, checked: false },
   { value: '128GB', count: 80, checked: true },
   { value: '256GB', count: 68, checked: false },
-  { value: '512GB', count: 4, checked: false }
+  { value: '512GB', count: 4, checked: false },
+  { value: '512GB', count: 4, checked: false },
+  { value: '1TB', count: 8, checked: false },
+  { value: '2TB', count: 12, checked: false },
+  { value: '4TB', count: 24, checked: false },
+  { value: '8TB', count: 7, checked: false }
 ]
 
 // Mock products data
@@ -129,10 +193,6 @@ const buyNow = (productId: number) => {
   console.log('Buy now clicked for product:', productId)
 }
 
-const toggleFilter = () => {
-  // Toggle filter sections - functionality to be implemented
-}
-
 const goToPage = (page: number) => {
   currentPage.value = page
 }
@@ -152,132 +212,108 @@ const goToPage = (page: number) => {
         <!-- Sidebar Filters -->
         <div class="w-64 flex-shrink-0">
           <!-- Price Filter -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-            <div class="p-4 border-b border-gray-200">
-              <button @click="toggleFilter()" class="flex items-center justify-between w-full">
-                <h3 class="text-lg font-semibold text-gray-900">Price</h3>
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="p-4">
-              <div class="flex items-center space-x-4 mb-4">
+          <div class="mb-6">
+            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Price</h3>
+            <div class="flex flex-col space-y-4">
+              <div class="flex items-center space-x-4">
                 <div class="flex-1">
+                  <label class="text-xs font-srProDisplay text-gray-500 mt-1 block mb-2">From</label>
                   <input type="number" v-model="priceRange.min" placeholder="1200"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <label class="text-xs text-gray-500 mt-1 block">From</label>
+                    class="w-full px-2 py-2 text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
+                <span class="text-gray-200 font-srProDisplay mt-6"> — </span>
                 <div class="flex-1">
+                  <label class="text-xs text-right font-srProDisplay text-gray-500 mt-1 block mb-2">To</label>
                   <input type="number" v-model="priceRange.max" placeholder="1200"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <label class="text-xs text-gray-500 mt-1 block">To</label>
+                    class="w-full py-2 text-right text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
               </div>
-              <!-- Price Range Slider -->
-              <div class="relative">
-                <div class="w-full h-2 bg-gray-200 rounded-full">
-                  <div class="h-2 bg-blue-600 rounded-full" style="width: 60%; margin-left: 20%"></div>
-                </div>
-                <div class="flex justify-between mt-2">
-                  <span class="text-xs text-gray-500">$0</span>
-                  <span class="text-xs text-gray-500">$2000</span>
+
+              <!-- Dual Range Slider -->
+              <div class="relative px-2">
+                <div class="relative h-1 bg-gray-300 rounded-full">
+                  <!-- Progress bar -->
+                  <div
+                    class="absolute h-1 bg-black rounded-full"
+                    :style="{
+                      left: ((priceRange.min / 5000) * 100) + '%',
+                      width: (((priceRange.max - priceRange.min) / 5000) * 100) + '%'
+                    }"
+                  ></div>
+
+                  <!-- Min range input -->
+                  <input
+                    type="range"
+                    v-model="priceRange.min"
+                    :min="0"
+                    :max="5000"
+                    step="50"
+                    class="absolute w-full h-1 appearance-none bg-transparent pointer-events-none slider-thumb-min"
+                  >
+
+                  <!-- Max range input -->
+                  <input
+                    type="range"
+                    v-model="priceRange.max"
+                    :min="0"
+                    :max="5000"
+                    step="50"
+                    class="absolute w-full h-1 appearance-none bg-transparent pointer-events-none slider-thumb-max"
+                  >
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Brand Filter -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-            <div class="p-4 border-b border-gray-200">
-              <button @click="toggleFilter()" class="flex items-center justify-between w-full">
-                <h3 class="text-lg font-semibold text-gray-900">Brand</h3>
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="p-4">
-              <div class="mb-4">
-                <input type="text" placeholder="Search..."
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              </div>
-              <div class="space-y-3 max-h-48 overflow-y-auto">
-                <div v-for="brand in brands" :key="brand.name" class="flex items-center">
-                  <input :id="'brand-' + brand.name" type="checkbox" v-model="brand.checked"
-                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                  <label :for="'brand-' + brand.name" class="ml-3 flex-1 flex items-center justify-between">
-                    <span class="text-sm text-gray-700">{{ brand.name }}</span>
-                    <span class="text-xs text-gray-500">({{ brand.count }})</span>
-                  </label>
-                </div>
+          <div class="mb-6">
+            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Brand</h3>
+            <div class="space-y-3 max-h-64 overflow-y-auto pr-1">
+              <div v-for="brand in brands" :key="brand.name" class="flex items-center">
+                <input :id="'brand-' + brand.name" type="checkbox" v-model="brand.checked"
+                  class="focus:ring-1 focus:ring-gray-400">
+                <label :for="'brand-' + brand.name" class="ml-3 flex-1 flex items-center justify-between">
+                  <span class="text-sm font-srProDisplay text-gray-1000">{{ brand.name }}</span>
+                  <span class="text-xs font-srProDisplay text-gray-400 mr-4">{{ brand.count }}</span>
+                </label>
               </div>
             </div>
           </div>
 
           <!-- Built-in Memory Filter -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-            <div class="p-4 border-b border-gray-200">
-              <button @click="toggleFilter()" class="flex items-center justify-between w-full">
-                <h3 class="text-lg font-semibold text-gray-900">Built-in memory</h3>
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="p-4">
-              <div class="mb-4">
-                <input type="text" placeholder="Search..."
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              </div>
-              <div class="space-y-3 max-h-48 overflow-y-auto">
-                <div v-for="memory in memoryOptions" :key="memory.value" class="flex items-center">
-                  <input :id="'memory-' + memory.value" type="checkbox" v-model="memory.checked"
-                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                  <label :for="'memory-' + memory.value" class="ml-3 flex-1 flex items-center justify-between">
-                    <span class="text-sm text-gray-700">{{ memory.value }}</span>
-                    <span class="text-xs text-gray-500">({{ memory.count }})</span>
-                  </label>
-                </div>
+          <div class="mb-6">
+            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Built-in Memory</h3>
+            <div class="space-y-3 max-h-48 overflow-y-auto pr-1">
+              <div v-for="memory in memoryOptions" :key="memory.value" class="flex items-center">
+                <input :id="'memory-' + memory.value" type="checkbox" v-model="memory.checked"
+                  class="focus:ring-1 focus:ring-gray-400">
+                <label :for="'memory-' + memory.value" class="ml-3 flex-1 flex items-center justify-between">
+                  <span class="text-sm font-srProDisplay text-gray-1000">{{ memory.value }}</span>
+                  <span class="text-xs font-srProDisplay text-gray-400 mr-4">{{ memory.count }}</span>
+                </label>
               </div>
             </div>
           </div>
 
           <!-- Additional Filters -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-            <div class="p-4 border-b border-gray-200">
-              <h3 class="text-lg font-semibold text-gray-900">Protection class</h3>
-            </div>
-            <div class="p-4">
-              <div class="text-sm text-gray-500">No options available</div>
-            </div>
+          <div class="mb-6">
+            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Protection class</h3>
+            <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
           </div>
 
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-            <div class="p-4 border-b border-gray-200">
-              <h3 class="text-lg font-semibold text-gray-900">Screen diagonal</h3>
-            </div>
-            <div class="p-4">
-              <div class="text-sm text-gray-500">No options available</div>
-            </div>
+          <div class="mb-6">
+            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Screen diagonal</h3>
+            <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
           </div>
 
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-            <div class="p-4 border-b border-gray-200">
-              <h3 class="text-lg font-semibold text-gray-900">Screen type</h3>
-            </div>
-            <div class="p-4">
-              <div class="text-sm text-gray-500">No options available</div>
-            </div>
+          <div class="mb-6">
+            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Screen type</h3>
+            <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
           </div>
 
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div class="p-4 border-b border-gray-200">
-              <h3 class="text-lg font-semibold text-gray-900">Battery capacity</h3>
-            </div>
-            <div class="p-4">
-              <div class="text-sm text-gray-500">No options available</div>
-            </div>
+          <div>
+            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Battery capacity</h3>
+            <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
           </div>
         </div>
 
@@ -287,11 +323,10 @@ const goToPage = (page: number) => {
           <div class="flex items-center justify-between mb-6">
             <div>
               <h1 class="font-srProDisplay text-xl font-semibold text-black">Selected Products</h1>
-              <p class="text-gray-600">{{ mockProducts.length }} products found</p>
+              <p class="font-srProDisplay text-gray-600">{{ mockProducts.length }} products found</p>
             </div>
-            <div class="flex items-center space-x-4">
-              <span class="text-sm text-gray-600">By rating</span>
-              <select v-model="sortBy" class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="flex items-center">
+              <select v-model="sortBy" class="font-srProDisplay border border-[#EBEBEB] rounded-md w-70 px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-gray-500">
                 <option value="rating">By rating</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
@@ -436,7 +471,7 @@ const goToPage = (page: number) => {
 
 /* Custom scrollbar for filter sections */
 .overflow-y-auto::-webkit-scrollbar {
-  width: 4px;
+  width: 2px;
 }
 
 .overflow-y-auto::-webkit-scrollbar-track {
@@ -445,18 +480,29 @@ const goToPage = (page: number) => {
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #000;
   border-radius: 4px;
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #222;
 }
 
 /* Smooth transitions for interactive elements */
+input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 2px;
+}
+
 input[type="checkbox"]:checked {
-  background-color: #2563eb;
-  border-color: #2563eb;
+  background-color: #000000;
+  border-color: #000000;
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e");
+  background-size: 10px 10px;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* Product card hover effects */
@@ -464,36 +510,57 @@ input[type="checkbox"]:checked {
   transform: scale(1.05);
 }
 
-/* Price range slider styles */
-input[type="range"] {
+/* Price range slider styles - smaller thumbs */
+.slider-thumb-min::-webkit-slider-thumb,
+.slider-thumb-max::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 100%;
-  height: 8px;
-  border-radius: 4px;
-  background: #e5e7eb;
-  outline: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #000000;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  pointer-events: all;
+  position: relative;
+  z-index: 10;
 }
 
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
+.slider-thumb-min::-moz-range-thumb,
+.slider-thumb-max::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: #2563eb;
+  background: #000000;
   cursor: pointer;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  pointer-events: all;
+  border: none;
 }
 
-input[type="range"]::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #2563eb;
-  cursor: pointer;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.slider-thumb-min::-webkit-slider-thumb:hover,
+.slider-thumb-max::-webkit-slider-thumb:hover {
+  background: #333333;
+}
+
+.slider-thumb-min::-moz-range-thumb:hover,
+.slider-thumb-max::-moz-range-thumb:hover {
+  background: #333333;
+}
+
+/* Enable pointer events for the thumbs */
+.slider-thumb-min::-webkit-slider-thumb,
+.slider-thumb-max::-webkit-slider-thumb {
+  pointer-events: all;
+}
+
+.slider-thumb-min,
+.slider-thumb-max {
+  pointer-events: none;
+}
+
+.slider-thumb-min::-webkit-slider-thumb,
+.slider-thumb-max::-webkit-slider-thumb {
+  pointer-events: all;
 }
 </style>
