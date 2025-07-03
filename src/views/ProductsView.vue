@@ -11,6 +11,7 @@ const productsStore = useProductsStore()
 const currentPage = ref(1)
 const priceRange = ref({ min: 1200, max: 1200 })
 const sortBy = ref('rating')
+const favoriteProducts = ref(new Map<number, boolean>())
 
 // Computed
 const totalPages = computed(() => Math.ceil(mockProducts.length / 9))
@@ -120,10 +121,8 @@ const formatPrice = (price: number) => {
 }
 
 const toggleFavorite = (productId: number) => {
-  const product = mockProducts.find(p => p.id === productId)
-  if (product) {
-    product.favorite = !product.favorite
-  }
+  const isFavorite = favoriteProducts.value.get(productId) || false
+  favoriteProducts.value.set(productId, !isFavorite)
 }
 
 const buyNow = (productId: number) => {
@@ -140,7 +139,7 @@ const goToPage = (page: number) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen">
     <!-- Breadcrumb -->
     <div class="pt-[85px] lg:pt-0 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -287,7 +286,7 @@ const goToPage = (page: number) => {
           <!-- Header with product count and sorting -->
           <div class="flex items-center justify-between mb-6">
             <div>
-              <h1 class="text-2xl font-bold text-gray-900">Selected Products</h1>
+              <h1 class="font-srProDisplay text-xl font-semibold text-black">Selected Products</h1>
               <p class="text-gray-600">{{ mockProducts.length }} products found</p>
             </div>
             <div class="flex items-center space-x-4">
@@ -303,34 +302,90 @@ const goToPage = (page: number) => {
 
           <!-- Products Grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <div v-for="product in mockProducts" :key="product.id"
-              class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
-              <!-- Product Image -->
-              <div class="relative p-6 bg-gray-50">
-                <button @click="toggleFavorite(product.id)"
-                  class="absolute top-4 right-4 p-2 rounded-full hover:bg-white transition-colors">
-                  <svg class="w-5 h-5" :class="product.favorite ? 'text-red-500 fill-current' : 'text-gray-400'"
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            <div
+              v-for="product in mockProducts"
+              :key="product.id"
+              class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4"
+            >
+              <!-- Favorite Button -->
+              <div class="absolute top-4 right-4 z-10">
+                <button
+                  @click="toggleFavorite(product.id)"
+                  class="w-6 h-6 text-gray-600 hover:text-red-600 transition-colors"
+                  type="button"
+                  aria-label="Toggle favorite"
+                >
+                  <svg
+                    v-if="!favoriteProducts.get(product.id)"
+                    class="w-6 h-6 text-gray-600 hover:text-red-600 transition-colors"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                  <svg
+                    v-else
+                    class="w-6 h-6 text-red-600"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 </button>
-                <img :src="product.image" :alt="product.name"
-                  class="w-full h-48 object-contain">
               </div>
 
-              <!-- Product Info -->
-              <div class="p-4">
-                <h3 class="text-sm font-medium text-gray-900 mb-2 line-clamp-2">
-                  {{ product.name }}
-                </h3>
-                <div class="flex items-center justify-between mb-4">
-                  <span class="text-lg font-bold text-gray-900">{{ formatPrice(product.price) }}</span>
+              <div class="flex flex-col h-full">
+                <!-- Product Image -->
+                <div class="flex items-center justify-center mb-6">
+                  <div class="h-[104px] w-[104px] md:h-[160px] md:w-[160px]">
+                    <img
+                      :src="product.image"
+                      :alt="product.name"
+                      class="w-full h-full object-contain"
+                      loading="lazy"
+                    />
+                  </div>
                 </div>
-                <button @click="buyNow(product.id)"
-                  class="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors font-medium">
-                  Buy Now
-                </button>
+
+                <div class="flex flex-col flex-1 gap-6">
+                  <div class="flex flex-col gap-4">
+                    <!-- Product Name -->
+                    <div class="h-[75px] sm:h-[50px]">
+                      <a
+                        href="#"
+                        @click.prevent
+                        class="block"
+                      >
+                        <h3 class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2">
+                          {{ product.name.length <= 40 ? product.name : `${product.name.slice(0, 40)}...` }}
+                        </h3>
+                      </a>
+                    </div>
+
+                    <!-- Product Price -->
+                    <div class="flex justify-center items-center gap-2">
+                      <span class="font-figtree text-xl font-semibold">
+                        {{ formatPrice(product.price) }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Buy Button -->
+                  <div class="flex items-center justify-center mt-auto">
+                    <button
+                      @click="buyNow(product.id)"
+                      class="w-[183px] h-[48px] bg-black text-white text-sm font-medium rounded hover:bg-[#1a1a1a] transition-colors"
+                    >
+                      Comprar
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
