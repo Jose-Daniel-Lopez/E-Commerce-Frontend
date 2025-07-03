@@ -36,7 +36,7 @@ const router = createRouter({
     {
       path: '/products',
       name: 'products',
-      component: () => import('../views/ProductsView.vue'),
+      component: () => import('../views/SmartphonesView.vue'),
     },
     {
       path: '/products/:productId',
@@ -44,9 +44,14 @@ const router = createRouter({
       component: () => import('../views/ProductDetailsView.vue'),
     },
     {
-      path: '/categories',
-      name: 'categories',
-      component: () => import('../views/CategoriesView.vue'),
+      path: '/catalog',
+      name: 'catalog',
+      component: () => import('../views/CatalogView.vue'),
+    },
+    {
+      path: '/catalog/smartphones',
+      name: 'catalog',
+      component: () => import('../views/SmartphonesView.vue'),
     },
     {
       path: '/categories/:categoryId/products',

@@ -144,6 +144,15 @@
       "contact": "Contact"
     }
   },
+  "catalog": {
+    "title": "Catalog"
+  },
+  "home": {
+    "title": "Home"
+  },
+  "smartphones": {
+    "title": "Smartphones"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Error",

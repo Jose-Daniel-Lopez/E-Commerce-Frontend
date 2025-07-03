@@ -50,9 +50,13 @@ watch(
 const totalPages = computed(() => Math.ceil(mockProducts.length / 9))
 
 // Breadcrumb config
-const breadcrumbs = [
-  { label: t('products.title') || 'Products' }
-]
+const breadcrumbs = ref([
+  { label: 'catalog.title', to: '/catalog' },
+  { label: 'smartphones.title' }
+])
+
+// Reactively update breadcrumbs on language change (if needed for other dynamic labels)
+// No need to update static translation keys
 
 // Mock data for demonstration
 const brands = [

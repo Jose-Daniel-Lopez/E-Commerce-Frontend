@@ -1,5 +1,5 @@
 <template>
-  <nav class="flex items-center text-sm text-[#787878] space-x-2 mb-8 p-4 bg-[#f8f8f8] rounded-lg">
+  <nav class="flex items-center text-s text-[#787878] space-x-2 mb-4 mt-4 p-4 bg-[#f8f8f8] rounded-lg">
     <router-link
       to="/"
       class="flex items-center hover:text-black transition-colors duration-200 font-srProDisplay font-medium"

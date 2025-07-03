@@ -144,6 +144,15 @@
       }
     }
   },
+  "catalog": {
+    "title": "Catálogo"
+  },
+  "home": {
+    "title": "Inicio"
+  },
+  "smartphones": {
+    "title": "Smartphones"
+  },
   "common": {
     "loading": "Cargando...",
     "error": "Error",
