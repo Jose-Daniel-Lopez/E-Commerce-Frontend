@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { useProductVariantsStore } from '@/stores/productVariants'
-import api from '@/lib/axios'
+import { ref, onMounted, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useProductsStore } from '@/stores/products'
+import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
 interface Product {
   id: number
@@ -10,6 +10,18 @@ interface Product {
   description: string
   basePrice: number
   totalStock: number
+  image?: string
+  brand?: string
+  model?: string
+  specifications?: {
+    screenSize?: string
+    processor?: string
+    camera?: string
+    battery?: string
+    storage?: string[]
+    colors?: string[]
+    memory?: string
+  }
   _links?: {
     productReviews?: {
       href: string
@@ -38,16 +50,160 @@ interface Category {
 }
 
 const route = useRoute()
+const router = useRouter()
+const productsStore = useProductsStore()
+
+// State
 const product = ref<Product | null>(null)
 const reviews = ref<ProductReview[]>([])
 const category = ref<Category | null>(null)
-const productVariantsStore = useProductVariantsStore()
 const loading = ref(true)
 const error = ref('')
 const activeTab = ref('details')
+const selectedColor = ref('')
+const selectedStorage = ref('')
+const selectedImageIndex = ref(0)
+const quantity = ref(1)
+const isFavorite = ref(false)
+
+// Mock product data based on the image
+const mockProduct: Product = {
+  id: 1,
+  name: 'Apple iPhone 14 Pro Max',
+  description: 'Enhanced capabilities thanks toan enlarged display of 6.7 inchesand work without recharginghroughout the day. Incredible photosas in weak, yesand in bright lightusing the new systemwith two cameras.',
+  basePrice: 1399,
+  totalStock: 50,
+  image: '/images/Iphone-14-pro-Gold.png',
+  brand: 'Apple',
+  model: 'iPhone 14 Pro Max',
+  specifications: {
+    screenSize: '6.7"',
+    processor: 'Apple A16 Bionic',
+    camera: '48-12-12 MP',
+    battery: '4323 mAh',
+    storage: ['128GB', '256GB', '512GB', '1TB'],
+    colors: ['Deep Purple', 'Gold', 'Silver', 'Space Black'],
+    memory: '6GB'
+  }
+}
+
+// Product images for different colors/angles
+const productImages = [
+  '/images/Iphone-14-pro-Gold.png',
+  '/images/Iphone-14-pro-purple.png',
+  '/images/Iphone-14-pro-silver.png',
+  '/images/Iphone-14-pro-black.png'
+]
+
+// Breadcrumb config
+const breadcrumbs = ref([
+  { label: 'Catálogo', to: '/catalog' },
+  { label: 'Smartphones', to: '/catalog/smartphones' },
+  { label: 'iPhone 14 Pro Max' }
+])
+
+// Computed properties
+const finalPrice = computed(() => {
+  let price = product.value?.basePrice || mockProduct.basePrice
+
+  // Add storage upgrade costs
+  if (selectedStorage.value === '256GB') price += 100
+  else if (selectedStorage.value === '512GB') price += 300
+  else if (selectedStorage.value === '1TB') price += 500
+
+  return price
+})
+
+const discountPrice = computed(() => {
+  return finalPrice.value + 100 // Show original higher price
+})
+
+const currentImage = computed(() => {
+  return productImages[selectedImageIndex.value] || mockProduct.image
+})
 
 onMounted(async () => {
   const productId = route.params.productId as string
+
+  try {
+    // For now, use mock data. In production, fetch from API
+    product.value = mockProduct
+    selectedColor.value = mockProduct.specifications?.colors?.[0] || ''
+    selectedStorage.value = mockProduct.specifications?.storage?.[0] || ''
+
+    // Simulate API call delay
+    setTimeout(() => {
+      loading.value = false
+    }, 500)
+
+  } catch (err) {
+    console.error('Error fetching product:', err)
+    error.value = 'Error loading product details'
+    loading.value = false
+  }
+})
+
+// Methods
+const selectColor = (color: string) => {
+  selectedColor.value = color
+  // Update image based on color selection
+  const colorIndex = mockProduct.specifications?.colors?.indexOf(color) || 0
+  selectedImageIndex.value = colorIndex
+}
+
+const selectStorage = (storage: string) => {
+  selectedStorage.value = storage
+}
+
+const selectImage = (index: number) => {
+  selectedImageIndex.value = index
+}
+
+const incrementQuantity = () => {
+  if (quantity.value < (product.value?.totalStock || 1)) {
+    quantity.value++
+  }
+}
+
+const decrementQuantity = () => {
+  if (quantity.value > 1) {
+    quantity.value--
+  }
+}
+
+const toggleFavorite = () => {
+  isFavorite.value = !isFavorite.value
+}
+
+const addToCart = () => {
+  console.log('Adding to cart:', {
+    product: product.value?.name,
+    color: selectedColor.value,
+    storage: selectedStorage.value,
+    quantity: quantity.value,
+    price: finalPrice.value
+  })
+  // Implement add to cart functionality
+}
+
+const addToWishlist = () => {
+  console.log('Adding to wishlist:', product.value?.name)
+  // Implement add to wishlist functionality
+}
+
+const formatPrice = (price: number) => {
+  return `$${price.toLocaleString()}`
+}
+
+const getColorClass = (color: string) => {
+  const colorMap: { [key: string]: string } = {
+    'Deep Purple': 'bg-purple-600',
+    'Gold': 'bg-yellow-400',
+    'Silver': 'bg-gray-300',
+    'Space Black': 'bg-gray-900'
+  }
+  return colorMap[color] || 'bg-gray-400'
+}
   await fetchProductDetails(productId)
 })
 

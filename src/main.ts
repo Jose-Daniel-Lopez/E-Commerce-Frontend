@@ -32,7 +32,7 @@ addIcons(
   AllIcons.HiEye,
   AllIcons.HiArrowsExpand,
   AllIcons.HiAdjustments,
-  AllIcons.HiShieldCheck,
+  AllIcons.BiShop,
   AllIcons.HiChat,
   AllIcons.HiUsers,
   AllIcons.HiUserCircle,
@@ -61,7 +61,8 @@ addIcons(
   AllIcons.FaBoxes,
   AllIcons.RiCoupon2Line,
   AllIcons.HiCollection,
-  AllIcons.HiCube,
+  AllIcons.HiChip,
+  AllIcons.HiSolidChip,
   AllIcons.HiPhone,
   AllIcons.HiLocationMarker,
   AllIcons.HiGlobe,
@@ -72,9 +73,10 @@ addIcons(
   AllIcons.HiMoon,
   AllIcons.HiColorSwatch,
   AllIcons.RiSeparator,
-  AllIcons.GiSmartphone,
+  AllIcons.IoResize,
   AllIcons.BiSmartwatch,
   AllIcons.BiCamera,
+  AllIcons.IoCameraReverseOutline,
   AllIcons.LaHeadphonesSolid,
   AllIcons.BiLaptop,
   AllIcons.CoTablet,
@@ -84,7 +86,8 @@ addIcons(
   AllIcons.RiHomeWifiLine,
   AllIcons.HiMusicNote,
   AllIcons.MdCable,
-  AllIcons.FaSearch // Ensure FaSearch is always available globally
+  AllIcons.FaSearch,
+  AllIcons.GiBattery75
 )
 
 const app = createApp(App)

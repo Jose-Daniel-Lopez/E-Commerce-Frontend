@@ -238,8 +238,16 @@ const toggleFavorite = (productId: number) => {
   favoriteProducts.value.set(productId, !isFavorite)
 }
 
+
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const goToProductDetails = (productId: number) => {
+  router.push({ name: 'productDetails', params: { productId } })
+}
+
 const buyNow = (productId: number) => {
-  console.log('Buy now clicked for product:', productId)
+  goToProductDetails(productId)
 }
 
 const goToPage = (page: number) => {
@@ -616,15 +624,15 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                   <div class="flex flex-col gap-4">
                     <!-- Product Name -->
                     <div class="h-[75px] sm:h-[50px]">
-                      <a
-                        href="#"
-                        @click.prevent
-                        class="block"
-                      >
-                        <h3 class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2">
-                          {{ product.name.length <= 40 ? product.name : `${product.name.slice(0, 40)}...` }}
-                        </h3>
-                      </a>
+                    <a
+                      href="#"
+                      @click.prevent="goToProductDetails(product.id)"
+                      class="block cursor-pointer"
+                    >
+                      <h3 class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2">
+                        {{ product.name.length <= 40 ? product.name : `${product.name.slice(0, 40)}...` }}
+                      </h3>
+                    </a>
                     </div>
 
                     <!-- Product Price -->
