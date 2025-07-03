@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
-// import { useRouter } from 'vue-router'  // Commented out until needed
+import { useRouter } from 'vue-router'  // Commented out until needed
 import { useProductsStore } from '@/stores/products'
 
 const productsStore = useProductsStore()
-// const router = useRouter()  // Commented out until needed
+const router = useRouter()  // Commented out until needed
 
 // Filter states
 const priceRange = ref({ min: 1200, max: 1200 })
@@ -164,12 +164,12 @@ const goToPage = (page: number) => {
             <div class="p-4">
               <div class="flex items-center space-x-4 mb-4">
                 <div class="flex-1">
-                  <input type="number" v-model="priceRange.min" placeholder="1200" 
+                  <input type="number" v-model="priceRange.min" placeholder="1200"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <label class="text-xs text-gray-500 mt-1 block">From</label>
                 </div>
                 <div class="flex-1">
-                  <input type="number" v-model="priceRange.max" placeholder="1200" 
+                  <input type="number" v-model="priceRange.max" placeholder="1200"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <label class="text-xs text-gray-500 mt-1 block">To</label>
                 </div>
@@ -199,7 +199,7 @@ const goToPage = (page: number) => {
             </div>
             <div class="p-4">
               <div class="mb-4">
-                <input type="text" placeholder="Search..." 
+                <input type="text" placeholder="Search..."
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
               </div>
               <div class="space-y-3 max-h-48 overflow-y-auto">
@@ -227,7 +227,7 @@ const goToPage = (page: number) => {
             </div>
             <div class="p-4">
               <div class="mb-4">
-                <input type="text" placeholder="Search..." 
+                <input type="text" placeholder="Search..."
                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
               </div>
               <div class="space-y-3 max-h-48 overflow-y-auto">
@@ -302,19 +302,19 @@ const goToPage = (page: number) => {
 
           <!-- Products Grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <div v-for="product in mockProducts" :key="product.id" 
+            <div v-for="product in mockProducts" :key="product.id"
               class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
               <!-- Product Image -->
               <div class="relative p-6 bg-gray-50">
-                <button @click="toggleFavorite(product.id)" 
+                <button @click="toggleFavorite(product.id)"
                   class="absolute top-4 right-4 p-2 rounded-full hover:bg-white transition-colors">
-                  <svg class="w-5 h-5" :class="product.favorite ? 'text-red-500 fill-current' : 'text-gray-400'" 
+                  <svg class="w-5 h-5" :class="product.favorite ? 'text-red-500 fill-current' : 'text-gray-400'"
                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                   </svg>
                 </button>
-                <img :src="product.image" :alt="product.name" 
+                <img :src="product.image" :alt="product.name"
                   class="w-full h-48 object-contain">
               </div>
 
@@ -326,7 +326,7 @@ const goToPage = (page: number) => {
                 <div class="flex items-center justify-between mb-4">
                   <span class="text-lg font-bold text-gray-900">{{ formatPrice(product.price) }}</span>
                 </div>
-                <button @click="buyNow(product.id)" 
+                <button @click="buyNow(product.id)"
                   class="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors font-medium">
                   Buy Now
                 </button>
@@ -342,12 +342,12 @@ const goToPage = (page: number) => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
               </svg>
             </button>
-            
+
             <button v-for="page in totalPages" :key="page" @click="goToPage(page)"
               :class="[
                 'px-3 py-2 rounded-md text-sm font-medium',
-                page === currentPage 
-                  ? 'bg-black text-white' 
+                page === currentPage
+                  ? 'bg-black text-white'
                   : 'text-gray-700 hover:bg-gray-100'
               ]">
               {{ page }}

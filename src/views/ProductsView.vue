@@ -1,189 +1,369 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useProductsStore } from '@/stores/products'
-import ProductPagination from '@/components/products/ProductPagination.vue'
-import ProductStatsCards from '@/components/products/ProductStatsCards.vue'
+import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
+const { t } = useI18n()
 const productsStore = useProductsStore()
-const router = useRouter()
+
+// State
+const currentPage = ref(1)
+const priceRange = ref({ min: 1200, max: 1200 })
+const sortBy = ref('rating')
+
+// Computed
+const totalPages = computed(() => Math.ceil(mockProducts.length / 9))
+
+// Breadcrumb config
+const breadcrumbs = [
+  { label: t('products.title') || 'Products' }
+]
+
+// Mock data for demonstration
+const brands = [
+  { name: 'Apple', count: 110, checked: true },
+  { name: 'Samsung', count: 125, checked: false },
+  { name: 'Xiaomi', count: 68, checked: false },
+  { name: 'Poco', count: 44, checked: false },
+  { name: 'OPPO', count: 36, checked: false },
+  { name: 'Honor', count: 10, checked: false },
+  { name: 'Motorola', count: 34, checked: false },
+  { name: 'Nokia', count: 22, checked: false },
+  { name: 'Realme', count: 35, checked: false }
+]
+
+const memoryOptions = [
+  { value: '16GB', count: 85, checked: false },
+  { value: '32GB', count: 148, checked: false },
+  { value: '64GB', count: 126, checked: false },
+  { value: '128GB', count: 80, checked: true },
+  { value: '256GB', count: 68, checked: false },
+  { value: '512GB', count: 4, checked: false }
+]
+
+// Mock products data
+const mockProducts = [
+  {
+    id: 1,
+    name: 'Apple iPhone 14 Pro 512GB Gold (MQ233)',
+    price: 1437,
+    image: '/images/Iphone-14-pro-Gold.png',
+    favorite: false
+  },
+  {
+    id: 2,
+    name: 'Apple iPhone 11 128GB White (MQ233)',
+    price: 510,
+    image: '/images/Apple-phone.png',
+    favorite: false
+  },
+  {
+    id: 3,
+    name: 'Apple iPhone 11 128GB White (MQ233)',
+    price: 550,
+    image: '/images/Apple-phone.png',
+    favorite: false
+  },
+  {
+    id: 4,
+    name: 'Apple iPhone 14 Pro 1TB Gold (MQ2YJ)',
+    price: 1490,
+    image: '/images/Iphone-14-pro-Gold.png',
+    favorite: false
+  },
+  {
+    id: 5,
+    name: 'Apple iPhone 14 Pro 1TB Gold (MQ2YJ)',
+    price: 1399,
+    image: '/images/Iphone-14-pro-Gold.png',
+    favorite: false
+  },
+  {
+    id: 6,
+    name: 'Apple iPhone 14 Pro 128GB Deep Purple (MQ0G3)',
+    price: 1600,
+    image: '/images/Iphone-14-pro-purple.png',
+    favorite: false
+  },
+  {
+    id: 7,
+    name: 'Apple iPhone 13 mini 128GB Pink (MLK23)',
+    price: 850,
+    image: '/images/Iphone-14-pro-pink.png',
+    favorite: false
+  },
+  {
+    id: 8,
+    name: 'Apple iPhone 14 Pro 256GB Space Black (MQ0T3)',
+    price: 1399,
+    image: '/images/Iphone-14-pro-black.png',
+    favorite: false
+  },
+  {
+    id: 9,
+    name: 'Apple iPhone 14 Pro 256GB Silver (MQ103)',
+    price: 1399,
+    image: '/images/Iphone-14-pro-silver.png',
+    favorite: false
+  }
+]
 
 onMounted(async () => {
-  // Cargar tanto los productos como las estadísticas
-  await Promise.all([
-    productsStore.fetchProducts(),
-    productsStore.fetchProductStats()
-  ])
+  // Load products when component mounts
+  await productsStore.fetchProducts()
 })
 
+// Methods
 const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(price)
+  return `$${price}`
 }
 
-const viewProductDetails = (productId: number) => {
-  router.push({ name: 'productDetails', params: { productId: productId.toString() } })
+const toggleFavorite = (productId: number) => {
+  const product = mockProducts.find(p => p.id === productId)
+  if (product) {
+    product.favorite = !product.favorite
+  }
+}
+
+const buyNow = (productId: number) => {
+  console.log('Buy now clicked for product:', productId)
+}
+
+const toggleFilter = () => {
+  // Toggle filter sections - functionality to be implemented
+}
+
+const goToPage = (page: number) => {
+  currentPage.value = page
 }
 </script>
 
 <template>
-  <div class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-6xl mx-auto">
-      <!-- Header -->
-      <div class="text-center mb-12">
-        <div class="flex justify-center mb-4">
-          <div class="bg-blue-100 dark:bg-blue-900/30 p-4 rounded-full">
-            <v-icon name="hi-shopping-bag" scale="2.5" class="text-blue-600 dark:text-blue-400" />
-          </div>
-        </div>
-        <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">Product Catalog</h2>
-        <p class="text-lg text-gray-600 dark:text-gray-300">
-          Explore our selection of available products
-        </p>
+  <div class="min-h-screen bg-gray-50">
+    <!-- Breadcrumb -->
+    <div class="pt-[85px] lg:pt-0 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <BreadcrumbNav :breadcrumbs="breadcrumbs" />
       </div>
+    </div>
 
-      <!-- Statistics Cards -->
-      <ProductStatsCards />
-
-      <!-- Loading State -->
-      <div v-if="productsStore.loading" class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-        <span class="ml-3 text-gray-600 dark:text-gray-300">Loading products...</span>
-      </div>
-
-      <!-- Error State -->
-      <div
-        v-else-if="productsStore.error"
-        class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-500 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2"
-      >
-        <v-icon name="hi-exclamation-circle" scale="1.2" />
-        <span>{{ productsStore.error }}</span>
-      </div>
-
-      <!-- Empty State -->
-      <div v-else-if="productsStore.products.length === 0" class="text-center py-12">
-        <div class="flex justify-center mb-4">
-          <div class="bg-gray-100 dark:bg-gray-800 p-6 rounded-full">
-            <v-icon name="hi-shopping-bag" scale="3" class="text-gray-400 dark:text-gray-600" />
-          </div>
-        </div>
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">No products found</h3>
-        <p class="text-gray-600 dark:text-gray-300">No products were found in the catalog</p>
-      </div>
-
-      <!-- Products Grid -->
-      <div v-else class="space-y-6">
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          <div
-            v-for="product in productsStore.products"
-            :key="product.id"
-            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden"
-          >
-            <!-- Product Image Placeholder -->
-            <div
-              class="h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center"
-            >
-              <v-icon name="hi-shopping-bag" scale="3" class="text-gray-400 dark:text-gray-500" />
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex gap-8">
+        <!-- Sidebar Filters -->
+        <div class="w-64 flex-shrink-0">
+          <!-- Price Filter -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+            <div class="p-4 border-b border-gray-200">
+              <button @click="toggleFilter()" class="flex items-center justify-between w-full">
+                <h3 class="text-lg font-semibold text-gray-900">Price</h3>
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
             </div>
-
-            <div class="p-6">
-              <!-- Product Name -->
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
-                {{ product.name }}
-              </h3>
-
-              <!-- Product Description -->
-              <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                {{ product.description }}
-              </p>
-
-              <!-- Product Info Grid -->
-              <div class="grid grid-cols-2 gap-4 mb-4">
-                <!-- Price -->
-                <div class="text-center">
-                  <div class="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-                    {{ formatPrice(product.basePrice) }}
-                  </div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">Base price</div>
+            <div class="p-4">
+              <div class="flex items-center space-x-4 mb-4">
+                <div class="flex-1">
+                  <input type="number" v-model="priceRange.min" placeholder="1200"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <label class="text-xs text-gray-500 mt-1 block">From</label>
                 </div>
-
-                <!-- Stock -->
-                <div class="text-center">
-                  <div class="text-lg font-bold text-blue-600 dark:text-blue-400">
-                    {{ product.totalStock }}
-                  </div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">In stock</div>
+                <div class="flex-1">
+                  <input type="number" v-model="priceRange.max" placeholder="1200"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <label class="text-xs text-gray-500 mt-1 block">To</label>
                 </div>
               </div>
-
-              <!-- Category Badge -->
-              <div v-if="product.category" class="mb-4">
-                <span
-                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200"
-                >
-                  {{ product.category.name }}
-                </span>
+              <!-- Price Range Slider -->
+              <div class="relative">
+                <div class="w-full h-2 bg-gray-200 rounded-full">
+                  <div class="h-2 bg-blue-600 rounded-full" style="width: 60%; margin-left: 20%"></div>
+                </div>
+                <div class="flex justify-between mt-2">
+                  <span class="text-xs text-gray-500">$0</span>
+                  <span class="text-xs text-gray-500">$2000</span>
+                </div>
               </div>
+            </div>
+          </div>
 
-              <!-- Product Actions -->
-              <div class="space-y-2">
-                <button
-                  @click="viewProductDetails(product.id)"
-                  class="w-full flex items-center justify-center space-x-2 py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-sm transition-colors"
-                >
-                  <v-icon name="hi-eye" scale="1" />
-                  <span>View details</span>
+          <!-- Brand Filter -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+            <div class="p-4 border-b border-gray-200">
+              <button @click="toggleFilter()" class="flex items-center justify-between w-full">
+                <h3 class="text-lg font-semibold text-gray-900">Brand</h3>
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="p-4">
+              <div class="mb-4">
+                <input type="text" placeholder="Search..."
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div class="space-y-3 max-h-48 overflow-y-auto">
+                <div v-for="brand in brands" :key="brand.name" class="flex items-center">
+                  <input :id="'brand-' + brand.name" type="checkbox" v-model="brand.checked"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                  <label :for="'brand-' + brand.name" class="ml-3 flex-1 flex items-center justify-between">
+                    <span class="text-sm text-gray-700">{{ brand.name }}</span>
+                    <span class="text-xs text-gray-500">({{ brand.count }})</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Built-in Memory Filter -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+            <div class="p-4 border-b border-gray-200">
+              <button @click="toggleFilter()" class="flex items-center justify-between w-full">
+                <h3 class="text-lg font-semibold text-gray-900">Built-in memory</h3>
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="p-4">
+              <div class="mb-4">
+                <input type="text" placeholder="Search..."
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div class="space-y-3 max-h-48 overflow-y-auto">
+                <div v-for="memory in memoryOptions" :key="memory.value" class="flex items-center">
+                  <input :id="'memory-' + memory.value" type="checkbox" v-model="memory.checked"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                  <label :for="'memory-' + memory.value" class="ml-3 flex-1 flex items-center justify-between">
+                    <span class="text-sm text-gray-700">{{ memory.value }}</span>
+                    <span class="text-xs text-gray-500">({{ memory.count }})</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Filters -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+            <div class="p-4 border-b border-gray-200">
+              <h3 class="text-lg font-semibold text-gray-900">Protection class</h3>
+            </div>
+            <div class="p-4">
+              <div class="text-sm text-gray-500">No options available</div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+            <div class="p-4 border-b border-gray-200">
+              <h3 class="text-lg font-semibold text-gray-900">Screen diagonal</h3>
+            </div>
+            <div class="p-4">
+              <div class="text-sm text-gray-500">No options available</div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+            <div class="p-4 border-b border-gray-200">
+              <h3 class="text-lg font-semibold text-gray-900">Screen type</h3>
+            </div>
+            <div class="p-4">
+              <div class="text-sm text-gray-500">No options available</div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-4 border-b border-gray-200">
+              <h3 class="text-lg font-semibold text-gray-900">Battery capacity</h3>
+            </div>
+            <div class="p-4">
+              <div class="text-sm text-gray-500">No options available</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1">
+          <!-- Header with product count and sorting -->
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-900">Selected Products</h1>
+              <p class="text-gray-600">{{ mockProducts.length }} products found</p>
+            </div>
+            <div class="flex items-center space-x-4">
+              <span class="text-sm text-gray-600">By rating</span>
+              <select v-model="sortBy" class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="rating">By rating</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="name">Name</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Products Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div v-for="product in mockProducts" :key="product.id"
+              class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+              <!-- Product Image -->
+              <div class="relative p-6 bg-gray-50">
+                <button @click="toggleFavorite(product.id)"
+                  class="absolute top-4 right-4 p-2 rounded-full hover:bg-white transition-colors">
+                  <svg class="w-5 h-5" :class="product.favorite ? 'text-red-500 fill-current' : 'text-gray-400'"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                  </svg>
                 </button>
-                <div class="flex space-x-2">
-                  <button
-                    class="flex-1 flex items-center justify-center space-x-1 py-2 px-4 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm"
-                  >
-                    <v-icon name="hi-pencil" scale="0.9" />
-                    <span>Edit</span>
-                  </button>
-                  <button
-                    class="flex-1 flex items-center justify-center space-x-1 py-2 px-4 rounded-lg border border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-sm"
-                  >
-                    <v-icon name="hi-trash" scale="0.9" />
-                    <span>Delete</span>
-                  </button>
-                </div>
+                <img :src="product.image" :alt="product.name"
+                  class="w-full h-48 object-contain">
               </div>
 
-              <!-- Product ID -->
-              <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <span class="text-xs text-gray-500 dark:text-gray-400"> ID: {{ product.id }} </span>
+              <!-- Product Info -->
+              <div class="p-4">
+                <h3 class="text-sm font-medium text-gray-900 mb-2 line-clamp-2">
+                  {{ product.name }}
+                </h3>
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-lg font-bold text-gray-900">{{ formatPrice(product.price) }}</span>
+                </div>
+                <button @click="buyNow(product.id)"
+                  class="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition-colors font-medium">
+                  Buy Now
+                </button>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Pagination - Bottom -->
-        <ProductPagination />
-      </div>
+          <!-- Pagination -->
+          <div class="flex items-center justify-center space-x-2">
+            <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
+              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+            </button>
 
-      <!-- Add New Product Button -->
-      <div class="mt-12 text-center">
-        <button
-          class="inline-flex items-center space-x-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
-        >
-          <v-icon name="hi-plus" scale="1.1" />
-          <span>Add new product</span>
-        </button>
-      </div>
+            <button v-for="page in totalPages" :key="page" @click="goToPage(page)"
+              :class="[
+                'px-3 py-2 rounded-md text-sm font-medium',
+                page === currentPage
+                  ? 'bg-black text-white'
+                  : 'text-gray-700 hover:bg-gray-100'
+              ]">
+              {{ page }}
+            </button>
 
-      <!-- Products Count -->
-      <div v-if="productsStore.products.length > 0" class="mt-8 text-center">
-        <div
-          class="inline-flex items-center px-4 py-2 bg-blue-100 dark:bg-blue-900/30 rounded-full"
-        >
-          <span class="text-blue-600 dark:text-blue-400 font-semibold">
-            Showing {{ productsStore.products.length }} of {{ productsStore.pagination.totalElements }} product{{ productsStore.pagination.totalElements !== 1 ? 's' : '' }}
-            (Page {{ productsStore.pagination.page + 1 }} of {{ productsStore.pagination.totalPages }})
-          </span>
+            <span class="px-3 py-2 text-gray-500">...</span>
+            <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">12</button>
+
+            <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
+              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -199,11 +379,66 @@ const viewProductDetails = (productId: number) => {
   overflow: hidden;
 }
 
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  overflow: hidden;
+/* Custom scrollbar for filter sections */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Smooth transitions for interactive elements */
+input[type="checkbox"]:checked {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Product card hover effects */
+.group:hover .group-hover\:scale-105 {
+  transform: scale(1.05);
+}
+
+/* Price range slider styles */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #e5e7eb;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #2563eb;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #2563eb;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 </style>
