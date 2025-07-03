@@ -6,9 +6,9 @@
 
       <!-- Hero Section -->
       <section class="max-w-4xl mx-auto text-center mb-16">
-        <h1 class="font-srProDisplay text-5xl font-medium mb-6 text-black">Nuestra Tienda</h1>
+        <h1 class="font-srProDisplay text-5xl font-medium mb-6 text-black">{{ t('shop.title') }}</h1>
         <p class="font-srProDisplay text-lg text-[#787878] mb-8 leading-relaxed">
-          Descubre nuestra selección de productos tecnológicos de última generación. Desde móviles hasta accesorios, encuentra todo lo que necesitas.
+          {{ t('shop.description') }}
         </p>
       </section>
 
@@ -37,7 +37,7 @@
                 : 'bg-[#f8f8f8] text-black hover:bg-[#2E2E2E] hover:text-white'
             ]"
           >
-            Todos
+            {{ t('shop.categories.all') }}
           </button>
         </div>
       </section>
@@ -105,7 +105,7 @@
               >
                 <span class="flex items-center justify-center gap-2">
                   <v-icon name="hi-shopping-cart" class="w-4 h-4" />
-                  Añadir al Carrito
+                  {{ t('shop.product.addToCart') }}
                 </span>
               </Button>
             </div>
@@ -117,18 +117,18 @@
           <div class="w-16 h-16 mx-auto mb-4 bg-[#f6f6f6] rounded-full flex items-center justify-center">
             <v-icon name="hi-shopping-bag" class="w-8 h-8 text-[#787878]" />
           </div>
-          <h3 class="font-srProDisplay text-xl font-medium mb-2 text-black">No hay productos</h3>
+          <h3 class="font-srProDisplay text-xl font-medium mb-2 text-black">{{ t('shop.empty.title') }}</h3>
           <p class="font-srProDisplay text-[#787878]">
-            No se encontraron productos para la categoría seleccionada.
+            {{ t('shop.empty.description') }}
           </p>
         </div>
       </section>
 
       <!-- CTA Section -->
       <section class="max-w-4xl mx-auto text-center bg-[#2E2E2E] rounded-[15px] p-12">
-        <h2 class="font-srProDisplay text-3xl font-medium mb-4 text-white">¿No Encuentras Lo Que Buscas?</h2>
+        <h2 class="font-srProDisplay text-3xl font-medium mb-4 text-white">{{ t('shop.cta.title') }}</h2>
         <p class="font-srProDisplay text-[#CCCCCC] mb-8 leading-relaxed">
-          Contacta con nuestro equipo y te ayudaremos a encontrar el producto perfecto para ti.
+          {{ t('shop.cta.description') }}
         </p>
         <Button
           text-color="black"
@@ -143,7 +143,7 @@
         >
           <span class="flex items-center gap-2">
             <v-icon name="hi-mail" class="w-4 h-4" />
-            Contactar
+            {{ t('shop.cta.contact') }}
           </span>
         </Button>
       </section>
@@ -154,6 +154,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useLanguage } from '@/composables/useLanguage'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import Button from '@/components/shared/Button.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
@@ -161,9 +162,12 @@ import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 // Router
 const router = useRouter()
 
+// i18n
+const { t } = useLanguage()
+
 // Breadcrumb config
 const breadcrumbs = [
-  { label: 'Tienda' }
+  { label: t('nav.products') }
 ]
 
 // State
@@ -171,11 +175,11 @@ const selectedCategory = ref<number | null>(null)
 
 // Mock data - In a real app, this would come from an API
 const categories = ref([
-  { id: 1, name: 'Móviles' },
-  { id: 2, name: 'Auriculares' },
-  { id: 3, name: 'Ordenadores' },
-  { id: 4, name: 'Relojes Inteligentes' },
-  { id: 5, name: 'Cámaras' }
+  { id: 1, name: t('shop.categories.mobiles') },
+  { id: 2, name: t('shop.categories.headphones') },
+  { id: 3, name: t('shop.categories.computers') },
+  { id: 4, name: t('shop.categories.smartwatches') },
+  { id: 5, name: t('shop.categories.cameras') }
 ])
 
 const products = ref([
@@ -279,6 +283,7 @@ const goToContact = () => {
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
