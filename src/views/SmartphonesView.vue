@@ -3,6 +3,10 @@ import { onMounted, ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useProductsStore } from '@/stores/products'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+import { OhVueIcon, addIcons } from "oh-vue-icons"
+import { FaSearch } from "oh-vue-icons/icons"
+
+addIcons(FaSearch)
 
 const { t } = useI18n()
 const productsStore = useProductsStore()
@@ -12,6 +16,10 @@ const currentPage = ref(1)
 const priceRange = ref({ min: 1200, max: 4000 })
 const sortBy = ref('rating')
 const favoriteProducts = ref(new Map<number, boolean>())
+
+// Search states for filters
+const brandSearchQuery = ref('')
+const memorySearchQuery = ref('')
 
 // Filter collapse states
 const collapsedFilters = ref({
@@ -49,6 +57,41 @@ watch(
 // Computed
 const totalPages = computed(() => Math.ceil(mockProducts.length / 9))
 
+const filteredBrands = computed(() => {
+  const query = brandSearchQuery.value?.trim().toLowerCase()
+
+  // Return all brands if query is empty or too short
+  if (!query || query.length < 2) return brands
+
+  return brands
+    .map(brand => {
+      const brandName = brand.name.toLowerCase()
+      let score = 0
+
+      // Exact match (highest score)
+      if (brandName === query) score = 1000
+      // Starts with query
+      else if (brandName.startsWith(query)) score = 500 + (100 - query.length)
+      // Word starts with query
+      else if (brandName.split(/\s+/).some(word => word.startsWith(query))) score = 300 + (100 - query.length)
+      // Contains query
+      else if (brandName.includes(query)) score = 100 + (100 - brandName.indexOf(query))
+
+      return { brand, score }
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map(({ brand }) => brand)
+})
+
+// Filtered memory options based on search query
+const filteredMemoryOptions = computed(() => {
+  if (!memorySearchQuery.value) return memoryOptions
+  return memoryOptions.filter(memory =>
+    memory.value.toLowerCase().includes(memorySearchQuery.value.toLowerCase())
+  )
+})
+
 // Breadcrumb config
 const breadcrumbs = ref([
   { label: 'catalog.title', to: '/catalog' },
@@ -82,7 +125,6 @@ const brands = [
   { name: 'RedMagic', count: 32, checked: false },
   { name: 'AMD', count: 57, checked: false },
   { name: 'NVIDIA', count: 19, checked: false },
-  { name: 'Qualcomm', count: 49, checked: false },
   { name: 'Broadcom', count: 60, checked: false },
   { name: 'Texas Instruments', count: 89, checked: false },
   { name: 'Micron', count: 43, checked: false },
@@ -98,7 +140,6 @@ const brands = [
   { name: 'AMD', count: 70, checked: false },
   { name: 'NVIDIA', count: 42, checked: false },
   { name: 'Qualcomm', count: 21, checked: false },
-  { name: 'Broadcom', count: 9, checked: false },
   { name: 'Texas Instruments', count: 14, checked: false },
   { name: 'Micron', count: 44, checked: false },
   { name: 'Analog Devices', count: 8, checked: false },
@@ -114,7 +155,6 @@ const memoryOptions = [
   { value: '64GB', count: 126, checked: false },
   { value: '128GB', count: 80, checked: true },
   { value: '256GB', count: 68, checked: false },
-  { value: '512GB', count: 4, checked: false },
   { value: '512GB', count: 4, checked: false },
   { value: '1TB', count: 8, checked: false },
   { value: '2TB', count: 12, checked: false },
@@ -323,17 +363,26 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                 </svg>
               </button>
             </div>
-            <div
-              v-show="!collapsedFilters.brand"
-              class="space-y-3 max-h-64 overflow-y-auto transition-all duration-200"
-            >
-              <div v-for="brand in brands" :key="brand.name" class="flex items-center">
-                <input :id="'brand-' + brand.name" type="checkbox" v-model="brand.checked"
-                  class="custom-checkbox focus:ring-1 focus:ring-gray-400">
-                <label :for="'brand-' + brand.name" class="ml-3 flex-1 flex items-center justify-between">
-                  <span class="text-sm font-srProDisplay text-gray-1000">{{ brand.name }}</span>
-                  <span class="text-xs font-srProDisplay text-gray-400 pr-4">{{ brand.count }}</span>
-                </label>
+            <div v-show="!collapsedFilters.brand" class="transition-all duration-200">
+              <!-- Search bar for brands -->
+              <div class="flex items-center justify-start gap-2 bg-[#f5f5f5] p-3 rounded-lg mb-4">
+                <OhVueIcon name="fa-search" scale="1.2" class="text-gray-400" />
+                <input
+                  v-model="brandSearchQuery"
+                  class="w-full bg-[#f5f5f5] p-0.5 font-srProDisplay text-sm font-medium text-black outline-none"
+                  type="search"
+                  placeholder="Search"
+                />
+              </div>
+              <div class="space-y-3 max-h-64 overflow-y-auto">
+                <div v-for="brand in filteredBrands" :key="brand.name" class="flex items-center">
+                  <input :id="'brand-' + brand.name" type="checkbox" v-model="brand.checked"
+                    class="custom-checkbox focus:ring-1 focus:ring-gray-400">
+                  <label :for="'brand-' + brand.name" class="ml-3 flex-1 flex items-center justify-between">
+                    <span class="text-sm font-srProDisplay text-gray-1000">{{ brand.name }}</span>
+                    <span class="text-xs font-srProDisplay text-gray-400 pr-4">{{ brand.count }}</span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -359,17 +408,26 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                 </svg>
               </button>
             </div>
-            <div
-              v-show="!collapsedFilters.memory"
-              class="space-y-3 max-h-48 overflow-y-auto transition-all duration-200"
-            >
-              <div v-for="memory in memoryOptions" :key="memory.value" class="flex items-center">
-                <input :id="'memory-' + memory.value" type="checkbox" v-model="memory.checked"
-                  class="custom-checkbox focus:ring-1 focus:ring-gray-400">
-                <label :for="'memory-' + memory.value" class="ml-3 flex-1 flex items-center justify-between">
-                  <span class="text-sm font-srProDisplay text-gray-1000">{{ memory.value }}</span>
-                  <span class="text-xs font-srProDisplay text-gray-400 pr-4">{{ memory.count }}</span>
-                </label>
+            <div v-show="!collapsedFilters.memory" class="transition-all duration-200">
+              <!-- Search bar for memory options -->
+              <div class="flex items-center justify-start gap-2 bg-[#f5f5f5] p-3 rounded-lg mb-4">
+                <OhVueIcon name="fa-search" scale="1.2" class="text-gray-400" />
+                <input
+                  v-model="memorySearchQuery"
+                  class="w-full bg-[#f5f5f5] p-0.5 font-srProDisplay text-sm font-medium text-black outline-none"
+                  type="search"
+                  placeholder="Search"
+                />
+              </div>
+              <div class="space-y-3 max-h-48 overflow-y-auto">
+                <div v-for="memory in filteredMemoryOptions" :key="memory.value" class="flex items-center">
+                  <input :id="'memory-' + memory.value" type="checkbox" v-model="memory.checked"
+                    class="custom-checkbox focus:ring-1 focus:ring-gray-400">
+                  <label :for="'memory-' + memory.value" class="ml-3 flex-1 flex items-center justify-between">
+                    <span class="text-sm font-srProDisplay text-gray-1000">{{ memory.value }}</span>
+                    <span class="text-xs font-srProDisplay text-gray-400 pr-4">{{ memory.count }}</span>
+                  </label>
+                </div>
               </div>
             </div>
           </div>

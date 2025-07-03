@@ -1,10 +1,6 @@
 <template>
   <div class="flex items-center justify-start gap-2 bg-[#f5f5f5] p-4 shadow-md lg:rounded-lg lg:shadow-none">
-    <img
-      src="/images/Search.png"
-      alt="Search icon"
-      class="h-6 w-6"
-    />
+    <v-icon name="fa-search" scale="1.2" class="text-gray-400" />
     <input
       v-model="searchQuery"
       class="w-full bg-[#f5f5f5] p-0.5 font-srProDisplay text-sm font-medium text-black outline-none"
@@ -16,8 +12,11 @@
 </template>
 
 <script>
+import { OhVueIcon } from "oh-vue-icons";
+
 export default {
   name: 'HeaderSearch',
+  components: { 'v-icon': OhVueIcon },
   data() {
     return {
       searchQuery: ''
