@@ -30,4 +30,4 @@ coverage
 *.tsbuildinfo
 package-lock.json
 
-ignore_me/
+# ignore_me/
