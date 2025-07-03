@@ -48,6 +48,102 @@
       "contact": "Contáctanos"
     }
   },
+  "shop": {
+    "title": "Nuestra Tienda",
+    "description": "Descubre nuestra selección de productos tecnológicos de última generación. Desde móviles hasta accesorios, encuentra todo lo que necesitas.",
+    "categories": {
+      "all": "Todos",
+      "mobiles": "Móviles",
+      "headphones": "Auriculares",
+      "computers": "Ordenadores",
+      "smartwatches": "Relojes Inteligentes",
+      "cameras": "Cámaras"
+    },
+    "product": {
+      "addToCart": "Añadir al Carrito",
+      "addedToCart": "Añadido al carrito",
+      "outOfStock": "Sin stock"
+    },
+    "empty": {
+      "title": "No hay productos",
+      "description": "No se encontraron productos para la categoría seleccionada."
+    },
+    "cta": {
+      "title": "¿No Encuentras Lo Que Buscas?",
+      "description": "Contacta con nuestro equipo y te ayudaremos a encontrar el producto perfecto para ti.",
+      "contact": "Contactar"
+    }
+  },
+  "contact": {
+    "title": "Contáctanos",
+    "information": {
+      "title": "Información de Contacto",
+      "email": {
+        "title": "Correo Electrónico",
+        "info": "info@cyberstore.com",
+        "support": "soporte@cyberstore.com"
+      },
+      "phone": {
+        "title": "Teléfono",
+        "number": "+34 91 123 45 67",
+        "hours": "Lun - Vie: 9:00 - 18:00"
+      },
+      "location": {
+        "title": "Ubicación",
+        "address": "Calle Gran Vía, 123",
+        "city": "28013 Madrid, España"
+      },
+      "responseTime": {
+        "title": "Tiempo de Respuesta",
+        "description": "Normalmente respondemos en 24 horas",
+        "businessHours": "En horario laboral: en 4 horas"
+      }
+    },
+    "form": {
+      "title": "Enviar Mensaje",
+      "fields": {
+        "fullName": {
+          "label": "Nombre Completo",
+          "placeholder": "Introduce tu nombre completo"
+        },
+        "email": {
+          "label": "Correo Electrónico",
+          "placeholder": "tu@email.com"
+        },
+        "subject": {
+          "label": "Asunto",
+          "placeholder": "¿En qué podemos ayudarte?"
+        },
+        "message": {
+          "label": "Mensaje",
+          "placeholder": "Describe tu consulta o mensaje..."
+        },
+        "contactMethod": {
+          "label": "Método de contacto preferido",
+          "email": "Correo Electrónico",
+          "phone": "Teléfono"
+        }
+      },
+      "submit": "Enviar Mensaje"
+    },
+    "faq": {
+      "title": "Preguntas Frecuentes",
+      "questions": {
+        "delivery": {
+          "question": "¿Cuál es el tiempo de entrega?",
+          "answer": "La entrega estándar tarda de 2-3 días laborables para península y de 3-5 días para Baleares y Canarias."
+        },
+        "payment": {
+          "question": "¿Qué métodos de pago aceptáis?",
+          "answer": "Aceptamos todas las tarjetas de crédito/débito principales (Visa, Mastercard, American Express), PayPal, Apple Pay y Google Pay."
+        },
+        "returns": {
+          "question": "¿Puedo devolver un producto?",
+          "answer": "Sí, tienes 30 días para devolver cualquier producto en perfectas condiciones. Los gastos de envío de devolución corren por tu cuenta."
+        }
+      }
+    }
+  },
   "common": {
     "loading": "Cargando...",
     "error": "Error",
