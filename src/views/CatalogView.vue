@@ -2,11 +2,7 @@
 import { onMounted, ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCategoriesStore } from '@/stores/categories'
-import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
-import { OhVueIcon, addIcons } from "oh-vue-icons"
-import { FaSearch } from "oh-vue-icons/icons"
 
-addIcons(FaSearch)
 
 const router = useRouter()
 const categoriesStore = useCategoriesStore()
@@ -66,7 +62,7 @@ const totalPages = computed(() => Math.ceil(filteredCategories.value.length / it
 
 // Breadcrumb config
 const breadcrumbs = ref([
-  { label: 'Catálogo de Categorías' }
+  { label: 'Catalog' } // This will be translated to "Catálogo" in the i18n file
 ])
 
 // Category type options for filtering
@@ -142,12 +138,12 @@ watch(searchQuery, () => {
             </div>
             <div v-show="!collapsedFilters.search" class="transition-all duration-200">
               <div class="flex items-center justify-start gap-2 bg-[#f5f5f5] p-3 rounded-lg">
-                <OhVueIcon name="fa-search" scale="1.2" class="text-gray-400" />
+                <v-icon name="fa-search" scale="1.2" class="text-gray-400" />
                 <input
                   v-model="searchQuery"
                   class="w-full bg-[#f5f5f5] p-0.5 font-srProDisplay text-sm font-medium text-black outline-none"
                   type="search"
-                  placeholder="Buscar categorías..."
+                  placeholder="Buscar"
                 />
               </div>
             </div>

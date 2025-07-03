@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useProductsStore } from '@/stores/products'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
-import { OhVueIcon, addIcons } from "oh-vue-icons"
-import { FaSearch } from "oh-vue-icons/icons"
 
-addIcons(FaSearch)
 
-const { t } = useI18n()
 const productsStore = useProductsStore()
 
 // State
@@ -365,7 +360,7 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
             <div v-show="!collapsedFilters.brand" class="transition-all duration-200">
               <!-- Search bar for brands -->
               <div class="flex items-center justify-start gap-2 bg-[#f5f5f5] p-3 rounded-lg mb-4">
-                <OhVueIcon name="fa-search" scale="1.2" class="text-gray-400" />
+                <v-icon name="fa-search" scale="1.2" class="text-gray-400" />
                 <input
                   v-model="brandSearchQuery"
                   class="w-full bg-[#f5f5f5] p-0.5 font-srProDisplay text-sm font-medium text-black outline-none"
@@ -410,7 +405,7 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
             <div v-show="!collapsedFilters.memory" class="transition-all duration-200">
               <!-- Search bar for memory options -->
               <div class="flex items-center justify-start gap-2 bg-[#f5f5f5] p-3 rounded-lg mb-4">
-                <OhVueIcon name="fa-search" scale="1.2" class="text-gray-400" />
+                <v-icon name="fa-search" scale="1.2" class="text-gray-400" />
                 <input
                   v-model="memorySearchQuery"
                   class="w-full bg-[#f5f5f5] p-0.5 font-srProDisplay text-sm font-medium text-black outline-none"

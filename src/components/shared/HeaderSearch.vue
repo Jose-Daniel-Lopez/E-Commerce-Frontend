@@ -12,11 +12,8 @@
 </template>
 
 <script>
-import { OhVueIcon } from "oh-vue-icons";
-
 export default {
   name: 'HeaderSearch',
-  components: { 'v-icon': OhVueIcon },
   data() {
     return {
       searchQuery: ''

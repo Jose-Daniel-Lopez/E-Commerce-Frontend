@@ -8,199 +8,83 @@ import 'swiper/css/pagination'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { OhVueIcon, addIcons } from 'oh-vue-icons'
-import {
-  // Navigation & Layout Icons
-  HiHome,
-  HiArrowLeft,
-  HiCheck,
-  HiChevronDown,
-  HiChevronUp,
-  HiChevronRight,
-  HiInformationCircle,
-  HiArrowRight,
-
-  // User Interface Icons
-  HiSearch,
-  HiPlus,
-  HiMinus,
-  HiRefresh,
-  HiEye,
-  HiArrowsExpand,
-  HiAdjustments,
-  HiShieldCheck,
-  HiChat,
-
-  // User & Account Icons
-  HiUsers,
-  HiUserCircle,
-  FaUserCircle,
-  HiMail,
-  HiKey,
-  IoPersonAddSharp,
-  MdLogoutOutlined,
-
-  // E-commerce Icons
-  HiShoppingBag,
-  HiShoppingCart,
-  HiHeart,
-  HiTruck,
-  FaCreditCard,
-  HiCreditCard,
-
-  // Status & Feedback Icons
-  HiCheckCircle,
-  HiXCircle,
-  HiBadgeCheck,
-  HiExclamationCircle,
-  BiStarFill,
-  HiStar,
-  HiClipboardCopy,
-  HiClipboardList,
-
-  // Admin & Management Icons
-  HiViewGrid,
-  HiPencil,
-  HiTrash,
-  FaBoxes,
-  RiCoupon2Line,
-  HiCollection,
-  HiCube,
-
-  // Location & Contact Icons
-  HiPhone,
-  HiLocationMarker,
-  HiGlobe,
-  HiOfficeBuilding,
-
-  // Time & Calendar Icons
-  HiCalendar,
-  HiClock,
-
-  // Theme Icons
-  HiSun,
-  HiMoon,
-
-  // Utility Icons
-  HiColorSwatch,
-  RiSeparator,
-
-  // Category Icons - Electronics
-  GiSmartphone,
-  BiSmartwatch,
-  BiCamera,
-  LaHeadphonesSolid,
-  BiLaptop,
-  CoTablet,
-
-  // Category Icons - Gaming & Peripherals
-  GiConsoleController,
-  BiKeyboard,
-  BiMouse,
-
-  // Category Icons - Home & Audio
-  RiHomeWifiLine,
-  HiMusicNote,
-  MdCable
-} from 'oh-vue-icons/icons'
+import * as AllIcons from 'oh-vue-icons/icons'
 
 import App from './App.vue'
 import router from './router'
 import { i18n } from './plugins/i18n'
 
 // Add icons to the library
+// Register all icons used in the project globally for consistency
 addIcons(
-  // Navigation & Layout Icons
-  HiHome,
-  HiArrowLeft,
-  HiCheck,
-  HiChevronDown,
-  HiChevronUp,
-  HiChevronRight,
-  HiInformationCircle,
-  HiArrowRight,
-
-  // User Interface Icons
-  HiSearch,
-  HiPlus,
-  HiMinus,
-  HiRefresh,
-  HiEye,
-  HiArrowsExpand,
-  HiAdjustments,
-  HiShieldCheck,
-  HiChat,
-
-  // User & Account Icons
-  HiUsers,
-  HiUserCircle,
-  FaUserCircle,
-  HiMail,
-  HiKey,
-  IoPersonAddSharp,
-  MdLogoutOutlined,
-
-  // E-commerce Icons
-  HiShoppingBag,
-  HiShoppingCart,
-  HiHeart,
-  HiTruck,
-  FaCreditCard,
-  HiCreditCard,
-
-  // Status & Feedback Icons
-  HiCheckCircle,
-  HiXCircle,
-  HiBadgeCheck,
-  HiExclamationCircle,
-  BiStarFill,
-  HiStar,
-  HiClipboardCopy,
-  HiClipboardList,
-
-  // Admin & Management Icons
-  HiViewGrid,
-  HiPencil,
-  HiTrash,
-  FaBoxes,
-  RiCoupon2Line,
-  HiCollection,
-  HiCube,
-
-  // Location & Contact Icons
-  HiPhone,
-  HiLocationMarker,
-  HiGlobe,
-  HiOfficeBuilding,
-
-  // Time & Calendar Icons
-  HiCalendar,
-  HiClock,
-
-  // Theme Icons
-  HiSun,
-  HiMoon,
-
-  // Utility Icons
-  HiColorSwatch,
-  RiSeparator,
-
-  // Category Icons - Electronics
-  GiSmartphone,
-  BiSmartwatch,
-  BiCamera,
-  LaHeadphonesSolid,
-  BiLaptop,
-  CoTablet,
-
-  // Category Icons - Gaming & Peripherals
-  GiConsoleController,
-  BiKeyboard,
-  BiMouse,
-
-  // Category Icons - Home & Audio
-  RiHomeWifiLine,
-  HiMusicNote,
-  MdCable
+  AllIcons.HiHome,
+  AllIcons.HiArrowLeft,
+  AllIcons.HiCheck,
+  AllIcons.HiChevronDown,
+  AllIcons.HiChevronUp,
+  AllIcons.HiChevronRight,
+  AllIcons.HiInformationCircle,
+  AllIcons.HiArrowRight,
+  AllIcons.HiSearch,
+  AllIcons.HiPlus,
+  AllIcons.HiMinus,
+  AllIcons.HiRefresh,
+  AllIcons.HiEye,
+  AllIcons.HiArrowsExpand,
+  AllIcons.HiAdjustments,
+  AllIcons.HiShieldCheck,
+  AllIcons.HiChat,
+  AllIcons.HiUsers,
+  AllIcons.HiUserCircle,
+  AllIcons.FaUserCircle,
+  AllIcons.HiMail,
+  AllIcons.HiKey,
+  AllIcons.IoPersonAddSharp,
+  AllIcons.MdLogoutOutlined,
+  AllIcons.HiShoppingBag,
+  AllIcons.HiShoppingCart,
+  AllIcons.HiHeart,
+  AllIcons.HiTruck,
+  AllIcons.FaCreditCard,
+  AllIcons.HiCreditCard,
+  AllIcons.HiCheckCircle,
+  AllIcons.HiXCircle,
+  AllIcons.HiBadgeCheck,
+  AllIcons.HiExclamationCircle,
+  AllIcons.BiStarFill,
+  AllIcons.HiStar,
+  AllIcons.HiClipboardCopy,
+  AllIcons.HiClipboardList,
+  AllIcons.HiViewGrid,
+  AllIcons.HiPencil,
+  AllIcons.HiTrash,
+  AllIcons.FaBoxes,
+  AllIcons.RiCoupon2Line,
+  AllIcons.HiCollection,
+  AllIcons.HiCube,
+  AllIcons.HiPhone,
+  AllIcons.HiLocationMarker,
+  AllIcons.HiGlobe,
+  AllIcons.HiOfficeBuilding,
+  AllIcons.HiCalendar,
+  AllIcons.HiClock,
+  AllIcons.HiSun,
+  AllIcons.HiMoon,
+  AllIcons.HiColorSwatch,
+  AllIcons.RiSeparator,
+  AllIcons.GiSmartphone,
+  AllIcons.BiSmartwatch,
+  AllIcons.BiCamera,
+  AllIcons.LaHeadphonesSolid,
+  AllIcons.BiLaptop,
+  AllIcons.CoTablet,
+  AllIcons.GiConsoleController,
+  AllIcons.BiKeyboard,
+  AllIcons.BiMouse,
+  AllIcons.RiHomeWifiLine,
+  AllIcons.HiMusicNote,
+  AllIcons.MdCable,
+  AllIcons.FaSearch // Ensure FaSearch is always available globally
 )
 
 const app = createApp(App)
