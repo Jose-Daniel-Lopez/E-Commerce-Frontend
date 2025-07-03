@@ -268,13 +268,13 @@ const goToPage = (page: number) => {
           <!-- Brand Filter -->
           <div class="mb-6">
             <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Brand</h3>
-            <div class="space-y-3 max-h-64 overflow-y-auto pr-1">
+            <div class="space-y-3 max-h-64 overflow-y-auto">
               <div v-for="brand in brands" :key="brand.name" class="flex items-center">
                 <input :id="'brand-' + brand.name" type="checkbox" v-model="brand.checked"
-                  class="focus:ring-1 focus:ring-gray-400">
+                  class="custom-checkbox focus:ring-1 focus:ring-gray-400">
                 <label :for="'brand-' + brand.name" class="ml-3 flex-1 flex items-center justify-between">
                   <span class="text-sm font-srProDisplay text-gray-1000">{{ brand.name }}</span>
-                  <span class="text-xs font-srProDisplay text-gray-400 mr-4">{{ brand.count }}</span>
+                  <span class="text-xs font-srProDisplay text-gray-400 pr-4">{{ brand.count }}</span>
                 </label>
               </div>
             </div>
@@ -283,17 +283,18 @@ const goToPage = (page: number) => {
           <!-- Built-in Memory Filter -->
           <div class="mb-6">
             <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Built-in Memory</h3>
-            <div class="space-y-3 max-h-48 overflow-y-auto pr-1">
+            <div class="space-y-3 max-h-48 overflow-y-auto">
               <div v-for="memory in memoryOptions" :key="memory.value" class="flex items-center">
                 <input :id="'memory-' + memory.value" type="checkbox" v-model="memory.checked"
-                  class="focus:ring-1 focus:ring-gray-400">
+                  class="custom-checkbox focus:ring-1 focus:ring-gray-400">
                 <label :for="'memory-' + memory.value" class="ml-3 flex-1 flex items-center justify-between">
                   <span class="text-sm font-srProDisplay text-gray-1000">{{ memory.value }}</span>
-                  <span class="text-xs font-srProDisplay text-gray-400 mr-4">{{ memory.count }}</span>
+                  <span class="text-xs font-srProDisplay text-gray-400 pr-4">{{ memory.count }}</span>
                 </label>
               </div>
             </div>
           </div>
+
 
           <!-- Additional Filters -->
           <div class="mb-6">
@@ -489,18 +490,31 @@ const goToPage = (page: number) => {
 }
 
 /* Smooth transitions for interactive elements */
-input[type="checkbox"] {
-  width: 14px;
-  height: 14px;
+.custom-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
   border: 1px solid #d1d5db;
-  border-radius: 2px;
+  border-radius: 3px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
 }
 
-input[type="checkbox"]:checked {
+/* Hover state */
+.custom-checkbox:hover {
+  border-color: #9ca3af;
+}
+
+/* Checked state */
+.custom-checkbox:checked {
   background-color: #000000;
   border-color: #000000;
-  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e");
-  background-size: 10px 10px;
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M13.854 3.646L6.354 11.146a.5.5 0 01-.708 0L2.146 7.646a.5.5 0 11.708-.708L6 10.293l7.146-7.147a.5.5 0 01.708.708z'/%3e%3c/svg%3e");
+  background-size: 8px 8px;
   background-position: center;
   background-repeat: no-repeat;
 }
