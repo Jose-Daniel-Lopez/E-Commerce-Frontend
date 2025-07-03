@@ -13,6 +13,17 @@ const priceRange = ref({ min: 1200, max: 4000 })
 const sortBy = ref('rating')
 const favoriteProducts = ref(new Map<number, boolean>())
 
+// Filter collapse states
+const collapsedFilters = ref({
+  price: false,
+  brand: false,
+  memory: false,
+  protectionClass: false,
+  screenDiagonal: false,
+  screenType: false,
+  batteryCapacity: false
+})
+
 // Watch for price range changes to ensure correct logic
 watch(
   () => priceRange.value.min,
@@ -196,6 +207,10 @@ const buyNow = (productId: number) => {
 const goToPage = (page: number) => {
   currentPage.value = page
 }
+
+const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
+  collapsedFilters.value[filterName] = !collapsedFilters.value[filterName]
+}
 </script>
 
 <template>
@@ -213,8 +228,26 @@ const goToPage = (page: number) => {
         <div class="w-64 flex-shrink-0">
           <!-- Price Filter -->
           <div class="mb-6">
-            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Price</h3>
-            <div class="flex flex-col space-y-4">
+            <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
+              <h3 class="font-srProDisplay text-lg font-semibold text-black">Price</h3>
+              <button
+                @click="toggleFilter('price')"
+                class="p-1 hover:bg-gray-100 rounded transition-colors"
+                type="button"
+                aria-label="Toggle price filter"
+              >
+                <svg
+                  class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                  :class="{ 'rotate-180': collapsedFilters.price }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+            </div>
+            <div v-show="!collapsedFilters.price" class="flex flex-col space-y-4 transition-all duration-200">
               <div class="flex items-center space-x-4">
                 <div class="flex-1">
                   <label class="text-xs font-srProDisplay text-gray-500 mt-1 block mb-2">From</label>
@@ -267,8 +300,29 @@ const goToPage = (page: number) => {
 
           <!-- Brand Filter -->
           <div class="mb-6">
-            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Brand</h3>
-            <div class="space-y-3 max-h-64 overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
+              <h3 class="font-srProDisplay text-lg font-semibold text-black">Brand</h3>
+              <button
+                @click="toggleFilter('brand')"
+                class="p-1 hover:bg-gray-100 rounded transition-colors"
+                type="button"
+                aria-label="Toggle brand filter"
+              >
+                <svg
+                  class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                  :class="{ 'rotate-180': collapsedFilters.brand }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+            </div>
+            <div
+              v-show="!collapsedFilters.brand"
+              class="space-y-3 max-h-64 overflow-y-auto transition-all duration-200"
+            >
               <div v-for="brand in brands" :key="brand.name" class="flex items-center">
                 <input :id="'brand-' + brand.name" type="checkbox" v-model="brand.checked"
                   class="custom-checkbox focus:ring-1 focus:ring-gray-400">
@@ -282,8 +336,29 @@ const goToPage = (page: number) => {
 
           <!-- Built-in Memory Filter -->
           <div class="mb-6">
-            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Built-in Memory</h3>
-            <div class="space-y-3 max-h-48 overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
+              <h3 class="font-srProDisplay text-lg font-semibold text-black">Built-in Memory</h3>
+              <button
+                @click="toggleFilter('memory')"
+                class="p-1 hover:bg-gray-100 rounded transition-colors"
+                type="button"
+                aria-label="Toggle memory filter"
+              >
+                <svg
+                  class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                  :class="{ 'rotate-180': collapsedFilters.memory }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+            </div>
+            <div
+              v-show="!collapsedFilters.memory"
+              class="space-y-3 max-h-48 overflow-y-auto transition-all duration-200"
+            >
               <div v-for="memory in memoryOptions" :key="memory.value" class="flex items-center">
                 <input :id="'memory-' + memory.value" type="checkbox" v-model="memory.checked"
                   class="custom-checkbox focus:ring-1 focus:ring-gray-400">
@@ -298,23 +373,115 @@ const goToPage = (page: number) => {
 
           <!-- Additional Filters -->
           <div class="mb-6">
-            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Protection class</h3>
-            <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
+            <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
+              <h3 class="font-srProDisplay text-lg font-semibold text-black">Protection class</h3>
+              <button
+                @click="toggleFilter('protectionClass')"
+                class="p-1 hover:bg-gray-100 rounded transition-colors"
+                type="button"
+                aria-label="Toggle protection class filter"
+              >
+                <svg
+                  class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                  :class="{ 'rotate-180': collapsedFilters.protectionClass }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+            </div>
+            <div
+              v-show="!collapsedFilters.protectionClass"
+              class="transition-all duration-200"
+            >
+              <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
+            </div>
           </div>
 
           <div class="mb-6">
-            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Screen diagonal</h3>
-            <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
+            <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
+              <h3 class="font-srProDisplay text-lg font-semibold text-black">Screen diagonal</h3>
+              <button
+                @click="toggleFilter('screenDiagonal')"
+                class="p-1 hover:bg-gray-100 rounded transition-colors"
+                type="button"
+                aria-label="Toggle screen diagonal filter"
+              >
+                <svg
+                  class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                  :class="{ 'rotate-180': collapsedFilters.screenDiagonal }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+            </div>
+            <div
+              v-show="!collapsedFilters.screenDiagonal"
+              class="transition-all duration-200"
+            >
+              <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
+            </div>
           </div>
 
           <div class="mb-6">
-            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Screen type</h3>
-            <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
+            <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
+              <h3 class="font-srProDisplay text-lg font-semibold text-black">Screen type</h3>
+              <button
+                @click="toggleFilter('screenType')"
+                class="p-1 hover:bg-gray-100 rounded transition-colors"
+                type="button"
+                aria-label="Toggle screen type filter"
+              >
+                <svg
+                  class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                  :class="{ 'rotate-180': collapsedFilters.screenType }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+            </div>
+            <div
+              v-show="!collapsedFilters.screenType"
+              class="transition-all duration-200"
+            >
+              <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
+            </div>
           </div>
 
           <div>
-            <h3 class="font-srProDisplay text-lg font-semibold text-black border-b border-[#EBEBEB] mb-4">Battery capacity</h3>
-            <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
+            <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
+              <h3 class="font-srProDisplay text-lg font-semibold text-black">Battery capacity</h3>
+              <button
+                @click="toggleFilter('batteryCapacity')"
+                class="p-1 hover:bg-gray-100 rounded transition-colors"
+                type="button"
+                aria-label="Toggle battery capacity filter"
+              >
+                <svg
+                  class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                  :class="{ 'rotate-180': collapsedFilters.batteryCapacity }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+            </div>
+            <div
+              v-show="!collapsedFilters.batteryCapacity"
+              class="transition-all duration-200"
+            >
+              <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
+            </div>
           </div>
         </div>
 
