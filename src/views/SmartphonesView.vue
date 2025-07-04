@@ -240,7 +240,11 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const goToProductDetails = (productId: number) => {
-  router.push({ name: 'productDetails', params: { productId } })
+  router.push({ name: 'productDetails', params: { productId } }).then(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }).catch(error => {
+    console.error('Navigation error:', error)
+  })
 }
 
 const buyNow = (productId: number) => {
