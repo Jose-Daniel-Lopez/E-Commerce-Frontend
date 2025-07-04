@@ -13,6 +13,7 @@ const currentPage = ref(1)
 const sortBy = ref('name')
 const searchQuery = ref('')
 const favoriteCategories = ref(new Map<number, boolean>())
+const categoryTypes = ref<Array<{ name: string; originalName: string; count: number; checked: boolean }>>([])
 
 // Filter collapse states
 const collapsedFilters = ref({
@@ -31,6 +32,14 @@ const filteredCategories = computed(() => {
     const query = searchQuery.value.toLowerCase().trim()
     filtered = filtered.filter(category =>
       category.name.toLowerCase().includes(query)
+    )
+  }
+
+  // Type filter - only show categories that are checked
+  const selectedTypes = categoryTypes.value.filter(type => type.checked).map(type => type.originalName)
+  if (selectedTypes.length > 0) {
+    filtered = filtered.filter(category =>
+      selectedTypes.includes(category.name)
     )
   }
 
@@ -81,36 +90,180 @@ const translateCategoryName = (categoryName: string): string => {
   return categoryName
 }
 
-// Category type options for filtering
-const categoryTypes = computed(() => {
-  return categoriesStore.categories.map(category => ({
-    name: translateCategoryName(category.name),
-    count: categoriesStore.getProductCount(category.id),
-    checked: false
-  }))
-})
+const getCategoryImageName = (categoryName: string): string => {
+  const normalizedName = removeAccents(categoryName).toLowerCase()
 
-// Categories for catalog grid, with translation and image for smartphones
+  // Esto es una panchitada de epoca del tejón pero no
+  // tengo tiempo para cambiarlo XD
+  const categoryMapping: { [key: string]: string } = {
+    // Audio
+    'audio': 'audio',
+    'sonido': 'audio',
+
+    // Gaming
+    'gaming': 'gaming',
+    'juegos': 'gaming',
+    'videojuegos': 'gaming',
+    'consolas': 'gaming',
+
+    // Tablets
+    'tablets': 'tablets',
+    'tabletas': 'tablets',
+    'ipad': 'tablets',
+
+    // Smartphones
+    'smartphones': 'smartphones',
+    'phones': 'smartphones',
+    'teléfonos': 'smartphones',
+    'telefonos': 'smartphones',
+    'móviles': 'smartphones',
+    'moviles': 'smartphones',
+    'celulares': 'smartphones',
+    'iphone': 'smartphones',
+
+    // Computers
+    'computers': 'computers',
+    'computadoras': 'computers',
+    'ordenadores': 'computers',
+    'laptops': 'computers',
+    'pc': 'computers',
+    'macbook': 'computers',
+
+    // Cameras
+    'cameras': 'cameras',
+    'cámaras': 'cameras',
+    'camaras': 'cameras',
+    'fotografía': 'cameras',
+    'fotografia': 'cameras',
+
+    // Headphones
+    'headphones': 'headphones',
+    'auriculares': 'headphones',
+    'audífonos': 'headphones',
+    'cascos': 'headphones',
+
+    // Accessories
+    'accessories': 'accessories',
+    'accesorios': 'accessories',
+    'complementos': 'accessories',
+
+    // Keyboards
+    'keyboards': 'keyboards',
+    'teclados': 'keyboards',
+
+    // Mice
+    'mice': 'mice',
+    'ratones': 'mice',
+    'mouse': 'mice',
+    'ratón': 'mice',
+
+    // Smart Home
+    'smarthome': 'smarthome',
+    'smart home': 'smarthome',
+    'casa inteligente': 'smarthome',
+    'hogar inteligente': 'smarthome',
+    'hogarinteligente': 'smarthome',
+    'casainteligente': 'smarthome',
+    'domótica': 'smarthome',
+    'domotica': 'smarthome',
+
+    // Smart Watches
+    'smartwatches': 'smartwatches',
+    'smart watches': 'smartwatches',
+    'relojes inteligentes': 'smartwatches',
+    'relojesinteligentes': 'smartwatches',
+    'apple watch': 'smartwatches',
+    'wearables': 'smartwatches'
+  }
+
+  // Buscar coincidencia exacta
+  if (categoryMapping[normalizedName]) {
+    return categoryMapping[normalizedName]
+  }
+
+  // Buscar coincidencia parcial (palabras contenidas)
+  for (const [key, value] of Object.entries(categoryMapping)) {
+    if (normalizedName.includes(key) || key.includes(normalizedName)) {
+      return value
+    }
+  }
+
+  // Fallback: usar el nombre normalizado
+  return normalizedName.replace(/\s+/g, '').replace(/-/g, '')
+}
+
+// Utility to get the best image format for a category
+const getCategoryImage = (categoryName: string): string[] => {
+  const imageName = getCategoryImageName(categoryName)
+  const base = `/images/categories-${imageName}`
+
+  // Debug: log para ver qué imágenes se están buscando
+  console.log(`Categoria: "${categoryName}" -> Imagen: "${imageName}" -> Path: "${base}"`)
+
+  return [
+    `${base}.webp`,
+    `${base}.png`
+  ]
+}
+
+// Categories for catalog grid, with image path candidates
 const translatedPaginatedCategories = computed(() => {
   return paginatedCategories.value.map(category => {
-    let image = ''
-    // Add image for smartphones category
-    if (category.name.toLowerCase().includes('smartphone') || category.name.toLowerCase().includes('smartphones') || category.name.toLowerCase().includes('moviles')) {
-      image = '/images/categories-smartphones.jpg'
-    }
     return {
       ...category,
       name: translateCategoryName(category.name),
-      image
+      imageCandidates: getCategoryImage(category.name)
     }
   })
 })
 
 onMounted(async () => {
   await categoriesStore.fetchCategories()
+  // Initialize category types after categories are loaded
+  categoryTypes.value = categoriesStore.categories.map(category => ({
+    name: translateCategoryName(category.name),
+    originalName: category.name,
+    count: categoriesStore.getProductCount(category.id),
+    checked: false
+  }))
 })
 
 // Methods
+const handleImageError = (event: Event) => {
+  const img = event.target as HTMLImageElement
+  const currentSrc = img.src
+
+  // Buscar la categoría correspondiente para obtener los candidatos
+  const category = translatedPaginatedCategories.value.find(cat =>
+    cat.imageCandidates?.some(candidate => currentSrc.includes(candidate.split('/').pop()?.split('.')[0] || ''))
+  )
+
+  if (category && category.imageCandidates) {
+    const currentIndex = category.imageCandidates.findIndex(candidate =>
+      currentSrc.includes(candidate.split('/').pop()?.split('.')[0] || '')
+    )
+
+    // Intentar con el siguiente candidato
+    if (currentIndex !== -1 && currentIndex < category.imageCandidates.length - 1) {
+      img.src = category.imageCandidates[currentIndex + 1]
+      return
+    }
+  }
+
+  // Si no hay más candidatos, mostrar fallback
+  img.style.display = 'none'
+  const parent = img.parentElement
+  if (parent) {
+    parent.innerHTML = `
+      <div class="w-[80px] h-[80px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
+        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+    `
+  }
+}
+
 const toggleFavorite = (categoryId: number) => {
   const isFavorite = favoriteCategories.value.get(categoryId) || false
   favoriteCategories.value.set(categoryId, !isFavorite)
@@ -128,10 +281,21 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
   collapsedFilters.value[filterName] = !collapsedFilters.value[filterName]
 }
 
+const clearTypeFilters = () => {
+  categoryTypes.value.forEach(type => {
+    type.checked = false
+  })
+}
+
 // Watch for search changes to reset pagination
 watch(searchQuery, () => {
   currentPage.value = 1
 })
+
+// Watch for category type filter changes to reset pagination
+watch(categoryTypes, () => {
+  currentPage.value = 1
+}, { deep: true })
 </script>
 
 <template>
@@ -185,22 +349,33 @@ watch(searchQuery, () => {
           <div class="mb-6">
             <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
               <h3 class="font-srProDisplay text-lg font-semibold text-black">Tipos</h3>
-              <button
-                @click="toggleFilter('productCount')"
-                class="p-1 hover:bg-gray-100 rounded transition-colors"
-                type="button"
-                aria-label="Toggle product count filter"
-              >
-                <svg
-                  class="w-4 h-4 text-gray-600 transition-transform duration-200"
-                  :class="{ 'rotate-180': collapsedFilters.productCount }"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              <div class="flex items-center space-x-2">
+                <button
+                  v-if="categoryTypes.some(type => type.checked)"
+                  @click="clearTypeFilters"
+                  class="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                  type="button"
+                  title="Limpiar filtros"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </button>
+                  Limpiar
+                </button>
+                <button
+                  @click="toggleFilter('productCount')"
+                  class="p-1 hover:bg-gray-100 rounded transition-colors"
+                  type="button"
+                  aria-label="Toggle product count filter"
+                >
+                  <svg
+                    class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                    :class="{ 'rotate-180': collapsedFilters.productCount }"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+              </div>
             </div>
             <div v-show="!collapsedFilters.productCount" class="transition-all duration-200">
               <div class="space-y-3 max-h-64 overflow-y-auto">
@@ -291,7 +466,7 @@ watch(searchQuery, () => {
             <div
               v-for="category in translatedPaginatedCategories"
               :key="category.id"
-              class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[300px] md:px-4"
+              class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4 flex flex-col"
             >
               <!-- Favorite Button -->
               <div class="absolute top-4 right-4 z-10">
@@ -327,33 +502,40 @@ watch(searchQuery, () => {
               </div>
 
               <div class="flex flex-col h-full">
+                <!-- Category Image/Icon -->
+              <div class="flex items-center justify-center mb-4">
+                <div class="h-[160px] w-[160px] bg-white rounded-xl flex items-center justify-center shadow-sm overflow-hidden relative">
+                  <!-- Imagen principal con candidates -->
+                  <img
+                    v-if="category.imageCandidates"
+                    :src="category.imageCandidates[0]"
+                    :alt="`Imagen de ${category.name}`"
+                    class="object-contain w-full h-full transition-transform duration-300 hover:scale-105"
+                    loading="lazy"
+                    @error="handleImageError"
+                  />
 
-                <!-- Category Icon -->
-                <div class="flex items-center justify-center mb-6">
-                  <div class="h-[80px] w-[80px] md:h-[100px] md:w-[100px] bg-white rounded-full flex items-center justify-center shadow-sm overflow-hidden">
-                    <img v-if="category.image" :src="category.image" :alt="category.name" class="object-cover w-full h-full" />
-                    <svg v-else class="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  <!-- Fallback icon con mejor diseño -->
+                  <div v-else class="w-[80px] h-[80px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
+                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 10H6L5 9z" />
                     </svg>
                   </div>
                 </div>
-
-                <div class="flex flex-col flex-1 gap-4">
-                  <!-- Category Name -->
-                  <div class="text-center">
-                    <h3 class="font-srProDisplay text-lg font-semibold text-black mb-2">{{ category.name }}</h3>
-                    <p class="text-sm text-gray-600">{{ categoriesStore.getProductCount(category.id) }} productos</p>
-                  </div>
-
-                  <!-- View Button -->
-                  <div class="flex items-center justify-center mt-auto">
-                    <button
-                      @click="viewCategoryProducts(category.id)"
-                      class="w-full bg-black text-white py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:bg-gray-800 transition-colors"
-                    >
-                      Ver Productos
-                    </button>
-                  </div>
+              </div>
+                <!-- Category Name -->
+                <div class="flex-1 flex flex-col items-center justify-center">
+                  <h3 class="font-srProDisplay text-lg font-semibold text-black mb-2 text-center line-clamp-2">{{ category.name }}</h3>
+                  <p class="text-sm text-gray-600 text-center">{{ categoriesStore.getProductCount(category.id) }} productos</p>
+                </div>
+                <!-- View Button -->
+                <div class="flex items-center justify-center mt-4">
+                  <button
+                    @click="viewCategoryProducts(category.id)"
+                    class="w-full bg-black text-white py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:bg-gray-800 transition-colors"
+                  >
+                    Ver Productos
+                  </button>
                 </div>
               </div>
             </div>
