@@ -174,15 +174,15 @@ const getCategoryImageName = (categoryName: string): string => {
     'wearables': 'smartwatches'
   }
 
-  // Buscar coincidencia exacta PRIMERO
+  // Try exact match first
   if (categoryMapping[normalizedName]) {
     return categoryMapping[normalizedName]
   }
 
-  // Ordenar las keys por longitud (más largas primero) para evitar coincidencias parciales incorrectas
+  // Sort keys by length (longest first) to avoid incorrect partial matches
   const sortedKeys = Object.keys(categoryMapping).sort((a, b) => b.length - a.length)
 
-  // Buscar coincidencia parcial con keys más largas primero
+  // Try partial match with longer keys first
   for (const key of sortedKeys) {
     if (normalizedName.includes(key)) {
       return categoryMapping[key]
@@ -197,7 +197,7 @@ const getCategoryImage = (categoryName: string): string[] => {
   const imageName = getCategoryImageName(categoryName)
   const base = `/images/categories-${imageName}`
 
-  // Debug: log para ver qué imágenes se están buscando
+  // Debug: log to see which images are being searched
   console.log(`Categoria: "${categoryName}" -> Imagen: "${imageName}" -> Path: "${base}"`)
 
   return [
@@ -233,7 +233,7 @@ const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement
   const currentSrc = img.src
 
-  // Buscar la categoría correspondiente para obtener los candidatos
+  // Find the corresponding category to get the image candidates
   const category = translatedPaginatedCategories.value.find(cat =>
     cat.imageCandidates?.some(candidate => currentSrc.includes(candidate.split('/').pop()?.split('.')[0] || ''))
   )
@@ -243,14 +243,14 @@ const handleImageError = (event: Event) => {
       currentSrc.includes(candidate.split('/').pop()?.split('.')[0] || '')
     )
 
-    // Intentar con el siguiente candidato
+    // Try the next candidate
     if (currentIndex !== -1 && currentIndex < category.imageCandidates.length - 1) {
       img.src = category.imageCandidates[currentIndex + 1]
       return
     }
   }
 
-  // Si no hay más candidatos, mostrar fallback
+  // If there are no more candidates, show fallback
   img.style.display = 'none'
   const parent = img.parentElement
   if (parent) {
@@ -270,18 +270,20 @@ const toggleFavorite = (categoryId: number) => {
 }
 
 const viewCategoryProducts = (categoryId: number) => {
-  // Buscar la categoría por ID para obtener su nombre
+  // Find the category by ID to get its name
   const category = categoriesStore.categories.find(cat => cat.id === categoryId)
   if (category) {
-    // Normalizar el nombre para la URL
+    // Normalize the name for the URL
     const categoryName = category.name.toLowerCase()
-      .replace(/\s+/g, '-')           // Reemplazar espacios con guiones
-      .replace(/[^\w\-]+/g, '')       // Remover caracteres especiales
-      .replace(/\-\-+/g, '-')         // Reemplazar múltiples guiones con uno solo
-      .replace(/^-+/, '')             // Remover guiones al inicio
-      .replace(/-+$/, '')             // Remover guiones al final
+      .replace(/\s+/g, '-')           // Replace spaces with dashes
+      .replace(/[^\w\-]+/g, '')       // Remove special characters
+      .replace(/\-\-+/g, '-')         // Replace multiple dashes with a single one
+      .replace(/^-+/, '')             // Remove dashes at the start
+      .replace(/-+$/, '')             // Remove dashes at the end
 
-    router.push(`/catalog/${categoryName}`)
+    router.push(`/catalog/${categoryName}`).then(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+   })
   }
 }
 
@@ -586,7 +588,7 @@ watch(categoryTypes, () => {
 </template>
 
 <style scoped>
-/* Avoid that annoying tailwind blue outline */
+/* Remove default Tailwind blue outline on button focus */
 button:focus {
   outline: none;
   box-shadow: none;
