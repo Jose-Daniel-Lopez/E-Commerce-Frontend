@@ -93,8 +93,6 @@ const translateCategoryName = (categoryName: string): string => {
 const getCategoryImageName = (categoryName: string): string => {
   const normalizedName = removeAccents(categoryName).toLowerCase()
 
-  // Esto es una panchitada de epoca del tejón pero no
-  // tengo tiempo para cambiarlo XD
   const categoryMapping: { [key: string]: string } = {
     // Audio
     'audio': 'audio',
@@ -151,15 +149,15 @@ const getCategoryImageName = (categoryName: string): string => {
     'keyboards': 'keyboards',
     'teclados': 'keyboards',
 
-    // Mice
+    // Mice - Más específico primero
     'mice': 'mice',
     'ratones': 'mice',
     'mouse': 'mice',
     'ratón': 'mice',
 
-    // Smart Home
-    'smarthome': 'smarthome',
+    // Smart Home - Más específico primero
     'smart home': 'smarthome',
+    'smarthome': 'smarthome',
     'casa inteligente': 'smarthome',
     'hogar inteligente': 'smarthome',
     'hogarinteligente': 'smarthome',
@@ -168,27 +166,29 @@ const getCategoryImageName = (categoryName: string): string => {
     'domotica': 'smarthome',
 
     // Smart Watches
-    'smartwatches': 'smartwatches',
     'smart watches': 'smartwatches',
+    'smartwatches': 'smartwatches',
     'relojes inteligentes': 'smartwatches',
     'relojesinteligentes': 'smartwatches',
     'apple watch': 'smartwatches',
     'wearables': 'smartwatches'
   }
 
-  // Buscar coincidencia exacta
+  // Buscar coincidencia exacta PRIMERO
   if (categoryMapping[normalizedName]) {
     return categoryMapping[normalizedName]
   }
 
-  // Buscar coincidencia parcial (palabras contenidas)
-  for (const [key, value] of Object.entries(categoryMapping)) {
-    if (normalizedName.includes(key) || key.includes(normalizedName)) {
-      return value
+  // Ordenar las keys por longitud (más largas primero) para evitar coincidencias parciales incorrectas
+  const sortedKeys = Object.keys(categoryMapping).sort((a, b) => b.length - a.length)
+
+  // Buscar coincidencia parcial con keys más largas primero
+  for (const key of sortedKeys) {
+    if (normalizedName.includes(key)) {
+      return categoryMapping[key]
     }
   }
 
-  // Fallback: usar el nombre normalizado
   return normalizedName.replace(/\s+/g, '').replace(/-/g, '')
 }
 
@@ -270,7 +270,19 @@ const toggleFavorite = (categoryId: number) => {
 }
 
 const viewCategoryProducts = (categoryId: number) => {
-  router.push({ name: 'categoryProducts', params: { categoryId: categoryId.toString() } })
+  // Buscar la categoría por ID para obtener su nombre
+  const category = categoriesStore.categories.find(cat => cat.id === categoryId)
+  if (category) {
+    // Normalizar el nombre para la URL
+    const categoryName = category.name.toLowerCase()
+      .replace(/\s+/g, '-')           // Reemplazar espacios con guiones
+      .replace(/[^\w\-]+/g, '')       // Remover caracteres especiales
+      .replace(/\-\-+/g, '-')         // Reemplazar múltiples guiones con uno solo
+      .replace(/^-+/, '')             // Remover guiones al inicio
+      .replace(/-+$/, '')             // Remover guiones al final
+
+    router.push(`/catalog/${categoryName}`)
+  }
 }
 
 const goToPage = (page: number) => {

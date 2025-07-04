@@ -106,7 +106,7 @@ const data = computed(() => {
       .replace(/[ñ]/g, 'n')
       .replace(/[ç]/g, 'c')
       .replace(/[^a-z0-9-]/g, ''),
-    icon: getCategoryIcon(category.name)
+    icon: category.icon
   }))
 })
 
@@ -125,24 +125,6 @@ const translateCategoryName = (categoryName: string): string => {
 
   // Fallback: return the original name
   return categoryName
-}
-
-// Map category names to icons
-const getCategoryIcon = (categoryName: string): string => {
-  const name = categoryName.toLowerCase()
-  if (name.includes('movil') || name.includes('phone') || name.includes('moviles')) return 'gi-smartphone'
-  if (name.includes('reloj') || name.includes('watch') || name.includes('smartwatch')) return 'bi-smartwatch'
-  if (name.includes('camara') || name.includes('camera') || name.includes('camaras')) return 'bi-camera'
-  if (name.includes('auricular') || name.includes('headphone') || name.includes('audio')) return 'la-headphones-solid'
-  if (name.includes('ordenador') || name.includes('computer') || name.includes('laptop')) return 'bi-laptop'
-  if (name.includes('teclado') || name.includes('keyboard')) return 'bi-keyboard'
-  if (name.includes('raton') || name.includes('mouse') || name.includes('mice')) return 'bi-mouse'
-  if (name.includes('gaming') || name.includes('juego')) return 'gi-console-controller'
-  if (name.includes('tablet')) return 'co-tablet'
-  if (name.includes('hogar') || name.includes('smart home') || name.includes('inteligente')) return 'ri-home-wifi-line'
-  if (name.includes('musica') || name.includes('music') || name.includes('audio')) return 'hi-music-note'
-  if (name.includes('accesorios') || name.includes('accessories') || name.includes('cable')) return 'md-cable'
-  return 'bi-box-seam' // Default icon
 }
 
 // Fetch categories on component mount

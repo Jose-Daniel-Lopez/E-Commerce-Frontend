@@ -93,12 +93,9 @@ const breadcrumbs = ref([
   { label: 'smartphones.title' }
 ])
 
-// Reactively update breadcrumbs on language change (if needed for other dynamic labels)
-// No need to update static translation keys
-
 // Mock data for demonstration
 const brands = [
-  { name: 'Apple', count: 110, checked: true },
+  { name: 'Apple', count: 110, checked: false },
   { name: 'Samsung', count: 125, checked: false },
   { name: 'Xiaomi', count: 68, checked: false },
   { name: 'Poco', count: 44, checked: false },

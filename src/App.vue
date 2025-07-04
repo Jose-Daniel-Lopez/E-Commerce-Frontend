@@ -1,8 +1,37 @@
+
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import MainHeader from '@/components/shared/MainHeader.vue'
 import SubnavBar from '@/components/shared/Subnav.vue'
 import Footer from '@/components/shared/Footer.vue'
+import { useCategoriesStore } from '@/stores/categories'
+import { computed, onMounted } from 'vue'
+
+const categoriesStore = useCategoriesStore()
+
+// Normalizar categorías para SubnavBar
+const subnavCategories = computed(() =>
+  categoriesStore.categories.map(category => ({
+    name: category.name,
+    icon: category.icon,
+    slug: category.name.toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[áàäâã]/g, 'a')
+      .replace(/[éèëê]/g, 'e')
+      .replace(/[íìïî]/g, 'i')
+      .replace(/[óòöôõ]/g, 'o')
+      .replace(/[úùüû]/g, 'u')
+      .replace(/[ñ]/g, 'n')
+      .replace(/[ç]/g, 'c')
+      .replace(/[^a-z0-9-]/g, ''),
+  }))
+)
+
+onMounted(() => {
+  if (!categoriesStore.hasCategories) {
+    categoriesStore.fetchCategories()
+  }
+})
 </script>
 
 <template>
@@ -11,7 +40,7 @@ import Footer from '@/components/shared/Footer.vue'
     <MainHeader />
 
     <!-- Subnav Component -->
-    <SubnavBar />
+    <SubnavBar :categories="subnavCategories" />
 
     <!-- Main Content -->
     <main class="min-h-screen">
