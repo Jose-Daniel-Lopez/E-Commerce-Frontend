@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue'
+import { useLanguage } from '@/composables/useLanguage'
 import { useRouter } from 'vue-router'
 import { useCategoriesStore } from '@/stores/categories'
 
-
 const router = useRouter()
 const categoriesStore = useCategoriesStore()
+const { t } = useLanguage()
 
 // State
 const currentPage = ref(1)
@@ -60,19 +61,50 @@ const paginatedCategories = computed(() => {
 
 const totalPages = computed(() => Math.ceil(filteredCategories.value.length / itemsPerPage))
 
-// Breadcrumb config
+// Breadcrumbs for navigation
 const breadcrumbs = ref([
-  { label: 'Catalog' } // This will be translated to "Catálogo" in the i18n file
+  { label: 'Catalog' } // Will be translated via i18n
 ])
 
+// Translate category name using i18n, supporting both accented and unaccented keys
+const removeAccents = (str: string) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[ -]/g, '')
+const translateCategoryName = (categoryName: string): string => {
+  const normalizedName = categoryName.toLowerCase()
+  const translationKey = `shop.categories.${normalizedName}`
+  let translated = t(translationKey)
+  if (translated !== translationKey) return translated
+  // Try without accents
+  const unaccented = removeAccents(normalizedName)
+  const translationKeyUnaccented = `shop.categories.${unaccented}`
+  translated = t(translationKeyUnaccented)
+  if (translated !== translationKeyUnaccented) return translated
+  return categoryName
+}
+
 // Category type options for filtering
-const categoryTypes = [
-  { name: 'Electrónicos', count: 8, checked: false },
-  { name: 'Accesorios', count: 12, checked: false },
-  { name: 'Dispositivos', count: 6, checked: false },
-  { name: 'Audio', count: 4, checked: false },
-  { name: 'Gaming', count: 3, checked: false }
-]
+const categoryTypes = computed(() => {
+  return categoriesStore.categories.map(category => ({
+    name: translateCategoryName(category.name),
+    count: categoriesStore.getProductCount(category.id),
+    checked: false
+  }))
+})
+
+// Categories for catalog grid, with translation and image for smartphones
+const translatedPaginatedCategories = computed(() => {
+  return paginatedCategories.value.map(category => {
+    let image = ''
+    // Add image for smartphones category
+    if (category.name.toLowerCase().includes('smartphone') || category.name.toLowerCase().includes('smartphones') || category.name.toLowerCase().includes('moviles')) {
+      image = '/images/categories-smartphones.jpg'
+    }
+    return {
+      ...category,
+      name: translateCategoryName(category.name),
+      image
+    }
+  })
+})
 
 onMounted(async () => {
   await categoriesStore.fetchCategories()
@@ -257,7 +289,7 @@ watch(searchQuery, () => {
           <!-- Categories Grid -->
           <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div
-              v-for="category in paginatedCategories"
+              v-for="category in translatedPaginatedCategories"
               :key="category.id"
               class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[300px] md:px-4"
             >
@@ -295,10 +327,12 @@ watch(searchQuery, () => {
               </div>
 
               <div class="flex flex-col h-full">
+
                 <!-- Category Icon -->
                 <div class="flex items-center justify-center mb-6">
-                  <div class="h-[80px] w-[80px] md:h-[100px] md:w-[100px] bg-white rounded-full flex items-center justify-center shadow-sm">
-                    <svg class="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div class="h-[80px] w-[80px] md:h-[100px] md:w-[100px] bg-white rounded-full flex items-center justify-center shadow-sm overflow-hidden">
+                    <img v-if="category.image" :src="category.image" :alt="category.name" class="object-cover w-full h-full" />
+                    <svg v-else class="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                     </svg>
                   </div>

@@ -22,10 +22,22 @@ const sizeClasses = {
 
 const getCategoryIcon = (categoryName: string): string => {
   const icons: Record<string, string> = {
-    "Dispositivos Móviles": "hi-device-mobile",
+    // Spanish categories (from database)
+    "Moviles": "hi-device-mobile",
+    "Camaras": "bi-camera",
+    "Relojes Inteligentes": "bi-smartwatch",
+    "Auriculares": "la-headphones-solid",
+    "Ordenadores": "bi-laptop",
+    "Teclados": "bi-keyboard",
+    "Ratones": "bi-mouse",
+    "Gaming": "gi-joystick",
+    "Tablets": "co-tablet",
+    "Hogar Inteligente": "ri-home-wifi-line",
+    "Audio": "hi-music-note",
+    "Accesorios": "md-cable",
+    // English and other categories
     Electrónica: 'co-settings',
     Informática: "bi-laptop",
-    Audio: 'bi-headphones',
     Hogar: 'hi-home',
     Clothing: 'fa-tshirt',
     Books: 'hi-book-open',
@@ -37,7 +49,6 @@ const getCategoryIcon = (categoryName: string): string => {
     Automotive: 'hi-truck',
     Health: 'hi-heart',
     Music: 'hi-music-note',
-    Gaming: 'gi-joystick',
     Travel: 'hi-airplane',
     Art: 'hi-color-swatch',
     Furniture: 'md-chair',
@@ -59,4 +70,3 @@ const getCategoryIcon = (categoryName: string): string => {
     class="text-blue-600 dark:text-blue-400"
   />
 </template>
- 

@@ -130,9 +130,9 @@ const translateCategoryName = (categoryName: string): string => {
 // Map category names to icons
 const getCategoryIcon = (categoryName: string): string => {
   const name = categoryName.toLowerCase()
-  if (name.includes('movil') || name.includes('phone') || name.includes('dispositivos móviles')) return 'gi-smartphone'
+  if (name.includes('movil') || name.includes('phone') || name.includes('moviles')) return 'gi-smartphone'
   if (name.includes('reloj') || name.includes('watch') || name.includes('smartwatch')) return 'bi-smartwatch'
-  if (name.includes('camara') || name.includes('camera')) return 'bi-camera'
+  if (name.includes('camara') || name.includes('camera') || name.includes('camaras')) return 'bi-camera'
   if (name.includes('auricular') || name.includes('headphone') || name.includes('audio')) return 'la-headphones-solid'
   if (name.includes('ordenador') || name.includes('computer') || name.includes('laptop')) return 'bi-laptop'
   if (name.includes('teclado') || name.includes('keyboard')) return 'bi-keyboard'

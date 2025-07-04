@@ -189,7 +189,7 @@ const products = ref([
     description: 'El iPhone más avanzado con cámara profesional y chip A16 Bionic.',
     price: 1099,
     originalPrice: 1199,
-    category: 'Móviles',
+    category: 'Moviles',
     categoryId: 1,
     image: '/images/Iphone-14-pro-black.png'
   },

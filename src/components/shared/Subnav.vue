@@ -9,7 +9,7 @@
             scale="1.4"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
-          <span class="text-white text-sm opacity-50 font-medium">Móviles</span>
+          <span class="text-white text-sm opacity-50 font-medium">Moviles</span>
         </div>
       </div>
 
@@ -54,7 +54,7 @@
             scale="1.4"
             class="opacity-50 pt-1 pb-0.5 text-white"
           />
-          <span class="text-white text-sm opacity-50 font-medium">Cámaras</span>
+          <span class="text-white text-sm opacity-50 font-medium">Camaras</span>
         </div>
       </div>
 

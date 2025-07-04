@@ -105,16 +105,16 @@ const showCategoriesDropdown = ref(false)
 // Categories list with routes
 const categories = [
   { name: 'Todas las categorías', route: '/catalog' },
-  { name: 'Móviles', route: '/catalog/smartphones' },
-  { name: 'Relojes inteligentes', route: '/catalog/smartwatches' },
-  { name: 'Cámaras', route: '/catalog/cameras' },
+  { name: 'Moviles', route: '/catalog/smartphones' },
+  { name: 'Relojes Inteligentes', route: '/catalog/smartwatches' },
+  { name: 'Camaras', route: '/catalog/cameras' },
   { name: 'Auriculares', route: '/catalog/headphones' },
   { name: 'Ordenadores', route: '/catalog/computers' },
   { name: 'Teclados', route: '/catalog/keyboards' },
   { name: 'Ratones', route: '/catalog/mice' },
   { name: 'Gaming', route: '/catalog/gaming' },
   { name: 'Tablets', route: '/catalog/tablets' },
-  { name: 'Hogar inteligente', route: '/catalog/smart-home' },
+  { name: 'Hogar Inteligente', route: '/catalog/smart-home' },
   { name: 'Audio', route: '/catalog/audio' },
   { name: 'Accesorios', route: '/catalog/accessories' }
 ]
@@ -167,6 +167,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+
 /* Categories dropdown custom scrollbar */
 .categories-scroll::-webkit-scrollbar {
   width: 4px;
