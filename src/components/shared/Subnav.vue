@@ -34,7 +34,7 @@ const props = defineProps<{ categories: CategoryNav[] }>()
 
 const router = useRouter()
 const navigateToCategory = (categorySlug: string) => {
-  router.push(`/category/${categorySlug}`)
+  router.push(`/catalog/${categorySlug}`)
 }
 </script>
 
