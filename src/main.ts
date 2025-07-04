@@ -69,6 +69,7 @@ addIcons(
   AllIcons.HiGlobe,
   AllIcons.HiOfficeBuilding,
   AllIcons.HiCalendar,
+  AllIcons.HiCube,
   AllIcons.HiClock,
   AllIcons.HiSun,
   AllIcons.HiMoon,

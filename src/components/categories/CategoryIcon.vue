@@ -23,10 +23,11 @@ const sizeClasses = {
 }
 
 
-// Ahora el icono viene del campo category.icon, con fallback
+// Get the icon for the category, defaulting to 'hi-cube' if not provided
 const getCategoryIcon = (category: Category): string => {
   return category.icon || 'hi-cube'
 }
+
 </script>
 
 <template>
