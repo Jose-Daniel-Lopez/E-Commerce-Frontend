@@ -123,11 +123,24 @@
     "description": "Discover our selection of latest technology products. From mobile phones to accessories, find everything you need.",
     "categories": {
       "all": "All",
-      "mobiles": "Mobile Phones",
+      "mobiles": "Smartphones",
       "headphones": "Headphones",
       "computers": "Computers",
       "smartwatches": "Smart Watches",
-      "cameras": "Cameras"
+      "cameras": "Cameras",
+      "dispositivos móviles": "Mobile Devices",
+      "ordenadores": "Computers",
+      "auriculares": "Headphones",
+      "relojes inteligentes": "Smart Watches",
+      "cámaras": "Cameras",
+      "gaming": "Gaming",
+      "tablets": "Tablets",
+      "hogar inteligente": "Smart Home",
+      "música": "Music",
+      "accesorios": "Accessories",
+      "electrónicos": "Electronics",
+      "teclados": "Keyboards",
+      "ratones": "Mice"
     },
     "product": {
       "addToCart": "Add to Cart",
@@ -135,9 +148,12 @@
       "outOfStock": "Out of stock"
     },
     "empty": {
-      "title": "No products found",
-      "description": "No products were found for the selected category."
+      "title": "No categories available",
+      "description": "No categories found to display."
     },
+    "retry": "Retry",
+    "loadingCategories": "Loading categories...",
+    "noCategories": "No categories available.",
     "cta": {
       "title": "Can't Find What You're Looking For?",
       "description": "Contact our team and we'll help you find the perfect product for you.",

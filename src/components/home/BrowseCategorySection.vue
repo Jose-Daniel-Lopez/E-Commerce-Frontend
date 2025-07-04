@@ -4,14 +4,14 @@
       <!-- ENCABEZADO Y NAVEGACIÓN -->
       <div class="relative flex h-9 w-full items-center justify-between mb-8">
         <h3 class="font-srProDisplay text-2xl font-medium">
-          Explorar por Categoría
+          {{ t('nav.categories') }}
         </h3>
         <div class="flex items-center gap-2 absolute right-0 top-1/2 -translate-y-1/2 z-20">
           <button
             class="custom-swiper-button-prev-browse-category flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed"
             type="button"
             aria-label="Previous slide"
-            :disabled="!(carouselRef?.canGoPrev)"
+            :disabled="categoriesStore.loading || !(carouselRef?.canGoPrev)"
             style="transform: scaleX(-1);"
             @click="carouselRef?.goToPrev()"
           >
@@ -23,7 +23,7 @@
             class="custom-swiper-button-next-browse-category flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed"
             type="button"
             aria-label="Next slide"
-            :disabled="!(carouselRef?.canGoNext)"
+            :disabled="categoriesStore.loading || !(carouselRef?.canGoNext)"
             @click="carouselRef?.goToNext()"
           >
             <svg :width="'1.2em'" :height="'1.2em'" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -35,20 +35,46 @@
 
       <!-- CAROUSEL -->
       <div class="w-full">
+        <!-- Loading State -->
+        <div v-if="categoriesStore.loading" class="flex justify-center items-center py-12">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-500"></div>
+          <span class="ml-3 text-gray-600">{{ t('common.loading') }}</span>
+        </div>
+
+        <!-- Error State -->
+        <div v-else-if="categoriesStore.error" class="text-center py-8">
+          <p class="text-red-600 mb-4">{{ t('common.error') }}: {{ categoriesStore.error }}</p>
+          <button
+            @click="categoriesStore.fetchCategories()"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            {{ t('common.confirm') }}
+          </button>
+        </div>
+
+        <!-- Carousel with Categories -->
         <CarouselWithNavigation
+          v-else-if="data.length > 0"
           ref="carouselRef"
           :categories="data"
           :slides-per-view="6"
         />
+
+        <!-- Empty State -->
+        <div v-else class="text-center py-8">
+          <p class="text-gray-600">{{ t('shop.empty.title') }}</p>
+        </div>
       </div>
     </Wrapper>
   </section>
   </template>
 
   <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import Wrapper from '../shared/Wrapper.vue'
 import CarouselWithNavigation from '../shared/CarouselWithNavigation.vue'
+import { useCategoriesStore } from '@/stores/categories'
+import { useLanguage } from '@/composables/useLanguage'
 
 // Carousel ref interface
 interface CarouselRef {
@@ -58,84 +84,73 @@ interface CarouselRef {
   canGoNext: boolean
 }
 
+// Store
+const categoriesStore = useCategoriesStore()
+const { t } = useLanguage()
+
 // Carousel ref
 const carouselRef = ref<CarouselRef | null>(null)
 
-// Category data
-const data = [
-  {
-    id: 1,
-    name: "Móviles",
-    slug: "phones",
-    icon: "gi-smartphone"
-  },
-  {
-    id: 2,
-    name: "Relojes Inteligentes",
-    slug: "smart-watches",
-    icon: "bi-smartwatch"
-  },
-  {
-    id: 3,
-    name: "Cámaras",
-    slug: "cameras",
-    icon: "bi-camera"
-  },
-  {
-    id: 4,
-    name: "Auriculares",
-    slug: "headphones",
-    icon: "la-headphones-solid"
-  },
-  {
-    id: 5,
-    name: "Ordenadores",
-    slug: "computers",
-    icon: "bi-laptop"
-  },
-  {
-    id: 6,
-    name: "Teclados",
-    slug: "keyboards",
-    icon: "bi-keyboard"
-  },
-  {
-    id: 7,
-    name: "Ratones",
-    slug: "mice",
-    icon: "bi-mouse"
-  },
-  {
-    id: 8,
-    name: "Gaming",
-    slug: "gaming",
-    icon: "gi-console-controller"
-  },
-  {
-    id: 9,
-    name: "Tablets",
-    slug: "tablets",
-    icon: "co-tablet"
-  },
-  {
-    id: 10,
-    name: "Hogar Inteligente",
-    slug: "smart-home",
-    icon: "ri-home-wifi-line"
-  },
-  {
-    id: 11,
-    name: "Audio",
-    slug: "audio",
-    icon: "hi-music-note"
-  },
-  {
-    id: 12,
-    name: "Accesorios",
-    slug: "accessories",
-    icon: "md-cable"
-  },
-]
+// Transform backend categories to match the component's expected format
+const data = computed(() => {
+  return categoriesStore.categories.map(category => ({
+    id: category.id,
+    name: translateCategoryName(category.name),
+    slug: category.name.toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[áàäâã]/g, 'a')
+      .replace(/[éèëê]/g, 'e')
+      .replace(/[íìïî]/g, 'i')
+      .replace(/[óòöôõ]/g, 'o')
+      .replace(/[úùüû]/g, 'u')
+      .replace(/[ñ]/g, 'n')
+      .replace(/[ç]/g, 'c')
+      .replace(/[^a-z0-9-]/g, ''),
+    icon: getCategoryIcon(category.name)
+  }))
+})
+
+// Translate category names
+const translateCategoryName = (categoryName: string): string => {
+  const normalizedName = categoryName.toLowerCase()
+
+  // Try to find a direct translation
+  const translationKey = `shop.categories.${normalizedName}`
+  const translated = t(translationKey)
+
+  // If translation exists and is different from the key, return it
+  if (translated !== translationKey) {
+    return translated
+  }
+
+  // Fallback: return the original name
+  return categoryName
+}
+
+// Map category names to icons
+const getCategoryIcon = (categoryName: string): string => {
+  const name = categoryName.toLowerCase()
+  if (name.includes('movil') || name.includes('phone') || name.includes('dispositivos móviles')) return 'gi-smartphone'
+  if (name.includes('reloj') || name.includes('watch') || name.includes('smartwatch')) return 'bi-smartwatch'
+  if (name.includes('camara') || name.includes('camera')) return 'bi-camera'
+  if (name.includes('auricular') || name.includes('headphone') || name.includes('audio')) return 'la-headphones-solid'
+  if (name.includes('ordenador') || name.includes('computer') || name.includes('laptop')) return 'bi-laptop'
+  if (name.includes('teclado') || name.includes('keyboard')) return 'bi-keyboard'
+  if (name.includes('raton') || name.includes('mouse') || name.includes('mice')) return 'bi-mouse'
+  if (name.includes('gaming') || name.includes('juego')) return 'gi-console-controller'
+  if (name.includes('tablet')) return 'co-tablet'
+  if (name.includes('hogar') || name.includes('smart home') || name.includes('inteligente')) return 'ri-home-wifi-line'
+  if (name.includes('musica') || name.includes('music') || name.includes('audio')) return 'hi-music-note'
+  if (name.includes('accesorios') || name.includes('accessories') || name.includes('cable')) return 'md-cable'
+  return 'bi-box-seam' // Default icon
+}
+
+// Fetch categories on component mount
+onMounted(async () => {
+  if (!categoriesStore.hasCategories) {
+    await categoriesStore.fetchCategories()
+  }
+})
 </script>
 
 <style scoped>

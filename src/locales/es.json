@@ -57,7 +57,20 @@
       "headphones": "Auriculares",
       "computers": "Ordenadores",
       "smartwatches": "Relojes Inteligentes",
-      "cameras": "Cámaras"
+      "cameras": "Cámaras",
+      "dispositivos móviles": "Dispositivos Móviles",
+      "ordenadores": "Ordenadores",
+      "auriculares": "Auriculares",
+      "relojes inteligentes": "Relojes Inteligentes",
+      "cámaras": "Cámaras",
+      "gaming": "Gaming",
+      "tablets": "Tablets",
+      "hogar inteligente": "Hogar Inteligente",
+      "música": "Música",
+      "accesorios": "Accesorios",
+      "electrónicos": "Electrónicos",
+      "teclados": "Teclados",
+      "ratones": "Ratones"
     },
     "product": {
       "addToCart": "Añadir al Carrito",
@@ -65,9 +78,12 @@
       "outOfStock": "Sin stock"
     },
     "empty": {
-      "title": "No hay productos",
-      "description": "No se encontraron productos para la categoría seleccionada."
+      "title": "No hay categorías disponibles",
+      "description": "No se encontraron categorías para mostrar."
     },
+    "retry": "Reintentar",
+    "loadingCategories": "Cargando categorías...",
+    "noCategories": "No hay categorías disponibles.",
     "cta": {
       "title": "¿No Encuentras Lo Que Buscas?",
       "description": "Contacta con nuestro equipo y te ayudaremos a encontrar el producto perfecto para ti.",
