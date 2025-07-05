@@ -16,6 +16,9 @@ const router = createRouter({
     { path: '/catalog/smartphones/:productId', name: 'productDetails', component: () => import('../views/ProductDetailsViewNew.vue') },
     { path: '/categories/:categoryId/products', name: 'categoryProducts', component: () => import('../views/CategoryProductsView.vue') },
 
+    // Cart & Wishlist
+    { path: '/cart', name: 'shoppingCart', component: () => import('../views/ShoppingCartView.vue') },
+
     // User-related
     { path: '/users', name: 'users', component: () => import('../views/UsersView.vue') },
     { path: '/users/:userId/addresses', name: 'userAddresses', component: () => import('../views/UserAddressesView.vue') },
@@ -28,6 +31,7 @@ const router = createRouter({
     { path: '/payments', name: 'payments', component: () => import('../views/PaymentsView.vue') },
     { path: '/coupons', name: 'coupons', component: () => import('../views/CouponsView.vue') },
     { path: '/shipping-addresses', name: 'shippingAddresses', component: () => import('../views/ShippingAddressesView.vue') },
+
 
     // Auth
     { path: '/login', name: 'login', component: () => import('../views/auth/LoginView.vue') },
