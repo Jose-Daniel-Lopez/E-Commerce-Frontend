@@ -81,10 +81,28 @@ const filteredBrands = computed(() => {
 
 // Filtered memory options based on search query
 const filteredMemoryOptions = computed(() => {
-  if (!memorySearchQuery.value) return memoryOptions
-  return memoryOptions.filter(memory =>
-    memory.value.toLowerCase().includes(memorySearchQuery.value.toLowerCase())
-  )
+  const query = memorySearchQuery.value?.trim().toLowerCase()
+
+  // Return all memories if query is empty or too short
+  if (!query || query.length < 2) return productsStore.memories
+
+  return productsStore.memories
+    .map(memory => {
+      const memoryValue = memory.value.toLowerCase()
+      let score = 0
+
+      // Exact match (highest score)
+      if (memoryValue === query) score = 1000
+      // Starts with query
+      else if (memoryValue.startsWith(query)) score = 500 + (100 - query.length)
+      // Contains query
+      else if (memoryValue.includes(query)) score = 100 + (100 - memoryValue.indexOf(query))
+
+      return { memory, score }
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map(({ memory }) => memory)
 })
 
 // Breadcrumb config
@@ -92,20 +110,6 @@ const breadcrumbs = ref([
   { label: 'catalog.title', to: '/catalog' },
   { label: 'smartphones.title' }
 ])
-
-// Mock memory options data
-const memoryOptions = [
-  { value: '16GB', count: 85, checked: false },
-  { value: '32GB', count: 148, checked: false },
-  { value: '64GB', count: 126, checked: false },
-  { value: '128GB', count: 80, checked: true },
-  { value: '256GB', count: 68, checked: false },
-  { value: '512GB', count: 4, checked: false },
-  { value: '1TB', count: 8, checked: false },
-  { value: '2TB', count: 12, checked: false },
-  { value: '4TB', count: 24, checked: false },
-  { value: '8TB', count: 7, checked: false }
-]
 
 // Mock products data
 const mockProducts = [
@@ -175,10 +179,11 @@ const mockProducts = [
 ]
 
 onMounted(async () => {
-  // Load products and brands when component mounts
+  // Load products, brands and memories when component mounts
   await Promise.all([
     productsStore.fetchProducts(),
-    productsStore.fetchBrands()
+    productsStore.fetchBrands(),
+    productsStore.fetchMemories()
   ])
 })
 
@@ -384,7 +389,6 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                     class="custom-checkbox focus:ring-1 focus:ring-gray-400">
                   <label :for="'memory-' + memory.value" class="ml-3 flex-1 flex items-center justify-between">
                     <span class="text-sm font-srProDisplay text-gray-1000">{{ memory.value }}</span>
-                    <span class="text-xs font-srProDisplay text-gray-400 pr-4">{{ memory.count }}</span>
                   </label>
                 </div>
               </div>

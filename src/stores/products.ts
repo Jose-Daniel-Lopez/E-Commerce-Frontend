@@ -25,10 +25,16 @@ interface Brand {
   checked: boolean
 }
 
+interface Memory {
+  value: string
+  checked: boolean
+}
+
 export const useProductsStore = defineStore('products', () => {
   // State
   const products = ref<Product[]>([])
   const brands = ref<Brand[]>([])
+  const memories = ref<Memory[]>([])
   const loading = ref(false)
   const error = ref('')
   const currentCategoryId = ref<number | null>(null)
@@ -107,6 +113,15 @@ export const useProductsStore = defineStore('products', () => {
       brands.value = response.data.map((name) => ({ name, checked: false }))
     } catch (err) {
       console.error('Error fetching brands:', err)
+    }
+  }
+
+  const fetchMemories = async () => {
+    try {
+      const response = await api.get<string[]>('/products/memories')
+      memories.value = response.data.map((value) => ({ value, checked: false }))
+    } catch (err) {
+      console.error('Error fetching memories:', err)
     }
   }
 
@@ -298,6 +313,7 @@ export const useProductsStore = defineStore('products', () => {
     // State
     products,
     brands,
+    memories,
     loading,
     error,
     currentCategoryId,
@@ -312,6 +328,7 @@ export const useProductsStore = defineStore('products', () => {
     // Actions
     fetchProducts,
     fetchBrands,
+    fetchMemories,
     fetchProductsByCategory,
     fetchProductById,
     fetchProductStats,
