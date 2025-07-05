@@ -73,7 +73,7 @@
                   <span>${{ total }}</span>
                 </div>
               </div>
-              <button class="w-full bg-black text-white font-srProDisplay font-medium py-4 rounded-md hover:bg-[#333333] transition-colors duration-200 mt-4">Checkout</button>
+              <button @click="checkout" class="w-full bg-black text-white font-srProDisplay font-medium py-4 rounded-md hover:bg-[#333333] transition-colors duration-200 mt-4">Checkout</button>
             </div>
           </div>
         </div>
@@ -84,8 +84,11 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+
+const router = useRouter()
 
 const breadcrumbs = [
   { label: 'Shopping Cart' }
@@ -149,6 +152,15 @@ function applyDiscount() {
     discount.value = 0
     couponEffect.value = false
   }
+}
+
+const checkout = () => {
+
+  // Navigate to contact page
+  router.push('/checkoutAddress').then(() => {
+
+    // Scroll to top after navigation with a smooth animation
+    window.scrollTo({ top: 0, behavior: 'smooth' })})
 }
 </script>
 

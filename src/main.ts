@@ -89,6 +89,10 @@ addIcons(
   AllIcons.RiHomeWifiLine,
   AllIcons.HiMusicNote,
   AllIcons.MdCable,
+  AllIcons.MdAddcircle,
+  AllIcons.MdLocationon,
+  AllIcons.MdLocalshipping,
+  AllIcons.SiContactlesspayment,
   AllIcons.FaSearch,
   AllIcons.GiBattery75
 )
