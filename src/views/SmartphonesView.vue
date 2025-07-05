@@ -56,9 +56,9 @@ const filteredBrands = computed(() => {
   const query = brandSearchQuery.value?.trim().toLowerCase()
 
   // Return all brands if query is empty or too short
-  if (!query || query.length < 2) return brands
+  if (!query || query.length < 2) return productsStore.brands
 
-  return brands
+  return productsStore.brands
     .map(brand => {
       const brandName = brand.name.toLowerCase()
       let score = 0
@@ -92,52 +92,6 @@ const breadcrumbs = ref([
   { label: 'catalog.title', to: '/catalog' },
   { label: 'smartphones.title' }
 ])
-
-// Mock data for demonstration
-const brands = [
-  { name: 'Apple', count: 110, checked: false },
-  { name: 'Samsung', count: 125, checked: false },
-  { name: 'Xiaomi', count: 68, checked: false },
-  { name: 'Poco', count: 44, checked: false },
-  { name: 'Google Pixel', count: 36, checked: false },
-  { name: 'Huawei', count: 10, checked: false },
-  { name: 'OnePlus', count: 34, checked: false },
-  { name: 'Sony', count: 9, checked: false },
-  { name: 'LG', count: 13, checked: false },
-  { name: 'Motorola', count: 51, checked: false },
-  { name: 'Oppo', count: 99, checked: false },
-  { name: 'Vivo', count: 82, checked: false },
-  { name: 'Realme', count: 74, checked: false },
-  { name: 'Honor', count: 30, checked: false },
-  { name: 'Nothing', count: 29, checked: false },
-  { name: 'Asus', count: 63, checked: false },
-  { name: 'Nokia', count: 29, checked: false },
-  { name: 'TCL', count: 11, checked: false },
-  { name: 'Intel', count: 79, checked: false },
-  { name: 'RedMagic', count: 32, checked: false },
-  { name: 'AMD', count: 57, checked: false },
-  { name: 'NVIDIA', count: 19, checked: false },
-  { name: 'Broadcom', count: 60, checked: false },
-  { name: 'Texas Instruments', count: 89, checked: false },
-  { name: 'Micron', count: 43, checked: false },
-  { name: 'Analog Devices', count: 9, checked: false },
-  { name: 'Infineon', count: 9, checked: false },
-  { name: 'STMicroelectronics', count: 39, checked: false },
-  { name: 'Marvell', count: 91, checked: false },
-  { name: 'Xilinx', count: 13, checked: false },
-  { name: 'Cypress', count: 4, checked: false },
-  { name: 'Maxim Integrated', count: 85, checked: false },
-  { name: 'Intel', count: 70, checked: false },
-  { name: 'AMD', count: 70, checked: false },
-  { name: 'NVIDIA', count: 42, checked: false },
-  { name: 'Qualcomm', count: 21, checked: false },
-  { name: 'Texas Instruments', count: 14, checked: false },
-  { name: 'Micron', count: 44, checked: false },
-  { name: 'Analog Devices', count: 8, checked: false },
-  { name: 'Infineon', count: 39, checked: false },
-  { name: 'STMicroelectronics', count: 51, checked: false },
-  { name: 'MediaTek', count: 52, checked: false }
-];
 
 // Mock memory options data
 const memoryOptions = [
@@ -221,8 +175,11 @@ const mockProducts = [
 ]
 
 onMounted(async () => {
-  // Load products when component mounts
-  await productsStore.fetchProducts()
+  // Load products and brands when component mounts
+  await Promise.all([
+    productsStore.fetchProducts(),
+    productsStore.fetchBrands()
+  ])
 })
 
 // Methods
@@ -383,7 +340,6 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                     class="custom-checkbox focus:ring-1 focus:ring-gray-400">
                   <label :for="'brand-' + brand.name" class="ml-3 flex-1 flex items-center justify-between">
                     <span class="text-sm font-srProDisplay text-gray-1000">{{ brand.name }}</span>
-                    <span class="text-xs font-srProDisplay text-gray-400 pr-4">{{ brand.count }}</span>
                   </label>
                 </div>
               </div>

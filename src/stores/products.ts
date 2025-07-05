@@ -20,9 +20,15 @@ interface ProductStats {
   averagePrice: number
 }
 
+interface Brand {
+  name: string
+  checked: boolean
+}
+
 export const useProductsStore = defineStore('products', () => {
   // State
   const products = ref<Product[]>([])
+  const brands = ref<Brand[]>([])
   const loading = ref(false)
   const error = ref('')
   const currentCategoryId = ref<number | null>(null)
@@ -92,6 +98,15 @@ export const useProductsStore = defineStore('products', () => {
       error.value = 'Error al cargar los productos'
     } finally {
       loading.value = false
+    }
+  }
+
+  const fetchBrands = async () => {
+    try {
+      const response = await api.get<string[]>('/products/brands')
+      brands.value = response.data.map((name) => ({ name, checked: false }))
+    } catch (err) {
+      console.error('Error fetching brands:', err)
     }
   }
 
@@ -282,6 +297,7 @@ export const useProductsStore = defineStore('products', () => {
   return {
     // State
     products,
+    brands,
     loading,
     error,
     currentCategoryId,
@@ -295,6 +311,7 @@ export const useProductsStore = defineStore('products', () => {
     averagePrice,
     // Actions
     fetchProducts,
+    fetchBrands,
     fetchProductsByCategory,
     fetchProductById,
     fetchProductStats,
