@@ -13,7 +13,6 @@ const { t } = useLanguage()
 const currentPage = ref(1)
 const sortBy = ref('name')
 const searchQuery = ref('')
-const favoriteCategories = ref(new Map<number, boolean>())
 const categoryTypes = ref<Array<{ name: string; originalName: string; count: number; checked: boolean }>>([])
 
 // Filter collapse states
@@ -265,11 +264,6 @@ const handleImageError = (event: Event) => {
   }
 }
 
-const toggleFavorite = (categoryId: number) => {
-  const isFavorite = favoriteCategories.value.get(categoryId) || false
-  favoriteCategories.value.set(categoryId, !isFavorite)
-}
-
 const viewCategoryProducts = (categoryId: number) => {
   // Find the category by ID to get its name
   const category = categoriesStore.categories.find(cat => cat.id === categoryId)
@@ -485,38 +479,6 @@ watch(categoryTypes, () => {
               :key="category.id"
               class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4 flex flex-col"
             >
-              <!-- Favorite Button -->
-              <div class="absolute top-4 right-4 z-10">
-                <button
-                  @click="toggleFavorite(category.id)"
-                  class="w-6 h-6 text-gray-600 hover:text-red-600 transition-colors"
-                  type="button"
-                  aria-label="Toggle favorite"
-                >
-                  <svg
-                    v-if="!favoriteCategories.get(category.id)"
-                    class="w-6 h-6 text-gray-600 hover:text-red-600 transition-colors"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
-                  <svg
-                    v-else
-                    class="w-6 h-6 text-red-600"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                </button>
-              </div>
 
               <div class="flex flex-col h-full">
                 <!-- Category Image/Icon -->

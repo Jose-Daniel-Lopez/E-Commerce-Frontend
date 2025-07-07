@@ -245,3 +245,11 @@ const toggleFaq = (index: number) => {
   activeFaq.value = activeFaq.value === index ? null : index
 }
 </script>
+
+<style scoped>
+/* Remove default Tailwind blue outline on button focus */
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+</style>
