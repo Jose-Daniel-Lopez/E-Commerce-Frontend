@@ -95,7 +95,6 @@ addIcons(
   AllIcons.SiContactlesspayment,
   AllIcons.FaSearch,
   AllIcons.GiBattery75,
-  // Añadidos para RegisterView
   AllIcons.HiTruck,
   AllIcons.HiClipboardList,
   AllIcons.HiGift,
