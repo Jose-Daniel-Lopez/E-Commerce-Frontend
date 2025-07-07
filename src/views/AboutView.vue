@@ -137,7 +137,7 @@ const breadcrumbs = [
 const goToProducts = () => {
 
   // Navigate to home page
-  router.push('/').then(() => {
+  router.push({ name: 'home' }).then(() => {
 
     // Scroll to top after navigation with a smooth animation
     window.scrollTo({ top: 0, behavior: 'smooth' })})
@@ -146,7 +146,7 @@ const goToProducts = () => {
 const contactUs = () => {
 
   // Navigate to contact page
-  router.push('/contact').then(() => {
+  router.push({ name: 'contact' }).then(() => {
 
     // Scroll to top after navigation with a smooth animation
     window.scrollTo({ top: 0, behavior: 'smooth' })})

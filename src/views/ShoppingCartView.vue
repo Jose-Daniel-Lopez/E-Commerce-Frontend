@@ -157,7 +157,7 @@ function applyDiscount() {
 const checkout = () => {
 
   // Navigate to contact page
-  router.push('/checkoutAddress').then(() => {
+  router.push({ name: 'checkoutAddress' }).then(() => {
 
     // Scroll to top after navigation with a smooth animation
     window.scrollTo({ top: 0, behavior: 'smooth' })})

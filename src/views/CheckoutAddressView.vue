@@ -186,6 +186,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Wrapper from '@/components/shared/Wrapper.vue'
+import router from '@/router'
 
 const addresses = ref([
   {
@@ -236,14 +237,21 @@ function removeAddress(idx: number) {
 }
 
 function goBack() {
-  // Placeholder for navigation
-  alert('Back (not implemented)')
+  router.push({ name: 'shoppingCart' }).then(() => {
+    // Scroll to top after navigation with a smooth animation
+    window.scrollTo({ top: 0, behavior: 'smooth' })}).catch(err => {
+    console.error('Navigation error:', err)
+  })
 }
 
 function goNext() {
-  // Placeholder for navigation
-  alert('Next (not implemented)')
+  router.push({ name: 'checkoutShipping' }).then(() => {
+    // Scroll to top after navigation with a smooth animation
+    window.scrollTo({ top: 0, behavior: 'smooth' })}).catch(err => {
+    console.error('Navigation error:', err)
+  })
 }
+
 </script>
 
 <style scoped>
