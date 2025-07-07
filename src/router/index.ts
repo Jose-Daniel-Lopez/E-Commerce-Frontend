@@ -22,6 +22,7 @@ const router = createRouter({
     // Checkout
     { path: '/checkoutAddress', name: 'checkoutAddress', component: () => import('../views/CheckoutAddressView.vue') },
     { path: '/checkoutShipping', name: 'checkoutShipping', component: () => import('../views/CheckoutShippingView.vue') },
+    { path: '/checkoutPayment', name: 'checkoutPayment', component: () => import('../views/CheckoutPaymentView.vue') },
 
     // User-related
     { path: '/users', name: 'users', component: () => import('../views/UsersView.vue') },
