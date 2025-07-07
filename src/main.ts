@@ -94,7 +94,14 @@ addIcons(
   AllIcons.MdLocalshipping,
   AllIcons.SiContactlesspayment,
   AllIcons.FaSearch,
-  AllIcons.GiBattery75
+  AllIcons.GiBattery75,
+  // Añadidos para RegisterView
+  AllIcons.HiTruck,
+  AllIcons.HiClipboardList,
+  AllIcons.HiGift,
+  AllIcons.HiHeart,
+  AllIcons.HiEye,
+  AllIcons.HiEyeOff
 )
 
 const app = createApp(App)

@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/lib/axios'
+import Wrapper from '@/components/shared/Wrapper.vue'
 
 interface RegisterForm {
   username: string
@@ -21,347 +22,446 @@ interface RegisterResponse {
   }
 }
 
-const router = useRouter()
-const form = ref<RegisterForm>({
+const router  = useRouter()
+
+/* ---------- state ---------- */
+const form    = ref<RegisterForm>({
   username: '',
   email: '',
   password: '',
   confirmPassword: '',
   role: 'CUSTOMER'
 })
-
 const loading = ref(false)
-const error = ref('')
-const showPassword = ref(false)
-const showConfirmPassword = ref(false)
+const error   = ref('')
+const showPwd = ref(false)
+const showCP  = ref(false)
 
+/* ---------- helpers ---------- */
 const roles = [
   { value: 'CUSTOMER', label: 'Customer' },
-  { value: 'SELLER', label: 'Seller' },
-  { value: 'ADMIN', label: 'Admin' }
+  { value: 'SELLER',   label: 'Seller'   },
+  { value: 'ADMIN',    label: 'Admin'    }
 ]
 
 const validateForm = () => {
-  if (!form.value.username) {
-    error.value = 'Username is required'
-    return false
-  }
-
-  if (form.value.username.length < 3) {
-    error.value = 'Username must be at least 3 characters long'
-    return false
-  }
-
-  if (!form.value.email) {
-    error.value = 'Email is required'
-    return false
-  }
-
-  if (!form.value.email.includes('@')) {
-    error.value = 'Please enter a valid email address'
-    return false
-  }
-
-  if (!form.value.password) {
-    error.value = 'Password is required'
-    return false
-  }
-
-  if (form.value.password.length < 6) {
-    error.value = 'Password must be at least 6 characters long'
-    return false
-  }
-
-  if (!form.value.confirmPassword) {
-    error.value = 'Please confirm your password'
-    return false
-  }
-
-  if (form.value.password !== form.value.confirmPassword) {
-    error.value = 'Passwords do not match'
-    return false
-  }
-
+  if (!form.value.username)         return error.value = 'Username is required',        false
+  if (form.value.username.length<3) return error.value = 'Username too short',          false
+  if (!form.value.email)            return error.value = 'Email is required',           false
+  if (!form.value.email.includes('@'))return error.value = 'Invalid email',             false
+  if (!form.value.password)         return error.value = 'Password is required',        false
+  if (form.value.password.length<6) return error.value = 'Password too short',          false
+  if (form.value.password!==form.value.confirmPassword)
+                                     return error.value = 'Passwords do not match',     false
   return true
 }
 
 const handleSubmit = async () => {
   error.value = ''
-
-  if (!validateForm()) {
-    return
-  }
-
+  if (!validateForm()) return
   loading.value = true
-
   try {
-    const response = await api.post<RegisterResponse>('/auth/register', {
+    const { data } = await api.post<RegisterResponse>('/auth/register',{
       username: form.value.username,
-      email: form.value.email,
+      email:    form.value.email,
       password: form.value.password,
-      role: form.value.role
+      role:     form.value.role
     })
-
-    console.log('Registration successful:', response.data)
-
-    // Save token if exists
-    if (response.data.token) {
-      localStorage.setItem('authToken', response.data.token)
-    }
-
-    // Save user information
-    if (response.data.user) {
-      localStorage.setItem('user', JSON.stringify(response.data.user))
-    }
-
-    // Redirect to login or home
+    if (data.token) localStorage.setItem('authToken', data.token)
+    if (data.user) localStorage.setItem('user', JSON.stringify(data.user))
     router.push({ name: 'login' })
-
-  } catch (err: any) {
-    console.error('Registration error:', err)
-
-    if (err.response?.status === 409) {
-      error.value = 'Email already exists'
-    } else if (err.response?.status === 400) {
-      error.value = 'Invalid registration data'
-    } else {
-      error.value = 'Registration failed. Please try again.'
-    }
+  } catch (err: unknown) {
+    const error_obj = err as { response?: { status?: number } }
+    if (error_obj.response?.status===409) error.value='Email already exists'
+    else if (error_obj.response?.status===400) error.value='Bad registration data'
+    else error.value='Registration failed'
   } finally {
     loading.value = false
   }
 }
 
-const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value
-}
-
-const toggleConfirmPasswordVisibility = () => {
-  showConfirmPassword.value = !showConfirmPassword.value
-}
-
-const clearError = () => {
-  error.value = ''
-}
+const togglePwd = () => showPwd.value = !showPwd.value
+const toggleCP  = () => showCP.value  = !showCP.value
+const clearErr  = () => error.value   = ''
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
-    <div class="max-w-md w-full space-y-8">
+  <div class="pt-[85px] lg:pt-0 bg-white text-black">
+    <Wrapper class="py-8">
+
       <!-- Header -->
-      <div class="text-center">
-        <div class="flex justify-center mb-6">
-          <div class="bg-emerald-100 dark:bg-emerald-900/30 p-4 rounded-full">
-            <svg class="w-12 h-12 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-            </svg>
+      <section class="max-w-7xl mx-auto mb-8">
+        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-black">Create Account</h1>
+      </section>
+
+      <!-- Registration Content -->
+      <section class="max-w-7xl mx-auto mb-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+          <!-- Left Panel - Account Benefits -->
+          <div class="bg-white rounded-lg p-6 h-full">
+            <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">Why Create an Account?</h2>
+
+            <div class="space-y-0">
+              <!-- Faster Checkout -->
+              <div class="flex items-start gap-4 py-8 border-b border-[#EBEBEB]">
+                <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <v-icon name="hi-truck" scale="1.7" class="text-black" />
+                </div>
+                <div>
+                  <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">Faster Checkout</h3>
+                  <p class="font-srProDisplay text-[#666666] text-sm mb-1">Save your information for quicker purchases</p>
+                  <p class="font-srProDisplay text-[#666666] text-sm">Skip entering details every time</p>
+                </div>
+              </div>
+
+              <!-- Order History -->
+              <div class="flex items-start gap-4 py-12 border-b border-[#EBEBEB]">
+                <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <v-icon name="hi-clipboard-list" scale="1.7" class="text-black" />
+                </div>
+                <div>
+                  <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">Order History</h3>
+                  <p class="font-srProDisplay text-[#666666] text-sm mb-1">Track all your purchases in one place</p>
+                  <p class="font-srProDisplay text-[#999999] text-xs">Easy returns and support</p>
+                </div>
+              </div>
+
+              <!-- Exclusive Offers -->
+              <div class="flex items-start gap-4 py-12 border-b border-[#EBEBEB]">
+                <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <v-icon name="hi-gift" scale="1.7" class="text-black" />
+                </div>
+                <div>
+                  <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">Exclusive Offers</h3>
+                  <p class="font-srProDisplay text-[#666666] text-sm mb-1">Get access to member-only deals</p>
+                  <p class="font-srProDisplay text-[#666666] text-sm">Early access to sales and new products</p>
+                </div>
+              </div>
+
+              <!-- Wishlist -->
+              <div class="flex items-start gap-4 py-12">
+                <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <v-icon name="hi-heart" scale="1.7" class="text-black" />
+                </div>
+                <div>
+                  <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">Save Favorites</h3>
+                  <p class="font-srProDisplay text-[#666666] text-sm mb-1">Create wishlists and save items for later</p>
+                  <p class="font-srProDisplay text-[#999999] text-xs">Never lose track of products you love</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Panel - Registration Form -->
+          <div class="animate-fadeInUp">
+            <div class="bg-white border border-[#EBEBEB] rounded-lg p-6 h-full transition-all duration-300 hover:shadow-lg">
+              <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">Registration Form</h2>
+
+              <!-- Error Message -->
+              <div v-if="error" class="mb-4 flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-3 animate-slideDown">
+                <p class="font-srProDisplay text-sm text-red-700">{{ error }}</p>
+                <button @click="clearErr" class="text-red-600 hover:underline text-sm transition-all duration-200 hover:scale-110">✕</button>
+              </div>
+
+              <form @submit.prevent="handleSubmit" class="space-y-6">
+                <!-- Username -->
+                <div class="form-group">
+                  <div class="relative">
+                    <input
+                      id="username"
+                      v-model="form.username"
+                      type="text"
+                      autocomplete="username"
+                      required
+                      @input="clearErr"
+                      class="floating-input peer w-full px-4 pt-6 pb-2 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black focus:outline-none focus:border-black transition-all duration-300 transform"
+                      placeholder=" "
+                    />
+                    <label
+                      for="username"
+                      class="floating-label absolute left-4 top-4 font-srProDisplay text-[#999999] transition-all duration-300 transform origin-left pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-black peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-black"
+                    >
+                      Username
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                  <div class="relative">
+                    <input
+                      id="email"
+                      v-model="form.email"
+                      type="email"
+                      autocomplete="email"
+                      required
+                      @input="clearErr"
+                      class="floating-input peer w-full px-4 pt-6 pb-2 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black focus:outline-none focus:border-black transition-all duration-300 transform"
+                      placeholder=" "
+                    />
+                    <label
+                      for="email"
+                      class="floating-label absolute left-4 top-4 font-srProDisplay text-[#999999] transition-all duration-300 transform origin-left pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-black peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-black"
+                    >
+                      Email Address
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Role -->
+                <div class="form-group">
+                  <div class="relative">
+                    <select
+                      id="role"
+                      v-model="form.role"
+                      class="floating-select peer w-full px-4 pt-6 pb-2 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black focus:outline-none focus:border-black transition-all duration-300 transform appearance-none"
+                    >
+                      <option v-for="r in roles" :key="r.value" :value="r.value">{{ r.label }}</option>
+                    </select>
+                    <label
+                      for="role"
+                      class="floating-label absolute left-4 top-2 text-xs font-srProDisplay text-black transition-all duration-300 transform origin-left pointer-events-none"
+                    >
+                      Account Type
+                    </label>
+                    <!-- Custom dropdown arrow -->
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                      <svg class="w-5 h-5 text-[#999999]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                  <div class="relative">
+                    <input
+                      id="password"
+                      v-model="form.password"
+                      :type="showPwd ? 'text' : 'password'"
+                      autocomplete="new-password"
+                      required
+                      @input="clearErr"
+                      class="floating-input peer w-full px-4 pt-6 pb-2 pr-12 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black focus:outline-none focus:border-black transition-all duration-300 transform"
+                      placeholder=" "
+                    />
+                    <label
+                      for="password"
+                      class="floating-label absolute left-4 top-4 font-srProDisplay text-[#999999] transition-all duration-300 transform origin-left pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-black peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-black"
+                    >
+                      Password
+                    </label>
+                    <button
+                      type="button"
+                      @click="togglePwd"
+                      class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#999999] hover:text-black transition-all duration-200 transform hover:scale-110"
+                      :aria-label="showPwd ? 'Hide password' : 'Show password'"
+                    >
+                      <v-icon :name="showPwd ? 'hi-eye-off' : 'hi-eye'" scale="1.4" />
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                  <div class="relative">
+                    <input
+                      id="confirm"
+                      v-model="form.confirmPassword"
+                      :type="showCP ? 'text' : 'password'"
+                      autocomplete="new-password"
+                      required
+                      @input="clearErr"
+                      class="floating-input peer w-full px-4 pt-6 pb-2 pr-12 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black focus:outline-none focus:border-black transition-all duration-300 transform"
+                      placeholder=" "
+                    />
+                    <label
+                      for="confirm"
+                      class="floating-label absolute left-4 top-4 font-srProDisplay text-[#999999] transition-all duration-300 transform origin-left pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-black peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-black"
+                    >
+                      Confirm Password
+                    </label>
+                    <button
+                      type="button"
+                      @click="toggleCP"
+                      class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#999999] hover:text-black transition-all duration-200 transform hover:scale-110"
+                      :aria-label="showCP ? 'Hide password' : 'Show password'"
+                    >
+                      <v-icon :name="showCP ? 'hi-eye-off' : 'hi-eye'" scale="1.4" />
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="border-t border-[#EBEBEB] pt-4">
+                  <!-- Terms Agreement -->
+                  <div class="mb-4">
+                    <label class="flex items-start">
+                      <input type="checkbox" required class="mr-3 mt-1 text-black" />
+                      <span class="font-srProDisplay text-sm text-[#666666]">
+                        I agree to the <a href="#" class="text-black hover:underline">Terms of Service</a> and
+                        <a href="#" class="text-black hover:underline">Privacy Policy</a>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button
+                  type="submit"
+                  :disabled="loading"
+                  class="w-full bg-black text-white font-srProDisplay font-medium py-4 rounded-md hover:bg-[#333333] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg"
+                >
+                  <span v-if="loading" class="flex items-center justify-center">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Creating Account...
+                  </span>
+                  <span v-else>Create Account</span>
+                </button>
+              </form>
+
+              <!-- Sign In Link -->
+              <div class="mt-6 pt-4 border-t border-[#EBEBEB]">
+                <p class="text-center font-srProDisplay text-sm text-[#666666]">
+                  Already have an account?
+                  <RouterLink to="/login" class="font-medium text-black hover:underline ml-1">Sign in</RouterLink>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Create Account
-        </h2>
-        <p class="text-gray-600 dark:text-gray-300">
-          Welcome! Please fill in the details to create your account.
-        </p>
-      </div>
-
-      <!-- Registration Form -->
-      <div class="bg-white dark:bg-gray-800 shadow-xl rounded-lg p-8 border border-gray-200 dark:border-gray-700">
-        <form @submit.prevent="handleSubmit" class="space-y-6">
-          <!-- Error Message -->
-          <div
-            v-if="error"
-            class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-center justify-between"
-          >
-            <div class="flex items-center">
-              <svg class="w-5 h-5 text-red-600 dark:text-red-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-              </svg>
-              <span class="text-red-700 dark:text-red-300 text-sm">{{ error }}</span>
-            </div>
-            <button
-              type="button"
-              @click="clearError"
-              class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
-            >
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-              </svg>
-            </button>
-          </div>
-
-          <!-- Username Field -->
-          <div>
-            <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Username
-            </label>
-            <div class="relative">
-              <input
-                id="username"
-                v-model="form.username"
-                type="text"
-                required
-                autocomplete="username"
-                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
-                placeholder="your_username"
-                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': error && !form.username }"
-                @input="clearError"
-              />
-              <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <!-- Email Field -->
-          <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Email
-            </label>
-            <div class="relative">
-              <input
-                id="email"
-                v-model="form.email"
-                type="email"
-                required
-                autocomplete="email"
-                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
-                placeholder="your@email.com"
-                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': error && !form.email }"
-                @input="clearError"
-              />
-              <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <!-- Role Field -->
-          <div>
-            <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Role
-            </label>
-            <select
-              id="role"
-              v-model="form.role"
-              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white transition-colors"
-            >
-              <option v-for="role in roles" :key="role.value" :value="role.value">
-                {{ role.label }}
-              </option>
-            </select>
-          </div>
-
-          <!-- Password Field -->
-          <div>
-            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Password
-            </label>
-            <div class="relative">
-              <input
-                id="password"
-                v-model="form.password"
-                :type="showPassword ? 'text' : 'password'"
-                required
-                autocomplete="new-password"
-                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors pr-12"
-                placeholder="••••••••"
-                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': error && form.password.length < 6 }"
-                @input="clearError"
-              />
-              <button
-                type="button"
-                @click="togglePasswordVisibility"
-                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-              >
-                <svg v-if="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
-                </svg>
-                <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- Confirm Password Field -->
-          <div>
-            <label for="confirmPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Confirm Password
-            </label>
-            <div class="relative">
-              <input
-                id="confirmPassword"
-                v-model="form.confirmPassword"
-                :type="showConfirmPassword ? 'text' : 'password'"
-                required
-                autocomplete="new-password"
-                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors pr-12"
-                placeholder="••••••••"
-                :class="{ 'border-red-500 focus:ring-red-500 focus:border-red-500': error && form.password !== form.confirmPassword }"
-                @input="clearError"
-              />
-              <button
-                type="button"
-                @click="toggleConfirmPasswordVisibility"
-                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-              >
-                <svg v-if="showConfirmPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
-                </svg>
-                <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- Submit Button -->
-          <div>
-            <button
-              type="submit"
-              :disabled="loading"
-              class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:focus:ring-offset-gray-800"
-            >
-              <div v-if="loading" class="flex items-center">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Creating account...
-              </div>
-              <span v-else>Create Account</span>
-            </button>
-          </div>
-        </form>
-
-        <!-- Sign In Link -->
-        <div class="mt-6 text-center">
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            Already have an account?
-            <RouterLink to="/login" class="font-medium text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 dark:hover:text-emerald-300">
-              Sign in here
-            </RouterLink>
-          </p>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div class="text-center">
-        <p class="text-xs text-gray-500 dark:text-gray-400">
-          By creating an account, you agree to our terms of service and privacy policy
-        </p>
-      </div>
-    </div>
+      </section>
+    </Wrapper>
   </div>
 </template>
 
 <style scoped>
-/* Additional custom styles if needed */
+/* Animaciones de entrada */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Avoid that annoying tailwind blue outline */
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s ease-out;
+}
+
+/* Estilos para inputs flotantes */
+.floating-input:focus + .floating-label,
+.floating-input:not(:placeholder-shown) + .floating-label {
+  transform: translateY(-12px) scale(0.75);
+  color: #000000;
+}
+
+.floating-select + .floating-label {
+  transform: translateY(-12px) scale(0.75);
+  color: #000000;
+}
+
+/* Efectos hover para form groups */
+.form-group {
+  transition: all 0.3s ease;
+}
+
+.form-group:hover {
+  transform: translateY(-1px);
+}
+
+/* Animación para los iconos de mostrar/ocultar contraseña */
+.floating-input + label + button:hover {
+  transform: scale(1.1);
+}
+
+/* Animación suave para el foco en inputs */
+.floating-input:focus {
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  transform: scale(1.02);
+}
+
+/* Animación de typing para labels */
+.floating-label {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animación de entrada para cada campo con delay escalonado */
+.form-group:nth-child(1) {
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+
+.form-group:nth-child(2) {
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.form-group:nth-child(3) {
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
+
+.form-group:nth-child(4) {
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+.form-group:nth-child(5) {
+  animation: fadeInUp 0.6s ease-out 0.5s both;
+}
+
+/* Animación para el botón de submit */
+button[type="submit"] {
+  animation: fadeInUp 0.6s ease-out 0.6s both;
+}
+
+/* Efecto de loading mejorado */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Transición suave para el select dropdown */
+.floating-select {
+  background-image: none;
+}
+
+/* Hover effect para el container del formulario */
+.form-container:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
 </style>
