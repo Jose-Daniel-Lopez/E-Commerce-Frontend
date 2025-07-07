@@ -15,7 +15,7 @@
 
       <li class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent">
         <div class="relative">
-          <router-link to="/favorite">
+          <router-link to="/wishlist">
             <img
               src="/images/Favorites.png"
               alt="favorites icon"

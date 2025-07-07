@@ -81,6 +81,7 @@ addIcons(
   AllIcons.IoCameraReverseOutline,
   AllIcons.LaHeadphonesSolid,
   AllIcons.BiLaptop,
+  AllIcons.BiTrash,
   AllIcons.GiSmartphone,
   AllIcons.CoTablet,
   AllIcons.GiConsoleController,

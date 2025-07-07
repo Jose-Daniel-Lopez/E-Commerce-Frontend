@@ -168,6 +168,15 @@
   "smartphones": {
     "title": "Smartphones"
   },
+  "wishlist": {
+    "title": "Lista de Deseados",
+    "loading": "Cargando...",
+    "error": "Error al cargar la lista.",
+    "removeError": "No se pudo eliminar el producto.",
+    "empty": "Tu lista de deseados está vacía.",
+    "emptyDescription": "Busca productos y añade tus favoritos aquí.",
+    "goToCatalog": "Ir al Catálogo"
+  },
   "common": {
     "loading": "Cargando...",
     "error": "Error",

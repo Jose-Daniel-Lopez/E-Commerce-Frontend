@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0">
+  <div class="pt-[85px] lg:pt-0 animate-fadeInUp">
     <!-- hero section -->
     <HeroSection />
 
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import '@/assets/base.css'
 import BannerSection from '@/components/home/BannerSection.vue'
 import BannerSectionOne from '@/components/home/BannerSectionOne.vue'
 import BrowseCategorySection from '@/components/home/BrowseCategorySection.vue'

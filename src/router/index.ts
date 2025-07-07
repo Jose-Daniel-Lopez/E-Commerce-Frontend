@@ -18,6 +18,7 @@ const router = createRouter({
 
     // Cart & Wishlist
     { path: '/cart', name: 'shoppingCart', component: () => import('../views/ShoppingCartView.vue') },
+    { path: '/wishlist', name: 'wishlist', component: () => import('../views/WishlistView.vue') },
 
     // Checkout
     { path: '/checkoutAddress', name: 'checkoutAddress', component: () => import('../views/CheckoutAddressView.vue') },

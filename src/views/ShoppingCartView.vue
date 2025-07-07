@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-white text-black">
+  <div class="pt-[85px] lg:pt-0 bg-white text-black animate-fadeInUp">
     <Wrapper class="py-4">
       <!-- Breadcrumb -->
       <BreadcrumbNav :breadcrumbs="breadcrumbs" />
@@ -83,6 +83,7 @@
 </template>
 
 <script setup lang="ts">
+import '@/assets/base.css'
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Wrapper from '@/components/shared/Wrapper.vue'

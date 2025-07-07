@@ -27,7 +27,7 @@
           </li>
           <li class="relative flex cursor-pointer items-center justify-between p-3 hover:bg-blue-200 lg:gap-[2px] lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
             <div @click.stop="toggleCategoriesDropdown" class="flex items-center w-full">
-              <span>Categorías</span>
+              <span>Categories</span>
               <svg
                 class="w-4 h-4 ml-1 transition-transform duration-200"
                 :class="{ 'rotate-180': showCategoriesDropdown }"
@@ -83,7 +83,6 @@
       <!-- icons end -->
     </Wrapper>
 
-    <!-- Overlay removed as requested -->
   </header>
 </template>
 
