@@ -88,8 +88,8 @@
                   <span class="font-srProDisplay text-base text-gray-700">${{ shippingCost }}</span>
                 </div>
                 <div class="flex justify-between pt-3 border-t border-[#E5E5E5]">
-                  <span class="font-srProDisplay text-lg font-semibold text-black">Total</span>
-                  <span class="font-srProDisplay text-lg font-semibold text-black">${{ total }}</span>
+                  <span class="font-srProDisplay text-lg font-bold text-black">Total</span>
+                  <span class="font-srProDisplay text-lg font-bold text-black">${{ total }}</span>
                 </div>
               </div>
             </section>
@@ -216,10 +216,12 @@
               <p class="font-srProDisplay text-[#666] mb-6">You will be redirected to PayPal to complete your payment.</p>
             </div>
 
-            <!-- PayPal Credit Option -->
-            <div v-else-if="selectedPaymentMethod === 'paypal-credit'" class="text-center py-8">
-              <div class="text-blue-600 text-2xl font-bold mb-4">PayPal Credit</div>
-              <p class="font-srProDisplay text-[#666] mb-6">Pay with PayPal Credit and get flexible payment options.</p>
+            <!-- Apple Pay Option -->
+            <div v-else-if="selectedPaymentMethod === 'apple-pay'" class="text-center py-8">
+              <div class="border border-black rounded-[8px] inline-block px-4 py-2 mb-4">
+                <span class="text-black text-2xl font-bold"> Pay</span>
+              </div>
+              <p class="font-srProDisplay text-[#666] mb-6">Pay with Apple Pay for a faster checkout.</p>
             </div>
           </section>
 
@@ -258,7 +260,7 @@ const router = useRouter()
 const paymentMethods = ref([
   { id: 'credit', name: 'Credit Card' },
   { id: 'paypal', name: 'PayPal' },
-  { id: 'paypal-credit', name: 'PayPal Credit' }
+  { id: 'apple-pay', name: 'Apple Pay' }
 ])
 
 const selectedPaymentMethod = ref('credit')
@@ -310,12 +312,15 @@ const shippingCost = computed(() => 29)
 const total = computed(() => subtotal.value + estimatedTax.value + shippingCost.value)
 
 const isFormValid = computed(() => {
-  return (
-    paymentForm.value.cardholderName &&
-    paymentForm.value.cardNumber &&
-    paymentForm.value.expDate &&
-    paymentForm.value.cvv
-  )
+  if (selectedPaymentMethod.value === 'credit') {
+    return (
+      paymentForm.value.cardholderName &&
+      paymentForm.value.cardNumber &&
+      paymentForm.value.expDate &&
+      paymentForm.value.cvv
+    );
+  }
+  return true; // Always valid for PayPal and Apple Pay
 })
 
 function formatCardNumber() {
@@ -331,7 +336,13 @@ function goBack() {
 }
 
 function processPayment() {
-  alert('Payment processed successfully!')
+  if (selectedPaymentMethod.value === 'apple-pay') {
+    alert('Payment processed successfully with Apple Pay!');
+  } else if (selectedPaymentMethod.value === 'paypal') {
+    alert('You will be redirected to PayPal to complete your payment.');
+  } else {
+    alert('Payment processed successfully!');
+  }
 }
 </script>
 
@@ -346,5 +357,11 @@ function processPayment() {
 .fade-slide-enter-to, .fade-slide-leave-from {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Avoid that annoying tailwind blue outline */
+button:focus {
+  outline: none;
+  box-shadow: none;
 }
 </style>
