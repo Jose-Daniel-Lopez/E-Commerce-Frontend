@@ -22,10 +22,10 @@ interface RegisterResponse {
   }
 }
 
-const router  = useRouter()
+const router = useRouter()
 
-/* ---------- state ---------- */
-const form    = ref<RegisterForm>({
+// Component state
+const form = ref<RegisterForm>({
   username: '',
   email: '',
   password: '',
@@ -33,56 +33,59 @@ const form    = ref<RegisterForm>({
   role: 'CUSTOMER'
 })
 const loading = ref(false)
-const error   = ref('')
+const error = ref('')
 const showPwd = ref(false)
-const showCP  = ref(false)
+const showCP = ref(false)
 
-/* ---------- helpers ---------- */
+// Available user roles
 const roles = [
   { value: 'CUSTOMER', label: 'Customer' },
-  { value: 'SELLER',   label: 'Seller'   },
-  { value: 'ADMIN',    label: 'Admin'    }
+  { value: 'SELLER', label: 'Seller' },
+  { value: 'ADMIN', label: 'Admin' }
 ]
 
+// Form validation with user-friendly error messages
 const validateForm = () => {
-  if (!form.value.username)         return error.value = 'Username is required',        false
-  if (form.value.username.length<3) return error.value = 'Username too short',          false
-  if (!form.value.email)            return error.value = 'Email is required',           false
-  if (!form.value.email.includes('@'))return error.value = 'Invalid email',             false
-  if (!form.value.password)         return error.value = 'Password is required',        false
-  if (form.value.password.length<6) return error.value = 'Password too short',          false
-  if (form.value.password!==form.value.confirmPassword)
-                                     return error.value = 'Passwords do not match',     false
+  if (!form.value.username) return error.value = 'Username is required', false
+  if (form.value.username.length < 3) return error.value = 'Username too short', false
+  if (!form.value.email) return error.value = 'Email is required', false
+  if (!form.value.email.includes('@')) return error.value = 'Invalid email', false
+  if (!form.value.password) return error.value = 'Password is required', false
+  if (form.value.password.length < 6) return error.value = 'Password too short', false
+  if (form.value.password !== form.value.confirmPassword)
+    return error.value = 'Passwords do not match', false
   return true
 }
 
+// Handle form submission and API call
 const handleSubmit = async () => {
   error.value = ''
   if (!validateForm()) return
   loading.value = true
   try {
-    const { data } = await api.post<RegisterResponse>('/auth/register',{
+    const { data } = await api.post<RegisterResponse>('/auth/register', {
       username: form.value.username,
-      email:    form.value.email,
+      email: form.value.email,
       password: form.value.password,
-      role:     form.value.role
+      role: form.value.role
     })
     if (data.token) localStorage.setItem('authToken', data.token)
     if (data.user) localStorage.setItem('user', JSON.stringify(data.user))
     router.push({ name: 'login' })
   } catch (err: unknown) {
     const error_obj = err as { response?: { status?: number } }
-    if (error_obj.response?.status===409) error.value='Email already exists'
-    else if (error_obj.response?.status===400) error.value='Bad registration data'
-    else error.value='Registration failed'
+    if (error_obj.response?.status === 409) error.value = 'Email already exists'
+    else if (error_obj.response?.status === 400) error.value = 'Bad registration data'
+    else error.value = 'Registration failed'
   } finally {
     loading.value = false
   }
 }
 
+// Toggle password visibility
 const togglePwd = () => showPwd.value = !showPwd.value
-const toggleCP  = () => showCP.value  = !showCP.value
-const clearErr  = () => error.value   = ''
+const toggleCP = () => showCP.value = !showCP.value
+const clearErr = () => error.value = ''
 </script>
 
 <template>
@@ -91,7 +94,7 @@ const clearErr  = () => error.value   = ''
 
       <!-- Header -->
       <section class="max-w-7xl mx-auto mb-8">
-        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-black">Create Account</h1>
+        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-black">Join us</h1>
       </section>
 
       <!-- Registration Content -->
@@ -270,7 +273,7 @@ const clearErr  = () => error.value   = ''
                     <input
                       id="confirm"
                       v-model="form.confirmPassword"
-                      :type="showCP ? 'text' : 'password'"
+                      type="password"
                       autocomplete="new-password"
                       required
                       @input="clearErr"
@@ -283,14 +286,6 @@ const clearErr  = () => error.value   = ''
                     >
                       Confirm Password
                     </label>
-                    <button
-                      type="button"
-                      @click="toggleCP"
-                      class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#999999] hover:text-black transition-all duration-200 transform hover:scale-110"
-                      :aria-label="showCP ? 'Hide password' : 'Show password'"
-                    >
-                      <v-icon :name="showCP ? 'hi-eye-off' : 'hi-eye'" scale="1.4" />
-                    </button>
                   </div>
                 </div>
 
@@ -341,7 +336,7 @@ const clearErr  = () => error.value   = ''
 </template>
 
 <style scoped>
-/* Animaciones de entrada */
+/* Entry animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -364,7 +359,7 @@ const clearErr  = () => error.value   = ''
   }
 }
 
-/* Avoid that annoying tailwind blue outline */
+/* Remove default focus outline */
 button:focus {
   outline: none;
   box-shadow: none;
@@ -378,7 +373,7 @@ button:focus {
   animation: slideDown 0.3s ease-out;
 }
 
-/* Estilos para inputs flotantes */
+/* Floating input styles */
 .floating-input:focus + .floating-label,
 .floating-input:not(:placeholder-shown) + .floating-label {
   transform: translateY(-12px) scale(0.75);
@@ -390,7 +385,7 @@ button:focus {
   color: #000000;
 }
 
-/* Efectos hover para form groups */
+/* Form group hover effects */
 .form-group {
   transition: all 0.3s ease;
 }
@@ -399,23 +394,23 @@ button:focus {
   transform: translateY(-1px);
 }
 
-/* Animación para los iconos de mostrar/ocultar contraseña */
+/* Password toggle button animation */
 .floating-input + label + button:hover {
   transform: scale(1.1);
 }
 
-/* Animación suave para el foco en inputs */
+/* Smooth focus animation for inputs */
 .floating-input:focus {
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
   transform: scale(1.02);
 }
 
-/* Animación de typing para labels */
+/* Smooth label transitions */
 .floating-label {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Animación de entrada para cada campo con delay escalonado */
+/* Staggered entry animation for form fields */
 .form-group:nth-child(1) {
   animation: fadeInUp 0.6s ease-out 0.1s both;
 }
@@ -436,12 +431,12 @@ button:focus {
   animation: fadeInUp 0.6s ease-out 0.5s both;
 }
 
-/* Animación para el botón de submit */
+/* Submit button animation */
 button[type="submit"] {
   animation: fadeInUp 0.6s ease-out 0.6s both;
 }
 
-/* Efecto de loading mejorado */
+/* Loading spinner animation */
 .animate-spin {
   animation: spin 1s linear infinite;
 }
@@ -455,13 +450,30 @@ button[type="submit"] {
   }
 }
 
-/* Transición suave para el select dropdown */
+/* Custom select styling */
 .floating-select {
   background-image: none;
 }
 
-/* Hover effect para el container del formulario */
+/* Form container hover effect */
 .form-container:hover {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
+
+/* Hide toggle password visibility for Chrome, Edge & Safari */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-input-password-toggle-button,
+input[type="password"]::-webkit-input-clear-button {
+  display: none !important;
+}
+input[type="text"]::-ms-reveal,
+input[type="text"]::-ms-clear,
+input[type="text"]::-webkit-credentials-auto-fill-button,
+input[type="text"]::-webkit-input-password-toggle-button,
+input[type="text"]::-webkit-input-clear-button {
+  display: none !important;
+}
+
 </style>
