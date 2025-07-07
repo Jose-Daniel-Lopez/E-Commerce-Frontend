@@ -294,7 +294,7 @@ const clearErr = () => error.value = ''
                   <!-- Terms Agreement -->
                   <div class="mb-4">
                     <label class="flex items-start">
-                      <input type="checkbox" required class="mr-3 mt-1 text-black" />
+                      <input type="checkbox" required class="custom-checkbox mr-3 mt-1 text-black" />
                       <span class="font-srProDisplay text-sm text-[#666666]">
                         I agree to the <a href="#" class="text-black hover:underline">Terms of Service</a> and
                         <a href="#" class="text-black hover:underline">Privacy Policy</a>
@@ -474,6 +474,36 @@ input[type="text"]::-webkit-credentials-auto-fill-button,
 input[type="text"]::-webkit-input-password-toggle-button,
 input[type="text"]::-webkit-input-clear-button {
   display: none !important;
+}
+
+/* Smooth transitions for interactive elements */
+.custom-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Hover state */
+.custom-checkbox:hover {
+  border-color: #9ca3af;
+}
+
+/* Checked state */
+.custom-checkbox:checked {
+  background-color: #000000;
+  border-color: #000000;
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M13.854 3.646L6.354 11.146a.5.5 0 01-.708 0L2.146 7.646a.5.5 0 11.708-.708L6 10.293l7.146-7.147a.5.5 0 01.708.708z'/%3e%3c/svg%3e");
+  background-size: 8px 8px;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 </style>
