@@ -3,6 +3,7 @@ import { onMounted, ref, computed, watch } from 'vue'
 import { useLanguage } from '@/composables/useLanguage'
 import { useRouter } from 'vue-router'
 import { useCategoriesStore } from '@/stores/categories'
+import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
 const router = useRouter()
 const categoriesStore = useCategoriesStore()
@@ -70,9 +71,9 @@ const paginatedCategories = computed(() => {
 
 const totalPages = computed(() => Math.ceil(filteredCategories.value.length / itemsPerPage))
 
-// Breadcrumbs for navigation
-const breadcrumbs = ref([
-  { label: 'Catalog' } // Will be translated via i18n
+// Breadcrumbs for navigation (reactivo y traducido)
+const breadcrumbs = computed(() => [
+  { label: 'catalog.title', to: '/catalog' },
 ])
 
 // Translate category name using i18n, supporting both accented and unaccented keys

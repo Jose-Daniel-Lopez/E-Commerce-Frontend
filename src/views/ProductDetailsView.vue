@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useProductsStore } from '@/stores/products'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
 interface Product {
@@ -16,61 +14,30 @@ interface Product {
   specifications?: {
     screenSize?: string
     processor?: string
+    ncores?: string
     camera?: string
+    frontCamera?: string
     battery?: string
     storage?: string[]
     colors?: string[]
     memory?: string
   }
-  _links?: {
-    productReviews?: {
-      href: string
-    }
-    productVariants?: {
-      href: string
-    }
-    category?: {
-      href: string
-    }
-  }
 }
-
-interface ProductReview {
-  id: number
-  rating: number
-  comment: string
-  user?: {
-    name: string
-  }
-}
-
-interface Category {
-  id: number
-  name: string
-}
-
-const route = useRoute()
-const router = useRouter()
-const productsStore = useProductsStore()
 
 // State
 const product = ref<Product | null>(null)
-const reviews = ref<ProductReview[]>([])
-const category = ref<Category | null>(null)
 const loading = ref(true)
 const error = ref('')
-const activeTab = ref('details')
 const selectedColor = ref('')
 const selectedStorage = ref('')
 const selectedImageIndex = ref(0)
-const quantity = ref(1)
-const isFavorite = ref(false)
+const showAllDetails = ref(false)
 
 // Mock product data based on the image
 const mockProduct: Product = {
   id: 1,
   name: 'Apple iPhone 14 Pro Max',
-  description: 'Enhanced capabilities thanks toan enlarged display of 6.7 inchesand work without recharginghroughout the day. Incredible photosas in weak, yesand in bright lightusing the new systemwith two cameras.',
+  description: 'Enhanced capabilities thanks to an enlarged display of 6.7 inches and work without recharging throughout the day. Incredible photos as in weak, yes and in bright light using the new system with two cameras.',
   basePrice: 1399,
   totalStock: 50,
   image: '/images/Iphone-14-pro-Gold.png',
@@ -79,7 +46,9 @@ const mockProduct: Product = {
   specifications: {
     screenSize: '6.7"',
     processor: 'Apple A16 Bionic',
+    ncores: '6',
     camera: '48-12-12 MP',
+    frontCamera: '12 MP',
     battery: '4323 mAh',
     storage: ['128GB', '256GB', '512GB', '1TB'],
     colors: ['Deep Purple', 'Gold', 'Silver', 'Space Black'],
@@ -123,8 +92,6 @@ const currentImage = computed(() => {
 })
 
 onMounted(async () => {
-  const productId = route.params.productId as string
-
   try {
     // For now, use mock data. In production, fetch from API
     product.value = mockProduct
@@ -159,28 +126,11 @@ const selectImage = (index: number) => {
   selectedImageIndex.value = index
 }
 
-const incrementQuantity = () => {
-  if (quantity.value < (product.value?.totalStock || 1)) {
-    quantity.value++
-  }
-}
-
-const decrementQuantity = () => {
-  if (quantity.value > 1) {
-    quantity.value--
-  }
-}
-
-const toggleFavorite = () => {
-  isFavorite.value = !isFavorite.value
-}
-
 const addToCart = () => {
   console.log('Adding to cart:', {
     product: product.value?.name,
     color: selectedColor.value,
     storage: selectedStorage.value,
-    quantity: quantity.value,
     price: finalPrice.value
   })
   // Implement add to cart functionality
@@ -204,426 +154,831 @@ const getColorClass = (color: string) => {
   }
   return colorMap[color] || 'bg-gray-400'
 }
-  await fetchProductDetails(productId)
-})
 
-const fetchProductDetails = async (productId: string) => {
-  try {
-    loading.value = true
-    error.value = ''
-
-    // Fetch product details
-    const productResponse = await api.get(`/products/${productId}`)
-    product.value = productResponse.data
-
-    // Fetch product reviews
-    try {
-      const reviewsResponse = await api.get(`/products/${productId}/productReviews`)
-      reviews.value = reviewsResponse.data._embedded
-        ? reviewsResponse.data._embedded.productReviews
-        : reviewsResponse.data
-    } catch {
-      console.log('No reviews found for this product')
-      reviews.value = []
-    }
-
-    // Fetch product variants using the store
-    await productVariantsStore.fetchVariantsByProduct(parseInt(productId))
-
-    // Fetch category
-    try {
-      const categoryResponse = await api.get(`/products/${productId}/category`)
-      category.value = categoryResponse.data
-    } catch {
-      console.log('No category found for this product')
-      category.value = null
-    }
-
-  } catch (err) {
-    console.error('Error fetching product details:', err)
-    error.value = 'Error loading product details'
-  } finally {
-    loading.value = false
+// Description expand/collapse
+import { computed as vComputed } from 'vue'
+const showFullDescription = ref(false)
+const descriptionLimit = 180
+const isDescriptionLong = vComputed(() => (product.value?.description || mockProduct.description).length > descriptionLimit)
+const displayedDescription = vComputed(() => {
+  const desc = product.value?.description || mockProduct.description
+  if (!showFullDescription.value && desc.length > descriptionLimit) {
+    return desc.slice(0, descriptionLimit) + '...'
   }
+  return desc
+})
+const toggleDescription = () => {
+  showFullDescription.value = !showFullDescription.value
 }
 
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(price)
+// Details section collapse toggle
+const detailsCollapsed = ref(false)
+const toggleDetails = () => {
+  detailsCollapsed.value = !detailsCollapsed.value
 }
 
-const getStockStatus = (stock: number) => {
-  if (stock === 0) return { text: 'Out of stock', color: 'text-red-600', bgColor: 'bg-red-100' }
-  if (stock <= 10) return { text: 'Low stock', color: 'text-yellow-600', bgColor: 'bg-yellow-100' }
-  return { text: 'In stock', color: 'text-green-600', bgColor: 'bg-green-100' }
+
+// Reviews section collapse toggle
+const reviewsCollapsed = ref(false)
+const toggleReviews = () => {
+  reviewsCollapsed.value = !reviewsCollapsed.value
 }
 
-const getAverageRating = () => {
-  if (reviews.value.length === 0) return 0
-  const sum = reviews.value.reduce((acc, review) => acc + review.rating, 0)
-  return Math.round((sum / reviews.value.length) * 10) / 10
+// Related Products section collapse toggle
+const relatedCollapsed = ref(false)
+const toggleRelated = () => {
+  relatedCollapsed.value = !relatedCollapsed.value
 }
 
-const getRatingStars = (rating: number) => {
-  return Array.from({ length: 5 }, (_, i) => i < rating)
+
+// Mock reviews data
+const reviews = [
+  {
+    id: 1,
+    name: 'Grace Carey',
+    rating: 4,
+    date: '24 January 2023',
+    comment: 'I was a bit nervous to be buying a secondhand phone from Amazon, but I couldn\'t be happier with my purchase!! I have a pre-paid data plan so I was worried that this phone wouldn\'t connect with my data plan, since the new phones don\'t have the physical Sim tray anymore, but couldn\'t have been easier! I bought an Unlocked black iPhone 14 Pro Max in excellent condition and everything is PERFECT! It was super easy to set up and the phone works and looks great. It truly was in excellent condition. Highly recommend!!🖤',
+    avatar: '/images/user-1.jpg'
+  },
+  {
+    id: 2,
+    name: 'Ronald Richards',
+    rating: 5,
+    date: '24 January 2023',
+    comment: 'Perfect phone in perfect condition. Great value for money and fast shipping. Highly recommended!',
+    avatar: '/images/user-2.jpg'
+  },
+  {
+    id: 3,
+    name: 'Michael Smith',
+    rating: 2,
+    date: '12 September 2021',
+    comment: 'The phone arrived with a few scratches and the battery life is not as good as expected. Disappointed with the quality.',
+    avatar: '/images/user-2.jpg'
+  },
+  {
+    id: 4,
+    name: 'Samantha Johnson',
+    rating: 4,
+    date: '09 April 2023',
+    comment: 'Great phone overall, but the camera quality is not as good as I hoped. Still a solid purchase for the price.',
+    avatar: '/images/user-4.jpg'
+  },
+  {
+    id: 5,
+    name: 'Jonathan Doe',
+    rating: 5,
+    date: '17 October 2024',
+    comment: 'Absolutely love this phone! The performance is top-notch and the design is sleek. Highly recommend it to anyone looking for a premium smartphone experience.',
+    avatar: '/images/user-5.jpg'
+  },
+  {
+    id: 6,
+    name: 'Veronica Taylor',
+    rating: 1,
+    date: '01 May 2025',
+    comment: 'I had high expectations, but the phone has been underwhelming. The battery drains quickly and the software is buggy. Not worth the price.',
+    avatar: '/images/user-6.jpg'
+  }
+]
+
+// Reviews show more/less logic
+const reviewsToShow = ref(3)
+const showAllReviews = ref(false)
+const displayedReviews = computed(() => {
+  return showAllReviews.value ? reviews : reviews.slice(0, reviewsToShow.value)
+})
+const hasMoreReviews = computed(() => reviews.length > reviewsToShow.value)
+const toggleShowAllReviews = () => {
+  showAllReviews.value = !showAllReviews.value
+}
+
+const reviewStats = {
+  averageRating: 4.8,
+  totalReviews: 125,
+  excellent: 100,
+  good: 11,
+  average: 3,
+  belowAverage: 8,
+  poor: 1
 }
 </script>
 
 <template>
-  <div class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-6xl mx-auto">
-      <!-- Loading State -->
-      <div v-if="loading" class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-        <span class="ml-3 text-gray-600 dark:text-gray-300">Loading product details...</span>
+  <div class="min-h-screen">
+    <!-- Breadcrumb -->
+    <div class="pt-[85px] lg:pt-0 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <BreadcrumbNav :breadcrumbs="breadcrumbs" />
       </div>
+    </div>
 
-      <!-- Error State -->
-      <div
-        v-else-if="error"
-        class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-500 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2"
-      >
-        <v-icon name="hi-exclamation-circle" scale="1.2" />
+    <!-- Loading State -->
+    <div v-if="loading" class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+      <span class="ml-3 text-gray-600">Cargando producto...</span>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="error" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center">
         <span>{{ error }}</span>
       </div>
+    </div>
 
-      <!-- Product Details -->
-      <div v-else-if="product" class="space-y-8">
-        <!-- Product Header -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div class="p-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <!-- Product Image Placeholder -->
-              <div class="bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-900/30 dark:to-emerald-800/30 rounded-xl h-96 flex items-center justify-center">
-                <v-icon name="hi-shopping-cart" scale="6" class="text-emerald-600 dark:text-emerald-400" />
-              </div>
+    <!-- Product Details -->
+    <div v-else class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-              <!-- Product Info -->
-              <div class="space-y-6">
-                <div>
-                  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                    {{ product.name }}
-                  </h1>
-                  <p class="text-lg text-gray-600 dark:text-gray-300">
-                    {{ product.description }}
-                  </p>
-                </div>
+        <!-- Left Column - Product Images -->
+        <div class="space-y-4">
+          <!-- Main Product Image -->
+          <div class="bg-gray-50 rounded-lg p-8 flex items-center justify-center h-[500px]">
+            <img
+              :src="currentImage"
+              :alt="product?.name || mockProduct.name"
+              class="h-[500px] w-[400px] object-contain"
+            />
+          </div>
 
-                <!-- Price -->
-                <div class="flex items-center space-x-4">
-                  <span class="text-4xl font-bold text-emerald-600 dark:text-emerald-400">
-                    {{ formatPrice(product.basePrice) }}
-                  </span>
-                  <div
-                    :class="`px-3 py-1 rounded-full text-sm font-medium ${getStockStatus(product.totalStock).bgColor} ${getStockStatus(product.totalStock).color}`"
-                  >
-                    {{ getStockStatus(product.totalStock).text }}
-                  </div>
-                </div>
-
-                <!-- Stock Info -->
-                <div class="flex items-center space-x-2">
-                  <v-icon name="hi-cube" scale="1.2" class="text-gray-500" />
-                  <span class="text-gray-600 dark:text-gray-300">
-                    {{ product.totalStock }} units available
-                  </span>
-                </div>
-
-                <!-- Category -->
-                <div v-if="category" class="flex items-center space-x-2">
-                  <v-icon name="hi-tag" scale="1.2" class="text-gray-500" />
-                  <span class="text-gray-600 dark:text-gray-300">Category:</span>
-                  <span class="font-semibold text-blue-600 dark:text-blue-400">
-                    {{ category.name }}
-                  </span>
-                </div>
-
-                <!-- Rating -->
-                <div v-if="reviews.length > 0" class="flex items-center space-x-2">
-                  <div class="flex items-center space-x-1">
-                    <span
-                      v-for="(filled, index) in getRatingStars(Math.floor(getAverageRating()))"
-                      :key="index"
-                      :class="filled ? 'text-yellow-400' : 'text-gray-300'"
-                    >
-                      ★
-                    </span>
-                  </div>
-                  <span class="text-gray-600 dark:text-gray-300">
-                    {{ getAverageRating() }} ({{ reviews.length }} reviews)
-                  </span>
-                </div>
-
-                <!-- Actions -->
-                <div class="flex space-x-4">
-                  <button
-                    :disabled="product.totalStock === 0"
-                    :class="[
-                      'flex-1 py-3 px-6 rounded-lg font-medium transition-colors',
-                      product.totalStock > 0
-                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                        : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed',
-                    ]"
-                  >
-                    {{ product.totalStock > 0 ? 'Add to Cart' : 'Out of Stock' }}
-                  </button>
-                  <button
-                    class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <v-icon name="hi-heart" scale="1.2" />
-                  </button>
-                </div>
-              </div>
-            </div>
+          <!-- Image Thumbnails -->
+          <div class="flex space-x-2 overflow-x-auto">
+            <button
+              v-for="(image, index) in productImages"
+              :key="index"
+              @click="selectImage(index)"
+              :class="[
+                'flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden',
+                selectedImageIndex === index ? 'border-black' : 'border-gray-200'
+              ]"
+            >
+              <img
+                :src="image"
+                :alt="`Product view ${index + 1}`"
+                class="w-full h-full object-cover transition-opacity duration-200"
+                :style="selectedImageIndex === index ? '' : 'opacity: 0.4;'"
+              />
+            </button>
           </div>
         </div>
 
-        <!-- Tabs -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-          <!-- Tab Headers -->
-          <div class="border-b border-gray-200 dark:border-gray-700">
-            <nav class="flex space-x-8 px-8 pt-6">
-              <button
-                @click="activeTab = 'details'"
-                :class="[
-                  'pb-4 px-1 border-b-2 font-medium text-sm transition-colors',
-                  activeTab === 'details'
-                    ? 'border-emerald-500 text-emerald-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                ]"
-              >
-                Details
-              </button>
-              <button
-                @click="activeTab = 'variants'"
-                :class="[
-                  'pb-4 px-1 border-b-2 font-medium text-sm transition-colors',
-                  activeTab === 'variants'
-                    ? 'border-emerald-500 text-emerald-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                ]"
-              >
-                Variants ({{ productVariantsStore.variantCount }})
-              </button>
-              <button
-                @click="activeTab = 'reviews'"
-                :class="[
-                  'pb-4 px-1 border-b-2 font-medium text-sm transition-colors',
-                  activeTab === 'reviews'
-                    ? 'border-emerald-500 text-emerald-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                ]"
-              >
-                Reviews ({{ reviews.length }})
-              </button>
-            </nav>
+        <!-- Right Column - Product Info -->
+        <div class="space-y-6">
+          <!-- Product Title and Price -->
+          <div>
+            <h1 class="font-srProDisplay text-4xl font-bold text-black mb-4">
+              {{ product?.name || mockProduct.name }}
+            </h1>
+
+            <div class="flex items-center space-x-3 mb-4">
+              <span class="font-srProDisplay text-3xl font-semibold text-gray-700">
+                {{ formatPrice(finalPrice) }}
+              </span>
+              <span class="font-srProDisplay text-xl text-gray-400 line-through">
+                {{ formatPrice(discountPrice) }}
+              </span>
+            </div>
           </div>
 
-          <!-- Tab Content -->
-          <div class="p-8">
-            <!-- Details Tab -->
-            <div v-if="activeTab === 'details'" class="space-y-6">
-              <div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Product Information</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Product ID</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ product.id }}</dd>
-                  </div>
-                  <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Base Price</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ formatPrice(product.basePrice) }}</dd>
-                  </div>
-                  <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Stock</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ product.totalStock }} units</dd>
-                  </div>
-                  <div v-if="category">
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Category</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ category.name }}</dd>
-                  </div>
-                </div>
+          <!-- Color Selection -->
+          <div class="flex items-center gap-4">
+            <span class="font-srProDisplay text-sm font-medium text-gray-700">Select color:</span>
+            <div class="flex space-x-3">
+              <button
+                v-for="color in mockProduct.specifications?.colors"
+                :key="color"
+                @click="selectColor(color)"
+                :class="[
+                  'w-8 h-8 rounded-full border-1 transition-all',
+                  selectedColor === color ? 'border-black ring-2 ring-gray-300' : 'border-gray-300',
+                  getColorClass(color)
+                ]"
+                :title="color"
+              ></button>
+            </div>
+          </div>
+
+          <!-- Storage Selection -->
+          <div class="space-y-3">
+            <div class="flex space-x-3">
+              <button
+                v-for="storage in mockProduct.specifications?.storage"
+                :key="storage"
+                @click="selectStorage(storage)"
+                :class="[
+                  'px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium transition-colors',
+                  selectedStorage === storage
+                    ? 'border-black bg-black text-white'
+                    : 'border-gray-300 text-gray-700 hover:border-gray-400'
+                ]"
+              >
+                {{ storage }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Product Specifications -->
+          <div class="grid grid-cols-3 gap-3">
+            <!-- Screen Size -->
+            <div class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 flex items-center justify-center">
+                <v-icon name="io-resize" scale="1.2" class="text-gray-600" />
               </div>
               <div>
-                <h4 class="text-md font-medium text-gray-900 dark:text-white mb-2">Description</h4>
-                <p class="text-gray-600 dark:text-gray-300">{{ product.description }}</p>
-              </div>
-
-              <!-- Variants Summary -->
-              <div v-if="productVariantsStore.hasVariants">
-                <h4 class="text-md font-medium text-gray-900 dark:text-white mb-4">Variants Summary</h4>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div class="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-lg">
-                    <div class="flex items-center space-x-2">
-                      <v-icon name="hi-cube" scale="1.2" class="text-emerald-600 dark:text-emerald-400" />
-                      <div>
-                        <p class="text-sm font-medium text-emerald-600 dark:text-emerald-400">Total Variants</p>
-                        <p class="text-lg font-bold text-emerald-700 dark:text-emerald-300">{{ productVariantsStore.variantCount }}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                    <div class="flex items-center space-x-2">
-                      <v-icon name="hi-collection" scale="1.2" class="text-blue-600 dark:text-blue-400" />
-                      <div>
-                        <p class="text-sm font-medium text-blue-600 dark:text-blue-400">Total Stock</p>
-                        <p class="text-lg font-bold text-blue-700 dark:text-blue-300">{{ productVariantsStore.totalVariantStock }}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
-                    <div class="flex items-center space-x-2">
-                      <v-icon name="hi-exclamation-circle" scale="1.2" class="text-yellow-600 dark:text-yellow-400" />
-                      <div>
-                        <p class="text-sm font-medium text-yellow-600 dark:text-yellow-400">Low Stock</p>
-                        <p class="text-lg font-bold text-yellow-700 dark:text-yellow-300">{{ productVariantsStore.lowStockVariants.length }}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Colors and Sizes -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                  <div>
-                    <h5 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Available Colors</h5>
-                    <div class="flex flex-wrap gap-2">
-                      <div
-                        v-for="color in productVariantsStore.uniqueColors"
-                        :key="color"
-                        class="flex items-center space-x-2 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full"
-                      >
-                        <div :class="`w-3 h-3 rounded-full border border-gray-300 ${productVariantsStore.getColorClass(color)}`"></div>
-                        <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ color }}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <h5 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Available Sizes</h5>
-                    <div class="flex flex-wrap gap-2">
-                      <span
-                        v-for="size in productVariantsStore.uniqueSizes"
-                        :key="size"
-                        class="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-xs font-medium text-gray-700 dark:text-gray-300"
-                      >
-                        {{ size }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                <p class="text-xs text-gray-500">Screen size</p>
+                <p class="font-srProDisplay text-sm font-semibold">{{ mockProduct.specifications?.screenSize }}</p>
               </div>
             </div>
 
-            <!-- Variants Tab -->
-            <div v-else-if="activeTab === 'variants'">
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Product Variants</h3>
-              <div v-if="!productVariantsStore.hasVariants" class="text-center py-8">
-                <p class="text-gray-500 dark:text-gray-400">No variants available for this product</p>
+            <!-- Processor -->
+            <div class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="hi-solid-chip" scale="1.2" class="text-gray-600" />
               </div>
-              <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div
-                  v-for="variant in productVariantsStore.variants"
-                  :key="variant.id"
-                  class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition-shadow"
-                >
-                  <!-- Variant Header -->
-                  <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center space-x-2">
-                      <v-icon name="hi-cube" scale="1.1" class="text-emerald-600 dark:text-emerald-400" />
-                      <span class="font-semibold text-gray-900 dark:text-white">{{ variant.sku }}</span>
-                    </div>
-                    <span :class="`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${productVariantsStore.getStockStatus(variant.stock).bgColor} ${productVariantsStore.getStockStatus(variant.stock).color}`">
-                      {{ productVariantsStore.getStockStatus(variant.stock).text }}
-                    </span>
-                  </div>
-
-                  <!-- Size & Color -->
-                  <div class="space-y-3 mb-4">
-                    <div class="flex items-center justify-between">
-                      <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Size:</span>
-                      <div class="flex items-center space-x-1">
-                        <v-icon :name="productVariantsStore.getSizeIcon(variant.size)" scale="0.9" class="text-gray-500" />
-                        <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ variant.size }}</span>
-                      </div>
-                    </div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Color:</span>
-                      <div class="flex items-center space-x-2">
-                        <div :class="`w-4 h-4 rounded-full border border-gray-300 ${productVariantsStore.getColorClass(variant.color)}`"></div>
-                        <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ variant.color }}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Stock -->
-                  <div class="flex items-center justify-between text-sm">
-                    <span class="text-gray-600 dark:text-gray-300">Stock available:</span>
-                    <span class="font-bold text-gray-900 dark:text-white">{{ variant.stock }} units</span>
-                  </div>
-
-                  <!-- Variant ID -->
-                  <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <span class="text-xs text-gray-500 dark:text-gray-400">ID: {{ variant.id }}</span>
-                  </div>
-                </div>
+              <div>
+                <p class="text-xs text-gray-500">CPU</p>
+                <p class="font-srProDisplay text-sm font-semibold">{{ mockProduct.specifications?.processor }}</p>
               </div>
             </div>
 
-            <!-- Reviews Tab -->
-            <div v-else-if="activeTab === 'reviews'">
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Customer Reviews</h3>
-              <div v-if="reviews.length === 0" class="text-center py-8">
-                <p class="text-gray-500 dark:text-gray-400">No reviews available for this product</p>
+            <!-- Number of cores -->
+            <div class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="hi-chip" scale="1.2" class="text-gray-600" />
               </div>
-              <div v-else class="space-y-4">
-                <div
-                  v-for="review in reviews"
-                  :key="review.id"
-                  class="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
-                >
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="flex items-center space-x-2">
-                      <span class="font-medium text-gray-900 dark:text-white">
-                        {{ review.user?.name || 'Anonymous' }}
-                      </span>
-                      <div class="flex items-center">
-                        <span
-                          v-for="(filled, index) in getRatingStars(review.rating)"
-                          :key="index"
-                          :class="filled ? 'text-yellow-400' : 'text-gray-300'"
-                          class="text-sm"
-                        >
-                          ★
-                        </span>
-                      </div>
-                    </div>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">
-                      {{ review.rating }}/5
-                    </span>
-                  </div>
-                  <p class="text-gray-600 dark:text-gray-300">{{ review.comment }}</p>
-                </div>
+              <div>
+                <p class="text-xs text-gray-500">Number of Cores</p>
+                <p class="font-srProDisplay text-sm font-semibold">{{ mockProduct.specifications?.ncores }}</p>
+              </div>
+            </div>
+
+            <!-- Camera -->
+            <div class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="bi-camera" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Camera</p>
+                <p class="font-srProDisplay text-sm font-semibold">{{ mockProduct.specifications?.camera }}</p>
+              </div>
+            </div>
+
+            <!-- Front camera -->
+            <div class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="io-camera-reverse-outline" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Front-Camera</p>
+                <p class="font-srProDisplay text-sm font-semibold">{{ mockProduct.specifications?.frontCamera }}</p>
+              </div>
+            </div>
+
+            <!-- Battery -->
+            <div class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="gi-battery-75" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Battery</p>
+                <p class="font-srProDisplay text-sm font-semibold">{{ mockProduct.specifications?.battery }}</p>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Back Button -->
-        <div class="text-center">
-          <button
-            @click="$router.go(-1)"
-            class="inline-flex items-center space-x-2 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
-          >
-            <v-icon name="hi-arrow-left" scale="1.1" />
-            <span>Back to products</span>
-          </button>
+          <!-- Product Description -->
+          <div class="space-y-3">
+            <p class="font-srProDisplay text-gray-700 leading-relaxed">
+              {{ displayedDescription }}
+            </p>
+            <button
+              v-if="isDescriptionLong"
+              @click="toggleDescription"
+              class="text-black font-srProDisplay text-sm font-medium underline focus:outline-none"
+            >
+              {{ showFullDescription ? 'less...' : 'more...' }}
+            </button>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex gap-3">
+            <button
+              @click="addToWishlist"
+              class="flex-1 border border-gray-300 text-gray-700 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium hover:bg-gray-50 transition-colors"
+            >
+              Add to Wishlist
+            </button>
+            <button
+              @click="addToCart"
+              class="flex-1 bg-black text-white py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium hover:bg-gray-800 transition-colors"
+            >
+              Add to Cart
+            </button>
+          </div>
+
+          <!-- Delivery Info -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+            <div class="flex items-center bg-[#F4F4F4] rounded-[8px] p-3">
+              <div class="w-[50px] h-[50px] flex items-center justify-center text-gray-600 mr-4">
+                <v-icon name="hi-truck" scale="1.2" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Free Delivery</p>
+                <p class="font-srProDisplay text-sm font-semibold">1-2 day</p>
+              </div>
+            </div>
+            <div class="flex items-center bg-[#F4F4F4] rounded-[8px] p-3">
+              <div class="w-[50px] h-[50px] flex items-center justify-center text-gray-600 mr-4">
+                <v-icon name="bi-shop" scale="1.2" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">In Stock</p>
+                <p class="font-srProDisplay text-sm font-semibold">Today</p>
+              </div>
+            </div>
+            <div class="flex items-center bg-[#F4F4F4] rounded-[8px] p-3">
+              <div class="w-[50px] h-[50px] flex items-center justify-center text-gray-600 mr-4">
+                <v-icon name="hi-badge-check" scale="1.2" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Guaranteed</p>
+                <p class="font-srProDisplay text-sm font-semibold">1 year</p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
+
+    <!-- Details Section -->
+    <section class="w-full flex justify-center bg-[#fafbfc] py-24">
+      <div class="w-full max-w-[1640px] bg-white rounded-2xl shadow-sm px-8 py-10">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-2xl font-semibold">Details</h2>
+          <button
+            @click="toggleDetails"
+            class="p-1 hover:bg-gray-100 rounded transition-colors"
+            type="button"
+            aria-label="Toggle details section"
+          >
+            <svg
+              class="w-5 h-5 text-gray-600 transition-transform duration-200"
+              :class="{ 'rotate-180': detailsCollapsed }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+        <transition name="fade-details">
+          <div v-show="!detailsCollapsed">
+            <p class="text-gray-400 mb-8 max-w-auto">
+              Just as a book is judged by its cover, the first thing you notice when you pick up a modern smartphone is the display. Nothing surprising, because advanced technologies allow you to practically level the display frames and cutouts for the front camera and speaker, leaving no room for bold design solutions. And how good that in such realities Apple everything is fine with displays. Both critics and mass consumers always praise the quality of the picture provided by the products of the Californian brand. And last year's 6.7-inch Retina panels, which had ProMotion, caused real admiration for many.
+            </p>
+
+            <!-- Details content with fade effect -->
+            <div class="space-y-6 relative">
+              <div
+                :class="['transition-all duration-300 overflow-hidden', showAllDetails ? '' : 'max-h-[600px]']"
+                style="position: relative;"
+              >
+                <div :style="showAllDetails ? '' : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'">
+
+                  <!-- Screen Section -->
+                  <h3 class="text-xl font-semibold mb-4 mt-8">Screen</h3>
+                  <div class="border-t border-gray-200">
+                    <div class="flex items-center py-4 border-b border-gray-100">
+                      <div class="flex-1 text-gray-600">Screen diagonal</div>
+                      <div class="w-48 text-right font-medium">6.7"</div>
+                    </div>
+                    <div class="flex items-center py-4 border-b border-gray-100">
+                      <div class="flex-1 text-gray-600">The screen resolution</div>
+                      <div class="w-48 text-right font-medium">2796x1290</div>
+                    </div>
+                    <div class="flex items-center py-4 border-b border-gray-100">
+                      <div class="flex-1 text-gray-600">The screen refresh rate</div>
+                      <div class="w-48 text-right font-medium">120 Hz</div>
+                    </div>
+                    <div class="flex items-center py-4 border-b border-gray-100">
+                      <div class="flex-1 text-gray-600">The pixel density</div>
+                      <div class="w-48 text-right font-medium">460 ppi</div>
+                    </div>
+                    <div class="flex items-center py-4 border-b border-gray-100">
+                      <div class="flex-1 text-gray-600">Screen type</div>
+                      <div class="w-48 text-right font-medium">OLED</div>
+                    </div>
+                    <div class="flex items-center py-4">
+                      <div class="flex-1 text-gray-600">Additionally</div>
+                      <div class="w-48 text-right font-medium space-y-1">
+                        <div>Dynamic Island</div>
+                        <div>Always-On display</div>
+                        <div>HDR display</div>
+                        <div>True Tone</div>
+                        <div>Wide color (P3)</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- CPU Section -->
+                  <h3 class="text-xl font-semibold mb-4 mt-12">CPU</h3>
+                  <div class="border-t border-gray-200">
+                    <div class="flex items-center py-4 border-b border-gray-100">
+                      <div class="flex-1 text-gray-600">CPU</div>
+                      <div class="w-48 text-right font-medium">Apple A16 Bionic</div>
+                    </div>
+                    <div class="flex items-center py-4 border-b border-gray-100">
+                      <div class="flex-1 text-gray-600">Number of cores</div>
+                      <div class="w-48 text-right font-medium">6</div>
+                    </div>
+                    <div class="flex items-center py-4">
+                      <div class="flex-1 text-gray-600">Memory</div>
+                      <div class="w-48 text-right font-medium">6GB</div>
+                    </div>
+                  </div>
+
+                  <!-- Camera Section -->
+                  <h3 class="text-xl font-semibold mb-4 mt-12">Camera</h3>
+                  <div class="border-t border-gray-200">
+                    <div class="flex items-center py-4 border-b border-gray-100">
+                      <div class="flex-1 text-gray-600">Rear camera</div>
+                      <div class="w-48 text-right font-medium">48 MP + 12 MP + 12 MP</div>
+                    </div>
+                    <div class="flex items-center py-4 border-b border-gray-100">
+                      <div class="flex-1 text-gray-600">Front camera</div>
+                      <div class="w-48 text-right font-medium">12 MP</div>
+                    </div>
+                    <div class="flex items-center py-4">
+                      <div class="flex-1 text-gray-600">Camera features</div>
+                      <div class="w-48 text-right font-medium space-y-1">
+                        <div>Night mode</div>
+                        <div>Deep Fusion</div>
+                        <div>Smart HDR 4</div>
+                        <div>Photographic Styles</div>
+                        <div>ProRAW & ProRes</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Battery Section -->
+                  <h3 class="text-xl font-semibold mb-4 mt-12">Battery</h3>
+                  <div class="border-t border-gray-200">
+                    <div class="flex items-center py-4 border-b border-gray-100">
+                      <div class="flex-1 text-gray-600">Capacity</div>
+                      <div class="w-48 text-right font-medium">4323 mAh</div>
+                    </div>
+                    <div class="flex items-center py-4 border-b border-gray-100">
+                      <div class="flex-1 text-gray-600">Charging</div>
+                      <div class="w-48 text-right font-medium">Fast charging, MagSafe wireless</div>
+                    </div>
+                    <div class="flex items-center py-4">
+                      <div class="flex-1 text-gray-600">Battery life</div>
+                      <div class="w-48 text-right font-medium">Up to 29 hours video playback</div>
+                    </div>
+                  </div>
+
+                  <!-- Storage Section -->
+                  <h3 class="text-xl font-semibold mb-4 mt-12">Storage</h3>
+                  <div class="border-t border-gray-200">
+                    <div class="flex items-center py-4">
+                      <div class="flex-1 text-gray-600">Available options</div>
+                      <div class="w-48 text-right font-medium space-y-1">
+                        <div>128GB</div>
+                        <div>256GB</div>
+                        <div>512GB</div>
+                        <div>1TB</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Fade overlay when not showing all details -->
+                <div v-if="!showAllDetails" class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+              </div>
+
+              <!-- View More/Less Button -->
+              <div class="flex justify-center mt-6">
+                <button
+                  @click="showAllDetails = !showAllDetails"
+                  class="flex items-center justify-center gap-2 px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                >
+                  <span>{{ showAllDetails ? 'View Less' : 'View More' }}</span>
+                  <svg v-if="!showAllDetails" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="w-full flex justify-center bg-white py-24">
+      <div class="w-full max-w-[1640px] bg-white rounded-2xl px-8 py-10">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-2xl font-semibold mb-8">Reviews</h2>
+          <button
+            @click="toggleReviews"
+            class="p-1 hover:bg-gray-100 rounded transition-colors"
+            type="button"
+            aria-label="Toggle reviews section"
+          >
+            <svg
+              class="w-5 h-5 text-gray-600 transition-transform duration-200"
+              :class="{ 'rotate-180': reviewsCollapsed }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+
+        <transition name="fade-reviews">
+          <div v-show="!reviewsCollapsed">
+            <!-- Reviews Stats -->
+            <div class="flex items-start gap-12 mb-8">
+              <!-- Overall Rating -->
+              <div class="text-center space-x-3 bg-[#F4F4F4] rounded-[25px] w-auto h-auto p-8">
+                <div class="text-6xl font-bold mb-2">{{ reviewStats.averageRating }}</div>
+                <div class="text-gray-400 text-sm mb-2">of {{ reviewStats.totalReviews }} reviews</div>
+                <div class="flex justify-center">
+                  <div class="flex">
+                    <v-icon
+                      v-for="star in 5"
+                      :key="star"
+                      :name="star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'"
+                      :class="star <= Math.floor(reviewStats.averageRating) ? 'text-yellow-400' : 'text-gray-300'"
+                      scale="1.2"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rating Breakdown -->
+              <div class="flex-1 max-w-7xl">
+                <div class="space-y-2">
+                  <div class="flex items-center gap-4">
+                    <span class="text-lg text-gray-600 w-30">Excellent</span>
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{ width: (reviewStats.excellent / reviewStats.totalReviews * 100) + '%' }"></div>
+                    </div>
+                    <span class="text-sm text-gray-400 w-8">{{ reviewStats.excellent }}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-lg text-gray-600 w-30">Good</span>
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{ width: (reviewStats.good / reviewStats.totalReviews * 100) + '%' }"></div>
+                    </div>
+                    <span class="text-sm text-gray-400 w-8">{{ reviewStats.good }}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-lg text-gray-600 w-30">Average</span>
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{ width: (reviewStats.average / reviewStats.totalReviews * 100) + '%' }"></div>
+                    </div>
+                    <span class="text-sm text-gray-400 w-8">{{ reviewStats.average }}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-lg text-gray-600 w-30">Below Average</span>
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{ width: (reviewStats.belowAverage / reviewStats.totalReviews * 100) + '%' }"></div>
+                    </div>
+                    <span class="text-sm text-gray-400 w-8">{{ reviewStats.belowAverage }}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-lg text-gray-600 w-30">Poor</span>
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{ width: (reviewStats.poor / reviewStats.totalReviews * 100) + '%' }"></div>
+                    </div>
+                    <span class="text-sm text-gray-400 w-8">{{ reviewStats.poor }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Leave Comment Button -->
+            <div class="mb-8">
+              <input
+                type="text"
+                placeholder="Leave Comment"
+                class="w-full border border-gray-200 rounded-[7px] px-4 py-4 text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all"
+              />
+            </div>
+
+            <!-- Individual Reviews with View More/Less and Fade -->
+            <div class="space-y-6 relative">
+              <div
+                :class="['transition-all duration-300 overflow-hidden', showAllReviews ? '' : 'max-h-[600px]']"
+                style="position: relative;"
+              >
+                <div :style="showAllReviews ? '' : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'">
+                  <div
+                    v-for="review in displayedReviews"
+                    :key="review.id"
+                    class="relative mb-6"
+                  >
+                    <div class="flex items-start gap-4 bg-[#F4F4F4] rounded-[10px] w-auto h-auto p-8">
+                      <!-- Avatar -->
+                      <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-gray-600 text-sm font-medium">{{ review.name.charAt(0) }}</span>
+                      </div>
+
+                      <!-- Review Content -->
+                      <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                          <h4 class="font-medium text-gray-900">{{ review.name }}</h4>
+                          <span class="text-sm text-gray-500">{{ review.date }}</span>
+                        </div>
+
+                        <!-- Star Rating -->
+                        <div class="flex mb-2">
+                          <v-icon
+                            v-for="star in 5"
+                            :key="star"
+                            :name="star <= review.rating ? 'bi-star-fill' : 'bi-star'"
+                            :class="star <= review.rating ? 'text-yellow-400' : 'text-gray-300'"
+                            scale="1.2"
+                          />
+                        </div>
+
+                        <!-- Comment -->
+                        <p class="text-gray-700 leading-relaxed">{{ review.comment }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Fade overlay when not showing all reviews -->
+                <div v-if="!showAllReviews && hasMoreReviews" class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+              </div>
+              <div v-if="hasMoreReviews" class="flex justify-center mt-6">
+                <button
+                  @click="toggleShowAllReviews"
+                  class="flex items-center justify-center gap-2 px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                >
+                  <span>{{ showAllReviews ? 'View Less' : 'View More' }}</span>
+                  <svg v-if="!showAllReviews" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </div>
+    </section>
+
+
+    <!-- Related Products Section -->
+    <section class="w-full flex justify-center bg-[#fafbfc] py-32">
+      <div class="w-full max-w-[1640px] px-8">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-2xl font-semibold text-left mb-8 text-black">Related Products</h2>
+          <button
+            @click="toggleRelated"
+            class="p-1 hover:bg-gray-100 rounded transition-colors"
+            type="button"
+            aria-label="Toggle related products section"
+          >
+            <svg
+              class="w-5 h-5 text-gray-600 transition-transform duration-200"
+              :class="{ 'rotate-180': relatedCollapsed }"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+        <transition name="fade-details">
+          <div v-show="!relatedCollapsed">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <!-- Product 1 -->
+              <div class="bg-white rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300">
+                <div class="h-32 w-full flex items-center justify-center mb-6">
+                  <img src="/images/Apple-phone.png" alt="iPhone 14" class="h-full object-contain" />
+                </div>
+                <h3 class="font-srProDisplay text-lg font-medium mb-2 text-black">iPhone 14</h3>
+                <p class="font-srProDisplay text-[#787878] text-sm mb-4">Starting at $699</p>
+                <button class="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+                  View Details
+                </button>
+              </div>
+
+              <!-- Product 2 -->
+              <div class="bg-white rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300">
+                <div class="h-32 w-full flex items-center justify-center mb-6">
+                  <img src="/images/Apple-iPad.png" alt="iPad Pro" class="h-full object-contain" />
+                </div>
+                <h3 class="font-srProDisplay text-lg font-medium mb-2 text-black">iPad Pro</h3>
+                <p class="font-srProDisplay text-[#787878] text-sm mb-4">Starting at $999</p>
+                <button class="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+                  View Details
+                </button>
+              </div>
+
+              <!-- Product 3 -->
+              <div class="bg-white rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300">
+                <div class="h-32 w-full flex items-center justify-center mb-6">
+                  <img src="/images/Apple-airPods.png" alt="AirPods Pro" class="h-full object-contain" />
+                </div>
+                <h3 class="font-srProDisplay text-lg font-medium mb-2 text-black">AirPods Pro</h3>
+                <p class="font-srProDisplay text-[#787878] text-sm mb-4">Starting at $249</p>
+                <button class="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+                  View Details
+                </button>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </div>
+    </section>
+
   </div>
+
 </template>
 
 <style scoped>
-/* Additional styles if needed */
+
+/* Remove Vue's Blue Effect on selected item */
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+input::placeholder {
+  font-weight: 200;
+  color: #a3a3a3;
+  font-size: 14px;
+  opacity: 1;
+}
+
+/* Custom transitions */
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+/* Hover effects for product images */
+.product-image-hover {
+  transition: transform 0.3s ease;
+}
+
+.product-image-hover:hover {
+  transform: scale(1.05);
+}
+
+/* Color button animations */
+.color-button {
+  transition: all 0.2s ease;
+}
+
+.color-button:hover {
+  transform: scale(1.1);
+}
+
+/* Storage button animations */
+.storage-button {
+  transition: all 0.2s ease;
+}
+
+.storage-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Transition animations for collapsible sections */
+.fade-details-enter-active,
+.fade-details-leave-active,
+.fade-reviews-enter-active,
+.fade-reviews-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-details-enter-from,
+.fade-details-leave-to,
+.fade-reviews-enter-from,
+.fade-reviews-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* Fade effect for reviews */
+.review-fade-overlay {
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, #ffffff 100%);
+  z-index: 2;
+}
 </style>

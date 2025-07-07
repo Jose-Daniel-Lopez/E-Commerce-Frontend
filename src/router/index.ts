@@ -13,7 +13,7 @@ const router = createRouter({
     // Catalog & Products
     { path: '/catalog', name: 'catalog', component: () => import('../views/CatalogView.vue') },
     { path: '/catalog/smartphones', name: 'smartphones', component: () => import('../views/SmartphonesView.vue') },
-    { path: '/catalog/smartphones/:productId', name: 'productDetails', component: () => import('../views/ProductDetailsViewNew.vue') },
+    { path: '/catalog/smartphones/:productId', name: 'productDetails', component: () => import('../views/ProductDetailsView.vue') },
     { path: '/categories/:categoryId/products', name: 'categoryProducts', component: () => import('../views/CategoryProductsView.vue') },
 
     // Cart & Wishlist
