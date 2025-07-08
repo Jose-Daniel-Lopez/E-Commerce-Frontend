@@ -20,6 +20,23 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 npm install
 ```
 
+### Environment Configuration
+
+1. Copy the environment example file:
+```sh
+cp .env.example .env
+```
+
+2. Edit the `.env` file with your local configuration:
+```sh
+# Update these values according to your setup
+VITE_API_BASE_URL=http://localhost:8080/api
+VITE_API_TIMEOUT=10000
+# ... other variables
+```
+
+**Note**: Never commit the `.env` file to version control as it may contain sensitive information.
+
 ### Compile and Hot-Reload for Development
 
 ```sh
