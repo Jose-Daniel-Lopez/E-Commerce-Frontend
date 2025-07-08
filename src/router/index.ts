@@ -32,6 +32,8 @@ const router = createRouter({
     { path: '/users/:userId/productReviews', name: 'userReviews', component: () => import('../views/UserReviewsView.vue') },
     { path: '/users/:userId/cart', name: 'userCart', component: () => import('../views/UserCartView.vue') },
 
+    { path: '/account', name: 'userAccount', component: () => import('../views/UserAccountView.vue') },
+
     // Orders, payments, coupons, and shipping
     { path: '/orders', name: 'orders', component: () => import('../views/OrdersView.vue') },
     { path: '/payments', name: 'payments', component: () => import('../views/PaymentsView.vue') },

@@ -9,6 +9,10 @@
     "orders": "Pedidos",
     "profile": "Perfil"
   },
+  "breadcrumbs": {
+    "home": "Inicio",
+    "account": "Mi Cuenta"
+  },
   "about": {
     "title": "Acerca de Nosotros",
     "description": "Somos una tienda de comercio electrónico dedicada a ofrecer productos de alta calidad con un enfoque minimalista y elegante. Nuestra misión es proporcionar una experiencia de compra sencilla y agradable para todos nuestros clientes.",
@@ -195,5 +199,71 @@
     "stock": "Stock",
     "addToCart": "Añadir al Carrito",
     "buyNow": "Comprar Ahora"
+  },
+  "account": {
+    "title": "Mi Cuenta",
+    "profile": {
+      "title": "Perfil",
+      "editButton": "Editar Perfil",
+      "memberSince": "Miembro desde",
+      "editModal": {
+        "title": "Editar Perfil",
+        "nameLabel": "Nombre Completo",
+        "namePlaceholder": "Introduce tu nombre completo",
+        "emailLabel": "Correo Electrónico",
+        "emailPlaceholder": "tu@email.com",
+        "locationLabel": "Ubicación",
+        "locationPlaceholder": "Introduce tu ubicación",
+        "avatarTitle": "Foto de Perfil",
+        "avatarDescription": "Sube una nueva foto de perfil. Solo se permiten archivos JPG, PNG o GIF.",
+        "changeAvatarButton": "Cambiar Foto",
+        "cancelButton": "Cancelar",
+        "saveButton": "Guardar Cambios"
+      }
+    },
+    "orders": {
+      "title": "Mis Pedidos",
+      "viewAll": "Ver todos los pedidos",
+      "order": "Pedido",
+      "viewDetails": "Ver Detalles"
+    },
+    "refunds": {
+      "title": "Reembolsos y Devoluciones",
+      "refund": "Reembolso",
+      "viewDetails": "Ver Detalles"
+    },
+    "wishlist": {
+      "title": "Lista de Deseados",
+      "viewAll": "Ver todo",
+      "addToCart": "Añadir al Carrito"
+    },
+    "addresses": {
+      "title": "Mis Direcciones",
+      "addButton": "Añadir Nueva Dirección"
+    },
+    "reviews": {
+      "title": "Mis Reseñas",
+      "reviews": "Reseñas"
+    },
+    "settings": {
+      "title": "Configuración",
+      "language": {
+        "title": "Idioma",
+        "description": "Elige tu idioma preferido"
+      },
+      "theme": {
+        "title": "Tema de la Aplicación",
+        "description": "Selecciona tu tema preferido"
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "description": "Gestiona tus preferencias de notificación"
+      },
+      "security": {
+        "title": "Seguridad",
+        "description": "Gestiona la seguridad de tu cuenta",
+        "changePasswordButton": "Cambiar Contraseña"
+      }
+    }
   }
 }

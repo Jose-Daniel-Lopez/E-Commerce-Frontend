@@ -49,7 +49,7 @@
         </span>
       </li>
 
-      <li class="flex h-[66px] cursor-pointer flex-col items-center justify-center hover:bg-blue-50 sm:hover:bg-transparent">
+      <li class="relative flex h-[66px] cursor-pointer flex-col items-center justify-center hover:bg-blue-50 sm:hover:bg-transparent" @click.stop="toggleUserDropdown">
         <img
           src="/images/User.png"
           alt="user icon"
@@ -58,6 +58,16 @@
         <span class="font-srProDisplay text-sm font-medium sm:hidden">
           User
         </span>
+        <!-- User Dropdown -->
+        <div v-show="showUserDropdown" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-2xl z-[100]" @click.stop>
+          <div class="py-3">
+            <div class="max-h-80 overflow-y-auto categories-scroll">
+              <div v-for="option in userOptions" :key="option.label" @click="selectUserOption(option)" class="group flex items-center px-4 py-3 text-sm font-srProDisplay text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 cursor-pointer transition-all duration-200 border-l-4 border-transparent hover:border-gray-700">
+                <span class="flex-1 group-hover:text-gray-800 group-hover:font-medium transition-all duration-200">{{ option.label }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </li>
     </ul>
     <li class="block cursor-pointer lg:hidden">
@@ -128,11 +138,44 @@ export default {
       }
     })
 
+    // --- User Dropdown State and Logic ---
+    const showUserDropdown = ref(false)
+    const userOptions = [
+      { label: 'Profile', hash: '#profile' },
+      { label: 'My orders', hash: '#orders' },
+      { label: 'Refunds and drawbacks', hash: '#refunds' },
+      { label: 'My wishlist', hash: '#wishlist' },
+      { label: 'My addresses', hash: '#addresses' },
+      { label: 'My reviews', hash: '#reviews' },
+      { label: 'Settings', hash: '#settings' }
+    ]
+    const toggleUserDropdown = () => {
+      showUserDropdown.value = !showUserDropdown.value
+    }
+    const selectUserOption = (option) => {
+      showUserDropdown.value = false
+      // Navega a UserAccountView y hace scroll a la sección
+      if (window.location.pathname !== '/account') {
+        window.location.href = '/account' + option.hash
+      } else {
+        window.location.hash = option.hash
+      }
+    }
+    // Cierra el dropdown al hacer click fuera
+    if (typeof window !== 'undefined') {
+      window.addEventListener('click', () => {
+        showUserDropdown.value = false
+      })
+    }
     return {
       showMenu,
       showSearchBar,
       toggleMenu,
-      toggleSearchBar
+      toggleSearchBar,
+      showUserDropdown,
+      userOptions,
+      toggleUserDropdown,
+      selectUserOption
     }
   }
 }
