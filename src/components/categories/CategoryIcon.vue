@@ -3,7 +3,7 @@
 interface Category {
   id: number
   name: string
-  icon?: string // Nuevo campo opcional para el icono
+  icon?: string // New optional field for the icon
 }
 
 interface CategoryIconProps {

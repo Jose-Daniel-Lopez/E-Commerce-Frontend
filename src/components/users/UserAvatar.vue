@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useUsersStore } from '@/stores/users'
 
-// Provisional interface for user data
-// TODO: This should match the actual user data structure
+// Temporary interface for user data
+// TODO: Update to match the real user data structure
 interface Props {
   user: {
     id: number

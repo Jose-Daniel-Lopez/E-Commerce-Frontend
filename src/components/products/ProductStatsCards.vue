@@ -4,7 +4,7 @@ import { computed } from 'vue'
 
 const productsStore = useProductsStore()
 
-// Usar estadísticas globales si están disponibles, sino usar la información de paginación
+// Use global stats if available, otherwise use pagination info
 const totalProducts = computed(() =>
   productsStore.stats.totalProducts || productsStore.pagination.totalElements
 )

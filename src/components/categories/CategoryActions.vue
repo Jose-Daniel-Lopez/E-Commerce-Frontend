@@ -10,8 +10,8 @@ interface Props {
 
 const props = defineProps<Props>()
 
-// Define custom events that this component can emit to its parent
-// Each event passes a categoryId parameter when triggered
+// Custom events emitted to the parent component
+// Each event provides a categoryId parameter
 const emit = defineEmits<{
   viewProducts: [categoryId: number]
   editCategory: [categoryId: number]

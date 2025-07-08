@@ -26,12 +26,12 @@ const viewCategoryProducts = (categoryId: number) => {
 
 const handleEditCategory = (categoryId: number) => {
   console.log('Edit category:', categoryId)
-  // TODO: Implement edit category logic
+  // TODO: Add logic to edit a category
 }
 
 const handleDeleteCategory = (categoryId: number) => {
   console.log('Delete category:', categoryId)
-  // TODO: Implement delete category logic
+  // TODO: Add logic to delete a category
 }
 </script>
 

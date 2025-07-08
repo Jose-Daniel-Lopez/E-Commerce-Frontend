@@ -29,7 +29,7 @@ import { Navigation, Grid } from 'swiper/modules';
 import CategoryCard from './CategoryCard.vue';
 import SwiperNavButtons from './SwiperNavButtons.vue';
 
-// 1. Definir las props que el componente recibe
+// 1. Define the props this component receives
 defineProps({
   categories: {
     type: Array,
@@ -37,7 +37,7 @@ defineProps({
   }
 });
 
-// 2. Definir la data como constantes
+// 2. Define data as constants
 const modules = [Navigation, Grid];
 
 const breakpoints = {
@@ -61,7 +61,7 @@ const breakpoints = {
   }
 };
 
-// 3. El 'computed' aquí es estático, así que puede ser una constante
+// 3. The computed here is static, so it can be a constant
 const gridSettings = {
   rows: 1,
   fill: 'row'

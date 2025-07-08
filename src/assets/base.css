@@ -5,9 +5,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 
-/* Configuración de tema para Tailwind */
+/* Tailwind theme configuration */
 @theme {
-  /* Colores principales del e-commerce */
+  /* Main e-commerce colors */
   --color-primary: #000000;
   --color-secondary: #333333;
   --color-accent: #666666;
@@ -18,19 +18,19 @@
   --color-warning: #f59e0b;
   --color-error: #ef4444;
 
-  /* Colores específicos para e-commerce */
+  /* E-commerce specific colors */
   --color-cart: #ff6b6b;
   --color-favorite: #ff6b6b;
   --color-discount: #ff4757;
   --color-price: #2ed573;
 
-  /* Variables de fuentes */
+  /* Font variables */
   --font-figtree: 'Figtree', sans-serif;
   --font-srProDisplay: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 @layer base {
-  /* Variables CSS para compatibilidad */
+  /* CSS variables for compatibility */
   :root {
     --background: var(--color-background);
     --foreground: var(--color-text);
@@ -49,14 +49,14 @@
     --color-warning: #fbbf24;
     --color-error: #f87171;
 
-    /* Colores específicos para e-commerce en modo oscuro */
+    /* E-commerce specific colors for dark mode */
     --color-cart: #ff7675;
     --color-favorite: #ff7675;
     --color-discount: #fd79a8;
     --color-price: #00b894;
   }
 
-  /* Reset y configuración base */
+  /* Reset and base configuration */
   * {
     box-sizing: border-box;
   }
@@ -75,27 +75,27 @@
     overflow-x: hidden;
   }
 
-  /* Contenedor principal para evitar estiramientos */
+  /* Main container to prevent stretching */
   #app {
     width: 100%;
     max-width: 100vw;
     overflow-x: hidden;
   }
 
-  /* Estilos para imágenes responsivas */
+  /* Responsive image styles */
   img {
     max-width: 100%;
     height: auto;
     display: block;
   }
 
-  /* Reset para enlaces */
+  /* Link reset */
   a {
     text-decoration: none;
     color: inherit;
   }
 
-  /* Mejoras de accesibilidad */
+  /* Accessibility improvements */
   button:focus,
   a:focus {
     outline: 2px solid #3b82f6;
@@ -120,7 +120,7 @@
     border-bottom-color: #000000;
   }
 
-  /* Fuentes personalizadas */
+  /* Custom fonts */
   .font-figtree {
     font-family: var(--font-figtree);
   }
@@ -129,7 +129,7 @@
     font-family: var(--font-srProDisplay);
   }
 
-  /* Wrapper mejorado para controlar el ancho */
+  /* Improved wrapper to control width */
   .wrapper-container {
     width: 100%;
     max-width: 1440px;
@@ -162,7 +162,7 @@
     text-wrap: balance;
   }
 
-  /* Utilidades adicionales */
+  /* Additional utilities */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -170,7 +170,7 @@
     overflow: hidden;
   }
 
-  /* Clases utilitarias para evitar estiramientos */
+  /* Utility classes to prevent stretching */
   .container-fluid {
     width: 100%;
     max-width: 100vw;
@@ -209,13 +209,13 @@
   }
 }
 
-/* Contenedores de sección para evitar estiramientos */
+/* Section containers to prevent stretching */
 section {
   width: 100%;
   overflow-x: hidden;
 }
 
-/* Estilos para Swiper - Browse Category */
+/* Swiper styles - Browse Category */
 .browse-category {
   width: 100%;
   max-width: 100%;
