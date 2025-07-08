@@ -9,6 +9,10 @@
     "orders": "Orders",
     "profile": "Profile"
   },
+  "breadcrumbs": {
+    "home": "Home",
+    "account": "My Account"
+  },
   "about": {
     "title": "About Us",
     "description": "We are an e-commerce store dedicated to offering high-quality products with a minimalist and elegant approach. Our mission is to provide a simple and pleasant shopping experience for all our customers.",
@@ -195,5 +199,72 @@
     "stock": "Stock",
     "addToCart": "Add to Cart",
     "buyNow": "Buy Now"
+  },
+  "account": {
+    "title": "My Account",
+    "profile": {
+      "title": "Profile",
+      "editButton": "Edit Profile",
+      "cancelButton": "Cancel",
+      "memberSince": "Member since",
+      "editModal": {
+        "title": "Edit Profile",
+        "nameLabel": "Full Name",
+        "namePlaceholder": "Enter your full name",
+        "emailLabel": "Email",
+        "emailPlaceholder": "your@email.com",
+        "locationLabel": "Location",
+        "locationPlaceholder": "Enter your location",
+        "avatarTitle": "Profile Picture",
+        "avatarDescription": "Upload a new profile picture. Only JPG, PNG, or GIF files are allowed.",
+        "changeAvatarButton": "Change Avatar",
+        "cancelButton": "Cancel",
+        "saveButton": "Save Changes"
+      }
+    },
+    "orders": {
+      "title": "My Orders",
+      "viewAll": "View all orders",
+      "order": "Order",
+      "viewDetails": "View Details"
+    },
+    "refunds": {
+      "title": "Refunds and Returns",
+      "refund": "Refund",
+      "viewDetails": "View Details"
+    },
+    "wishlist": {
+      "title": "Wishlist",
+      "viewAll": "View all",
+      "addToCart": "Add to Cart"
+    },
+    "addresses": {
+      "title": "My Addresses",
+      "addButton": "Add New Address"
+    },
+    "reviews": {
+      "title": "My Reviews",
+      "reviews": "Reviews"
+    },
+    "settings": {
+      "title": "Settings",
+      "language": {
+        "title": "Language",
+        "description": "Choose your preferred language"
+      },
+      "theme": {
+        "title": "App Theme",
+        "description": "Select your preferred theme"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "description": "Manage your notification preferences"
+      },
+      "security": {
+        "title": "Security",
+        "description": "Manage your account security",
+        "changePasswordButton": "Change Password"
+      }
+    }
   }
 }

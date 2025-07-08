@@ -98,10 +98,11 @@ const positionSearchBar = ref('invisible opacity-0 top-[100px]')
 const show = ref('lg:translate-y-0')
 const lastScrollY = ref(0)
 
-// Categories dropdown state
+// State para ambos dropdowns
 const showCategoriesDropdown = ref(false)
+const showUserDropdown = ref(false)
 
-// Categories list with routes
+// Listas de opciones
 const categories = [
   { name: 'Todas las categorías', route: '/catalog' },
   { name: 'Moviles', route: '/catalog/smartphones' },
@@ -118,6 +119,57 @@ const categories = [
   { name: 'Accesorios', route: '/catalog/accessories' }
 ]
 
+const userOptions = [
+  { label: 'Profile', route: '/profile' },
+  { label: 'My orders', route: '/orders' },
+  { label: 'Refunds and drawbacks', route: '/refunds' },
+  { label: 'My wishlist', route: '/wishlist' },
+  { label: 'My addresses', route: '/addresses' },
+  { label: 'My reviews', route: '/reviews' },
+  { label: 'Settings', route: '/settings' }
+]
+
+// --- FUNCIONES MEJORADAS ---
+
+// Función para mostrar/ocultar el dropdown de categorías
+const toggleCategoriesDropdown = () => {
+  showCategoriesDropdown.value = !showCategoriesDropdown.value
+  // Si se abre este, se cierra el otro
+  if (showCategoriesDropdown.value) {
+    showUserDropdown.value = false
+  }
+}
+
+// Función para mostrar/ocultar el dropdown de usuario
+const toggleUserDropdown = () => {
+  showUserDropdown.value = !showUserDropdown.value
+  // Si se abre este, se cierra el otro
+  if (showUserDropdown.value) {
+    showCategoriesDropdown.value = false
+  }
+}
+
+// Navegar al seleccionar una categoría
+const selectCategory = (category: { name: string; route: string }) => {
+  showCategoriesDropdown.value = false
+  window.location.href = category.route
+}
+
+// Navegar al seleccionar una opción de usuario
+const selectUserOption = (option: { label: string; route: string }) => {
+  showUserDropdown.value = false
+  window.location.href = option.route
+}
+
+// --- MANEJO DE EVENTOS ---
+
+// Función única para cerrar todos los dropdowns al hacer clic fuera
+const closeAllDropdowns = () => {
+  showCategoriesDropdown.value = false
+  showUserDropdown.value = false
+}
+
+// Control de la visibilidad de la barra de navegación con el scroll
 const controlNavbar = () => {
   if (window.scrollY > 200) {
     if (window.scrollY > lastScrollY.value) {
@@ -131,21 +183,6 @@ const controlNavbar = () => {
   lastScrollY.value = window.scrollY
 }
 
-// Categories dropdown functions
-const toggleCategoriesDropdown = () => {
-  showCategoriesDropdown.value = !showCategoriesDropdown.value
-}
-
-const selectCategory = (category: { name: string; route: string }) => {
-  showCategoriesDropdown.value = false
-  // Navigate to the category route
-  window.location.href = category.route
-}
-
-const closeCategoriesDropdown = () => {
-  showCategoriesDropdown.value = false
-}
-
 const setShowMobileMenu = (value: string) => {
   showMobileMenu.value = value
 }
@@ -154,14 +191,18 @@ const setPositionSearchBar = (value: string) => {
   positionSearchBar.value = value
 }
 
+// --- LIFECYCLE HOOKS ---
+
 onMounted(() => {
   window.addEventListener('scroll', controlNavbar)
-  document.addEventListener('click', closeCategoriesDropdown)
+  // Se añade un único listener para cerrar los menús
+  document.addEventListener('click', closeAllDropdowns)
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', controlNavbar)
-  document.removeEventListener('click', closeCategoriesDropdown)
+  // Se elimina el listener al desmontar el componente
+  document.removeEventListener('click', closeAllDropdowns)
 })
 </script>
 

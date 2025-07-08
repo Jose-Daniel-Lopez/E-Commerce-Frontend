@@ -1,0 +1,762 @@
+<template>
+  <div class="pt-[85px] lg:pt-0 bg-white text-black animate-fadeInUp">
+    <Wrapper class="py-8">
+      <!-- Breadcrumb Navigation -->
+      <BreadcrumbNav :breadcrumbs="breadcrumbs" />
+
+      <!-- Page Header -->
+      <section class="max-w-7xl mx-auto mb-8">
+        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-black">{{ $t('account.title') }}</h1>
+      </section>
+
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col lg:flex-row gap-8">
+          <!-- Sidebar Navigation -->
+          <aside class="w-full lg:w-1/4 mb-4 lg:mb-0 self-start">
+            <!-- Desktop Navigation -->
+            <nav class="bg-white rounded-lg shadow-lg border border-gray-200 p-6 hidden lg:block">
+              <h2 class="font-srProDisplay text-lg font-semibold text-black mb-4">Navigation</h2>
+              <ul class="space-y-1">
+                <li v-for="section in sections" :key="section.id">
+                  <a
+                    :href="`#${section.id}`"
+                    class="group flex items-center px-3 py-3 text-sm font-srProDisplay text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-lg cursor-pointer transition-all duration-200 border-l-4 border-transparent hover:border-black"
+                  >
+                    <v-icon :name="section.icon" scale="1.1" class="mr-3 text-gray-500 group-hover:text-black transition-colors duration-200" />
+                    <span class="group-hover:text-black group-hover:font-medium transition-all duration-200">{{ section.label }}</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+
+            <!-- Mobile Navigation Toggle -->
+            <button
+              @click="toggleMobileNav"
+              class="lg:hidden fixed top-28 left-4 z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-3 hover:shadow-xl transition-all duration-200"
+            >
+              <v-icon name="hi-menu" scale="1.2" class="text-black" />
+            </button>
+
+            <!-- Mobile Navigation Overlay -->
+            <div
+              v-if="isMobileNavOpen"
+              class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+              @click="closeMobileNav"
+            ></div>
+
+            <!-- Mobile Navigation Sidebar -->
+            <nav
+              :class="[
+                'lg:hidden fixed top-0 left-0 h-full w-80 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto',
+                isMobileNavOpen ? 'translate-x-0' : '-translate-x-full'
+              ]"
+            >
+              <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                  <h2 class="font-srProDisplay text-lg font-semibold text-black">Navigation</h2>
+                  <button @click="closeMobileNav" class="text-gray-500 hover:text-black">
+                    <v-icon name="hi-x" scale="1.2" />
+                  </button>
+                </div>
+                <ul class="space-y-1">
+                  <li v-for="section in sections" :key="section.id">
+                    <a
+                      :href="`#${section.id}`"
+                      @click="closeMobileNav"
+                      class="group flex items-center px-3 py-3 text-sm font-srProDisplay text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-lg cursor-pointer transition-all duration-200 border-l-4 border-transparent hover:border-black"
+                    >
+                      <v-icon :name="section.icon" scale="1.1" class="mr-3 text-gray-500 group-hover:text-black transition-colors duration-200" />
+                      <span class="group-hover:text-black group-hover:font-medium transition-all duration-200">{{ section.label }}</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="flex-1 space-y-8 lg:ml-0">
+            <!-- Profile Section -->
+            <section :id="sections[0].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.profile.title') }}</h2>
+                <Button
+                  @click="toggleEditProfile"
+                  text-color="black"
+                  bg-color="transparent"
+                  border-width="1px"
+                  border-color="#e5e7eb"
+                  hover-bg-color="#f9fafb"
+                  width="auto"
+                  height="36px"
+                  class="px-4 transition-all duration-200"
+                >
+                  <v-icon
+                    :name="isEditProfileOpen ? 'hi-x' : 'hi-pencil'"
+                    scale="0.9"
+                    class="mr-2 transition-transform duration-200"
+                    :class="{ 'rotate-90': isEditProfileOpen }"
+                  />
+                  {{ isEditProfileOpen ? $t('account.profile.cancelButton') : $t('account.profile.editButton') }}
+                </Button>
+              </div>
+
+              <!-- Profile Display -->
+              <div
+                v-show="!isEditProfileOpen"
+                class="transition-all duration-300 ease-in-out"
+                :class="{ 'opacity-0 transform -translate-y-2': isEditProfileOpen, 'opacity-100 transform translate-y-0': !isEditProfileOpen }"
+              >
+                <div class="flex flex-col md:flex-row gap-6 items-start">
+                  <div class="relative">
+                    <img src="/images/User.png" alt="User avatar" class="w-24 h-24 rounded-full border-2 border-gray-200" />
+                    <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="font-srProDisplay text-xl font-semibold text-black mb-1">{{ user.name }}</h3>
+                    <p class="font-srProDisplay text-gray-600 mb-2">{{ user.email }}</p>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                      <span class="flex items-center gap-1">
+                        <v-icon name="hi-calendar" scale="0.9" />
+                        {{ $t('account.profile.memberSince') }} {{ user.memberSince }}
+                      </span>
+                      <span class="flex items-center gap-1">
+                        <v-icon name="hi-location-marker" scale="0.9" />
+                        {{ user.location }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Edit Profile Form -->
+              <div
+                v-show="isEditProfileOpen"
+                class="transition-all duration-300 ease-in-out"
+                :class="{ 'opacity-100 transform translate-y-0': isEditProfileOpen, 'opacity-0 transform translate-y-2': !isEditProfileOpen }"
+              >
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
+                  <form @submit.prevent="saveProfile" class="space-y-6">
+                    <!-- Avatar Section -->
+                    <div class="flex items-center gap-6">
+                      <div class="relative group">
+                        <img src="/images/User.png" alt="User avatar" class="w-24 h-24 rounded-full border-2 border-gray-200 group-hover:border-blue-400 transition-colors duration-200" />
+                        <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
+                        <div class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer">
+                          <v-icon name="hi-camera" scale="1.2" class="text-white" />
+                        </div>
+                      </div>
+                      <div>
+                        <h4 class="font-srProDisplay font-medium text-black mb-1">{{ $t('account.profile.editModal.avatarTitle') }}</h4>
+                        <p class="font-srProDisplay text-sm text-gray-600 mb-2">{{ $t('account.profile.editModal.avatarDescription') }}</p>
+                        <Button
+                          type="button"
+                          text-color="blue-600"
+                          bg-color="transparent"
+                          border-width="1px"
+                          border-color="#3b82f6"
+                          hover-bg-color="#eff6ff"
+                          width="auto"
+                          height="32px"
+                          class="px-3 text-sm"
+                        >
+                          {{ $t('account.profile.editModal.changeAvatarButton') }}
+                        </Button>
+                      </div>
+                    </div>
+
+                    <!-- Form Fields -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div class="space-y-2">
+                        <label for="name" class="block text-sm font-medium text-gray-700 font-srProDisplay">
+                          {{ $t('account.profile.editModal.nameLabel') }}
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          v-model="editableUser.name"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-srProDisplay"
+                          :placeholder="$t('account.profile.editModal.namePlaceholder')"
+                        >
+                      </div>
+
+                      <div class="space-y-2">
+                        <label for="email" class="block text-sm font-medium text-gray-700 font-srProDisplay">
+                          {{ $t('account.profile.editModal.emailLabel') }}
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          v-model="editableUser.email"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-srProDisplay"
+                          :placeholder="$t('account.profile.editModal.emailPlaceholder')"
+                        >
+                      </div>
+
+                      <div class="space-y-2 md:col-span-2">
+                        <label for="location" class="block text-sm font-medium text-gray-700 font-srProDisplay">
+                          {{ $t('account.profile.editModal.locationLabel') }}
+                        </label>
+                        <input
+                          type="text"
+                          id="location"
+                          v-model="editableUser.location"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-srProDisplay"
+                          :placeholder="$t('account.profile.editModal.locationPlaceholder')"
+                        >
+                      </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end gap-4 pt-4 border-t border-gray-200">
+                      <Button
+                        @click="cancelEdit"
+                        type="button"
+                        text-color="gray-600"
+                        bg-color="transparent"
+                        border-width="1px"
+                        border-color="#d1d5db"
+                        hover-bg-color="#f9fafb"
+                        class="px-6 py-2 transition-all duration-200"
+                      >
+                        {{ $t('account.profile.editModal.cancelButton') }}
+                      </Button>
+                      <Button
+                        type="submit"
+                        text-color="white"
+                        bg-color="black"
+                        hover-bg-color="#333333"
+                        class="px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-200"
+                      >
+                        {{ $t('account.profile.editModal.saveButton') }}
+                      </Button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section :id="sections[1].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.orders.title') }}</h2>
+                <router-link to="/orders" class="text-sm text-gray-600 hover:text-black transition-colors font-medium">
+                  {{ $t('account.orders.viewAll') }}
+                </router-link>
+              </div>
+              <div class="space-y-4">
+                <div v-for="order in orders" :key="order.id" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
+                      <v-icon name="hi-clipboard-list" scale="1.2" class="text-white" />
+                    </div>
+                    <div>
+                      <p class="font-srProDisplay font-medium text-black">{{ $t('account.orders.order') }} #{{ order.id }}</p>
+                      <p class="font-srProDisplay text-sm text-gray-600">{{ order.date }}</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-4">
+                  <span :class="getStatusColor(order.status)" class="px-3 py-1 rounded-full text-sm font-medium">
+                    {{ order.status }}
+                  </span>
+                  <Button
+                    bg-color="transparent"
+                    width="auto"
+                    height="auto"
+                    class="px-4 text-[10px] font-light text-gray-500 cursor-pointer"
+                  >
+                    {{ $t('account.orders.viewDetails') }}
+                  </Button>
+                </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Resto de las secciones permanecen igual... -->
+            <!-- Refunds and Drawbacks Section -->
+            <section :id="sections[2].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.refunds.title') }}</h2>
+              </div>
+              <div class="space-y-4">
+                <div v-for="refund in refunds" :key="refund.id" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                      <v-icon name="hi-arrow-left" scale="1.2" class="text-white" />
+                    </div>
+                    <div>
+                      <p class="font-srProDisplay font-medium text-black">{{ $t('account.refunds.refund') }} #{{ refund.id }}</p>
+                      <p class="font-srProDisplay text-sm text-gray-600">{{ refund.reason }}</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span :class="getRefundStatusColor(refund.status)" class="px-3 py-1 rounded-full text-sm font-medium">
+                      {{ refund.status }}
+                    </span>
+                    <Button
+                    bg-color="transparent"
+                    width="auto"
+                    height="auto"
+                    class="px-4 text-[10px] font-light text-gray-500 cursor-pointer"
+                  >
+                      {{ $t('account.refunds.viewDetails') }}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Wishlist Section -->
+            <section :id="sections[3].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.wishlist.title') }}</h2>
+                <router-link to="/wishlist" class="text-sm text-gray-600 hover:text-black transition-colors font-medium">
+                  {{ $t('account.wishlist.viewAll') }}
+                </router-link>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div v-for="item in wishlist" :key="item.id" class="group flex items-center gap-4 p-4 border border-gray-200 bg-gray-50 rounded-lg hover:shadow-md transition-all duration-200 hover:border-gray-300">
+                  <div class="relative">
+                    <img :src="item.image" :alt="item.name" class="w-16 h-16 object-contain rounded-lg p-2" />
+                    <button class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <v-icon name="hi-x" scale="0.8" class="text-white" />
+                    </button>
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="font-srProDisplay font-medium text-black text-sm line-clamp-2">{{ item.name }}</h4>
+                    <p class="font-srProDisplay text-lg font-semibold text-black mt-1">{{ item.price }}</p>
+                  </div>
+                  <Button
+                    text-color="white"
+                    bg-color="black"
+                    hover-bg-color="#333333"
+                    width="auto"
+                    height="32px"
+                    class="px-3 text-sm"
+                  >
+                    {{ $t('account.wishlist.addToCart') }}
+                  </Button>
+                </div>
+              </div>
+            </section>
+
+            <!-- Addresses Section -->
+            <section :id="sections[4].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-6 ">
+                <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.addresses.title') }}</h2>
+                <Button
+                  text-color="black"
+                  bg-color="transparent"
+                  border-width="1px"
+                  border-color="#e5e7eb"
+                  hover-bg-color="#f9fafb"
+                  width="auto"
+                  height="36px"
+                  class="px-4"
+                >
+                  <v-icon name="hi-plus" scale="0.9" class="mr-2" />
+                  {{ $t('account.addresses.addButton') }}
+                </Button>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div v-for="address in addresses" :key="address.id" class="group border border-gray-200 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300">
+                  <div class="flex items-start justify-between mb-3 ">
+                    <div class="flex items-center gap-2">
+                      <v-icon name="hi-location-marker" scale="1.1" class="text-gray-500" />
+                      <h4 class="font-srProDisplay font-semibold text-black">{{ address.name }}</h4>
+                    </div>
+                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                      <button class="p-1 text-gray-500 hover:text-black transition-colors">
+                        <v-icon name="hi-pencil" scale="0.9" />
+                      </button>
+                      <button class="p-1 text-gray-500 hover:text-red-500 transition-colors">
+                        <v-icon name="hi-trash" scale="0.9" />
+                      </button>
+                    </div>
+                  </div>
+                  <p class="font-srProDisplay text-gray-600 text-sm leading-relaxed">
+                    {{ address.street }}<br>
+                    {{ address.city }}, {{ address.country }}
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Reviews Section -->
+            <section :id="sections[5].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.reviews.title') }}</h2>
+                <span class="text-sm text-gray-600 font-medium">{{ reviews.length }} {{ $t('account.reviews.reviews') }}</span>
+              </div>
+              <div class="space-y-4">
+                <div v-for="review in reviews" :key="review.id" class="border border-gray-200 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300">
+                  <div class="flex items-start justify-between mb-3">
+                    <div>
+                      <h4 class="font-srProDisplay font-medium text-black">{{ review.product }}</h4>
+                      <div class="flex items-center gap-1 mt-1">
+                        <div class="flex">
+                          <v-icon
+                            v-for="i in 5"
+                            :key="i"
+                            :name="i <= review.rating ? 'bi-star-fill' : 'bi-star'"
+                            :class="i <= review.rating ? 'text-yellow-400' : 'text-gray-300'"
+                            scale="1.1"
+                          />
+                        </div>
+                        <span class="text-sm text-gray-600 ml-1">{{ review.rating }}/5</span>
+                      </div>
+                    </div>
+                    <span class="text-xs text-gray-500">{{ review.date }}</span>
+                  </div>
+                  <p class="font-srProDisplay text-gray-700 text-sm leading-relaxed">{{ review.comment }}</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section :id="sections[6].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">{{ $t('account.settings.title') }}</h2>
+              <div class="space-y-6">
+                <!-- Language Setting -->
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                      <v-icon name="hi-globe" scale="1.2" class="text-white" />
+                    </div>
+                    <div>
+                      <h4 class="font-srProDisplay font-medium text-black">{{ $t('account.settings.language.title') }}</h4>
+                      <p class="font-srProDisplay text-sm text-gray-600">{{ $t('account.settings.language.description') }}</p>
+                    </div>
+                  </div>
+                  <select v-model="selectedLanguage" class="px-3 py-2 border border-gray-300 rounded-lg font-srProDisplay text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="auto">Auto</option>
+                  </select>
+                </div>
+
+                <!-- App Theme Setting -->
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
+                      <v-icon name="hi-color-swatch" scale="1.2" class="text-white" />
+                    </div>
+                    <div>
+                      <h4 class="font-srProDisplay font-medium text-black">{{ $t('account.settings.theme.title') }}</h4>
+                      <p class="font-srProDisplay text-sm text-gray-600">{{ $t('account.settings.theme.description') }}</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button @click="setTheme('light')" :class="['p-2 rounded-lg', theme === 'light' ? 'bg-black text-white' : 'bg-gray-200 text-black']">
+                      <v-icon name="hi-sun" />
+                    </button>
+                    <button @click="setTheme('dark')" :class="['p-2 rounded-lg', theme === 'dark' ? 'bg-black text-white' : 'bg-gray-200 text-black']">
+                      <v-icon name="hi-moon" />
+                    </button>
+                    <button @click="setTheme('system')" :class="['p-2 rounded-lg', theme === 'system' ? 'bg-black text-white' : 'bg-gray-200 text-black']">
+                      <v-icon name="hi-chip" />
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Notifications Setting -->
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                      <v-icon name="hi-chat" scale="1.2" class="text-white" />
+                    </div>
+                    <div>
+                      <h4 class="font-srProDisplay font-medium text-black">{{ $t('account.settings.notifications.title') }}</h4>
+                      <p class="font-srProDisplay text-sm text-gray-600">{{ $t('account.settings.notifications.description') }}</p>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" v-model="notifications.enabled" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                  </label>
+                </div>
+
+                <!-- Security Setting -->
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center">
+                      <v-icon name="hi-key" scale="1.2" class="text-white" />
+                    </div>
+                    <div>
+                      <h4 class="font-srProDisplay font-medium text-black">{{ $t('account.settings.security.title') }}</h4>
+                      <p class="font-srProDisplay text-sm text-gray-600">{{ $t('account.settings.security.description') }}</p>
+                    </div>
+                  </div>
+                  <Button
+                    text-color="black"
+                    bg-color="transparent"
+                    border-width="1px"
+                    border-color="#e5e7eb"
+                    hover-bg-color="#f9fafb"
+                    width="auto"
+                    height="36px"
+                    class="px-4 text-sm"
+                  >
+                    {{ $t('account.settings.security.changePasswordButton') }}
+                  </Button>
+                </div>
+              </div>
+            </section>
+          </main>
+        </div>
+      </div>
+    </Wrapper>
+  </div>
+</template>
+
+<script setup lang="ts">
+import '@/assets/base.css'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import Wrapper from '@/components/shared/Wrapper.vue'
+import Button from '@/components/shared/Button.vue'
+import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+
+const { t, locale } = useI18n()
+
+const breadcrumbs = computed(() => [
+  { label: t('breadcrumbs.home'), to: '/' },
+  { label: t('breadcrumbs.account'), to: '/account' }
+])
+
+const sections = computed(() => [
+  { id: 'profile', label: t('account.profile.title'), icon: 'fa-user-circle' },
+  { id: 'orders', label: t('account.orders.title'), icon: 'hi-clipboard-list' },
+  { id: 'refunds', label: t('account.refunds.title'), icon: 'hi-arrow-left' },
+  { id: 'wishlist', label: t('account.wishlist.title'), icon: 'hi-heart' },
+  { id: 'addresses', label: t('account.addresses.title'), icon: 'hi-location-marker' },
+  { id: 'reviews', label: t('account.reviews.title'), icon: 'bi-star-fill' },
+  { id: 'settings', label: t('account.settings.title'), icon: 'hi-adjustments' }
+])
+
+// Mock data for demonstration purposes.
+const user = ref({
+  name: 'John Doe',
+  email: 'johndoe@email.com',
+  memberSince: '2022',
+  location: 'New York, USA'
+})
+
+const orders = ref([
+  { id: '12345', date: '2025-07-01', status: 'Delivered' },
+  { id: '67890', date: '2025-06-15', status: 'Shipped' },
+  { id: '54321', date: '2025-05-20', status: 'Cancelled' }
+])
+
+const refunds = ref([
+  { id: 'R001', reason: 'Item defective', status: 'Completed' },
+  { id: 'R002', reason: 'Wrong size', status: 'Processing' }
+])
+
+const wishlist = ref([
+  { id: 1, name: 'Apple Watch Series 8', price: '$399', image: '/images/Apple-Watch.png' },
+  { id: 2, name: 'Sony WH-1000XM5 Headphones', price: '$349', image: '/images/headphones.png' }
+])
+
+const addresses = ref([
+  { id: 1, name: 'Home', street: '123 Main St', city: 'New York', country: 'USA' },
+  { id: 2, name: 'Work', street: '456 Business Ave', city: 'New York', country: 'USA' }
+])
+
+const reviews = ref([
+  { id: 1, product: 'iPhone 14 Pro', rating: 5, comment: 'Amazing phone, great camera!', date: '2 days ago' },
+  { id: 2, product: 'Samsung Galaxy Buds', rating: 4, comment: 'Good sound quality, but could be more comfortable.', date: '1 week ago' }
+])
+
+// Logic for the Edit Profile inline form (reemplaza el modal)
+const isEditProfileOpen = ref(false)
+const editableUser = ref({ ...user.value })
+
+const toggleEditProfile = () => {
+  isEditProfileOpen.value = !isEditProfileOpen.value
+  if (isEditProfileOpen.value) {
+    // Copiar datos actuales para edición
+    editableUser.value = { ...user.value }
+  }
+}
+
+const cancelEdit = () => {
+  isEditProfileOpen.value = false
+  // Restaurar datos originales
+  editableUser.value = { ...user.value }
+}
+
+const saveProfile = () => {
+  // Guardar los cambios
+  user.value = { ...editableUser.value }
+  isEditProfileOpen.value = false
+  // En una aplicación real, aquí llamarías a una API para guardar los datos del usuario
+  console.log('Profile saved:', user.value)
+}
+
+// State for user settings.
+const selectedLanguage = ref(locale.value)
+const theme = ref('system')
+const notifications = ref({ enabled: true })
+
+// Logic for mobile navigation.
+const isMobileNavOpen = ref(false)
+
+const toggleMobileNav = () => {
+  isMobileNavOpen.value = !isMobileNavOpen.value
+  // Prevent body from scrolling when the mobile navigation is open.
+  if (isMobileNavOpen.value) {
+    document.body.classList.add('nav-open')
+  } else {
+    document.body.classList.remove('nav-open')
+  }
+}
+
+const closeMobileNav = () => {
+  isMobileNavOpen.value = false
+  document.body.classList.remove('nav-open')
+}
+
+const setTheme = (newTheme: string) => {
+  theme.value = newTheme
+  // Apply the theme change, for example, by adding or removing a 'dark' class from the root element.
+  if (newTheme === 'dark') {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+}
+
+// Helper functions to determine status colors.
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'Delivered': return 'bg-green-100 text-green-800'
+    case 'Shipped': return 'bg-blue-100 text-blue-800'
+    case 'Cancelled': return 'bg-red-100 text-red-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const getRefundStatusColor = (status: string) => {
+  switch (status) {
+    case 'Completed': return 'bg-green-100 text-green-800'
+    case 'Processing': return 'bg-yellow-100 text-yellow-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const activeSection = ref('profile')
+
+onMounted(() => {
+  // Set the initial theme based on system preference if the theme is set to 'system'.
+  if (theme.value === 'system') {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }
+
+  // Set up an observer to highlight the active navigation link based on the currently visible section.
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          activeSection.value = entry.target.id
+        }
+      })
+    },
+    { threshold: 0.5 }
+  )
+
+  sections.value.forEach((section) => {
+    const element = document.getElementById(section.id)
+    if (element) observer.observe(element)
+  })
+})
+
+// Clean up side effects when the component is unmounted.
+onUnmounted(() => {
+  document.body.classList.remove('nav-open')
+})
+</script>
+
+<style scoped>
+/* Apply smooth scrolling behavior for anchor links. */
+html {
+  scroll-behavior: smooth;
+}
+
+/* A utility for truncating text to a specific number of lines. */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+/* Custom scrollbar styling for a cleaner look. */
+.categories-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.categories-scroll::-webkit-scrollbar-track {
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.categories-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #374151, #1f2937);
+  border-radius: 8px;
+}
+
+.categories-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #1f2937, #111827);
+}
+
+/* Custom styles for the toggle switch. */
+input[type="checkbox"]:checked {
+  background-color: #000000;
+  border-color: #000000;
+}
+
+/* Better focus states for improved accessibility. */
+.focus\:ring-black:focus {
+  --tw-ring-color: #000000;
+}
+
+/* Standardize transitions for a consistent feel. */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
+/* Lock body scrolling when the mobile navigation menu is open. */
+body.nav-open {
+  overflow: hidden;
+}
+
+/* Estilos adicionales para las transiciones del formulario inline */
+.form-enter-active,
+.form-leave-active {
+  transition: all 0.3s ease-in-out;
+}
+
+.form-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.form-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* Animación para el icono rotativo */
+.rotate-90 {
+  transform: rotate(90deg);
+}
+</style>
+
