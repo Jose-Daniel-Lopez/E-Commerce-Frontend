@@ -554,10 +554,20 @@ watch(categoryTypes, () => {
 
 <style scoped>
 /* Remove default Tailwind blue outline on button focus */
-button:focus {
-  outline: none;
-  box-shadow: none;
-}
+  button:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  a:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  svg:focus {
+    outline: none;
+    box-shadow: none;
+  }
 
 /* Custom scrollbar for filter sections */
 .overflow-y-auto::-webkit-scrollbar {
