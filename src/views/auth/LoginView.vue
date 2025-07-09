@@ -61,6 +61,7 @@ const handleSubmit = async () => {
   } catch (err: any) {
     if (err.response?.status === 401) error.value = 'Incorrect credentials'
     else if (err.response?.status === 404) error.value = 'User not found'
+    else if (err.response?.status === 403) error.value = 'Account not verified. Please check your email for the verification link.'
     else error.value = 'Login error. Please try again.'
   } finally {
     loading.value = false
