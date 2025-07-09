@@ -78,7 +78,7 @@
       }
     },
     "form": {
-      "title": "Send Message",
+      "title": "Send message",
       "fields": {
         "fullName": {
           "label": "Full Name",

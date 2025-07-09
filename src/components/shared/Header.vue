@@ -241,3 +241,22 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+button:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  a:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  svg:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+</style>

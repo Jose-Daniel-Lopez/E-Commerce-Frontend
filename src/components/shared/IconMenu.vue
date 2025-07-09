@@ -13,49 +13,49 @@
         </span>
       </li>
 
-      <li class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent">
+      <li class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 group hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent">
         <div class="relative">
           <router-link to="/wishlist">
             <img
               src="/images/Favorites.png"
               alt="favorites icon"
-              class="w-8 h-8"
+              class="w-8 h-8 group-hover:scale-120 group-hover:drop-shadow-md transition-all duration-200"
             />
             <span class="absolute -right-[3px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white">
               99
             </span>
           </router-link>
         </div>
-        <span class="mt-[-5px] font-srProDisplay text-sm font-medium sm:hidden">
+        <span class="mt-[-5px] font-srProDisplay text-sm font-medium sm:hidden group-hover:text-blue-600 transition-colors duration-200">
           Favorites
         </span>
       </li>
 
-      <li class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent">
+      <li class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 group hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent">
         <div class="relative">
           <router-link to="/cart">
             <img
               src="/images/Cart.png"
               alt="cart icon"
-              class="w-8 h-8"
+              class="w-8 h-8 group-hover:scale-120 group-hover:drop-shadow-md transition-all duration-200"
             />
             <span class="absolute -right-[6px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white">
               99
             </span>
           </router-link>
         </div>
-        <span class="mt-[-5px] font-srProDisplay text-sm font-medium sm:hidden">
+        <span class="mt-[-5px] font-srProDisplay text-sm font-medium sm:hidden group-hover:text-blue-600 transition-colors duration-200">
           Cart
         </span>
       </li>
 
-      <li class="relative flex h-[66px] cursor-pointer flex-col items-center justify-center hover:bg-blue-50 sm:hover:bg-transparent" @click.stop="toggleUserDropdown">
+      <li class="relative flex h-[66px] cursor-pointer flex-col items-center justify-center group hover:bg-blue-50 sm:hover:bg-transparent" @click.stop="toggleUserDropdown">
         <img
           src="/images/User.png"
           alt="user icon"
-          class="w-8 h-8"
+          class="w-8 h-8 group-hover:scale-120 group-hover:drop-shadow-md transition-all duration-200"
         />
-        <span class="font-srProDisplay text-sm font-medium sm:hidden">
+        <span class="font-srProDisplay text-sm font-medium sm:hidden group-hover:text-blue-600 transition-colors duration-200">
           User
         </span>
         <!-- User Dropdown -->
@@ -180,3 +180,22 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+button:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  a:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  svg:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+</style>
