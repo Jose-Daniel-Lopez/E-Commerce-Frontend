@@ -12,3 +12,4 @@
 - [x] Normalizar y traducir los comentarios
 - [ ] Añadir (casi todos) muchos titulos a los archivos de traduccion
 - [ ] Crear todo el flow de /account
+- [ ] Pasar todos los estilos a global.css y eliminar el fichero tailwind.config.js

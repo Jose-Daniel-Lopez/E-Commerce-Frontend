@@ -27,6 +27,17 @@
   /* Font variables */
   --font-figtree: 'Figtree', sans-serif;
   --font-srProDisplay: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Semantic color utilities for Tailwind */
+  --color-primary-foreground: #ffffff;
+  --color-secondary-foreground: #ffffff;
+  --color-muted: #666666;
+  --color-muted-foreground: #999999;
+  --color-input-border: #ebebeb;
+  --color-input-background: rgba(255, 255, 255, 0.5);
+
+  /* Custom breakpoint */
+  --breakpoint-xs: 420px;
 }
 
 @layer base {
@@ -166,6 +177,7 @@
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
