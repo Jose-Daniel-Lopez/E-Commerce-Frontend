@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import api from '@/lib/axios'
+import { useAuthStore } from '@/stores/auth'
 import Wrapper from '@/components/shared/Wrapper.vue'
 
 interface LoginForm {
@@ -9,17 +9,8 @@ interface LoginForm {
   password: string
 }
 
-interface LoginResponse {
-  token?: string
-  user?: {
-    id: number
-    name: string
-    email: string
-    role: string
-  }
-}
-
 const router = useRouter()
+const authStore = useAuthStore()
 
 const form = ref<LoginForm>({
   email: '',
@@ -46,23 +37,19 @@ const handleSubmit = async () => {
   loading.value = true
 
   try {
-    const response = await api.post<LoginResponse>('/auth/login', {
+    const result = await authStore.login({
       email: form.value.email,
       password: form.value.password
     })
 
-    if (response.data.token) {
-      localStorage.setItem('authToken', response.data.token)
+    if (result.success) {
+      // Redirect to account page instead of users
+      router.push({ name: 'userAccount' })
+    } else {
+      error.value = result.error || 'Login failed'
     }
-    if (response.data.user) {
-      localStorage.setItem('user', JSON.stringify(response.data.user))
-    }
-    router.push({ name: 'users' })
-  } catch (err: any) {
-    if (err.response?.status === 401) error.value = 'Incorrect credentials'
-    else if (err.response?.status === 404) error.value = 'User not found'
-    else if (err.response?.status === 403) error.value = 'Account not verified. Please check your email for the verification link.'
-    else error.value = 'Login error. Please try again.'
+  } catch {
+    error.value = 'An unexpected error occurred'
   } finally {
     loading.value = false
   }

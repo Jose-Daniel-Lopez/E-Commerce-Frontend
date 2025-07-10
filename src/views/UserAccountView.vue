@@ -117,12 +117,12 @@
                     <p class="font-srProDisplay text-gray-600 mb-2">{{ user.email }}</p>
                     <div class="flex items-center gap-4 text-sm text-gray-500">
                       <span class="flex items-center gap-1">
-                        <v-icon name="hi-calendar" scale="0.9" />
-                        {{ $t('account.profile.memberSince') }} {{ user.memberSince }}
+                        <v-icon name="hi-shield-check" scale="0.9" />
+                        {{ user.isVerified ? $t('account.profile.verified') : $t('account.profile.unverified') }}
                       </span>
                       <span class="flex items-center gap-1">
-                        <v-icon name="hi-location-marker" scale="0.9" />
-                        {{ user.location }}
+                        <v-icon name="hi-badge-check" scale="0.9" />
+                        {{ user.role }}
                       </span>
                     </div>
                   </div>
@@ -512,12 +512,14 @@
 <script setup lang="ts">
 import '@/assets/base.css'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import Button from '@/components/shared/Button.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
 const { t, locale } = useI18n()
+const authStore = useAuthStore()
 
 const breadcrumbs = computed(() => [
   { label: t('breadcrumbs.home'), to: '/' },
@@ -534,13 +536,17 @@ const sections = computed(() => [
   { id: 'settings', label: t('account.settings.title'), icon: 'hi-adjustments' }
 ])
 
-// Mock data for demonstration purposes.
-const user = ref({
-  name: 'John Doe',
-  email: 'johndoe@email.com',
-  memberSince: '2022',
-  location: 'New York, USA'
-})
+
+// User state - now using auth store
+const user = computed(() => ({
+  name: authStore.user?.username || '',
+  email: authStore.user?.email || '',
+  memberSince: '', // not available in backend, will leave blank
+  location: '', // not available in backend, will leave blank
+  avatar: authStore.user?.avatar || '',
+  role: authStore.user?.role || '',
+  isVerified: authStore.user?.isVerified || false
+}))
 
 const orders = ref([
   { id: '12345', date: '2025-07-01', status: 'Delivered' },
@@ -570,28 +576,55 @@ const reviews = ref([
 
 // Logic for the Edit Profile inline form (reemplaza el modal)
 const isEditProfileOpen = ref(false)
-const editableUser = ref({ ...user.value })
+const editableUser = ref({
+  name: '',
+  email: '',
+  location: '', // Keep for form compatibility
+  avatar: '',
+  role: '',
+  isVerified: false
+})
 
 const toggleEditProfile = () => {
   isEditProfileOpen.value = !isEditProfileOpen.value
   if (isEditProfileOpen.value) {
     // Copiar datos actuales para edición
-    editableUser.value = { ...user.value }
+    editableUser.value = {
+      name: user.value.name,
+      email: user.value.email,
+      location: user.value.location, // This will be empty from computed user
+      avatar: user.value.avatar,
+      role: user.value.role,
+      isVerified: user.value.isVerified
+    }
   }
 }
 
 const cancelEdit = () => {
   isEditProfileOpen.value = false
   // Restaurar datos originales
-  editableUser.value = { ...user.value }
+  editableUser.value = {
+    name: user.value.name,
+    email: user.value.email,
+    location: user.value.location,
+    avatar: user.value.avatar,
+    role: user.value.role,
+    isVerified: user.value.isVerified
+  }
 }
 
 const saveProfile = () => {
-  // Guardar los cambios
-  user.value = { ...editableUser.value }
+  // Guardar los cambios usando la store
+  if (authStore.user) {
+    authStore.updateUser({
+      username: editableUser.value.name,
+      email: editableUser.value.email,
+      avatar: editableUser.value.avatar
+    })
+  }
   isEditProfileOpen.value = false
   // En una aplicación real, aquí llamarías a una API para guardar los datos del usuario
-  console.log('Profile saved:', user.value)
+  console.log('Profile saved:', editableUser.value)
 }
 
 // State for user settings.
@@ -647,7 +680,8 @@ const getRefundStatusColor = (status: string) => {
 
 const activeSection = ref('profile')
 
-onMounted(() => {
+
+onMounted(async () => {
   // Set the initial theme based on system preference if the theme is set to 'system'.
   if (theme.value === 'system') {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -655,6 +689,11 @@ onMounted(() => {
     } else {
       document.documentElement.classList.remove('dark')
     }
+  }
+
+  // Fetch user data from backend using auth store
+  if (authStore.isAuthenticated) {
+    await authStore.fetchCurrentUser()
   }
 
   // Set up an observer to highlight the active navigation link based on the currently visible section.

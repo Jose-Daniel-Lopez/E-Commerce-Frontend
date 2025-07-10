@@ -13,6 +13,7 @@ import * as AllIcons from 'oh-vue-icons/icons'
 import App from './App.vue'
 import router from './router'
 import { i18n } from './plugins/i18n'
+import { useAuthStore } from './stores/auth'
 
 // Add icons to the library
 // Register all icons used in the project globally for consistency
@@ -109,8 +110,13 @@ const app = createApp(App)
 // Register OhVueIcon component globally
 app.component('v-icon', OhVueIcon)
 
-app.use(createPinia())
+const pinia = createPinia()
+app.use(pinia)
 app.use(router)
 app.use(i18n)
+
+// Initialize auth store after Pinia is set up
+const authStore = useAuthStore()
+authStore.initializeAuth()
 
 app.mount('#app')
