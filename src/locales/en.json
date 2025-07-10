@@ -207,6 +207,8 @@
       "editButton": "Edit Profile",
       "cancelButton": "Cancel",
       "memberSince": "Member since",
+      "verified": "Verified",
+      "unverified": "Unverified",
       "editModal": {
         "title": "Edit Profile",
         "nameLabel": "Full Name",

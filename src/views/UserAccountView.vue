@@ -180,19 +180,6 @@
                         >
                       </div>
 
-                      <div class="space-y-2">
-                        <label for="email" class="block text-sm font-medium text-gray-700 font-srProDisplay">
-                          {{ $t('account.profile.editModal.emailLabel') }}
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          v-model="editableUser.email"
-                          class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-srProDisplay"
-                          :placeholder="$t('account.profile.editModal.emailPlaceholder')"
-                        >
-                      </div>
-
                       <div class="space-y-2 md:col-span-2">
                         <label for="location" class="block text-sm font-medium text-gray-700 font-srProDisplay">
                           {{ $t('account.profile.editModal.locationLabel') }}

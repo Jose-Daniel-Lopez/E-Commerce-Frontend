@@ -206,6 +206,8 @@
       "title": "Perfil",
       "editButton": "Editar Perfil",
       "memberSince": "Miembro desde",
+      "verified": "Verificado",
+      "unverified": "No verificado",
       "editModal": {
         "title": "Editar Perfil",
         "nameLabel": "Nombre Completo",

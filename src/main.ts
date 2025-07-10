@@ -26,6 +26,7 @@ addIcons(
   AllIcons.HiChevronRight,
   AllIcons.HiInformationCircle,
   AllIcons.HiArrowRight,
+  AllIcons.HiShieldCheck,
   AllIcons.HiSearch,
   AllIcons.HiPlus,
   AllIcons.HiMinus,
@@ -43,6 +44,7 @@ addIcons(
   AllIcons.IoPersonAddSharp,
   AllIcons.MdLogoutOutlined,
   AllIcons.HiShoppingBag,
+
   AllIcons.HiShoppingCart,
   AllIcons.HiHeart,
   AllIcons.HiTruck,
