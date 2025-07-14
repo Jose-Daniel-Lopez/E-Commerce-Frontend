@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/lib/axios'
 import Wrapper from '@/components/shared/Wrapper.vue'
+import { sendVerificationEmail } from '@/lib/emailjs'
 
 interface RegisterForm {
   username: string
@@ -19,6 +20,7 @@ interface RegisterResponse {
     username: string
     email: string
     role: string
+    verificationToken?: string
   }
 }
 
@@ -69,8 +71,21 @@ const handleSubmit = async () => {
       password: form.value.password,
       role: form.value.role
     })
-    if (data.token) localStorage.setItem('authToken', data.token)
-    if (data.user) localStorage.setItem('user', JSON.stringify(data.user))
+    if (data.user && data.user.verificationToken) {
+      // Construir el enlace de verificación
+      const verificationLink = `${window.location.origin}/verify?token=${data.user.verificationToken}`
+      // Enviar email de verificación
+      try {
+        await sendVerificationEmail({
+          email: data.user.email,
+          verification_link: verificationLink
+        })
+      } catch (emailError) {
+        console.error('Error sending verification email:', emailError)
+        error.value = 'Account created but verification email failed to send. Please contact support.'
+        return
+      }
+    }
     router.push({ name: 'login' })
   } catch (err: unknown) {
     const error_obj = err as { response?: { status?: number } }
