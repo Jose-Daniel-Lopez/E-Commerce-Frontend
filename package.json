@@ -15,9 +15,11 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@heroicons/vue": "^2.2.0",
     "@tailwindcss/vite": "^4.1.10",
     "axios": "^1.10.0",
+    "emailjs": "^4.0.3",
     "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^3.0.1",
     "swiper": "^11.2.10",

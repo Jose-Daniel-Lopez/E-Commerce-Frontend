@@ -6,45 +6,31 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     // Main pages
-    { path: '/', name: 'home', component: () => import('../views/HomeView.vue') },
-    { path: '/about', name: 'about', component: () => import('../views/AboutView.vue') },
-    { path: '/contact', name: 'contact', component: () => import('../views/ContactView.vue') },
-    { path: '/shop', name: 'shop', component: () => import('../views/ShopView.vue') },
+    { path: '/', name: 'home', component: () => import('../views/home/HomeView.vue') },
+    { path: '/about', name: 'about', component: () => import('../views/home/AboutView.vue') },
+    { path: '/contact', name: 'contact', component: () => import('../views/home/ContactView.vue') },
 
     // Catalog and product-related pages
-    { path: '/catalog', name: 'catalog', component: () => import('../views/CatalogView.vue') },
-    { path: '/catalog/smartphones', name: 'smartphones', component: () => import('../views/SmartphonesView.vue') },
-    { path: '/catalog/smartphones/:productId', name: 'productDetails', component: () => import('../views/ProductDetailsView.vue') },
-    { path: '/categories/:categoryId/products', name: 'categoryProducts', component: () => import('../views/CategoryProductsView.vue') },
+    { path: '/catalog', name: 'catalog', component: () => import('../views/catalog/CatalogView.vue') },
+    { path: '/catalog/smartphones', name: 'smartphones', component: () => import('../views/catalog/CatalogSmartphonesView.vue') },
+    { path: '/catalog/smartphones/:productId', name: 'productDetails', component: () => import('../views/catalog/CatalogProductDetailsView.vue') },
 
     // Shopping cart and wishlist
-    { path: '/cart', name: 'shoppingCart', component: () => import('../views/ShoppingCartView.vue'), meta: { requiresAuth: true } },
-    { path: '/wishlist', name: 'wishlist', component: () => import('../views/WishlistView.vue'), meta: { requiresAuth: true } },
+    { path: '/cart', name: 'shoppingCart', component: () => import('../views/cart/ShoppingCartView.vue'), meta: { requiresAuth: true } },
+    { path: '/wishlist', name: 'wishlist', component: () => import('../views/home/WishlistView.vue'), meta: { requiresAuth: true } },
 
     // Checkout process
-    { path: '/checkoutAddress', name: 'checkoutAddress', component: () => import('../views/CheckoutAddressView.vue'), meta: { requiresAuth: true } },
-    { path: '/checkoutShipping', name: 'checkoutShipping', component: () => import('../views/CheckoutShippingView.vue'), meta: { requiresAuth: true } },
-    { path: '/checkoutPayment', name: 'checkoutPayment', component: () => import('../views/CheckoutPaymentView.vue'), meta: { requiresAuth: true } },
+    { path: '/checkoutAddress', name: 'checkoutAddress', component: () => import('../views/checkout/CheckoutAddressView.vue'), meta: { requiresAuth: true } },
+    { path: '/checkoutShipping', name: 'checkoutShipping', component: () => import('../views/checkout/CheckoutShippingView.vue'), meta: { requiresAuth: true } },
+    { path: '/checkoutPayment', name: 'checkoutPayment', component: () => import('../views/checkout/CheckoutPaymentView.vue'), meta: { requiresAuth: true } },
 
     // User account and related pages
-    { path: '/users', name: 'users', component: () => import('../views/UsersView.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/users/:userId/addresses', name: 'userAddresses', component: () => import('../views/UserAddressesView.vue'), meta: { requiresAuth: true } },
-    { path: '/users/:userId/orders', name: 'userOrders', component: () => import('../views/UserOrdersView.vue'), meta: { requiresAuth: true } },
-    { path: '/users/:userId/productReviews', name: 'userReviews', component: () => import('../views/UserReviewsView.vue'), meta: { requiresAuth: true } },
-    { path: '/users/:userId/cart', name: 'userCart', component: () => import('../views/UserCartView.vue'), meta: { requiresAuth: true } },
-
-    { path: '/account', name: 'userAccount', component: () => import('../views/UserAccountView.vue'), meta: { requiresAuth: true } },
-
-    // Orders, payments, coupons, and shipping
-    { path: '/orders', name: 'orders', component: () => import('../views/OrdersView.vue'), meta: { requiresAuth: true } },
-    { path: '/payments', name: 'payments', component: () => import('../views/PaymentsView.vue'), meta: { requiresAuth: true } },
-    { path: '/coupons', name: 'coupons', component: () => import('../views/CouponsView.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/shipping-addresses', name: 'shippingAddresses', component: () => import('../views/ShippingAddressesView.vue'), meta: { requiresAuth: true } },
-
+    { path: '/account', name: 'userAccount', component: () => import('../views/user/UserAccountView.vue'), meta: { requiresAuth: true } },
 
     // Authentication
     { path: '/login', name: 'login', component: () => import('../views/auth/LoginView.vue') },
     { path: '/register', name: 'register', component: () => import('../views/auth/RegisterView.vue') },
+    { path: '/verify', name: 'verify', component: () => import('../views/auth/VerifyView.vue') },
   ],
 })
 

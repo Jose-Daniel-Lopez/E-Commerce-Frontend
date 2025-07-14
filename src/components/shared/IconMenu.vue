@@ -62,12 +62,26 @@
         <div v-show="showUserDropdown" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-2xl z-[100]" @click.stop>
           <div class="py-3">
             <div class="max-h-80 overflow-y-auto categories-scroll">
-              <div v-for="option in userOptions" :key="option.label" @click="selectUserOption(option)" class="group flex items-center px-4 py-3 text-sm font-srProDisplay text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 cursor-pointer transition-all duration-200 border-l-4 border-transparent hover:border-gray-700">
-                <span class="flex-1 group-hover:text-gray-800 group-hover:font-medium transition-all duration-200">{{ option.label }}</span>
+              <div
+                v-for="option in userOptions"
+                :key="option.label"
+                @click="selectUserOption(option)"
+                class="group flex items-center px-4 py-3 text-sm font-srProDisplay cursor-pointer transition-all duration-200 border-l-4 border-transparent"
+                :class="option.isLogout
+                  ? 'text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-500'
+                  : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:border-gray-700'"
+              >
+                <span
+                  class="flex-1 group-hover:font-medium transition-all duration-200"
+                  :class="option.isLogout ? 'group-hover:text-red-700' : 'group-hover:text-gray-800'"
+                >
+                  {{ option.label }}
+                </span>
               </div>
             </div>
           </div>
         </div>
+
       </li>
     </ul>
     <li class="block cursor-pointer lg:hidden">
@@ -98,86 +112,58 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { ref, watch } from 'vue'
+import { useUserDropdown } from '@/composables/useUserDropdown'
 
-export default {
-  name: 'IconMenu',
-  emits: ['update-mobile-menu', 'update-search-bar'],
-  setup(props, { emit }) {
-    const showMenu = ref(false)
-    const showSearchBar = ref(false)
+const emit = defineEmits(['update-mobile-menu', 'update-search-bar'])
 
-    const toggleMenu = () => {
-      showMenu.value = !showMenu.value
-    }
+const showMenu = ref(false)
+const showSearchBar = ref(false)
 
-    const toggleSearchBar = () => {
-      showSearchBar.value = !showSearchBar.value
-    }
+const toggleMenu = () => {
+  showMenu.value = !showMenu.value
+}
 
-    // Watch for menu changes
-    watch(showMenu, (newValue) => {
-      if (newValue) {
-        emit('update-mobile-menu', 'left-0')
-        emit('update-search-bar', 'invisible opacity-0 top-[100px]')
-        showSearchBar.value = false
-      } else {
-        emit('update-mobile-menu', 'left-[-300px]')
-      }
-    })
+const toggleSearchBar = () => {
+  showSearchBar.value = !showSearchBar.value
+}
 
-    // Watch for search bar changes
-    watch(showSearchBar, (newValue) => {
-      if (newValue) {
-        emit('update-search-bar', 'visible opacity-100 top-[81px]')
-        emit('update-mobile-menu', 'left-[-300px]')
-        showMenu.value = false
-      } else {
-        emit('update-search-bar', 'invisible opacity-0 top-[100px]')
-      }
-    })
-
-    // --- User Dropdown State and Logic ---
-    const showUserDropdown = ref(false)
-    const userOptions = [
-      { label: 'Profile', hash: '#profile' },
-      { label: 'My orders', hash: '#orders' },
-      { label: 'Refunds and drawbacks', hash: '#refunds' },
-      { label: 'My wishlist', hash: '#wishlist' },
-      { label: 'My addresses', hash: '#addresses' },
-      { label: 'My reviews', hash: '#reviews' },
-      { label: 'Settings', hash: '#settings' }
-    ]
-    const toggleUserDropdown = () => {
-      showUserDropdown.value = !showUserDropdown.value
-    }
-    const selectUserOption = (option) => {
-      showUserDropdown.value = false
-      // Navega a UserAccountView y hace scroll a la sección
-      if (window.location.pathname !== '/account') {
-        window.location.href = '/account' + option.hash
-      } else {
-        window.location.hash = option.hash
-      }
-    }
-    // Cierra el dropdown al hacer click fuera
-    if (typeof window !== 'undefined') {
-      window.addEventListener('click', () => {
-        showUserDropdown.value = false
-      })
-    }
-    return {
-      showMenu,
-      showSearchBar,
-      toggleMenu,
-      toggleSearchBar,
-      showUserDropdown,
-      userOptions,
-      toggleUserDropdown,
-      selectUserOption
-    }
+// Watch for menu changes
+watch(showMenu, (newValue) => {
+  if (newValue) {
+    emit('update-mobile-menu', 'left-0')
+    emit('update-search-bar', 'invisible opacity-0 top-[100px]')
+    showSearchBar.value = false
+  } else {
+    emit('update-mobile-menu', 'left-[-300px]')
   }
+})
+
+// Watch for search bar changes
+watch(showSearchBar, (newValue) => {
+  if (newValue) {
+    emit('update-search-bar', 'visible opacity-100 top-[81px]')
+    emit('update-mobile-menu', 'left-[-300px]')
+    showMenu.value = false
+  } else {
+    emit('update-search-bar', 'invisible opacity-0 top-[100px]')
+  }
+})
+
+// Use the user dropdown composable
+const {
+  showUserDropdown,
+  userOptions,
+  toggleUserDropdown,
+  selectUserOption
+} = useUserDropdown()
+
+// Close dropdown when clicking outside
+if (typeof window !== 'undefined') {
+  window.addEventListener('click', () => {
+    showUserDropdown.value = false
+  })
 }
 </script>
 
