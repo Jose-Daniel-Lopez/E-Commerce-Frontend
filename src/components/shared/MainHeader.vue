@@ -98,11 +98,10 @@ const positionSearchBar = ref('invisible opacity-0 top-[100px]')
 const show = ref('lg:translate-y-0')
 const lastScrollY = ref(0)
 
-// State para ambos dropdowns
+// Categories dropdown state
 const showCategoriesDropdown = ref(false)
-const showUserDropdown = ref(false)
 
-// Listas de opciones
+// Options for categories
 const categories = [
   { name: 'Todas las categorías', route: '/catalog' },
   { name: 'Moviles', route: '/catalog/smartphones' },
@@ -119,57 +118,27 @@ const categories = [
   { name: 'Accesorios', route: '/catalog/accessories' }
 ]
 
-const userOptions = [
-  { label: 'Profile', route: '/profile' },
-  { label: 'My orders', route: '/orders' },
-  { label: 'Refunds and drawbacks', route: '/refunds' },
-  { label: 'My wishlist', route: '/wishlist' },
-  { label: 'My addresses', route: '/addresses' },
-  { label: 'My reviews', route: '/reviews' },
-  { label: 'Settings', route: '/settings' }
-]
-
-// --- FUNCIONES MEJORADAS ---
-
-// Función para mostrar/ocultar el dropdown de categorías
+// Function to show/hide the categories dropdown
 const toggleCategoriesDropdown = () => {
   showCategoriesDropdown.value = !showCategoriesDropdown.value
-  // Si se abre este, se cierra el otro
-  if (showCategoriesDropdown.value) {
-    showUserDropdown.value = false
-  }
 }
 
-// Función para mostrar/ocultar el dropdown de usuario
-const toggleUserDropdown = () => {
-  showUserDropdown.value = !showUserDropdown.value
-  // Si se abre este, se cierra el otro
-  if (showUserDropdown.value) {
-    showCategoriesDropdown.value = false
-  }
-}
-
-// Navegar al seleccionar una categoría
+// Function to select a category and navigate
 const selectCategory = (category: { name: string; route: string }) => {
   showCategoriesDropdown.value = false
   window.location.href = category.route
 }
 
-// Navegar al seleccionar una opción de usuario
-const selectUserOption = (option: { label: string; route: string }) => {
-  showUserDropdown.value = false
-  window.location.href = option.route
-}
+// --- EVENT MANAGER ---
 
-// --- MANEJO DE EVENTOS ---
-
-// Función única para cerrar todos los dropdowns al hacer clic fuera
+// Single function to close all dropdowns when clicking outside
 const closeAllDropdowns = () => {
   showCategoriesDropdown.value = false
-  showUserDropdown.value = false
 }
 
-// Control de la visibilidad de la barra de navegación con el scroll
+// --- FUNCTIONS ---
+
+// Control the visibility of the navigation bar on scroll
 const controlNavbar = () => {
   if (window.scrollY > 200) {
     if (window.scrollY > lastScrollY.value) {
@@ -195,15 +164,14 @@ const setPositionSearchBar = (value: string) => {
 
 onMounted(() => {
   window.addEventListener('scroll', controlNavbar)
-  // Se añade un único listener para cerrar los menús
   document.addEventListener('click', closeAllDropdowns)
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', controlNavbar)
-  // Se elimina el listener al desmontar el componente
   document.removeEventListener('click', closeAllDropdowns)
 })
+
 </script>
 
 <style scoped>
