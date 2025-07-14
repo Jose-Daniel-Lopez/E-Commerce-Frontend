@@ -38,6 +38,7 @@ const loading = ref(false)
 const error = ref('')
 const showPwd = ref(false)
 const showCP = ref(false)
+const showVerificationMsg = ref(false)
 
 // Available user roles
 const roles = [
@@ -80,6 +81,11 @@ const handleSubmit = async () => {
           email: data.user.email,
           verification_link: verificationLink
         })
+        showVerificationMsg.value = true
+        setTimeout(() => {
+          router.push({ name: 'login' })
+        }, 10000)
+        return
       } catch (emailError) {
         console.error('Error sending verification email:', emailError)
         error.value = 'Account created but verification email failed to send. Please contact support.'
@@ -176,6 +182,12 @@ const clearErr = () => error.value = ''
             <div class="bg-white border border-[#EBEBEB] rounded-lg p-6 h-full transition-all duration-300 hover:shadow-lg">
               <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">Registration Form</h2>
 
+              <!-- Success Message -->
+              <div v-if="showVerificationMsg" class="mb-4 flex items-center justify-between rounded-lg border border-green-200 bg-green-50 p-3 animate-slideDown">
+                <p class="font-srProDisplay text-sm text-green-700">
+                  Account verification email sent! Please check your inbox to verify your account.
+                </p>
+              </div>
               <!-- Error Message -->
               <div v-if="error" class="mb-4 flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-3 animate-slideDown">
                 <p class="font-srProDisplay text-sm text-red-700">{{ error }}</p>
