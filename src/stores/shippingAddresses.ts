@@ -1,46 +1,36 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '@/lib/axios'
+import type { UserOrder } from '@/stores/userOrders'
 
 export interface ShippingAddress {
   id: number
+  type: string
   street: string
   city: string
   state: string
   zipCode: string
   country: string
-  order?: {
-    id: number
-    orderDate: string
-    status: string
-    totalAmount: number
-    user?: {
-      name: string
-    }
-  }
   _links?: {
-    self?: {
-      href: string
-    }
-    order?: {
-      href: string
-    }
+    self?: { href: string }
+    shippingAddress?: { href: string }
+    order?: { href: string }
   }
 }
 
-export const useShippingAddressesStore = defineStore('shippingAddresses', () => {
+export const useShippingAddressStore = defineStore('shippingAddresses', () => {
   // State
-  const addresses = ref<ShippingAddress[]>([])
+  const shippingAddresses = ref<ShippingAddress[]>([])
   const loading = ref(false)
-  const error = ref('')
+  const error = ref<string | null>(null)
 
   // Getters
-  const addressCount = computed(() => addresses.value.length)
-  const hasAddresses = computed(() => addresses.value.length > 0)
+  const addressCount = computed(() => shippingAddresses.value.length)
+  const hasAddresses = computed(() => shippingAddresses.value.length > 0)
 
   const addressesByCountry = computed(() => {
     const countries: Record<string, ShippingAddress[]> = {}
-    addresses.value.forEach(address => {
+    shippingAddresses.value.forEach(address => {
       if (!countries[address.country]) {
         countries[address.country] = []
       }
@@ -51,7 +41,7 @@ export const useShippingAddressesStore = defineStore('shippingAddresses', () => 
 
   const addressesByState = computed(() => {
     const states: Record<string, ShippingAddress[]> = {}
-    addresses.value.forEach(address => {
+    shippingAddresses.value.forEach(address => {
       const key = `${address.state}, ${address.country}`
       if (!states[key]) {
         states[key] = []
@@ -63,7 +53,7 @@ export const useShippingAddressesStore = defineStore('shippingAddresses', () => 
 
   const addressesByCity = computed(() => {
     const cities: Record<string, ShippingAddress[]> = {}
-    addresses.value.forEach(address => {
+    shippingAddresses.value.forEach(address => {
       const key = `${address.city}, ${address.state}`
       if (!cities[key]) {
         cities[key] = []
@@ -74,30 +64,48 @@ export const useShippingAddressesStore = defineStore('shippingAddresses', () => 
   })
 
   const uniqueCountries = computed(() => {
-    return [...new Set(addresses.value.map(addr => addr.country))].sort()
+    return [...new Set(shippingAddresses.value.map(addr => addr.country))].sort()
   })
 
   const uniqueStates = computed(() => {
-    return [...new Set(addresses.value.map(addr => addr.state))].sort()
+    return [...new Set(shippingAddresses.value.map(addr => addr.state))].sort()
   })
 
   const uniqueCities = computed(() => {
-    return [...new Set(addresses.value.map(addr => addr.city))].sort()
+    return [...new Set(shippingAddresses.value.map(addr => addr.city))].sort()
   })
 
   // Actions
-  const fetchShippingAddresses = async () => {
+  const fetchShippingAddresses = async (userId: string | number) => {
     loading.value = true
-    error.value = ''
-
+    error.value = null
     try {
-      const response = await api.get('/shippingAddresses')
-      addresses.value = response.data._embedded
-        ? response.data._embedded.shippingAddresses
-        : response.data
-    } catch (err) {
-      console.error('Error fetching shipping addresses:', err)
-      error.value = 'Error loading shipping addresses'
+      const ordersResponse = await api.get(`/users/${userId}/orders`)
+      const orders: UserOrder[] = ordersResponse.data._embedded ? ordersResponse.data._embedded.orders : []
+
+      const addresses = await Promise.all(
+        orders.map(async (order) => {
+          try {
+            // The link to the shipping address is on the order object itself in spring data rest
+            if (order._links?.shippingAddress?.href) {
+              const addressResponse = await api.get(order._links.shippingAddress.href)
+              return addressResponse.data
+            }
+          } catch (e) {
+            console.error(`Failed to fetch shipping address for order ${order.id}:`, e)
+          }
+          return null
+        })
+      )
+
+      shippingAddresses.value = addresses.filter((address): address is ShippingAddress => address !== null)
+    } catch (e) {
+      console.error('Failed to fetch shipping addresses:', e)
+      if (e instanceof Error) {
+        error.value = `Error loading shipping addresses: ${e.message}`
+      } else {
+        error.value = 'An unknown error occurred while loading shipping addresses'
+      }
     } finally {
       loading.value = false
     }
@@ -114,32 +122,32 @@ export const useShippingAddressesStore = defineStore('shippingAddresses', () => 
   }
 
   const addAddress = (address: ShippingAddress) => {
-    addresses.value.push(address)
+    shippingAddresses.value.push(address)
   }
 
   const removeAddress = (addressId: number) => {
-    const index = addresses.value.findIndex(addr => addr.id === addressId)
+    const index = shippingAddresses.value.findIndex(addr => addr.id === addressId)
     if (index > -1) {
-      addresses.value.splice(index, 1)
+      shippingAddresses.value.splice(index, 1)
     }
   }
 
   const updateAddress = (addressId: number, updatedAddress: Partial<ShippingAddress>) => {
-    const index = addresses.value.findIndex(addr => addr.id === addressId)
+    const index = shippingAddresses.value.findIndex(addr => addr.id === addressId)
     if (index > -1) {
-      addresses.value[index] = { ...addresses.value[index], ...updatedAddress }
+      shippingAddresses.value[index] = { ...shippingAddresses.value[index], ...updatedAddress }
     }
   }
 
   const getAddressById = (addressId: number) => {
-    return addresses.value.find(addr => addr.id === addressId)
+    return shippingAddresses.value.find(addr => addr.id === addressId)
   }
 
   const searchAddresses = (searchTerm: string) => {
-    if (!searchTerm.trim()) return addresses.value
+    if (!searchTerm.trim()) return shippingAddresses.value
 
     const term = searchTerm.toLowerCase()
-    return addresses.value.filter(addr =>
+    return shippingAddresses.value.filter(addr =>
       addr.street.toLowerCase().includes(term) ||
       addr.city.toLowerCase().includes(term) ||
       addr.state.toLowerCase().includes(term) ||
@@ -149,19 +157,19 @@ export const useShippingAddressesStore = defineStore('shippingAddresses', () => 
   }
 
   const filterByCountry = (country: string) => {
-    return addresses.value.filter(addr => addr.country === country)
+    return shippingAddresses.value.filter(addr => addr.country === country)
   }
 
   const filterByState = (state: string) => {
-    return addresses.value.filter(addr => addr.state === state)
+    return shippingAddresses.value.filter(addr => addr.state === state)
   }
 
   const filterByCity = (city: string) => {
-    return addresses.value.filter(addr => addr.city === city)
+    return shippingAddresses.value.filter(addr => addr.city === city)
   }
 
   const clearAddresses = () => {
-    addresses.value = []
+    shippingAddresses.value = []
     error.value = ''
   }
 
@@ -191,7 +199,7 @@ export const useShippingAddressesStore = defineStore('shippingAddresses', () => 
 
   return {
     // State
-    addresses,
+    shippingAddresses,
     loading,
     error,
     // Getters

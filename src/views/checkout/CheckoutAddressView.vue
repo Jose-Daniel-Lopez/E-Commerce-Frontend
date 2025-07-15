@@ -44,27 +44,28 @@
       <!-- Select Address -->
       <section class="max-w-5xl mx-auto">
         <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">Select Address</h2>
-        <div class="space-y-6">
-          <div v-for="(address, idx) in addresses" :key="address.id" class="bg-[#F7F7F7] rounded-xl p-6 flex items-center justify-between">
+        <div v-if="shippingAddressStore.loading" class="text-center">Loading addresses...</div>
+        <div v-else-if="shippingAddressStore.error" class="text-center text-red-500">{{ shippingAddressStore.error }}</div>
+        <div v-else class="space-y-6">
+          <div v-for="address in addresses" :key="address.id" class="bg-[#F7F7F7] rounded-xl p-6 flex items-center justify-between">
             <label class="flex items-start gap-4 cursor-pointer flex-1">
               <input type="radio" name="selectedAddress" :value="address.id" v-model="selectedAddress" class="accent-black w-5 h-5 mt-1" />
               <div>
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="font-srProDisplay text-base font-semibold text-black">{{ address.title }}</span>
+                  <span class="font-srProDisplay text-base font-semibold text-black">{{ address.street }}</span>
                   <span class="ml-2 px-2 py-0.5 rounded bg-black text-white text-xs font-srProDisplay font-semibold">{{ address.type }}</span>
                 </div>
-                <div class="font-srProDisplay text-[#232340] text-base">{{ address.line }}</div>
-                <div class="font-srProDisplay text-[#232340] text-base">{{ address.city }}</div>
-                <div class="font-srProDisplay text-[#232340] text-base">{{ address.phone }}</div>
+                <div class="font-srProDisplay text-[#232340] text-base">{{ `${address.city}, ${address.state} ${address.zipCode}` }}</div>
+                <div class="font-srProDisplay text-[#232340] text-base">{{ address.country }}</div>
               </div>
             </label>
             <div class="flex items-center gap-4 ml-4">
-              <button class="text-xl text-black hover:text-[#666]" @click="editAddress(idx)">
+              <button class="text-xl text-black hover:text-[#666]" @click="editAddress(address.id)">
                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12.65 3.35a2.121 2.121 0 1 1 3 3L7.5 14.5l-4 1 1-4 8.15-8.15Z"/>
                 </svg>
               </button>
-              <button class="text-2xl text-black hover:text-[#666]" @click="removeAddress(idx)">&times;</button>
+              <button class="text-2xl text-black hover:text-[#666]" @click="removeAddress(address.id)">&times;</button>
             </div>
           </div>
         </div>
@@ -184,30 +185,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import router from '@/router'
+import { useShippingAddressStore } from '@/stores/shippingAddresses'
+import { useAuthStore } from '@/stores/auth'
 
-const addresses = ref([
-  {
-    id: 1,
-    title: '2118 Thornridge',
-    type: 'HOME',
-    line: '2118 Thornridge Cir. Syracuse, Connecticut 35624',
-    city: '',
-    phone: '(209) 555-0104',
-  },
-  {
-    id: 2,
-    title: 'Headoffice',
-    type: 'OFFICE',
-    line: '2715 Ash Dr. San Jose, South Dakota 83475',
-    city: '',
-    phone: '(704) 555-0127',
-  },
-])
+const shippingAddressStore = useShippingAddressStore()
+const authStore = useAuthStore()
 
-const selectedAddress = ref(addresses.value[0].id)
+const addresses = computed(() => shippingAddressStore.shippingAddresses)
+const selectedAddress = ref<number | null>(null)
+
+onMounted(async () => {
+  if (authStore.user?.id) {
+    await shippingAddressStore.fetchShippingAddresses(authStore.user.id)
+    if (addresses.value.length > 0) {
+      selectedAddress.value = addresses.value[0].id
+    }
+  }
+})
 
 const showAddForm = ref(false)
 const newAddress = ref({
@@ -219,21 +216,18 @@ const newAddress = ref({
 })
 
 function submitNewAddress() {
-  addresses.value.push({
-    id: Date.now(),
-    ...newAddress.value
-  })
-  // Reset form
-  newAddress.value = { title: '', type: '', line: '', city: '', phone: '' }
+  // This should be implemented to add the address via the store
+  alert('Adding new address (not implemented)')
   showAddForm.value = false
 }
 
-function editAddress(idx: number) {
-  alert('Edit address (not implemented)')
+function editAddress(addressId: number) {
+  alert(`Edit address ${addressId} (not implemented)`)
 }
 
-function removeAddress(idx: number) {
-  addresses.value.splice(idx, 1)
+function removeAddress(addressId: number) {
+  // This should be implemented to remove the address via the store
+  alert(`Removing address ${addressId} (not implemented)`)
 }
 
 function goBack() {

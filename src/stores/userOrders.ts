@@ -15,6 +15,7 @@ export interface UserOrder {
     discountCode?: { href: string }
     payment?: { href: string }
     user?: { href: string }
+    shippingAddress?: { href: string }
   }
 }
 
