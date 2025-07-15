@@ -64,14 +64,19 @@
 
               <!-- Address -->
               <div class="mb-6">
-                <h3 class="font-srProDisplay text-base font-base text-black mb-2">Address</h3>
-                <p v-if="selectedAddress" class="font-srProDisplay text-[#232340] text-sm">{{ `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.state} ${selectedAddress.zipCode}` }}</p>
+                <h3 class="font-srProDisplay text-base font-semibold text-black mb-2">Address</h3>
+                <div v-if="selectedAddress" class="flex flex-col gap-1">
+                  <span class="font-srProDisplay text-sm text-black">{{ selectedAddress.street }}</span>
+                  <span class="font-srProDisplay text-sm text-black">{{ selectedAddress.city }}, {{ selectedAddress.state }} {{ selectedAddress.zipCode }}</span>
+                  <span class="font-srProDisplay text-sm text-black">{{ selectedAddress.country }}</span>
+                  <span v-if="selectedAddress.type" class="font-srProDisplay text-xs text-white bg-black rounded px-2 py-0.5 w-fit mt-1">{{ selectedAddress.type }}</span>
+                </div>
                 <p v-else class="font-srProDisplay text-gray-400 text-sm">No address selected</p>
               </div>
 
               <!-- Shipment method -->
               <div class="mb-8">
-                <h3 class="font-srProDisplay text-base font-base text-black mb-2">Shipment method</h3>
+                <h3 class="font-srProDisplay text-base font-semibold text-black mb-2">Shipment method</h3>
                 <p v-if="selectedShipping" class="font-srProDisplay text-[#232340] text-sm">{{ selectedShipping.name }}</p>
                 <p v-else class="font-srProDisplay text-gray-400 text-sm">No shipping method selected</p>
               </div>

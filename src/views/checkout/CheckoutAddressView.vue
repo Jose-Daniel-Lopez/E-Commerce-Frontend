@@ -49,7 +49,7 @@
         <div v-else class="space-y-6">
           <div v-for="address in addresses" :key="address.id" class="bg-[#F7F7F7] rounded-xl p-6 flex items-center justify-between">
             <label class="flex items-start gap-4 cursor-pointer flex-1">
-              <input type="radio" name="selectedAddress" :value="address.id" v-model="selectedAddress" class="accent-black w-5 h-5 mt-1" />
+              <input type="radio" name="selectedAddress" :value="address.id" v-model="selectedAddressId" class="accent-black w-5 h-5 mt-1" />
               <div>
                 <div class="flex items-center gap-2 mb-1">
                   <span class="font-srProDisplay text-base font-semibold text-black">{{ address.street }}</span>
@@ -190,18 +190,21 @@ import Wrapper from '@/components/shared/Wrapper.vue'
 import router from '@/router'
 import { useShippingAddressStore } from '@/stores/shippingAddresses'
 import { useAuthStore } from '@/stores/auth'
+import { useCheckoutStore } from '@/stores/checkout'
 
 const shippingAddressStore = useShippingAddressStore()
 const authStore = useAuthStore()
+const checkoutStore = useCheckoutStore()
 
 const addresses = computed(() => shippingAddressStore.shippingAddresses)
-const selectedAddress = ref<number | null>(null)
+const selectedAddressId = ref<number | null>(null)
 
 onMounted(async () => {
   if (authStore.user?.id) {
     await shippingAddressStore.fetchShippingAddresses(authStore.user.id)
     if (addresses.value.length > 0) {
-      selectedAddress.value = addresses.value[0].id
+      selectedAddressId.value = addresses.value[0].id
+      checkoutStore.setSelectedAddress(addresses.value[0])
     }
   }
 })

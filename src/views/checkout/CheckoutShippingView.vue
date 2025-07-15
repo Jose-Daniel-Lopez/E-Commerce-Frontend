@@ -45,18 +45,18 @@
       <section class="max-w-5xl mx-auto">
         <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">Shipment Method</h2>
         <div class="space-y-6">
-          <div v-for="(method, idx) in shippingMethods" :key="method.id" class="bg-[#F7F7F7] rounded-xl p-6 flex items-center justify-between">
+          <div v-for="method in shippingMethods" :key="method.id" class="bg-[#F7F7F7] rounded-xl p-6 flex items-center justify-between">
             <label class="flex items-start gap-4 cursor-pointer flex-1 w-full">
-              <input type="radio" name="selectedShipping" :value="method.id" v-model="selectedShipping" class="accent-black w-5 h-5 mt-1" />
+              <input type="radio" name="selectedShipping" :value="method.id" v-model="selectedShippingId" class="accent-black w-5 h-5 mt-1" />
               <div class="flex flex-1 items-center justify-between w-full">
                 <div>
                   <div class="flex items-center gap-2 mb-1">
-                    <span class="font-srProDisplay text-base font-semibold text-black">{{ method.title }}</span>
-                    <span class="ml-2 px-2 py-0.5 rounded bg-black text-white text-xs font-srProDisplay font-semibold">{{ method.price }}</span>
+                    <span class="font-srProDisplay text-base font-semibold text-black">{{ method.name }}</span>
+                    <span class="ml-2 px-2 py-0.5 rounded bg-black text-white text-xs font-srProDisplay font-semibold">{{ userCartStore.formatPrice(method.price) }}</span>
                   </div>
                   <div class="font-srProDisplay text-[#232340] text-base">{{ method.description }}</div>
                 </div>
-                <span class="font-srProDisplay text-[#232340] text-base whitespace-nowrap">{{ method.date }}</span>
+                <span class="font-srProDisplay text-[#232340] text-base whitespace-nowrap">{{ method.estimatedDelivery }}</span>
               </div>
             </label>
           </div>
@@ -76,34 +76,38 @@
 import { ref } from 'vue'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import { useRouter } from 'vue-router'
+import { useCheckoutStore } from '@/stores/checkout'
+import { useUserCartStore } from '@/stores/userCart'
 
 const router = useRouter()
+const checkoutStore = useCheckoutStore()
+const userCartStore = useUserCartStore()
 
 const shippingMethods = ref([
   {
-    id: 1,
-    title: 'Free',
-    price: 'Regular shipment',
+    id: '1',
+    name: 'Free',
+    price: 0,
     description: 'Our standard delivery option.',
-    date: '17 Oct, 2023',
+    estimatedDelivery: '17 Oct, 2023',
   },
   {
-    id: 2,
-    title: '$8.50',
-    price: 'Express shipment',
+    id: '2',
+    name: 'Express',
+    price: 8.5,
     description: 'Get your delivery as soon as possible.',
-    date: '1 Oct, 2023',
+    estimatedDelivery: '1 Oct, 2023',
   },
   {
-    id: 3,
-    title: 'Schedule',
-    price: 'Pick a date',
+    id: '3',
+    name: 'Schedule',
+    price: 0,
     description: 'Pick a date when you want to get your delivery.',
-    date: 'Select Date',
+    estimatedDelivery: 'Select Date',
   },
 ])
 
-const selectedShipping = ref(shippingMethods.value[0].id)
+const selectedShippingId = ref(shippingMethods.value[0].id)
 
 function goBack() {
   router.push({ name: 'checkoutAddress' }).then(() => {
@@ -114,6 +118,10 @@ function goBack() {
 }
 
 function goNext() {
+  const selectedMethod = shippingMethods.value.find(m => m.id === selectedShippingId.value)
+  if (selectedMethod) {
+    checkoutStore.setSelectedShippingMethod(selectedMethod)
+  }
   router.push({ name: 'checkoutPayment' }).then(() => {
     // Scroll to top after navigation with a smooth animation
     window.scrollTo({ top: 0, behavior: 'smooth' })}).catch(err => {
