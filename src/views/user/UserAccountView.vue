@@ -633,7 +633,6 @@ const saveProfile = async () => {
   if (authStore.user) {
     await authStore.updateUserProfile({
       username: editableUser.value.name,
-      email: editableUser.value.email,
       avatar: editableUser.value.avatar,
       location: editableUser.value.location
     })
