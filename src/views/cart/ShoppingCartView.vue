@@ -12,21 +12,24 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <!-- Left Panel - Cart Items -->
           <div class="bg-white rounded-lg p-6 h-full">
-            <div class="divide-y divide-[#EBEBEB]">
-              <div v-for="(item, idx) in cartItems" :key="item.id" class="flex items-center gap-6 py-8">
-                <img :src="item.image" :alt="item.name" class="w-24 h-24 object-contain rounded-lg bg-gray-50" />
+            <div v-if="userCartStore.loading" class="text-center">Loading cart...</div>
+            <div v-else-if="userCartStore.error" class="text-center text-red-500">{{ userCartStore.error }}</div>
+            <div v-else-if="!userCartStore.hasItems" class="text-center">Your cart is empty.</div>
+            <div v-else class="divide-y divide-[#EBEBEB]">
+              <div v-for="item in userCartStore.cartItems" :key="item.id" class="flex items-center gap-6 py-8">
+                <img :src="getProductImage(item.product?.name)" :alt="item.product?.name" class="w-24 h-24 object-contain rounded-lg bg-gray-50" />
                 <div class="flex-1">
-                  <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">{{ item.name }}</h3>
-                  <p class="text-[#666] text-sm mb-1">#{{ item.sku }}</p>
+                  <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">{{ item.product?.name }}</h3>
+                  <p class="text-[#666] text-sm mb-1">#{{ item.productVariant?.sku }}</p>
                   <div class="flex items-center gap-3 mt-2">
-                    <button class="w-8 h-8 flex items-center justify-center border border-[#EBEBEB] rounded" @click="decrement(idx)">-</button>
-                    <span class="font-srProDisplay text-base">{{ item.qty }}</span>
-                    <button class="w-8 h-8 flex items-center justify-center border border-[#EBEBEB] rounded" @click="increment(idx)">+</button>
+                    <button class="w-8 h-8 flex items-center justify-center border border-[#EBEBEB] rounded" @click="decrement(item.id, item.quantity)">-</button>
+                    <span class="font-srProDisplay text-base">{{ item.quantity }}</span>
+                    <button class="w-8 h-8 flex items-center justify-center border border-[#EBEBEB] rounded" @click="increment(item.id, item.quantity)">+</button>
                   </div>
                 </div>
                 <div class="flex flex-col items-end gap-2">
-                  <span class="font-srProDisplay text-lg font-semibold text-black">${{ item.price * item.qty }}</span>
-                  <button class="text-2xl text-[#999] hover:text-black" @click="remove(idx)">&times;</button>
+                  <span class="font-srProDisplay text-lg font-semibold text-black">{{ userCartStore.formatPrice(item.product?.basePrice ? item.product.basePrice * item.quantity : 0) }}</span>
+                  <button class="text-2xl text-[#999] hover:text-black" @click="remove(item.id)">&times;</button>
                 </div>
               </div>
             </div>
@@ -58,7 +61,7 @@
               <div class="my-6 border-t border-[#EBEBEB] pt-4 space-y-2">
                 <div class="flex justify-between font-srProDisplay text-semibold">
                   <span>Subtotal</span>
-                  <span>${{ subtotal }}</span>
+                  <span>{{ userCartStore.formatPrice(userCartStore.totalPrice) }}</span>
                 </div>
                 <div class="flex justify-between font-srProDisplay text-gray-500">
                   <span>Estimated Tax</span>
@@ -70,7 +73,7 @@
                 </div>
                 <div class="flex justify-between font-srProDisplay text-lg font-semibold pt-2">
                   <span>Total</span>
-                  <span>${{ total }}</span>
+                  <span>{{ userCartStore.formatPrice(total) }}</span>
                 </div>
               </div>
               <button @click="checkout" class="w-full bg-black text-white font-srProDisplay font-medium py-4 rounded-md hover:bg-[#333333] transition-colors duration-200 mt-4">Checkout</button>
@@ -84,63 +87,47 @@
 
 <script setup lang="ts">
 import '@/assets/base.css'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+import { useUserCartStore } from '@/stores/userCart'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const userCartStore = useUserCartStore()
+const authStore = useAuthStore()
 
 const breadcrumbs = [
   { label: 'Shopping Cart' }
 ]
 
-const cartItems = ref([
-  {
-    id: 1,
-    name: 'Apple iPhone 14 Pro Max 128Gb Deep Purple',
-    sku: '25139526913984',
-    image: '/public/images/Iphone-14-pro-purple.png',
-    price: 1399,
-    qty: 1
-  },
-  {
-    id: 2,
-    name: 'AirPods Max Silver',
-    sku: '53459358345',
-    image: '/public/images/Apple-airPods.png',
-    price: 549,
-    qty: 1
-  },
-  {
-    id: 3,
-    name: 'Apple Watch Series 9 GPS 41mm Starlight Aluminium',
-    sku: '63632324',
-    image: '/public/images/Apple-Watch.png',
-    price: 399,
-    qty: 1
-  }
-])
-
-
 const discountCode = ref('')
 const discount = ref(0)
 const couponEffect = ref(false)
 
-const subtotal = computed(() => cartItems.value.reduce((sum, item) => sum + item.price * item.qty, 0))
 const estimatedTax = computed(() => 50)
 const estimatedShipping = computed(() => 29)
-const total = computed(() => subtotal.value - discount.value + estimatedTax.value + estimatedShipping.value)
+const total = computed(() => userCartStore.totalPrice - discount.value + estimatedTax.value + estimatedShipping.value)
 
-function increment(idx: number) {
-  cartItems.value[idx].qty++
+onMounted(() => {
+  if (authStore.user?.id) {
+    userCartStore.fetchUserCart(authStore.user.id)
+  }
+})
+
+function increment(itemId: number, currentQuantity: number) {
+  userCartStore.updateItemQuantity(itemId, currentQuantity + 1)
 }
-function decrement(idx: number) {
-  if (cartItems.value[idx].qty > 1) cartItems.value[idx].qty--
+function decrement(itemId: number, currentQuantity: number) {
+  if (currentQuantity > 1) {
+    userCartStore.updateItemQuantity(itemId, currentQuantity - 1)
+  }
 }
-function remove(idx: number) {
-  cartItems.value.splice(idx, 1)
+function remove(itemId: number) {
+  userCartStore.removeItem(itemId)
 }
+
 function applyDiscount() {
   // Hardcoded: if code is 'SAVE10', apply $10 discount
   if (discountCode.value.trim().toUpperCase() === 'SAVE10') {
@@ -162,6 +149,15 @@ const checkout = () => {
 
     // Scroll to top after navigation with a smooth animation
     window.scrollTo({ top: 0, behavior: 'smooth' })})
+}
+
+// Helper to get product image. This is a placeholder since the API doesn't provide images.
+function getProductImage(productName: string | undefined) {
+  if (!productName) return '/public/images/logo.webp'
+  if (productName.toLowerCase().includes('iphone 14')) return '/public/images/Iphone-14-pro-purple.png'
+  if (productName.toLowerCase().includes('airpods max')) return '/public/images/Apple-airPods.png'
+  if (productName.toLowerCase().includes('apple watch')) return '/public/images/Apple-Watch.png'
+  return '/public/images/logo.webp'
 }
 </script>
 

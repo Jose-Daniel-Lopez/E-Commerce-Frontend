@@ -52,44 +52,52 @@
               <div class="space-y-4 mb-8">
                 <div v-for="item in cartItems" :key="item.id" class="flex items-center p-2 rounded-[13px] justify-between bg-[#F7F7F7]">
                   <div class="flex items-center gap-3">
-                    <div class="w-16 h-16 rounded-lg flex items-center justify-center">
-                      <img :src="item.image" :alt="item.name" class="w-12 h-12 object-contain" />
+                    <div class="w-16 h-16 rounded-lg flex items-center justify-center relative">
+                      <img :src="getProductImage(item.product?.name)" :alt="item.product?.name" class="w-12 h-12 object-contain" />
+                      <span v-if="item.quantity > 1" class="absolute top-0 right-0 bg-black text-white text-xs rounded-full px-2 py-0.5 font-srProDisplay">x{{ item.quantity }}</span>
                     </div>
-                    <span class="font-srProDisplay text-base text-black">{{ item.name }}</span>
+                    <span class="font-srProDisplay text-base text-black">{{ item.product?.name }}</span>
                   </div>
-                  <span class="font-srProDisplay text-base font-semibold text-black">${{ item.price }}</span>
+                  <span class="font-srProDisplay text-base font-semibold text-black">{{ userCartStore.formatPrice((item.product?.basePrice || 0) * item.quantity) }}</span>
                 </div>
               </div>
 
               <!-- Address -->
               <div class="mb-6">
-                <h3 class="font-srProDisplay text-base font-base text-black mb-2">Address</h3>
-                <p class="font-srProDisplay text-[#232340] text-sm">{{ selectedAddress }}</p>
+                <h3 class="font-srProDisplay text-base font-semibold text-black mb-2">Address</h3>
+                <div v-if="selectedAddress" class="flex flex-col gap-1">
+                  <span class="font-srProDisplay text-sm text-black">{{ selectedAddress.street }}</span>
+                  <span class="font-srProDisplay text-sm text-black">{{ selectedAddress.city }}, {{ selectedAddress.state }} {{ selectedAddress.zipCode }}</span>
+                  <span class="font-srProDisplay text-sm text-black">{{ selectedAddress.country }}</span>
+                  <span v-if="selectedAddress.type" class="font-srProDisplay text-xs text-white bg-black rounded px-2 py-0.5 w-fit mt-1">{{ selectedAddress.type }}</span>
+                </div>
+                <p v-else class="font-srProDisplay text-gray-400 text-sm">No address selected</p>
               </div>
 
               <!-- Shipment method -->
               <div class="mb-8">
-                <h3 class="font-srProDisplay text-base font-base text-black mb-2">Shipment method</h3>
-                <p class="font-srProDisplay text-[#232340] text-sm">{{ selectedShipping }}</p>
+                <h3 class="font-srProDisplay text-base font-semibold text-black mb-2">Shipment method</h3>
+                <p v-if="selectedShipping" class="font-srProDisplay text-[#232340] text-sm">{{ selectedShipping.name }}</p>
+                <p v-else class="font-srProDisplay text-gray-400 text-sm">No shipping method selected</p>
               </div>
 
               <!-- Order Summary -->
               <div class="space-y-3 pt-4 border-t border-[#E5E5E5]">
                 <div class="flex justify-between">
                   <span class="font-srProDisplay text-base font-semibold text-black">Subtotal</span>
-                  <span class="font-srProDisplay text-base font-semibold text-black">${{ subtotal }}</span>
+                  <span class="font-srProDisplay text-base font-semibold text-black">{{ userCartStore.formatPrice(subtotal) }}</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="font-srProDisplay text-base text-gray-700">Estimated Tax</span>
-                  <span class="font-srProDisplay text-base text-gray-700">${{ estimatedTax }}</span>
+                  <span class="font-srProDisplay text-base text-gray-700">{{ userCartStore.formatPrice(estimatedTax) }}</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="font-srProDisplay text-base text-gray-700">Estimated shipping & Handling</span>
-                  <span class="font-srProDisplay text-base text-gray-700">${{ shippingCost }}</span>
+                  <span class="font-srProDisplay text-base text-gray-700">{{ userCartStore.formatPrice(shippingCost) }}</span>
                 </div>
                 <div class="flex justify-between pt-3 border-t border-[#E5E5E5]">
                   <span class="font-srProDisplay text-lg font-bold text-black">Total</span>
-                  <span class="font-srProDisplay text-lg font-bold text-black">${{ total }}</span>
+                  <span class="font-srProDisplay text-lg font-bold text-black">{{ userCartStore.formatPrice(total) }}</span>
                 </div>
               </div>
             </section>
@@ -249,12 +257,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import CreditCard from '@/components/shared/CreditCard.vue'
 import { useRouter } from 'vue-router'
+import { useUserCartStore } from '@/stores/userCart'
+import { useCheckoutStore } from '@/stores/checkout'
 
 const router = useRouter()
+const userCartStore = useUserCartStore()
+const checkoutStore = useCheckoutStore()
 
 // Payment methods
 const paymentMethods = ref([
@@ -265,31 +277,10 @@ const paymentMethods = ref([
 
 const selectedPaymentMethod = ref('credit')
 
-// Sample cart items (this would come from a store in real app)
-const cartItems = ref([
-  {
-    id: 1,
-    name: 'Apple iPhone 14 Pro Max 128Gb',
-    price: 1399,
-    image: '/images/Iphone-14-pro-black.png'
-  },
-  {
-    id: 2,
-    name: 'AirPods Max Silver',
-    price: 549,
-    image: '/images/Apple-airPods.png'
-  },
-  {
-    id: 3,
-    name: 'Apple Watch Series 9 GPS 41mm',
-    price: 399,
-    image: '/images/Apple-Watch.png'
-  }
-])
-
-// Sample address and shipping (this would come from previous steps)
-const selectedAddress = ref('1131 Dusty Townline, Jacksonville, TX 40322')
-const selectedShipping = ref('Free')
+// Computed properties from stores
+const cartItems = computed(() => userCartStore.cartItems)
+const selectedAddress = computed(() => checkoutStore.selectedAddress)
+const selectedShipping = computed(() => checkoutStore.selectedShippingMethod)
 
 // Payment form
 const paymentForm = ref({
@@ -304,11 +295,11 @@ const paymentForm = ref({
 const focusedField = ref('')
 
 // Computed values
-const subtotal = computed(() => cartItems.value.reduce((sum, item) => sum + item.price, 0))
+const subtotal = computed(() => userCartStore.totalPrice)
 const estimatedTax = computed(() => {
   return parseFloat((subtotal.value * 0.05).toFixed(2));
 });
-const shippingCost = computed(() => 29)
+const shippingCost = computed(() => selectedShipping.value?.price || 0)
 const total = computed(() => subtotal.value + estimatedTax.value + shippingCost.value)
 
 const isFormValid = computed(() => {
@@ -321,6 +312,14 @@ const isFormValid = computed(() => {
     );
   }
   return true; // Always valid for PayPal and Apple Pay
+})
+
+onMounted(() => {
+  // Ensure cart is loaded, if not, redirect or load it
+  if (!userCartStore.hasItems) {
+    // Maybe redirect to cart page if it's empty
+    router.push({ name: 'shoppingCart' })
+  }
 })
 
 function formatCardNumber() {
@@ -343,6 +342,15 @@ function processPayment() {
   } else {
     alert('Payment processed successfully!');
   }
+}
+
+// Helper to get product image. This is a placeholder since the API doesn't provide images.
+function getProductImage(productName: string | undefined) {
+  if (!productName) return '/public/images/logo.webp'
+  if (productName.toLowerCase().includes('iphone 14')) return '/public/images/Iphone-14-pro-purple.png'
+  if (productName.toLowerCase().includes('airpods max')) return '/public/images/Apple-airPods.png'
+  if (productName.toLowerCase().includes('apple watch')) return '/public/images/Apple-Watch.png'
+  return '/public/images/logo.webp'
 }
 </script>
 
