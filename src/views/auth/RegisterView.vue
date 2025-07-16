@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/lib/axios'
 import Wrapper from '@/components/shared/Wrapper.vue'
+import FloatingInput from '@/components/shared/FloatingInput.vue'
+import PasswordInput from '@/components/shared/PasswordInput.vue'
+import ErrorAlert from '@/components/shared/ErrorAlert.vue'
+import SubmitButton from '@/components/shared/SubmitButton.vue'
 import { sendVerificationEmail } from '@/lib/emailjs'
+import { useFormValidation, validationRules } from '@/composables/useFormValidation'
 
 interface RegisterForm {
   username: string
@@ -35,10 +40,19 @@ const form = ref<RegisterForm>({
   role: 'CUSTOMER'
 })
 const loading = ref(false)
-const error = ref('')
-const showPwd = ref(false)
-const showCP = ref(false)
 const showVerificationMsg = ref(false)
+const termsAccepted = ref(false)
+
+// Form validation setup
+const {
+  globalError,
+  registerField,
+  updateField,
+  validateForm,
+  hasFieldError,
+  setGlobalError,
+  clearGlobalError
+} = useFormValidation()
 
 // Available user roles
 const roles = [
@@ -47,35 +61,104 @@ const roles = [
   { value: 'ADMIN', label: 'Admin' }
 ]
 
-// Form validation with user-friendly error messages
-const validateForm = () => {
-  if (!form.value.username) return error.value = 'Username is required', false
-  if (form.value.username.length < 3) return error.value = 'Username too short', false
-  if (!form.value.email) return error.value = 'Email is required', false
-  if (!form.value.email.includes('@')) return error.value = 'Invalid email', false
-  if (!form.value.password) return error.value = 'Password is required', false
-  if (form.value.password.length < 6) return error.value = 'Password too short', false
-  if (form.value.password !== form.value.confirmPassword)
-    return error.value = 'Passwords do not match', false
+/**
+ * Initialize form validation rules
+ */
+onMounted(() => {
+  registerField('username', form.value.username, [
+    validationRules.required('Username is required'),
+    validationRules.minLength(3, 'Username must be at least 3 characters long')
+  ])
+  
+  registerField('email', form.value.email, [
+    validationRules.required('Email is required'),
+    validationRules.email('Please enter a valid email address')
+  ])
+  
+  registerField('password', form.value.password, [
+    validationRules.required('Password is required'),
+    validationRules.minLength(6, 'Password must be at least 6 characters long')
+  ])
+  
+  registerField('confirmPassword', form.value.confirmPassword, [
+    validationRules.required('Please confirm your password'),
+    {
+      test: (value: unknown) => String(value) === form.value.password,
+      message: 'Passwords do not match'
+    }
+  ])
+})
+
+/**
+ * Handle input changes for each field
+ */
+const handleUsernameChange = (value: string) => {
+  form.value.username = value
+  updateField('username', value)
+}
+
+const handleEmailChange = (value: string) => {
+  form.value.email = value
+  updateField('email', value)
+}
+
+const handlePasswordChange = (value: string) => {
+  form.value.password = value
+  updateField('password', value)
+  // Re-validate confirm password if it has a value
+  if (form.value.confirmPassword) {
+    updateField('confirmPassword', form.value.confirmPassword)
+  }
+}
+
+const handleConfirmPasswordChange = (value: string) => {
+  form.value.confirmPassword = value
+  updateField('confirmPassword', value)
+}
+
+/**
+ * Custom validation for terms acceptance
+ */
+const validateTerms = (): boolean => {
+  if (!termsAccepted.value) {
+    setGlobalError('You must agree to the Terms of Service and Privacy Policy')
+    return false
+  }
   return true
 }
 
-// Handle form submission and API call
-const handleSubmit = async () => {
-  error.value = ''
-  if (!validateForm()) return
+/**
+ * Handle form submission and API call
+ * 
+ * @description
+ * Manages the complete registration flow including:
+ * - Form validation (fields and terms)
+ * - Loading state management
+ * - API call to registration endpoint
+ * - Email verification process
+ * - Success/error handling and user feedback
+ * - Navigation after successful registration
+ */
+const handleSubmit = async (): Promise<void> => {
+  const { isValid } = validateForm()
+  
+  if (!isValid || !validateTerms()) return
+  
   loading.value = true
+
   try {
     const { data } = await api.post<RegisterResponse>('/auth/register', {
-      username: form.value.username,
-      email: form.value.email,
+      username: form.value.username.trim(),
+      email: form.value.email.trim(),
       password: form.value.password,
       role: form.value.role
     })
+
     if (data.user && data.user.verificationToken) {
-      // Construir el enlace de verificación
+      // Build verification link
       const verificationLink = `${window.location.origin}/verify?token=${data.user.verificationToken}`
-      // Enviar email de verificación
+      
+      // Send verification email
       try {
         await sendVerificationEmail({
           email: data.user.email,
@@ -88,34 +171,38 @@ const handleSubmit = async () => {
         return
       } catch (emailError) {
         console.error('Error sending verification email:', emailError)
-        error.value = 'Account created but verification email failed to send. Please contact support.'
+        setGlobalError('Account created but verification email failed to send. Please contact support.')
         return
       }
     }
-    router.push({ name: 'login' })
+    
+    await router.push({ name: 'login' })
   } catch (err: unknown) {
+    console.error('Registration error:', err)
     const error_obj = err as { response?: { status?: number } }
-    if (error_obj.response?.status === 409) error.value = 'Email already exists'
-    else if (error_obj.response?.status === 400) error.value = 'Bad registration data'
-    else error.value = 'Registration failed'
+    
+    if (error_obj.response?.status === 409) {
+      setGlobalError('Email already exists')
+    } else if (error_obj.response?.status === 400) {
+      setGlobalError('Bad registration data')
+    } else {
+      setGlobalError('Registration failed. Please try again.')
+    }
   } finally {
     loading.value = false
   }
 }
 
-// Toggle password visibility
-const togglePwd = () => showPwd.value = !showPwd.value
-const toggleCP = () => showCP.value = !showCP.value
-const clearErr = () => error.value = ''
+
 </script>
 
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-white text-black">
+  <div class="pt-[85px] lg:pt-0 bg-background text-primary">
     <Wrapper class="py-8">
 
       <!-- Header -->
       <section class="max-w-7xl mx-auto mb-8">
-        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-black">Join us</h1>
+        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-primary">Join us</h1>
       </section>
 
       <!-- Registration Content -->
@@ -123,235 +210,186 @@ const clearErr = () => error.value = ''
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
 
           <!-- Left Panel - Account Benefits -->
-          <div class="bg-white rounded-lg p-6 h-full">
-            <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">Why Create an Account?</h2>
+          <div class="bg-background rounded-lg p-6 h-full">
+            <h2 class="font-srProDisplay text-xl font-semibold text-primary mb-6">Why Create an Account?</h2>
 
             <div class="space-y-0">
               <!-- Faster Checkout -->
-              <div class="flex items-start gap-4 py-8 border-b border-[#EBEBEB]">
+              <div class="flex items-start gap-4 py-8 border-b border-input-border">
                 <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <v-icon name="hi-truck" scale="1.7" class="text-black" />
+                  <v-icon name="hi-truck" scale="1.7" class="text-primary" />
                 </div>
                 <div>
-                  <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">Faster Checkout</h3>
-                  <p class="font-srProDisplay text-[#666666] text-sm mb-1">Save your information for quicker purchases</p>
-                  <p class="font-srProDisplay text-[#666666] text-sm">Skip entering details every time</p>
+                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">Faster Checkout</h3>
+                  <p class="font-srProDisplay text-muted text-sm mb-1">Save your information for quicker purchases</p>
+                  <p class="font-srProDisplay text-muted text-sm">Skip entering details every time</p>
                 </div>
               </div>
 
               <!-- Order History -->
-              <div class="flex items-start gap-4 py-12 border-b border-[#EBEBEB]">
+              <div class="flex items-start gap-4 py-12 border-b border-input-border">
                 <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <v-icon name="hi-clipboard-list" scale="1.7" class="text-black" />
+                  <v-icon name="hi-clipboard-list" scale="1.7" class="text-primary" />
                 </div>
                 <div>
-                  <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">Order History</h3>
-                  <p class="font-srProDisplay text-[#666666] text-sm mb-1">Track all your purchases in one place</p>
-                  <p class="font-srProDisplay text-[#999999] text-xs">Easy returns and support</p>
+                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">Order History</h3>
+                  <p class="font-srProDisplay text-muted text-sm mb-1">Track all your purchases in one place</p>
+                  <p class="font-srProDisplay text-muted-foreground text-xs">Easy returns and support</p>
                 </div>
               </div>
 
               <!-- Exclusive Offers -->
-              <div class="flex items-start gap-4 py-12 border-b border-[#EBEBEB]">
+              <div class="flex items-start gap-4 py-12 border-b border-input-border">
                 <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <v-icon name="hi-gift" scale="1.7" class="text-black" />
+                  <v-icon name="hi-gift" scale="1.7" class="text-primary" />
                 </div>
                 <div>
-                  <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">Exclusive Offers</h3>
-                  <p class="font-srProDisplay text-[#666666] text-sm mb-1">Get access to member-only deals</p>
-                  <p class="font-srProDisplay text-[#666666] text-sm">Early access to sales and new products</p>
+                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">Exclusive Offers</h3>
+                  <p class="font-srProDisplay text-muted text-sm mb-1">Get access to member-only deals</p>
+                  <p class="font-srProDisplay text-muted text-sm">Early access to sales and new products</p>
                 </div>
               </div>
 
               <!-- Wishlist -->
               <div class="flex items-start gap-4 py-12">
                 <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <v-icon name="hi-heart" scale="1.7" class="text-black" />
+                  <v-icon name="hi-heart" scale="1.7" class="text-primary" />
                 </div>
                 <div>
-                  <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">Save Favorites</h3>
-                  <p class="font-srProDisplay text-[#666666] text-sm mb-1">Create wishlists and save items for later</p>
-                  <p class="font-srProDisplay text-[#999999] text-xs">Never lose track of products you love</p>
+                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">Save Favorites</h3>
+                  <p class="font-srProDisplay text-muted text-sm mb-1">Create wishlists and save items for later</p>
+                  <p class="font-srProDisplay text-muted-foreground text-xs">Never lose track of products you love</p>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Right Panel - Registration Form -->
-          <div class="animate-fadeInUp">
-            <div class="bg-white border border-[#EBEBEB] rounded-lg p-6 h-full transition-all duration-300 hover:shadow-lg">
-              <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">Registration Form</h2>
+          <div class="animate-[fadeInUp_0.8s_ease-out]">
+            <div class="bg-background border border-input-border rounded-lg p-6 h-full transition-all duration-300 hover:shadow-lg">
+              <h2 class="font-srProDisplay text-xl font-semibold text-primary mb-6">Registration Form</h2>
 
               <!-- Success Message -->
-              <div v-if="showVerificationMsg" class="mb-4 flex items-center justify-between rounded-lg border border-green-200 bg-green-50 p-3 animate-slideDown">
+              <div v-if="showVerificationMsg" class="mb-4 flex items-center justify-between rounded-lg border border-green-200 bg-green-50 p-3 animate-[slideDown_0.3s_ease-out]">
                 <p class="font-srProDisplay text-sm text-green-700">
                   Account verification email sent! Please check your inbox to verify your account.
                 </p>
               </div>
-              <!-- Error Message -->
-              <div v-if="error" class="mb-4 flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-3 animate-slideDown">
-                <p class="font-srProDisplay text-sm text-red-700">{{ error }}</p>
-                <button @click="clearErr" class="text-red-600 hover:underline text-sm transition-all duration-200 hover:scale-110">✕</button>
-              </div>
+              
+              <!-- Error Alert -->
+              <ErrorAlert
+                :message="globalError"
+                :show="!!globalError"
+                @dismiss="clearGlobalError"
+              />
 
-              <form @submit.prevent="handleSubmit" class="space-y-6">
+              <form @submit.prevent="handleSubmit" class="space-y-6" novalidate>
                 <!-- Username -->
-                <div class="form-group">
-                  <div class="relative">
-                    <input
-                      id="username"
-                      v-model="form.username"
-                      type="text"
-                      autocomplete="username"
-                      required
-                      @input="clearErr"
-                      class="floating-input peer w-full px-4 pt-6 pb-2 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black focus:outline-none focus:border-black transition-all duration-300 transform"
-                      placeholder=" "
-                    />
-                    <label
-                      for="username"
-                      class="floating-label absolute left-4 top-4 font-srProDisplay text-[#999999] transition-all duration-300 transform origin-left pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-black peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-black"
-                    >
-                      Username
-                    </label>
-                  </div>
-                </div>
+                <FloatingInput
+                  id="username"
+                  label="Username"
+                  :model-value="form.username"
+                  type="text"
+                  autocomplete="username"
+                  :required="true"
+                  animation-class="animate-[fadeInUp_0.6s_ease-out_0.1s_both]"
+                  :has-error="hasFieldError('username').value"
+                  @update:model-value="handleUsernameChange"
+                />
 
                 <!-- Email -->
-                <div class="form-group">
-                  <div class="relative">
-                    <input
-                      id="email"
-                      v-model="form.email"
-                      type="email"
-                      autocomplete="email"
-                      required
-                      @input="clearErr"
-                      class="floating-input peer w-full px-4 pt-6 pb-2 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black focus:outline-none focus:border-black transition-all duration-300 transform"
-                      placeholder=" "
-                    />
-                    <label
-                      for="email"
-                      class="floating-label absolute left-4 top-4 font-srProDisplay text-[#999999] transition-all duration-300 transform origin-left pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-black peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-black"
-                    >
-                      Email Address
-                    </label>
-                  </div>
-                </div>
+                <FloatingInput
+                  id="email"
+                  label="Email Address"
+                  :model-value="form.email"
+                  type="email"
+                  autocomplete="email"
+                  :required="true"
+                  animation-class="animate-[fadeInUp_0.6s_ease-out_0.2s_both]"
+                  :has-error="hasFieldError('email').value"
+                  @update:model-value="handleEmailChange"
+                />
 
                 <!-- Role -->
-                <div class="form-group">
+                <div class="relative transition-all duration-300 hover:-translate-y-0.5 animate-[fadeInUp_0.6s_ease-out_0.3s_both]">
                   <div class="relative">
                     <select
                       id="role"
                       v-model="form.role"
-                      class="floating-select peer w-full px-4 pt-6 pb-2 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black focus:outline-none focus:border-black transition-all duration-300 transform appearance-none"
+                      class="peer w-full px-4 pt-6 pb-2 pr-10 border border-input-border rounded-xl bg-input-background backdrop-blur-sm font-srProDisplay text-primary focus:outline-none focus:border-primary focus:bg-white focus:shadow-[0_0_0_3px_rgba(0,0,0,0.05)] focus:scale-[1.01] transition-all duration-300 appearance-none cursor-pointer"
                     >
                       <option v-for="r in roles" :key="r.value" :value="r.value">{{ r.label }}</option>
                     </select>
                     <label
                       for="role"
-                      class="floating-label absolute left-4 top-2 text-xs font-srProDisplay text-black transition-all duration-300 transform origin-left pointer-events-none"
+                      class="absolute left-4 top-2 text-xs font-srProDisplay text-primary transition-all duration-300 transform origin-left pointer-events-none bg-white px-1.5 z-[1]"
                     >
                       Account Type
                     </label>
                     <!-- Custom dropdown arrow -->
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                      <svg class="w-5 h-5 text-[#999999]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                      </svg>
+                      <v-icon name="hi-chevron-down" scale="1.2" class="text-muted-foreground" />
                     </div>
                   </div>
                 </div>
 
                 <!-- Password -->
-                <div class="form-group">
-                  <div class="relative">
-                    <input
-                      id="password"
-                      v-model="form.password"
-                      :type="showPwd ? 'text' : 'password'"
-                      autocomplete="new-password"
-                      required
-                      @input="clearErr"
-                      class="floating-input peer w-full px-4 pt-6 pb-2 pr-12 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black focus:outline-none focus:border-black transition-all duration-300 transform"
-                      placeholder=" "
-                    />
-                    <label
-                      for="password"
-                      class="floating-label absolute left-4 top-4 font-srProDisplay text-[#999999] transition-all duration-300 transform origin-left pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-black peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-black"
-                    >
-                      Password
-                    </label>
-                    <button
-                      type="button"
-                      @click="togglePwd"
-                      class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#999999] hover:text-black transition-all duration-200 transform hover:scale-110"
-                      :aria-label="showPwd ? 'Hide password' : 'Show password'"
-                    >
-                      <v-icon :name="showPwd ? 'hi-eye-off' : 'hi-eye'" scale="1.4" />
-                    </button>
-                  </div>
-                </div>
+                <PasswordInput
+                  id="password"
+                  label="Password"
+                  :model-value="form.password"
+                  autocomplete="new-password"
+                  :required="true"
+                  animation-class="animate-[fadeInUp_0.6s_ease-out_0.4s_both]"
+                  :has-error="hasFieldError('password').value"
+                  @update:model-value="handlePasswordChange"
+                />
 
                 <!-- Confirm Password -->
-                <div class="form-group">
-                  <div class="relative">
-                    <input
-                      id="confirm"
-                      v-model="form.confirmPassword"
-                      type="password"
-                      autocomplete="new-password"
-                      required
-                      @input="clearErr"
-                      class="floating-input peer w-full px-4 pt-6 pb-2 pr-12 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black focus:outline-none focus:border-black transition-all duration-300 transform"
-                      placeholder=" "
-                    />
-                    <label
-                      for="confirm"
-                      class="floating-label absolute left-4 top-4 font-srProDisplay text-[#999999] transition-all duration-300 transform origin-left pointer-events-none peer-focus:top-2 peer-focus:text-xs peer-focus:text-black peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-black"
-                    >
-                      Confirm Password
-                    </label>
-                  </div>
-                </div>
+                <PasswordInput
+                  id="confirmPassword"
+                  label="Confirm Password"
+                  :model-value="form.confirmPassword"
+                  autocomplete="new-password"
+                  :required="true"
+                  animation-class="animate-[fadeInUp_0.6s_ease-out_0.5s_both]"
+                  :has-error="hasFieldError('confirmPassword').value"
+                  @update:model-value="handleConfirmPasswordChange"
+                />
 
                 <!-- Divider -->
-                <div class="border-t border-[#EBEBEB] pt-4">
+                <div class="border-t border-input-border pt-4 animate-[fadeInUp_0.6s_ease-out_0.6s_both]">
                   <!-- Terms Agreement -->
                   <div class="mb-4">
-                    <label class="flex items-start">
-                      <input type="checkbox" required class="custom-checkbox mr-3 mt-1 text-black" />
-                      <span class="font-srProDisplay text-sm text-[#666666]">
-                        I agree to the <a href="#" class="text-black hover:underline">Terms of Service</a> and
-                        <a href="#" class="text-black hover:underline">Privacy Policy</a>
+                    <label class="flex items-start group cursor-pointer">
+                      <input 
+                        v-model="termsAccepted"
+                        type="checkbox" 
+                        required 
+                        class="appearance-none w-4 h-4 border border-gray-300 rounded-sm bg-white cursor-pointer relative flex-shrink-0 mr-3 mt-1 hover:border-gray-400 checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-3 after:h-3 after:bg-[url('data:image/svg+xml,%3csvg%20viewBox%3D%270%200%2016%2016%27%20fill%3D%27white%27%20xmlns%3D%27http://www.w3.org/2000/svg%27%3e%3cpath%20d%3D%27m13.854%203.646a.5.5%200%200%201%200%20.708l-7%207a.5.5%200%200%201-.708%200l-3.5-3.5a.5.5%200%201%201%20.708-.708L6.5%2010.293l6.646-6.647a.5.5%200%200%201%20.708%200z%27/%3e%3c/svg%3e')] after:bg-contain after:bg-no-repeat after:bg-center after:opacity-0 checked:after:opacity-100 transition-all duration-200" 
+                      />
+                      <span class="font-srProDisplay text-sm text-muted group-hover:text-primary transition-colors duration-200">
+                        I agree to the <a href="#" class="text-primary hover:underline cursor-pointer">Terms of Service</a> and
+                        <a href="#" class="text-primary hover:underline cursor-pointer">Privacy Policy</a>
                       </span>
                     </label>
                   </div>
                 </div>
 
                 <!-- Submit Button -->
-                <button
-                  type="submit"
-                  :disabled="loading"
-                  class="w-full bg-black text-white font-srProDisplay font-medium py-4 rounded-md hover:bg-[#333333] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg"
-                >
-                  <span v-if="loading" class="flex items-center justify-center">
-                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Creating Account...
-                  </span>
-                  <span v-else>Create Account</span>
-                </button>
+                <SubmitButton
+                  :loading="loading"
+                  text="Create Account"
+                  loading-text="Creating Account..."
+                  :aria-describedby="globalError ? 'register-error' : undefined"
+                />
               </form>
 
               <!-- Sign In Link -->
-              <div class="mt-6 pt-4 border-t border-[#EBEBEB]">
-                <p class="text-center font-srProDisplay text-sm text-[#666666]">
+              <div class="mt-6 pt-4 border-t border-input-border">
+                <p class="text-center font-srProDisplay text-sm text-muted">
                   Already have an account?
-                  <RouterLink to="/login" class="font-medium text-black hover:underline ml-1">Sign in</RouterLink>
+                  <RouterLink to="/login" class="font-medium text-primary hover:underline ml-1 cursor-pointer">Sign in</RouterLink>
                 </p>
               </div>
             </div>
@@ -363,7 +401,29 @@ const clearErr = () => error.value = ''
 </template>
 
 <style scoped>
-/* Entry animations */
+/* Hide browser password visibility toggles since we have our own */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-input-password-toggle-button,
+input[type="password"]::-webkit-input-clear-button {
+  display: none !important;
+}
+input[type="text"]::-ms-reveal,
+input[type="text"]::-ms-clear,
+input[type="text"]::-webkit-credentials-auto-fill-button,
+input[type="text"]::-webkit-input-password-toggle-button,
+input[type="text"]::-webkit-input-clear-button {
+  display: none !important;
+}
+
+/* Remove button focus outline since we use Tailwind focus states */
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Keep essential animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -385,152 +445,4 @@ const clearErr = () => error.value = ''
     transform: translateY(0);
   }
 }
-
-/* Remove default focus outline */
-button:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-.animate-fadeInUp {
-  animation: fadeInUp 0.6s ease-out;
-}
-
-.animate-slideDown {
-  animation: slideDown 0.3s ease-out;
-}
-
-/* Floating input styles */
-.floating-input:focus + .floating-label,
-.floating-input:not(:placeholder-shown) + .floating-label {
-  transform: translateY(-12px) scale(0.75);
-  color: #000000;
-}
-
-.floating-select + .floating-label {
-  transform: translateY(-12px) scale(0.75);
-  color: #000000;
-}
-
-/* Form group hover effects */
-.form-group {
-  transition: all 0.3s ease;
-}
-
-.form-group:hover {
-  transform: translateY(-1px);
-}
-
-/* Password toggle button animation */
-.floating-input + label + button:hover {
-  transform: scale(1.1);
-}
-
-/* Smooth focus animation for inputs */
-.floating-input:focus {
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-  transform: scale(1.02);
-}
-
-/* Smooth label transitions */
-.floating-label {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Staggered entry animation for form fields */
-.form-group:nth-child(1) {
-  animation: fadeInUp 0.6s ease-out 0.1s both;
-}
-
-.form-group:nth-child(2) {
-  animation: fadeInUp 0.6s ease-out 0.2s both;
-}
-
-.form-group:nth-child(3) {
-  animation: fadeInUp 0.6s ease-out 0.3s both;
-}
-
-.form-group:nth-child(4) {
-  animation: fadeInUp 0.6s ease-out 0.4s both;
-}
-
-.form-group:nth-child(5) {
-  animation: fadeInUp 0.6s ease-out 0.5s both;
-}
-
-/* Submit button animation */
-button[type="submit"] {
-  animation: fadeInUp 0.6s ease-out 0.6s both;
-}
-
-/* Loading spinner animation */
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Custom select styling */
-.floating-select {
-  background-image: none;
-}
-
-/* Form container hover effect */
-.form-container:hover {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-}
-
-/* Hide toggle password visibility for Chrome, Edge & Safari */
-input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear,
-input[type="password"]::-webkit-credentials-auto-fill-button,
-input[type="password"]::-webkit-input-password-toggle-button,
-input[type="password"]::-webkit-input-clear-button {
-  display: none !important;
-}
-input[type="text"]::-ms-reveal,
-input[type="text"]::-ms-clear,
-input[type="text"]::-webkit-credentials-auto-fill-button,
-input[type="text"]::-webkit-input-password-toggle-button,
-input[type="text"]::-webkit-input-clear-button {
-  display: none !important;
-}
-
-/* Smooth transitions for interactive elements */
-.custom-checkbox {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  width: 16px;
-  height: 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 3px;
-  background-color: white;
-  cursor: pointer;
-  position: relative;
-  flex-shrink: 0;
-}
-
-/* Hover state */
-.custom-checkbox:hover {
-  border-color: #9ca3af;
-}
-
-/* Checked state */
-.custom-checkbox:checked {
-  background-color: #000000;
-  border-color: #000000;
-  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M13.854 3.646L6.354 11.146a.5.5 0 01-.708 0L2.146 7.646a.5.5 0 11.708-.708L6 10.293l7.146-7.147a.5.5 0 01.708.708z'/%3e%3c/svg%3e");
-  background-size: 8px 8px;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
 </style>
