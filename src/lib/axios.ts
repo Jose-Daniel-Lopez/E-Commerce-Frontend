@@ -35,8 +35,6 @@ api.interceptors.request.use(
 
 /**
  * Response interceptor to handle authentication errors
- *
- * @description Automatically redirects to login page when receiving 401 status codes
  */
 api.interceptors.response.use(
   (response) => response,

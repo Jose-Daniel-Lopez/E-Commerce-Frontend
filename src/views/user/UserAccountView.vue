@@ -79,7 +79,8 @@
             <!-- Profile Section -->
             <section :id="sections[0].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div class="flex items-center justify-between mb-6">
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.profile.title') }}</h2>
+              <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.profile.title') }}</h2>
+              <div class="flex gap-2">  <!-- Agrupamos los botones -->
                 <Button
                   @click="toggleEditProfile"
                   text-color="black"
@@ -99,7 +100,23 @@
                   />
                   {{ isEditProfileOpen ? $t('account.profile.cancelButton') : $t('account.profile.editButton') }}
                 </Button>
+                <!-- Nuevo botón de refrescar -->
+                <Button
+                  @click="refreshProfile"
+                  text-color="black"
+                  bg-color="transparent"
+                  border-width="1px"
+                  border-color="#e5e7eb"
+                  hover-bg-color="#f9fafb"
+                  width="auto"
+                  height="36px"
+                  class="px-4 transition-all duration-200"
+                >
+                  <v-icon name="hi-refresh" scale="0.9" class="mr-2" />  <!-- Asume que tienes un icono de refresh -->
+                  Refrescar
+                </Button>
               </div>
+            </div>
 
               <!-- Profile Display -->
               <div
@@ -113,7 +130,7 @@
                     <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
                   </div>
                   <div class="flex-1">
-                    <h3 class="font-srProDisplay text-xl font-semibold text-black mb-1">{{ user.name }}</h3>
+                    <h3 class="font-srProDisplay text-xl font-semibold text-black mb-1">{{ user?.username }}</h3>
                     <p class="font-srProDisplay text-gray-600 mb-2">{{ user.email }}</p>
                     <div class="flex items-center gap-4 text-sm text-gray-500">
                       <span class="flex items-center gap-1">
@@ -167,6 +184,7 @@
 
                     <!-- Form Fields -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- Name field -->
                       <div class="space-y-2">
                         <label for="name" class="block text-sm font-medium text-gray-700 font-srProDisplay">
                           {{ $t('account.profile.editModal.nameLabel') }}
@@ -180,6 +198,22 @@
                         >
                       </div>
 
+                      <!-- Email field (non-editable) -->
+                      <div class="space-y-2">
+                        <label for="email" class="block text-sm font-medium text-gray-700 font-srProDisplay">
+                          {{ $t('account.profile.editModal.emailLabel') }}
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          :value="user.email"
+                          disabled
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-500 cursor-not-allowed font-srProDisplay"
+                          :placeholder="$t('account.profile.editModal.emailPlaceholder')"
+                        >
+                      </div>
+
+                      <!-- Location field (editable) -->
                       <div class="space-y-2 md:col-span-2">
                         <label for="location" class="block text-sm font-medium text-gray-700 font-srProDisplay">
                           {{ $t('account.profile.editModal.locationLabel') }}
@@ -193,6 +227,7 @@
                         >
                       </div>
                     </div>
+
 
                     <!-- Action Buttons -->
                     <div class="flex justify-end gap-4 pt-4 border-t border-gray-200">
@@ -500,6 +535,7 @@
 import '@/assets/base.css'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import type { User } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import Button from '@/components/shared/Button.vue'
@@ -524,16 +560,8 @@ const sections = computed(() => [
 ])
 
 
-// User state - now using auth store
-const user = computed(() => ({
-  name: authStore.user?.username || '',
-  email: authStore.user?.email || '',
-  memberSince: '', // not available in backend, will leave blank
-  location: '', // not available in backend, will leave blank
-  avatar: authStore.user?.avatar || '',
-  role: authStore.user?.role || '',
-  isVerified: authStore.user?.isVerified || false
-}))
+// User state
+const user = computed(() => (authStore.user ?? {}) as User)
 
 const orders = ref([
   { id: '12345', date: '2025-07-01', status: 'Delivered' },
@@ -561,7 +589,7 @@ const reviews = ref([
   { id: 2, product: 'Samsung Galaxy Buds', rating: 4, comment: 'Good sound quality, but could be more comfortable.', date: '1 week ago' }
 ])
 
-// Logic for the Edit Profile inline form (reemplaza el modal)
+// Logic for the Edit Profile inline form
 const isEditProfileOpen = ref(false)
 const editableUser = ref({
   name: '',
@@ -575,7 +603,7 @@ const editableUser = ref({
 const toggleEditProfile = () => {
   isEditProfileOpen.value = !isEditProfileOpen.value
   if (isEditProfileOpen.value) {
-    // Copiar datos actuales para edición
+    // Copy current data for editing
     editableUser.value = {
       name: user.value.name,
       email: user.value.email,
@@ -589,7 +617,7 @@ const toggleEditProfile = () => {
 
 const cancelEdit = () => {
   isEditProfileOpen.value = false
-  // Restaurar datos originales
+  // Restore original data
   editableUser.value = {
     name: user.value.name,
     email: user.value.email,
@@ -600,18 +628,18 @@ const cancelEdit = () => {
   }
 }
 
-const saveProfile = () => {
-  // Guardar los cambios usando la store
+const saveProfile = async () => {
+  // Save changes using the store
   if (authStore.user) {
-    authStore.updateUser({
+    await authStore.updateUserProfile({
       username: editableUser.value.name,
       email: editableUser.value.email,
-      avatar: editableUser.value.avatar
+      avatar: editableUser.value.avatar,
+      location: editableUser.value.location
     })
   }
   isEditProfileOpen.value = false
-  // En una aplicación real, aquí llamarías a una API para guardar los datos del usuario
-  console.log('Profile saved:', editableUser.value)
+  // ...
 }
 
 // State for user settings.
@@ -705,6 +733,17 @@ onMounted(async () => {
 onUnmounted(() => {
   document.body.classList.remove('nav-open')
 })
+
+const refreshProfile = async () => {
+  try {
+    await authStore.fetchCurrentUser();
+    // ...
+  } catch (error) {
+    console.error('Error al refrescar perfil:', error);
+    // ...
+  }
+};
+
 </script>
 
 <style scoped>

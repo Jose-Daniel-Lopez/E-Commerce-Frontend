@@ -9,6 +9,7 @@ interface User {
   avatar: string
   role: string
   isVerified: boolean
+  location?: string
 }
 
 interface LoginCredentials {
@@ -119,25 +120,22 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const fetchCurrentUser = async () => {
-    if (!token.value) return
+  if (!token.value) return
 
-    loading.value = true
-    try {
-      const response = await api.get<User>('/api/users/me')
-      user.value = response.data
-      localStorage.setItem('user', JSON.stringify(response.data))
-    } catch (err: unknown) {
-      console.error('Error fetching current user:', err)
-      if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { status?: number } }
-        if (axiosError.response?.status === 401) {
-          clearAuth()
-        }
-      }
-    } finally {
-      loading.value = false
-    }
+  // ...
+
+  loading.value = true
+  try {
+    const response = await api.get<User>('/users/me')
+    // ...
+    user.value = response.data
+    localStorage.setItem('user', JSON.stringify(response.data))
+  } catch (err: unknown) {
+    console.error('Error fetching current user:', err)
+  } finally {
+    loading.value = false
   }
+}
 
   const updateUser = (updatedUser: Partial<User>) => {
     if (user.value) {
@@ -145,6 +143,38 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.setItem('user', JSON.stringify(user.value))
     }
   }
+
+  const updateUserProfile = async (updatedData: Partial<User>) => {
+  if (!user.value) return
+
+  loading.value = true
+  error.value = ''
+
+  try {
+    // Only allow permitted fields
+    const allowedFields = {
+      username: updatedData.username,
+      location: updatedData.location,
+      avatar: updatedData.avatar
+      // No incluir email si el backend no lo permite
+    }
+
+    const url = `/users/${user.value.id}`
+    // ...
+
+    const response = await api.patch(url, allowedFields)
+    user.value = { ...user.value, ...response.data }
+    localStorage.setItem('user', JSON.stringify(user.value))
+    return { success: true }
+  } catch (err) {
+    console.error('Error updating user profile:', err)
+    error.value = 'Failed to update profile.'
+    return { success: false, error: error.value }
+  } finally {
+    loading.value = false
+  }
+}
+
 
   // Initialize auth on store creation
   initializeAuth()
@@ -168,6 +198,7 @@ export const useAuthStore = defineStore('auth', () => {
     clearAuth,
     fetchCurrentUser,
     updateUser,
+    updateUserProfile,
     initializeAuth
   }
 })
