@@ -45,7 +45,7 @@ export const useAuthStore = defineStore('auth', () => {
   const loading = ref(false)
   const error = ref('')
 
-  // Addresses State
+  // Addresses
   const addresses = ref<Address[]>([])
   const addressesLoading = ref(false)
   const addressesError = ref('')
@@ -275,47 +275,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  // Add new address functionality
-  const addUserAddress = async (addressData: Omit<Address, 'id'>) => {
-    if (!token.value || !user.value) {
-      return { success: false, error: 'User not authenticated' }
-    }
-
-    addressesLoading.value = true
-    addressesError.value = ''
-
-    try {
-      const response = await api.post<Address>(`/users/${user.value.id}/addresses`, addressData)
-
-      // Add the new address to the existing addresses array
-      addresses.value.push(response.data)
-
-      return { success: true, data: response.data }
-    } catch (err: unknown) {
-      console.error('Error adding user address:', err)
-
-      let errorMessage = 'Failed to add address.'
-
-      if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { status?: number; data?: { message?: string } } }
-
-        if (axiosError.response?.status === 401) {
-          errorMessage = 'Session expired. Please login again.'
-          clearAuth()
-        } else if (axiosError.response?.status === 403) {
-          errorMessage = 'Access denied. You do not have permission to add addresses.'
-        } else if (axiosError.response?.data?.message) {
-          errorMessage = axiosError.response.data.message
-        }
-      }
-
-      addressesError.value = errorMessage
-      return { success: false, error: errorMessage }
-    } finally {
-      addressesLoading.value = false
-    }
-  }
-
   // Utility function to refresh addresses
   const refreshAddresses = async () => {
     return await fetchUserAddresses()
@@ -352,12 +311,9 @@ export const useAuthStore = defineStore('auth', () => {
     clearAuth,
     fetchCurrentUser,
     fetchUserAddresses,
-    addUserAddress,
     refreshAddresses,
     updateUser,
     updateUserProfile,
     initializeAuth
   }
 })
-
-export type { User, Address }
