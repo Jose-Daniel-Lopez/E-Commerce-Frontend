@@ -12,8 +12,7 @@
     "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
     "lint": "run-s lint:*",
-    "format": "prettier --write src/"
-    ,
+    "format": "prettier --write src/",
     "start": "node scripts/automation.js",
     "install-browsers": "npx playwright install"
   },
@@ -25,16 +24,16 @@
     "emailjs": "^4.0.3",
     "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^3.0.1",
+    "playwright": "^1.54.1",
     "swiper": "^11.2.10",
     "tailwindcss": "^4.1.10",
     "v-credit-card": "^1.2.4",
     "vue": "^3.5.13",
     "vue-i18n": "^9.14.4",
     "vue-router": "^4.5.0"
-    ,
-    "playwright": "^1.54.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.54.1",
     "@tsconfig/node22": "^22.0.1",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-vue": "^5.2.3",
