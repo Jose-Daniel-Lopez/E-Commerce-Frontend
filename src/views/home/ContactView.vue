@@ -81,6 +81,7 @@
                   </label>
                   <input
                     type="text"
+                    name="fullName"
                     required
                     class="w-full px-4 py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
                     :placeholder="t('contact.form.fields.fullName.placeholder')"
@@ -94,6 +95,7 @@
                   </label>
                   <input
                     type="email"
+                    name="email"
                     required
                     class="w-full px-4 py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
                     :placeholder="t('contact.form.fields.email.placeholder')"
@@ -107,6 +109,7 @@
                   </label>
                   <input
                     type="text"
+                    name="subject"
                     required
                     class="w-full px-4 py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
                     :placeholder="t('contact.form.fields.subject.placeholder')"
@@ -119,6 +122,7 @@
                     {{ t('contact.form.fields.message.label') }}
                   </label>
                   <textarea
+                    name="message"
                     required
                     rows="4"
                     class="w-full px-4 py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200 resize-none"
