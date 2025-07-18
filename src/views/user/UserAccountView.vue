@@ -364,7 +364,7 @@
 
             <!-- Addresses Section -->
             <section :id="sections[4].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <div class="flex items-center justify-between mb-6 ">
+              <div class="flex items-center justify-between mb-6">
                 <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.addresses.title') }}</h2>
                 <Button
                   text-color="black"
@@ -380,12 +380,58 @@
                   {{ $t('account.addresses.addButton') }}
                 </Button>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <!-- Loading state for addresses -->
+              <div v-if="addressesLoading" class="flex items-center justify-center py-8">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
+                <span class="ml-3 text-gray-600">Loading addresses...</span>
+              </div>
+
+              <!-- Error state for addresses -->
+              <div v-else-if="addressesError" class="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p class="text-red-700">{{ addressesError }}</p>
+                <Button
+                  @click="authStore.fetchUserAddresses"
+                  text-color="red-600"
+                  bg-color="transparent"
+                  border-width="1px"
+                  border-color="#dc2626"
+                  hover-bg-color="#fef2f2"
+                  width="auto"
+                  height="32px"
+                  class="px-3 text-sm mt-2"
+                >
+                  Retry
+                </Button>
+              </div>
+
+              <!-- Empty state when no addresses are available -->
+              <div v-else-if="addresses.length === 0" class="text-center py-8">
+                <v-icon name="hi-location-marker" scale="2" class="text-gray-400 mb-3" />
+                <p class="text-gray-600 mb-4">You have no saved addresses</p>
+                <Button
+                  text-color="white"
+                  bg-color="black"
+                  hover-bg-color="#333333"
+                  width="auto"
+                  height="36px"
+                  class="px-4"
+                >
+                  <v-icon name="hi-plus" scale="0.9" class="mr-2" />
+                  Add your first address
+                </Button>
+              </div>
+
+              <!-- Display grid of user addresses -->
+              <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div v-for="address in addresses" :key="address.id" class="group border border-gray-200 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300">
-                  <div class="flex items-start justify-between mb-3 ">
+                  <div class="flex items-start justify-between mb-3">
                     <div class="flex items-center gap-2">
                       <v-icon name="hi-location-marker" scale="1.1" class="text-gray-500" />
-                      <h4 class="font-srProDisplay font-semibold text-black">{{ address.name }}</h4>
+                      <!-- Address Name -->
+                      <h4 class="font-srProDisplay font-semibold text-black">
+                        {{ address.name }}
+                      </h4>
                     </div>
                     <div class="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
                       <button class="p-1 text-gray-500 hover:text-black transition-colors">
@@ -396,9 +442,12 @@
                       </button>
                     </div>
                   </div>
+
+                  <!-- Display all address fields from the API -->
                   <p class="font-srProDisplay text-gray-600 text-sm leading-relaxed">
                     {{ address.street }}<br>
-                    {{ address.city }}, {{ address.country }}
+                    {{ address.city }}, {{ address.state }} {{ address.zipCode }}<br>
+                    {{ address.country }}
                   </p>
                 </div>
               </div>
@@ -579,10 +628,9 @@ const wishlist = ref([
   { id: 2, name: 'Sony WH-1000XM5 Headphones', price: '$349', image: '/images/headphones.png' }
 ])
 
-const addresses = ref([
-  { id: 1, name: 'Home', street: '123 Main St', city: 'New York', country: 'USA' },
-  { id: 2, name: 'Work', street: '456 Business Ave', city: 'New York', country: 'USA' }
-])
+const addresses = computed(() => authStore.addresses)
+const addressesLoading = computed(() => authStore.addressesLoading)
+const addressesError = computed(() => authStore.addressesError)
 
 const reviews = ref([
   { id: 1, product: 'iPhone 14 Pro', rating: 5, comment: 'Amazing phone, great camera!', date: '2 days ago' },
@@ -708,6 +756,7 @@ onMounted(async () => {
   // Fetch user data from backend using auth store
   if (authStore.isAuthenticated) {
     await authStore.fetchCurrentUser()
+    await authStore.fetchUserAddresses()
   }
 
   // Set up an observer to highlight the active navigation link based on the currently visible section.
