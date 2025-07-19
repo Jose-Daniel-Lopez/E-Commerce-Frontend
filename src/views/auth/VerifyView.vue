@@ -4,9 +4,15 @@
       <div class="bg-white border border-[#EBEBEB] rounded-lg p-8 text-center">
         <!-- Loading State -->
         <div v-if="loading" class="space-y-4">
-          <div class="animate-spin h-12 w-12 border-4 border-black border-t-transparent rounded-full mx-auto"></div>
-          <h2 class="font-srProDisplay text-xl font-semibold text-black">Verifying your account...</h2>
-          <p class="font-srProDisplay text-[#666666] text-sm">Please wait while we verify your email address.</p>
+          <div
+            class="animate-spin h-12 w-12 border-4 border-black border-t-transparent rounded-full mx-auto"
+          ></div>
+          <h2 class="font-srProDisplay text-xl font-semibold text-black">
+            Verifying your account...
+          </h2>
+          <p class="font-srProDisplay text-[#666666] text-sm">
+            Please wait while we verify your email address.
+          </p>
         </div>
 
         <!-- Success State -->
@@ -15,7 +21,9 @@
             <v-icon name="hi-check" scale="2" class="text-green-600" />
           </div>
           <h2 class="font-srProDisplay text-xl font-semibold text-black">Account Verified!</h2>
-          <p class="font-srProDisplay text-[#666666] text-sm">Your email address has been successfully verified. You can now log in to your account.</p>
+          <p class="font-srProDisplay text-[#666666] text-sm">
+            Your email address has been successfully verified. You can now log in to your account.
+          </p>
           <button
             @click="goToLogin"
             class="w-full bg-black text-white font-srProDisplay font-medium py-3 rounded-md hover:bg-[#333333] transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg"

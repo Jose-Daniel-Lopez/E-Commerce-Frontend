@@ -30,7 +30,7 @@ export const useCheckoutOrderStore = defineStore('checkoutOrder', () => {
     try {
       const response = await api.post('/orders', {
         user: `/api/users/${userId}`,
-        status: 'PENDING_CHECKOUT'
+        status: 'PENDING_CHECKOUT',
       })
       order.value = response.data
       return order.value
@@ -56,6 +56,6 @@ export const useCheckoutOrderStore = defineStore('checkoutOrder', () => {
     loading,
     error,
     createOrderForUser,
-    clearOrder
+    clearOrder,
   }
 })

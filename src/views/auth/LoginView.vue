@@ -19,7 +19,7 @@ const authStore = useAuthStore()
 
 const form = ref<LoginForm>({
   email: '',
-  password: ''
+  password: '',
 })
 const loading = ref(false)
 const rememberMe = ref(false)
@@ -32,7 +32,7 @@ const {
   validateForm,
   hasFieldError,
   setGlobalError,
-  clearGlobalError
+  clearGlobalError,
 } = useFormValidation()
 
 /**
@@ -41,12 +41,12 @@ const {
 onMounted(() => {
   registerField('email', form.value.email, [
     validationRules.required('Email is required'),
-    validationRules.email('Please enter a valid email address')
+    validationRules.email('Please enter a valid email address'),
   ])
-  
+
   registerField('password', form.value.password, [
     validationRules.required('Password is required'),
-    validationRules.minLength(6, 'Password must be at least 6 characters long')
+    validationRules.minLength(6, 'Password must be at least 6 characters long'),
   ])
 })
 
@@ -68,7 +68,7 @@ const handlePasswordChange = (value: string) => {
 
 /**
  * Handles the login process and manages authentication feedback
- * 
+ *
  * @description
  * Manages the complete login flow including:
  * - Form validation
@@ -79,15 +79,15 @@ const handlePasswordChange = (value: string) => {
  */
 const handleSubmit = async (): Promise<void> => {
   const { isValid } = validateForm()
-  
+
   if (!isValid) return
-  
+
   loading.value = true
 
   try {
     const result = await authStore.login({
       email: form.value.email.trim(),
-      password: form.value.password
+      password: form.value.password,
     })
 
     if (result?.success) {
@@ -108,27 +108,42 @@ const handleSubmit = async (): Promise<void> => {
 <template>
   <div class="bg-[#f6f6f6] min-h-screen flex items-center justify-center">
     <!-- Centered card with two sections: image and form -->
-    <div class="flex max-[900px]:flex-col w-[850px] max-w-full min-h-[520px] max-[900px]:w-screen max-[900px]:h-auto max-[900px]:rounded-none rounded-2xl shadow-2xl overflow-hidden bg-white mx-auto">
+    <div
+      class="flex max-[900px]:flex-col w-[850px] max-w-full min-h-[520px] max-[900px]:w-screen max-[900px]:h-auto max-[900px]:rounded-none rounded-2xl shadow-2xl overflow-hidden bg-white mx-auto"
+    >
       <!-- Left: welcoming image for visual appeal -->
-      <div class="flex-1 min-w-[320px] max-[900px]:hidden bg-cover bg-center bg-no-repeat" style="background-image: url('/images/login.webp');"></div>
+      <div
+        class="flex-1 min-w-[320px] max-[900px]:hidden bg-cover bg-center bg-no-repeat"
+        style="background-image: url('/images/login.webp')"
+      ></div>
       <!-- Right: login form for user authentication -->
-      <div class="flex-1 min-w-[320px] max-[900px]:w-full max-[900px]:min-w-0 flex items-center justify-center bg-white">
+      <div
+        class="flex-1 min-w-[320px] max-[900px]:w-full max-[900px]:min-w-0 flex items-center justify-center bg-white"
+      >
         <Wrapper class="w-full max-w-[400px] px-6 py-8 rounded-[20px] bg-white">
           <div class="w-full max-w-md animate-[fadeInUp_0.8s_ease-out]">
             <!-- Welcome header -->
             <div class="text-center mb-8">
-              <h1 class="font-srProDisplay text-3xl font-semibold text-primary mb-2">Welcome back</h1>
-              <p class="font-srProDisplay text-muted text-sm">Sign in to continue to your account</p>
+              <h1 class="font-srProDisplay text-3xl font-semibold text-primary mb-2">
+                Welcome back
+              </h1>
+              <p class="font-srProDisplay text-muted text-sm">
+                Sign in to continue to your account
+              </p>
             </div>
             <!-- Login form card -->
-            <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 transition-all duration-500 hover:bg-white/90" role="main" aria-label="Login form">
+            <div
+              class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 transition-all duration-500 hover:bg-white/90"
+              role="main"
+              aria-label="Login form"
+            >
               <!-- Error message display -->
               <ErrorAlert
                 :message="globalError"
                 :show="!!globalError"
                 @dismiss="clearGlobalError"
               />
-              
+
               <form @submit.prevent="handleSubmit" class="space-y-6" novalidate>
                 <!-- Email input field -->
                 <FloatingInput
@@ -142,7 +157,7 @@ const handleSubmit = async (): Promise<void> => {
                   :has-error="hasFieldError('email').value"
                   @update:model-value="handleEmailChange"
                 />
-                
+
                 <!-- Password input field with visibility toggle -->
                 <PasswordInput
                   id="password"
@@ -162,9 +177,15 @@ const handleSubmit = async (): Promise<void> => {
                       type="checkbox"
                       class="appearance-none w-4 h-4 border border-gray-300 rounded-sm bg-white cursor-pointer relative flex-shrink-0 mr-3 hover:border-gray-400 checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-3 after:h-3 after:bg-[url('data:image/svg+xml,%3csvg%20viewBox%3D%270%200%2016%2016%27%20fill%3D%27white%27%20xmlns%3D%27http://www.w3.org/2000/svg%27%3e%3cpath%20d%3D%27m13.854%203.646a.5.5%200%200%201%200%20.708l-7%207a.5.5%200%200%201-.708%200l-3.5-3.5a.5.5%200%201%201%20.708-.708L6.5%2010.293l6.646-6.647a.5.5%200%200%201%20.708%200z%27/%3e%3c/svg%3e')] after:bg-contain after:bg-no-repeat after:bg-center after:opacity-0 checked:after:opacity-100 transition-all duration-200"
                     />
-                    <span class="font-srProDisplay text-sm text-muted group-hover:text-primary transition-colors duration-200">Remember me</span>
+                    <span
+                      class="font-srProDisplay text-sm text-muted group-hover:text-primary transition-colors duration-200"
+                      >Remember me</span
+                    >
                   </label>
-                  <a href="#" class="font-srProDisplay text-sm text-muted hover:text-primary hover:underline transition-all duration-200 cursor-pointer">
+                  <a
+                    href="#"
+                    class="font-srProDisplay text-sm text-muted hover:text-primary hover:underline transition-all duration-200 cursor-pointer"
+                  >
                     Forgot password?
                   </a>
                 </div>
@@ -180,7 +201,11 @@ const handleSubmit = async (): Promise<void> => {
               <div class="mt-8 pt-6 border-t border-input-border">
                 <p class="text-center font-srProDisplay text-sm text-muted">
                   Don't have an account?
-                  <RouterLink to="/register" class="font-medium text-primary hover:underline ml-1 transition-all duration-200 cursor-pointer">Create one here</RouterLink>
+                  <RouterLink
+                    to="/register"
+                    class="font-medium text-primary hover:underline ml-1 transition-all duration-200 cursor-pointer"
+                    >Create one here</RouterLink
+                  >
                 </p>
               </div>
             </div>
@@ -199,18 +224,18 @@ const handleSubmit = async (): Promise<void> => {
 
 <style scoped>
 /* Hide browser password visibility toggles since we have our own */
-input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear,
-input[type="password"]::-webkit-credentials-auto-fill-button,
-input[type="password"]::-webkit-input-password-toggle-button,
-input[type="password"]::-webkit-input-clear-button {
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear,
+input[type='password']::-webkit-credentials-auto-fill-button,
+input[type='password']::-webkit-input-password-toggle-button,
+input[type='password']::-webkit-input-clear-button {
   display: none !important;
 }
-input[type="text"]::-ms-reveal,
-input[type="text"]::-ms-clear,
-input[type="text"]::-webkit-credentials-auto-fill-button,
-input[type="text"]::-webkit-input-password-toggle-button,
-input[type="text"]::-webkit-input-clear-button {
+input[type='text']::-ms-reveal,
+input[type='text']::-ms-clear,
+input[type='text']::-webkit-credentials-auto-fill-button,
+input[type='text']::-webkit-input-password-toggle-button,
+input[type='text']::-webkit-input-clear-button {
   display: none !important;
 }
 
@@ -227,4 +252,3 @@ button:focus {
   }
 }
 </style>
-

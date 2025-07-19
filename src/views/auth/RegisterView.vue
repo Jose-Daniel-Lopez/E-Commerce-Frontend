@@ -37,7 +37,7 @@ const form = ref<RegisterForm>({
   email: '',
   password: '',
   confirmPassword: '',
-  role: 'CUSTOMER'
+  role: 'CUSTOMER',
 })
 const loading = ref(false)
 const showVerificationMsg = ref(false)
@@ -51,14 +51,14 @@ const {
   validateForm,
   hasFieldError,
   setGlobalError,
-  clearGlobalError
+  clearGlobalError,
 } = useFormValidation()
 
 // Available user roles
 const roles = [
   { value: 'CUSTOMER', label: 'Customer' },
   { value: 'SELLER', label: 'Seller' },
-  { value: 'ADMIN', label: 'Admin' }
+  { value: 'ADMIN', label: 'Admin' },
 ]
 
 /**
@@ -67,25 +67,25 @@ const roles = [
 onMounted(() => {
   registerField('username', form.value.username, [
     validationRules.required('Username is required'),
-    validationRules.minLength(3, 'Username must be at least 3 characters long')
+    validationRules.minLength(3, 'Username must be at least 3 characters long'),
   ])
-  
+
   registerField('email', form.value.email, [
     validationRules.required('Email is required'),
-    validationRules.email('Please enter a valid email address')
+    validationRules.email('Please enter a valid email address'),
   ])
-  
+
   registerField('password', form.value.password, [
     validationRules.required('Password is required'),
-    validationRules.minLength(6, 'Password must be at least 6 characters long')
+    validationRules.minLength(6, 'Password must be at least 6 characters long'),
   ])
-  
+
   registerField('confirmPassword', form.value.confirmPassword, [
     validationRules.required('Please confirm your password'),
     {
       test: (value: unknown) => String(value) === form.value.password,
-      message: 'Passwords do not match'
-    }
+      message: 'Passwords do not match',
+    },
   ])
 })
 
@@ -129,7 +129,7 @@ const validateTerms = (): boolean => {
 
 /**
  * Handle form submission and API call
- * 
+ *
  * @description
  * Manages the complete registration flow including:
  * - Form validation (fields and terms)
@@ -141,9 +141,9 @@ const validateTerms = (): boolean => {
  */
 const handleSubmit = async (): Promise<void> => {
   const { isValid } = validateForm()
-  
+
   if (!isValid || !validateTerms()) return
-  
+
   loading.value = true
 
   try {
@@ -151,18 +151,18 @@ const handleSubmit = async (): Promise<void> => {
       username: form.value.username.trim(),
       email: form.value.email.trim(),
       password: form.value.password,
-      role: form.value.role
+      role: form.value.role,
     })
 
     if (data.user && data.user.verificationToken) {
       // Build verification link
       const verificationLink = `${window.location.origin}/verify?token=${data.user.verificationToken}`
-      
+
       // Send verification email
       try {
         await sendVerificationEmail({
           email: data.user.email,
-          verification_link: verificationLink
+          verification_link: verificationLink,
         })
         showVerificationMsg.value = true
         setTimeout(() => {
@@ -171,16 +171,18 @@ const handleSubmit = async (): Promise<void> => {
         return
       } catch (emailError) {
         console.error('Error sending verification email:', emailError)
-        setGlobalError('Account created but verification email failed to send. Please contact support.')
+        setGlobalError(
+          'Account created but verification email failed to send. Please contact support.',
+        )
         return
       }
     }
-    
+
     await router.push({ name: 'login' })
   } catch (err: unknown) {
     console.error('Registration error:', err)
     const error_obj = err as { response?: { status?: number } }
-    
+
     if (error_obj.response?.status === 409) {
       setGlobalError('Email already exists')
     } else if (error_obj.response?.status === 400) {
@@ -192,14 +194,11 @@ const handleSubmit = async (): Promise<void> => {
     loading.value = false
   }
 }
-
-
 </script>
 
 <template>
   <div class="pt-[85px] lg:pt-0 bg-background text-primary">
     <Wrapper class="py-8">
-
       <!-- Header -->
       <section class="max-w-7xl mx-auto mb-8">
         <h1 class="font-srProDisplay text-2xl font-semibold text-left text-primary">Join us</h1>
@@ -208,57 +207,90 @@ const handleSubmit = async (): Promise<void> => {
       <!-- Registration Content -->
       <section class="max-w-7xl mx-auto mb-16">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-
           <!-- Left Panel - Account Benefits -->
           <div class="bg-background rounded-lg p-6 h-full">
-            <h2 class="font-srProDisplay text-xl font-semibold text-primary mb-6">Why Create an Account?</h2>
+            <h2 class="font-srProDisplay text-xl font-semibold text-primary mb-6">
+              Why Create an Account?
+            </h2>
 
             <div class="space-y-0">
               <!-- Faster Checkout -->
               <div class="flex items-start gap-4 py-8 border-b border-input-border">
-                <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div
+                  class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0"
+                >
                   <v-icon name="hi-truck" scale="1.7" class="text-primary" />
                 </div>
                 <div>
-                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">Faster Checkout</h3>
-                  <p class="font-srProDisplay text-muted text-sm mb-1">Save your information for quicker purchases</p>
-                  <p class="font-srProDisplay text-muted text-sm">Skip entering details every time</p>
+                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">
+                    Faster Checkout
+                  </h3>
+                  <p class="font-srProDisplay text-muted text-sm mb-1">
+                    Save your information for quicker purchases
+                  </p>
+                  <p class="font-srProDisplay text-muted text-sm">
+                    Skip entering details every time
+                  </p>
                 </div>
               </div>
 
               <!-- Order History -->
               <div class="flex items-start gap-4 py-12 border-b border-input-border">
-                <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div
+                  class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0"
+                >
                   <v-icon name="hi-clipboard-list" scale="1.7" class="text-primary" />
                 </div>
                 <div>
-                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">Order History</h3>
-                  <p class="font-srProDisplay text-muted text-sm mb-1">Track all your purchases in one place</p>
-                  <p class="font-srProDisplay text-muted-foreground text-xs">Easy returns and support</p>
+                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">
+                    Order History
+                  </h3>
+                  <p class="font-srProDisplay text-muted text-sm mb-1">
+                    Track all your purchases in one place
+                  </p>
+                  <p class="font-srProDisplay text-muted-foreground text-xs">
+                    Easy returns and support
+                  </p>
                 </div>
               </div>
 
               <!-- Exclusive Offers -->
               <div class="flex items-start gap-4 py-12 border-b border-input-border">
-                <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div
+                  class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0"
+                >
                   <v-icon name="hi-gift" scale="1.7" class="text-primary" />
                 </div>
                 <div>
-                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">Exclusive Offers</h3>
-                  <p class="font-srProDisplay text-muted text-sm mb-1">Get access to member-only deals</p>
-                  <p class="font-srProDisplay text-muted text-sm">Early access to sales and new products</p>
+                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">
+                    Exclusive Offers
+                  </h3>
+                  <p class="font-srProDisplay text-muted text-sm mb-1">
+                    Get access to member-only deals
+                  </p>
+                  <p class="font-srProDisplay text-muted text-sm">
+                    Early access to sales and new products
+                  </p>
                 </div>
               </div>
 
               <!-- Wishlist -->
               <div class="flex items-start gap-4 py-12">
-                <div class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div
+                  class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0"
+                >
                   <v-icon name="hi-heart" scale="1.7" class="text-primary" />
                 </div>
                 <div>
-                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">Save Favorites</h3>
-                  <p class="font-srProDisplay text-muted text-sm mb-1">Create wishlists and save items for later</p>
-                  <p class="font-srProDisplay text-muted-foreground text-xs">Never lose track of products you love</p>
+                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">
+                    Save Favorites
+                  </h3>
+                  <p class="font-srProDisplay text-muted text-sm mb-1">
+                    Create wishlists and save items for later
+                  </p>
+                  <p class="font-srProDisplay text-muted-foreground text-xs">
+                    Never lose track of products you love
+                  </p>
                 </div>
               </div>
             </div>
@@ -266,16 +298,23 @@ const handleSubmit = async (): Promise<void> => {
 
           <!-- Right Panel - Registration Form -->
           <div class="animate-[fadeInUp_0.8s_ease-out]">
-            <div class="bg-background border border-input-border rounded-lg p-6 h-full transition-all duration-300 hover:shadow-lg">
-              <h2 class="font-srProDisplay text-xl font-semibold text-primary mb-6">Registration Form</h2>
+            <div
+              class="bg-background border border-input-border rounded-lg p-6 h-full transition-all duration-300 hover:shadow-lg"
+            >
+              <h2 class="font-srProDisplay text-xl font-semibold text-primary mb-6">
+                Registration Form
+              </h2>
 
               <!-- Success Message -->
-              <div v-if="showVerificationMsg" class="mb-4 flex items-center justify-between rounded-lg border border-green-200 bg-green-50 p-3 animate-[slideDown_0.3s_ease-out]">
+              <div
+                v-if="showVerificationMsg"
+                class="mb-4 flex items-center justify-between rounded-lg border border-green-200 bg-green-50 p-3 animate-[slideDown_0.3s_ease-out]"
+              >
                 <p class="font-srProDisplay text-sm text-green-700">
                   Account verification email sent! Please check your inbox to verify your account.
                 </p>
               </div>
-              
+
               <!-- Error Alert -->
               <ErrorAlert
                 :message="globalError"
@@ -311,14 +350,18 @@ const handleSubmit = async (): Promise<void> => {
                 />
 
                 <!-- Role -->
-                <div class="relative transition-all duration-300 hover:-translate-y-0.5 animate-[fadeInUp_0.6s_ease-out_0.3s_both]">
+                <div
+                  class="relative transition-all duration-300 hover:-translate-y-0.5 animate-[fadeInUp_0.6s_ease-out_0.3s_both]"
+                >
                   <div class="relative">
                     <select
                       id="role"
                       v-model="form.role"
                       class="peer w-full px-4 pt-6 pb-2 pr-10 border border-input-border rounded-xl bg-input-background backdrop-blur-sm font-srProDisplay text-primary focus:outline-none focus:border-primary focus:bg-white focus:shadow-[0_0_0_3px_rgba(0,0,0,0.05)] focus:scale-[1.01] transition-all duration-300 appearance-none cursor-pointer"
                     >
-                      <option v-for="r in roles" :key="r.value" :value="r.value">{{ r.label }}</option>
+                      <option v-for="r in roles" :key="r.value" :value="r.value">
+                        {{ r.label }}
+                      </option>
                     </select>
                     <label
                       for="role"
@@ -327,7 +370,9 @@ const handleSubmit = async (): Promise<void> => {
                       Account Type
                     </label>
                     <!-- Custom dropdown arrow -->
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <div
+                      class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
+                    >
                       <v-icon name="hi-chevron-down" scale="1.2" class="text-muted-foreground" />
                     </div>
                   </div>
@@ -358,19 +403,29 @@ const handleSubmit = async (): Promise<void> => {
                 />
 
                 <!-- Divider -->
-                <div class="border-t border-input-border pt-4 animate-[fadeInUp_0.6s_ease-out_0.6s_both]">
+                <div
+                  class="border-t border-input-border pt-4 animate-[fadeInUp_0.6s_ease-out_0.6s_both]"
+                >
                   <!-- Terms Agreement -->
                   <div class="mb-4">
                     <label class="flex items-start group cursor-pointer">
-                      <input 
+                      <input
                         v-model="termsAccepted"
-                        type="checkbox" 
-                        required 
-                        class="appearance-none w-4 h-4 border border-gray-300 rounded-sm bg-white cursor-pointer relative flex-shrink-0 mr-3 mt-1 hover:border-gray-400 checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-3 after:h-3 after:bg-[url('data:image/svg+xml,%3csvg%20viewBox%3D%270%200%2016%2016%27%20fill%3D%27white%27%20xmlns%3D%27http://www.w3.org/2000/svg%27%3e%3cpath%20d%3D%27m13.854%203.646a.5.5%200%200%201%200%20.708l-7%207a.5.5%200%200%201-.708%200l-3.5-3.5a.5.5%200%201%201%20.708-.708L6.5%2010.293l6.646-6.647a.5.5%200%200%201%20.708%200z%27/%3e%3c/svg%3e')] after:bg-contain after:bg-no-repeat after:bg-center after:opacity-0 checked:after:opacity-100 transition-all duration-200" 
+                        type="checkbox"
+                        required
+                        class="appearance-none w-4 h-4 border border-gray-300 rounded-sm bg-white cursor-pointer relative flex-shrink-0 mr-3 mt-1 hover:border-gray-400 checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-3 after:h-3 after:bg-[url('data:image/svg+xml,%3csvg%20viewBox%3D%270%200%2016%2016%27%20fill%3D%27white%27%20xmlns%3D%27http://www.w3.org/2000/svg%27%3e%3cpath%20d%3D%27m13.854%203.646a.5.5%200%200%201%200%20.708l-7%207a.5.5%200%200%201-.708%200l-3.5-3.5a.5.5%200%201%201%20.708-.708L6.5%2010.293l6.646-6.647a.5.5%200%200%201%20.708%200z%27/%3e%3c/svg%3e')] after:bg-contain after:bg-no-repeat after:bg-center after:opacity-0 checked:after:opacity-100 transition-all duration-200"
                       />
-                      <span class="font-srProDisplay text-sm text-muted group-hover:text-primary transition-colors duration-200">
-                        I agree to the <a href="#" class="text-primary hover:underline cursor-pointer">Terms of Service</a> and
-                        <a href="#" class="text-primary hover:underline cursor-pointer">Privacy Policy</a>
+                      <span
+                        class="font-srProDisplay text-sm text-muted group-hover:text-primary transition-colors duration-200"
+                      >
+                        I agree to the
+                        <a href="#" class="text-primary hover:underline cursor-pointer"
+                          >Terms of Service</a
+                        >
+                        and
+                        <a href="#" class="text-primary hover:underline cursor-pointer"
+                          >Privacy Policy</a
+                        >
                       </span>
                     </label>
                   </div>
@@ -389,7 +444,11 @@ const handleSubmit = async (): Promise<void> => {
               <div class="mt-6 pt-4 border-t border-input-border">
                 <p class="text-center font-srProDisplay text-sm text-muted">
                   Already have an account?
-                  <RouterLink to="/login" class="font-medium text-primary hover:underline ml-1 cursor-pointer">Sign in</RouterLink>
+                  <RouterLink
+                    to="/login"
+                    class="font-medium text-primary hover:underline ml-1 cursor-pointer"
+                    >Sign in</RouterLink
+                  >
                 </p>
               </div>
             </div>
@@ -402,18 +461,18 @@ const handleSubmit = async (): Promise<void> => {
 
 <style scoped>
 /* Hide browser password visibility toggles since we have our own */
-input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear,
-input[type="password"]::-webkit-credentials-auto-fill-button,
-input[type="password"]::-webkit-input-password-toggle-button,
-input[type="password"]::-webkit-input-clear-button {
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear,
+input[type='password']::-webkit-credentials-auto-fill-button,
+input[type='password']::-webkit-input-password-toggle-button,
+input[type='password']::-webkit-input-clear-button {
   display: none !important;
 }
-input[type="text"]::-ms-reveal,
-input[type="text"]::-ms-clear,
-input[type="text"]::-webkit-credentials-auto-fill-button,
-input[type="text"]::-webkit-input-password-toggle-button,
-input[type="text"]::-webkit-input-clear-button {
+input[type='text']::-ms-reveal,
+input[type='text']::-ms-clear,
+input[type='text']::-webkit-credentials-auto-fill-button,
+input[type='text']::-webkit-input-password-toggle-button,
+input[type='text']::-webkit-input-clear-button {
   display: none !important;
 }
 

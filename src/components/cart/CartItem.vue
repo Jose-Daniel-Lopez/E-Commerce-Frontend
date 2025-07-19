@@ -1,0 +1,81 @@
+<template>
+  <div class="flex items-center gap-6 py-8">
+    <img
+      :src="getProductImage(item.product?.name)"
+      :alt="item.product?.name"
+      class="w-24 h-24 object-contain rounded-lg bg-gray-50"
+    />
+    <div class="flex-1">
+      <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">
+        {{ item.product?.name }}
+      </h3>
+      <p class="text-[#666666] text-sm mb-1">#{{ item.productVariant?.sku }}</p>
+      <QuantityButton
+        :quantity="item.quantity"
+        @increment="$emit('increment', item.id, item.quantity)"
+        @decrement="$emit('decrement', item.id, item.quantity)"
+      />
+    </div>
+    <div class="flex flex-col items-end gap-2">
+      <span class="font-srProDisplay text-lg font-semibold text-black">{{
+        formatPrice(item.product?.basePrice ? item.product.basePrice * item.quantity : 0)
+      }}</span>
+      <button
+        class="text-2xl text-[#666666] hover:text-black transition-colors cursor-pointer"
+        @click="$emit('remove', item.id)"
+      >
+        <v-icon name="hi-x" scale="1.2" />
+      </button>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import QuantityButton from '@/components/cart/QuantityButton.vue'
+
+interface CartItem {
+  id: number
+  quantity: number
+  product?: {
+    name: string
+    basePrice: number
+  }
+  productVariant?: {
+    sku: string
+  }
+}
+
+defineProps<{
+  item: CartItem
+}>()
+
+defineEmits<{
+  increment: [itemId: number, currentQuantity: number]
+  decrement: [itemId: number, currentQuantity: number]
+  remove: [itemId: number]
+}>()
+
+/**
+ * Format price with proper currency formatting
+ * Converts from cents (API format) to euros and formats with Spanish locale
+ */
+const formatPrice = (priceInCents: number): string => {
+  const priceInEuros = priceInCents / 100
+  return new Intl.NumberFormat('es-ES', {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(priceInEuros)
+}
+
+// Helper to get product image. This is a placeholder since the API doesn't provide images.
+function getProductImage(productName: string | undefined) {
+  if (!productName) return '/public/images/logo.webp'
+  if (productName.toLowerCase().includes('iphone 14'))
+    return '/public/images/Iphone-14-pro-purple.png'
+  if (productName.toLowerCase().includes('airpods max')) return '/public/images/Apple-airPods.png'
+  if (productName.toLowerCase().includes('apple watch')) return '/public/images/Apple-Watch.png'
+  return '/public/images/logo.webp'
+}
+</script>

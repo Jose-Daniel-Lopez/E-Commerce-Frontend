@@ -31,6 +31,6 @@ export const useCheckoutStore = defineStore('checkout', () => {
     selectedShippingMethod,
     setSelectedAddress,
     setSelectedShippingMethod,
-    clearCheckoutState
+    clearCheckoutState,
   }
 })

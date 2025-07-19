@@ -21,12 +21,16 @@
             />
           </div>
           <div class="flex flex-col gap-4 p-[38px_32px_56px_32px]">
-            <h3 class="text-center font-srProDisplay text-[33px] font-light text-black lg:text-left">
+            <h3
+              class="text-center font-srProDisplay text-[33px] font-light text-black lg:text-left"
+            >
               Popular Products
             </h3>
-            <p class="text-center font-srProDisplay text-sm font-medium text-[#909090] lg:text-left">
-              iPad combines a magnificent 10.2-inch Retina display, incredible
-              performance, multitasking and ease of use.
+            <p
+              class="text-center font-srProDisplay text-sm font-medium text-[#909090] lg:text-left"
+            >
+              iPad combines a magnificent 10.2-inch Retina display, incredible performance,
+              multitasking and ease of use.
             </p>
             <div class="flex w-full items-center justify-center lg:justify-start">
               <Button
@@ -53,12 +57,16 @@
             />
           </div>
           <div class="flex flex-col gap-4 p-[38px_32px_56px_32px]">
-            <h3 class="text-center font-srProDisplay text-[33px] font-light text-black lg:text-left">
+            <h3
+              class="text-center font-srProDisplay text-[33px] font-light text-black lg:text-left"
+            >
               Ipad Pro
             </h3>
-            <p class="text-center font-srProDisplay text-sm font-medium text-[#909090] lg:text-left">
-              iPad combines a magnificent 10.2-inch Retina display, incredible
-              performance, multitasking and ease of use.
+            <p
+              class="text-center font-srProDisplay text-sm font-medium text-[#909090] lg:text-left"
+            >
+              iPad combines a magnificent 10.2-inch Retina display, incredible performance,
+              multitasking and ease of use.
             </p>
             <div class="flex w-full items-center justify-center lg:justify-start">
               <Button
@@ -85,12 +93,16 @@
             />
           </div>
           <div class="flex flex-col gap-4 p-[38px_32px_56px_32px]">
-            <h3 class="text-center font-srProDisplay text-[33px] font-light text-black lg:text-left">
+            <h3
+              class="text-center font-srProDisplay text-[33px] font-light text-black lg:text-left"
+            >
               Samsung Galaxy
             </h3>
-            <p class="text-center font-srProDisplay text-sm font-medium text-[#909090] lg:text-left">
-              iPad combines a magnificent 10.2-inch Retina display, incredible
-              performance, multitasking and ease of use.
+            <p
+              class="text-center font-srProDisplay text-sm font-medium text-[#909090] lg:text-left"
+            >
+              iPad combines a magnificent 10.2-inch Retina display, incredible performance,
+              multitasking and ease of use.
             </p>
             <div class="flex w-full items-center justify-center lg:justify-start">
               <Button
@@ -117,12 +129,16 @@
             />
           </div>
           <div class="flex flex-col gap-4 p-[38px_32px_56px_32px]">
-            <h3 class="text-center font-srProDisplay text-[33px] font-light text-white lg:text-left">
+            <h3
+              class="text-center font-srProDisplay text-[33px] font-light text-white lg:text-left"
+            >
               Macbook Pro
             </h3>
-            <p class="text-center font-srProDisplay text-sm font-medium text-[#909090] lg:text-left">
-              iPad combines a magnificent 10.2-inch Retina display, incredible
-              performance, multitasking and ease of use.
+            <p
+              class="text-center font-srProDisplay text-sm font-medium text-[#909090] lg:text-left"
+            >
+              iPad combines a magnificent 10.2-inch Retina display, incredible performance,
+              multitasking and ease of use.
             </p>
             <div class="flex w-full items-center justify-center lg:justify-start">
               <Button
@@ -158,7 +174,7 @@ const modules = [Pagination]
 // Configuración de paginación dinámica (dots: false por defecto, true en responsive)
 const paginationConfig = computed(() => ({
   clickable: true,
-  enabled: false // Se habilita dinámicamente en breakpoints
+  enabled: false, // Se habilita dinámicamente en breakpoints
 }))
 
 // Breakpoints exactos del original
@@ -168,8 +184,8 @@ const breakpoints = {
     slidesPerView: 4,
     spaceBetween: 0,
     pagination: {
-      enabled: false
-    }
+      enabled: false,
+    },
   },
   // 1173px: 3 slides, con dots
   1173: {
@@ -177,8 +193,8 @@ const breakpoints = {
     spaceBetween: 0,
     pagination: {
       enabled: true,
-      clickable: true
-    }
+      clickable: true,
+    },
   },
   // 880px: 2 slides, con dots
   880: {
@@ -186,8 +202,8 @@ const breakpoints = {
     spaceBetween: 0,
     pagination: {
       enabled: true,
-      clickable: true
-    }
+      clickable: true,
+    },
   },
   // 640px: 1 slide, con dots
   640: {
@@ -195,9 +211,9 @@ const breakpoints = {
     spaceBetween: 0,
     pagination: {
       enabled: true,
-      clickable: true
-    }
-  }
+      clickable: true,
+    },
+  },
 }
 </script>
 

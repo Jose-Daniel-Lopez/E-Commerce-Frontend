@@ -29,12 +29,15 @@ const props = defineProps({
   number: String,
   expiration: String,
   cvc: String,
-  focused: String
+  focused: String,
 })
 
 const formattedNumber = computed(() => {
   if (!props.number) return '•••• •••• •••• ••••'
-  return props.number.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim()
+  return props.number
+    .replace(/\D/g, '')
+    .replace(/(.{4})/g, '$1 ')
+    .trim()
 })
 
 const formattedExpiration = computed(() => {

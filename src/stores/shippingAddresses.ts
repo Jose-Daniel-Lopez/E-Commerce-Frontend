@@ -30,7 +30,7 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
 
   const addressesByCountry = computed(() => {
     const countries: Record<string, ShippingAddress[]> = {}
-    shippingAddresses.value.forEach(address => {
+    shippingAddresses.value.forEach((address) => {
       if (!countries[address.country]) {
         countries[address.country] = []
       }
@@ -41,7 +41,7 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
 
   const addressesByState = computed(() => {
     const states: Record<string, ShippingAddress[]> = {}
-    shippingAddresses.value.forEach(address => {
+    shippingAddresses.value.forEach((address) => {
       const key = `${address.state}, ${address.country}`
       if (!states[key]) {
         states[key] = []
@@ -53,7 +53,7 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
 
   const addressesByCity = computed(() => {
     const cities: Record<string, ShippingAddress[]> = {}
-    shippingAddresses.value.forEach(address => {
+    shippingAddresses.value.forEach((address) => {
       const key = `${address.city}, ${address.state}`
       if (!cities[key]) {
         cities[key] = []
@@ -64,15 +64,15 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
   })
 
   const uniqueCountries = computed(() => {
-    return [...new Set(shippingAddresses.value.map(addr => addr.country))].sort()
+    return [...new Set(shippingAddresses.value.map((addr) => addr.country))].sort()
   })
 
   const uniqueStates = computed(() => {
-    return [...new Set(shippingAddresses.value.map(addr => addr.state))].sort()
+    return [...new Set(shippingAddresses.value.map((addr) => addr.state))].sort()
   })
 
   const uniqueCities = computed(() => {
-    return [...new Set(shippingAddresses.value.map(addr => addr.city))].sort()
+    return [...new Set(shippingAddresses.value.map((addr) => addr.city))].sort()
   })
 
   // Actions
@@ -81,7 +81,9 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
     error.value = null
     try {
       const ordersResponse = await api.get(`/users/${userId}/orders`)
-      const orders: UserOrder[] = ordersResponse.data._embedded ? ordersResponse.data._embedded.orders : []
+      const orders: UserOrder[] = ordersResponse.data._embedded
+        ? ordersResponse.data._embedded.orders
+        : []
 
       const addresses = await Promise.all(
         orders.map(async (order) => {
@@ -95,10 +97,12 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
             console.error(`Failed to fetch shipping address for order ${order.id}:`, e)
           }
           return null
-        })
+        }),
       )
 
-      shippingAddresses.value = addresses.filter((address): address is ShippingAddress => address !== null)
+      shippingAddresses.value = addresses.filter(
+        (address): address is ShippingAddress => address !== null,
+      )
     } catch (e) {
       console.error('Failed to fetch shipping addresses:', e)
       if (e instanceof Error) {
@@ -126,46 +130,47 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
   }
 
   const removeAddress = (addressId: number) => {
-    const index = shippingAddresses.value.findIndex(addr => addr.id === addressId)
+    const index = shippingAddresses.value.findIndex((addr) => addr.id === addressId)
     if (index > -1) {
       shippingAddresses.value.splice(index, 1)
     }
   }
 
   const updateAddress = (addressId: number, updatedAddress: Partial<ShippingAddress>) => {
-    const index = shippingAddresses.value.findIndex(addr => addr.id === addressId)
+    const index = shippingAddresses.value.findIndex((addr) => addr.id === addressId)
     if (index > -1) {
       shippingAddresses.value[index] = { ...shippingAddresses.value[index], ...updatedAddress }
     }
   }
 
   const getAddressById = (addressId: number) => {
-    return shippingAddresses.value.find(addr => addr.id === addressId)
+    return shippingAddresses.value.find((addr) => addr.id === addressId)
   }
 
   const searchAddresses = (searchTerm: string) => {
     if (!searchTerm.trim()) return shippingAddresses.value
 
     const term = searchTerm.toLowerCase()
-    return shippingAddresses.value.filter(addr =>
-      addr.street.toLowerCase().includes(term) ||
-      addr.city.toLowerCase().includes(term) ||
-      addr.state.toLowerCase().includes(term) ||
-      addr.country.toLowerCase().includes(term) ||
-      addr.zipCode.toLowerCase().includes(term)
+    return shippingAddresses.value.filter(
+      (addr) =>
+        addr.street.toLowerCase().includes(term) ||
+        addr.city.toLowerCase().includes(term) ||
+        addr.state.toLowerCase().includes(term) ||
+        addr.country.toLowerCase().includes(term) ||
+        addr.zipCode.toLowerCase().includes(term),
     )
   }
 
   const filterByCountry = (country: string) => {
-    return shippingAddresses.value.filter(addr => addr.country === country)
+    return shippingAddresses.value.filter((addr) => addr.country === country)
   }
 
   const filterByState = (state: string) => {
-    return shippingAddresses.value.filter(addr => addr.state === state)
+    return shippingAddresses.value.filter((addr) => addr.state === state)
   }
 
   const filterByCity = (city: string) => {
-    return shippingAddresses.value.filter(addr => addr.city === city)
+    return shippingAddresses.value.filter((addr) => addr.city === city)
   }
 
   const clearAddresses = () => {
@@ -180,19 +185,19 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
   const getCountryFlag = (country: string) => {
     // Simple mapping for common countries - you could expand this
     const flags: Record<string, string> = {
-      'Spain': '🇪🇸',
-      'USA': '🇺🇸',
+      Spain: '🇪🇸',
+      USA: '🇺🇸',
       'United States': '🇺🇸',
-      'France': '🇫🇷',
-      'Germany': '🇩🇪',
-      'Italy': '🇮🇹',
+      France: '🇫🇷',
+      Germany: '🇩🇪',
+      Italy: '🇮🇹',
       'United Kingdom': '🇬🇧',
-      'Canada': '🇨🇦',
-      'Mexico': '🇲🇽',
-      'Brazil': '🇧🇷',
-      'Argentina': '🇦🇷',
-      'Portugal': '🇵🇹',
-      'Netherlands': '🇳🇱',
+      Canada: '🇨🇦',
+      Mexico: '🇲🇽',
+      Brazil: '🇧🇷',
+      Argentina: '🇦🇷',
+      Portugal: '🇵🇹',
+      Netherlands: '🇳🇱',
     }
     return flags[country] || '🌍'
   }

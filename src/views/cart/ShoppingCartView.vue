@@ -12,28 +12,24 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <!-- Left Panel - Cart Items -->
           <div class="bg-white rounded-lg p-6 h-full">
-            <div v-if="userCartStore.loading" class="text-center text-[#666666]">Loading cart...</div>
-            <div v-else-if="userCartStore.error" class="text-center text-red-600">{{ userCartStore.error }}</div>
-            <div v-else-if="!userCartStore.hasItems" class="text-center text-[#666666]">Your cart is empty.</div>
+            <div v-if="userCartStore.loading" class="text-center text-[#666666]">
+              Loading cart...
+            </div>
+            <div v-else-if="userCartStore.error" class="text-center text-red-600">
+              {{ userCartStore.error }}
+            </div>
+            <div v-else-if="!userCartStore.hasItems" class="text-center text-[#666666]">
+              Your cart is empty.
+            </div>
             <div v-else class="divide-y divide-[#EBEBEB]">
-              <div v-for="item in userCartStore.cartItems" :key="item.id" class="flex items-center gap-6 py-8">
-                <img :src="getProductImage(item.product?.name)" :alt="item.product?.name" class="w-24 h-24 object-contain rounded-lg bg-gray-50" />
-                <div class="flex-1">
-                  <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">{{ item.product?.name }}</h3>
-                  <p class="text-[#666666] text-sm mb-1">#{{ item.productVariant?.sku }}</p>
-                  <div class="flex items-center gap-3 mt-2">
-                    <button class="w-8 h-8 flex items-center justify-center border border-[#EBEBEB] rounded hover:bg-gray-100 transition-colors cursor-pointer" @click="decrement(item.id, item.quantity)">-</button>
-                    <span class="font-srProDisplay text-base">{{ item.quantity }}</span>
-                    <button class="w-8 h-8 flex items-center justify-center border border-[#EBEBEB] rounded hover:bg-gray-100 transition-colors cursor-pointer" @click="increment(item.id, item.quantity)">+</button>
-                  </div>
-                </div>
-                <div class="flex flex-col items-end gap-2">
-                  <span class="font-srProDisplay text-lg font-semibold text-black">{{ formatPrice(item.product?.basePrice ? item.product.basePrice * item.quantity : 0) }}</span>
-                  <button class="text-2xl text-[#666666] hover:text-black transition-colors cursor-pointer" @click="remove(item.id)">
-                    <v-icon name="hi-x" scale="1.2" />
-                  </button>
-                </div>
-              </div>
+              <CartItem
+                v-for="item in userCartStore.cartItems"
+                :key="item.id"
+                :item="item"
+                @increment="increment"
+                @decrement="decrement"
+                @remove="remove"
+              />
             </div>
           </div>
 
@@ -45,26 +41,33 @@
                 <!-- Discount Code -->
                 <div>
                   <div class="flex items-center justify-between mb-2">
-                    <label class="block font-srProDisplay text-sm text-black">Discount code / Promo code</label>
+                    <label class="block font-srProDisplay text-sm text-black"
+                      >Discount code / Promo code</label
+                    >
                     <transition name="fade">
-                      <span v-if="couponEffect" class="text-green-600 font-srProDisplay text-sm animate-bounce ml-2 whitespace-nowrap">✔ Coupon applied!</span>
+                      <span
+                        v-if="couponEffect"
+                        class="text-green-600 font-srProDisplay text-sm animate-bounce ml-2 whitespace-nowrap"
+                        >✔ Coupon applied!</span
+                      >
                     </transition>
                   </div>
                   <div class="relative">
-                    <input 
-                      type="text" 
-                      v-model="discountCode" 
+                    <input
+                      type="text"
+                      v-model="discountCode"
                       :class="[
                         'w-full px-4 py-5 border border-[#EBEBEB] rounded-[7px] bg-[#FAFAFA] font-srProDisplay text-black placeholder-[#999999] focus:outline-none focus:border-black focus:ring-2 focus:ring-black/20 transition-all duration-200 pr-28',
-                        couponEffect ? 'ring-2 ring-green-400' : ''
-                      ]" 
-                      placeholder="Code" 
+                        couponEffect ? 'ring-2 ring-green-400' : '',
+                      ]"
+                      placeholder="Code"
                     />
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       @click="applyDiscount"
                       class="absolute top-1/2 right-4 -translate-y-1/2 px-6 border border-black rounded-[6px] bg-white text-black font-srProDisplay transition-colors duration-200 hover:bg-gray-100 active:bg-gray-200 focus:outline-none text-base cursor-pointer"
-                      style="height:32px; min-width:75px;">
+                      style="height: 32px; min-width: 75px"
+                    >
                       Apply
                     </button>
                   </div>
@@ -88,9 +91,10 @@
                   <span>{{ formatPrice(total) }}</span>
                 </div>
               </div>
-              <button 
-                @click="checkout" 
-                class="w-full bg-black text-white font-srProDisplay font-medium py-4 rounded-md hover:bg-gray-800 transition-colors duration-200 mt-4 cursor-pointer">
+              <button
+                @click="checkout"
+                class="w-full bg-black text-white font-srProDisplay font-medium py-4 rounded-md hover:bg-gray-800 transition-colors duration-200 mt-4 cursor-pointer"
+              >
                 Checkout
               </button>
             </div>
@@ -106,6 +110,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+import CartItem from '@/components/cart/CartItem.vue'
 import { useUserCartStore } from '@/stores/userCart'
 import { useAuthStore } from '@/stores/auth'
 
@@ -113,9 +118,7 @@ const router = useRouter()
 const userCartStore = useUserCartStore()
 const authStore = useAuthStore()
 
-const breadcrumbs = [
-  { label: 'Shopping Cart' }
-]
+const breadcrumbs = [{ label: 'Shopping Cart' }]
 
 const discountCode = ref('')
 const discount = ref(0)
@@ -123,7 +126,10 @@ const couponEffect = ref(false)
 
 const estimatedTax = computed(() => 5000) // 50.00 € en centavos
 const estimatedShipping = computed(() => 2900) // 29.00 € en centavos
-const total = computed(() => userCartStore.totalPrice - (discount.value * 100) + estimatedTax.value + estimatedShipping.value)
+const total = computed(
+  () =>
+    userCartStore.totalPrice - discount.value * 100 + estimatedTax.value + estimatedShipping.value,
+)
 
 /**
  * Format price with proper currency formatting
@@ -137,7 +143,7 @@ const formatPrice = (priceInCents: number): string => {
     style: 'currency',
     currency: 'EUR',
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   }).format(priceInEuros)
 }
 
@@ -182,22 +188,15 @@ const checkout = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   })
 }
-
-// Helper to get product image. This is a placeholder since the API doesn't provide images.
-function getProductImage(productName: string | undefined) {
-  if (!productName) return '/public/images/logo.webp'
-  if (productName.toLowerCase().includes('iphone 14')) return '/public/images/Iphone-14-pro-purple.png'
-  if (productName.toLowerCase().includes('airpods max')) return '/public/images/Apple-airPods.png'
-  if (productName.toLowerCase().includes('apple watch')) return '/public/images/Apple-Watch.png'
-  return '/public/images/logo.webp'
-}
 </script>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.4s;
 }
-.fade-enter-from, .fade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

@@ -71,28 +71,31 @@ export const useOrdersStore = defineStore('orders', () => {
 
   const ordersByStatus = computed(() => {
     return {
-      CREATED: orders.value.filter(order => order.status === 'CREATED'),
-      PAID: orders.value.filter(order => order.status === 'PAID'),
-      SHIPPED: orders.value.filter(order => order.status === 'SHIPPED'),
-      DELIVERED: orders.value.filter(order => order.status === 'DELIVERED'),
-      CANCELED: orders.value.filter(order => order.status === 'CANCELED')
+      CREATED: orders.value.filter((order) => order.status === 'CREATED'),
+      PAID: orders.value.filter((order) => order.status === 'PAID'),
+      SHIPPED: orders.value.filter((order) => order.status === 'SHIPPED'),
+      DELIVERED: orders.value.filter((order) => order.status === 'DELIVERED'),
+      CANCELED: orders.value.filter((order) => order.status === 'CANCELED'),
     }
   })
 
   const ordersWithDiscount = computed(() => {
-    return orders.value.filter(order => order.hasDiscount)
+    return orders.value.filter((order) => order.hasDiscount)
   })
 
   const paidOrders = computed(() => {
-    return orders.value.filter(order => order.status === 'PAID' || order.status === 'SHIPPED' || order.status === 'DELIVERED')
+    return orders.value.filter(
+      (order) =>
+        order.status === 'PAID' || order.status === 'SHIPPED' || order.status === 'DELIVERED',
+    )
   })
 
   const pendingOrders = computed(() => {
-    return orders.value.filter(order => order.status === 'CREATED')
+    return orders.value.filter((order) => order.status === 'CREATED')
   })
 
   const completedOrders = computed(() => {
-    return orders.value.filter(order => order.status === 'DELIVERED')
+    return orders.value.filter((order) => order.status === 'DELIVERED')
   })
 
   // Actions
@@ -170,7 +173,7 @@ export const useOrdersStore = defineStore('orders', () => {
       const response = await api.patch(`/orders/${orderId}`, { status })
       const updatedOrder = response.data
 
-      const index = orders.value.findIndex(order => order.id === orderId)
+      const index = orders.value.findIndex((order) => order.id === orderId)
       if (index > -1) {
         orders.value[index] = { ...orders.value[index], ...updatedOrder }
       }
@@ -191,25 +194,25 @@ export const useOrdersStore = defineStore('orders', () => {
   }
 
   const removeOrder = (orderId: number) => {
-    const index = orders.value.findIndex(order => order.id === orderId)
+    const index = orders.value.findIndex((order) => order.id === orderId)
     if (index > -1) {
       orders.value.splice(index, 1)
     }
   }
 
   const updateOrder = (orderId: number, updatedOrder: Partial<Order>) => {
-    const index = orders.value.findIndex(order => order.id === orderId)
+    const index = orders.value.findIndex((order) => order.id === orderId)
     if (index > -1) {
       orders.value[index] = { ...orders.value[index], ...updatedOrder }
     }
   }
 
   const getOrderById = (orderId: number) => {
-    return orders.value.find(order => order.id === orderId)
+    return orders.value.find((order) => order.id === orderId)
   }
 
   const getOrdersByDateRange = (startDate: string, endDate: string) => {
-    return orders.value.filter(order => {
+    return orders.value.filter((order) => {
       const orderDate = new Date(order.orderDate)
       const start = new Date(startDate)
       const end = new Date(endDate)
@@ -221,17 +224,18 @@ export const useOrdersStore = defineStore('orders', () => {
     if (!searchTerm.trim()) return orders.value
 
     const term = searchTerm.toLowerCase()
-    return orders.value.filter(order =>
-      order.id.toString().includes(term) ||
-      order.user?.name.toLowerCase().includes(term) ||
-      order.user?.email.toLowerCase().includes(term) ||
-      order.status.toLowerCase().includes(term)
+    return orders.value.filter(
+      (order) =>
+        order.id.toString().includes(term) ||
+        order.user?.name.toLowerCase().includes(term) ||
+        order.user?.email.toLowerCase().includes(term) ||
+        order.status.toLowerCase().includes(term),
     )
   }
 
   const filterOrdersByAmount = (minAmount: number, maxAmount: number) => {
-    return orders.value.filter(order =>
-      order.totalAmount >= minAmount && order.totalAmount <= maxAmount
+    return orders.value.filter(
+      (order) => order.totalAmount >= minAmount && order.totalAmount <= maxAmount,
     )
   }
 
@@ -247,7 +251,7 @@ export const useOrdersStore = defineStore('orders', () => {
       PAID: 'Pagado',
       SHIPPED: 'Enviado',
       DELIVERED: 'Entregado',
-      CANCELED: 'Cancelado'
+      CANCELED: 'Cancelado',
     }
     return texts[status] || status
   }
@@ -258,7 +262,7 @@ export const useOrdersStore = defineStore('orders', () => {
       PAID: 'blue',
       SHIPPED: 'yellow',
       DELIVERED: 'green',
-      CANCELED: 'red'
+      CANCELED: 'red',
     }
     return colors[status] || 'gray'
   }
@@ -276,7 +280,7 @@ export const useOrdersStore = defineStore('orders', () => {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     })
   }
 

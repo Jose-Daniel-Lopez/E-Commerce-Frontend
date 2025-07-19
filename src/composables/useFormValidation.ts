@@ -13,7 +13,7 @@ export interface FieldValidation {
 
 /**
  * Composable for form validation with reactive error handling
- * 
+ *
  * @description
  * Provides utilities for:
  * - Field-level validation with custom rules
@@ -32,7 +32,7 @@ export function useFormValidation() {
     fields.value[name] = {
       value,
       rules,
-      touched: false
+      touched: false,
     }
   }
 
@@ -128,7 +128,7 @@ export function useFormValidation() {
     hasFieldError,
     setGlobalError,
     clearGlobalError,
-    resetForm
+    resetForm,
   }
 }
 
@@ -136,7 +136,7 @@ export function useFormValidation() {
 export const validationRules = {
   required: (message = 'This field is required'): ValidationRule => ({
     test: (value: unknown) => !!String(value ?? '').trim(),
-    message
+    message,
   }),
 
   email: (message = 'Please enter a valid email address'): ValidationRule => ({
@@ -144,21 +144,21 @@ export const validationRules = {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       return emailRegex.test(String(value ?? ''))
     },
-    message
+    message,
   }),
 
   minLength: (length: number, message?: string): ValidationRule => ({
     test: (value: unknown) => String(value ?? '').length >= length,
-    message: message || `Must be at least ${length} characters long`
+    message: message || `Must be at least ${length} characters long`,
   }),
 
   maxLength: (length: number, message?: string): ValidationRule => ({
     test: (value: unknown) => String(value ?? '').length <= length,
-    message: message || `Must be no more than ${length} characters long`
+    message: message || `Must be no more than ${length} characters long`,
   }),
 
   pattern: (regex: RegExp, message: string): ValidationRule => ({
     test: (value: unknown) => regex.test(String(value ?? '')),
-    message
-  })
+    message,
+  }),
 }

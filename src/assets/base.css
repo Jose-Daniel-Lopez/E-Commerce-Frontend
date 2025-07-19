@@ -1,9 +1,7 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap');
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
-
 
 /* Tailwind theme configuration */
 @theme {
@@ -525,44 +523,43 @@ section {
   }
 
   /* Prevenir cortes en carousels */
-.category-carousel,
-.discountProduct {
-  overflow: visible !important;
-}
-
-.category-carousel .swiper-wrapper,
-.discountProduct .swiper-wrapper {
-  overflow: visible !important;
-}
-
-.category-carousel .swiper-slide,
-.discountProduct .swiper-slide {
-  overflow: visible !important;
-}
-
-/* Asegurar que los elementos posicionados absolutamente (como botones de like) se vean */
-.swiper-container {
-  overflow: visible !important;
-}
-
-/* Si el botón de like está posicionado absolutamente, asegurar que tenga z-index */
-.product-card .like-button,
-.category-card .like-button {
-  z-index: 10;
-  position: relative; /* o absolute según tu implementación */
-}
-
-.animate-fadeInUp {
-  animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-}
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
+  .category-carousel,
+  .discountProduct {
+    overflow: visible !important;
   }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
 
+  .category-carousel .swiper-wrapper,
+  .discountProduct .swiper-wrapper {
+    overflow: visible !important;
+  }
+
+  .category-carousel .swiper-slide,
+  .discountProduct .swiper-slide {
+    overflow: visible !important;
+  }
+
+  /* Asegurar que los elementos posicionados absolutamente (como botones de like) se vean */
+  .swiper-container {
+    overflow: visible !important;
+  }
+
+  /* Si el botón de like está posicionado absolutamente, asegurar que tenga z-index */
+  .product-card .like-button,
+  .category-card .like-button {
+    z-index: 10;
+    position: relative; /* o absolute según tu implementación */
+  }
+
+  .animate-fadeInUp {
+    animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }

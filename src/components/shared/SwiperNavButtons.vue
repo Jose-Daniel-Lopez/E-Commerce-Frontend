@@ -26,28 +26,28 @@
 </template>
 
 <script setup>
-import { useSwiper } from 'swiper/vue';
-import { ref, onMounted } from 'vue';
+import { useSwiper } from 'swiper/vue'
+import { ref, onMounted } from 'vue'
 
-const swiper = useSwiper();
-const isBeginning = ref(true);
-const isEnd = ref(false);
+const swiper = useSwiper()
+const isBeginning = ref(true)
+const isEnd = ref(false)
 
 onMounted(() => {
   // Escuchar los eventos de Swiper para saber si estamos al principio o al final
   swiper.value.on('reachBeginning', () => {
-    isBeginning.value = true;
-  });
+    isBeginning.value = true
+  })
   swiper.value.on('fromEdge', () => {
-    isBeginning.value = swiper.value.isBeginning;
-    isEnd.value = swiper.value.isEnd;
-  });
+    isBeginning.value = swiper.value.isBeginning
+    isEnd.value = swiper.value.isEnd
+  })
   swiper.value.on('reachEnd', () => {
-    isEnd.value = true;
-  });
+    isEnd.value = true
+  })
 
   // Establecer el estado inicial
-  isBeginning.value = swiper.value.isBeginning;
-  isEnd.value = swiper.value.isEnd;
-});
+  isBeginning.value = swiper.value.isBeginning
+  isEnd.value = swiper.value.isEnd
+})
 </script>

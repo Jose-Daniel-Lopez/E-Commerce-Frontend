@@ -88,7 +88,7 @@ export const useAuthStore = defineStore('auth', () => {
           email: response.data.user.email,
           role: response.data.user.role,
           avatar: '', // Backend doesn't provide avatar in login response
-          isVerified: true // If user can login, they're verified
+          isVerified: true, // If user can login, they're verified
         }
 
         // Save to localStorage
@@ -240,7 +240,7 @@ export const useAuthStore = defineStore('auth', () => {
       const allowedFields = {
         username: updatedData.username,
         location: updatedData.location,
-        avatar: updatedData.avatar
+        avatar: updatedData.avatar,
       }
 
       const url = `/users/${user.value.id}`
@@ -314,6 +314,6 @@ export const useAuthStore = defineStore('auth', () => {
     refreshAddresses,
     updateUser,
     updateUserProfile,
-    initializeAuth
+    initializeAuth,
   }
 })

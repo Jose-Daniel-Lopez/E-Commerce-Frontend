@@ -45,20 +45,20 @@ export const useProductVariantsStore = defineStore('productVariants', () => {
   })
 
   const lowStockVariants = computed(() => {
-    return variants.value.filter(variant => variant.stock <= 5)
+    return variants.value.filter((variant) => variant.stock <= 5)
   })
 
   const outOfStockVariants = computed(() => {
-    return variants.value.filter(variant => variant.stock === 0)
+    return variants.value.filter((variant) => variant.stock === 0)
   })
 
   const inStockVariants = computed(() => {
-    return variants.value.filter(variant => variant.stock > 0)
+    return variants.value.filter((variant) => variant.stock > 0)
   })
 
   const variantsByColor = computed(() => {
     const grouped: Record<string, ProductVariant[]> = {}
-    variants.value.forEach(variant => {
+    variants.value.forEach((variant) => {
       if (!grouped[variant.color]) {
         grouped[variant.color] = []
       }
@@ -69,7 +69,7 @@ export const useProductVariantsStore = defineStore('productVariants', () => {
 
   const variantsBySize = computed(() => {
     const grouped: Record<string, ProductVariant[]> = {}
-    variants.value.forEach(variant => {
+    variants.value.forEach((variant) => {
       if (!grouped[variant.size]) {
         grouped[variant.size] = []
       }
@@ -79,11 +79,11 @@ export const useProductVariantsStore = defineStore('productVariants', () => {
   })
 
   const uniqueColors = computed(() => {
-    return [...new Set(variants.value.map(variant => variant.color))]
+    return [...new Set(variants.value.map((variant) => variant.color))]
   })
 
   const uniqueSizes = computed(() => {
-    return [...new Set(variants.value.map(variant => variant.size))]
+    return [...new Set(variants.value.map((variant) => variant.size))]
   })
 
   // Actions
@@ -137,21 +137,21 @@ export const useProductVariantsStore = defineStore('productVariants', () => {
   }
 
   const removeVariant = (variantId: number) => {
-    const index = variants.value.findIndex(variant => variant.id === variantId)
+    const index = variants.value.findIndex((variant) => variant.id === variantId)
     if (index > -1) {
       variants.value.splice(index, 1)
     }
   }
 
   const updateVariant = (variantId: number, updatedVariant: Partial<ProductVariant>) => {
-    const index = variants.value.findIndex(variant => variant.id === variantId)
+    const index = variants.value.findIndex((variant) => variant.id === variantId)
     if (index > -1) {
       variants.value[index] = { ...variants.value[index], ...updatedVariant }
     }
   }
 
   const getVariantById = (variantId: number) => {
-    return variants.value.find(variant => variant.id === variantId)
+    return variants.value.find((variant) => variant.id === variantId)
   }
 
   const clearVariants = () => {

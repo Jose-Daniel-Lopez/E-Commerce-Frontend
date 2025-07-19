@@ -66,15 +66,15 @@ export const useUserCartStore = defineStore('userCart', () => {
   // Getters
   const cartItemsCount = computed(() => cartItems.value.length)
   const totalQuantity = computed(() =>
-    cartItems.value.reduce((total, item) => total + item.quantity, 0)
+    cartItems.value.reduce((total, item) => total + item.quantity, 0),
   )
   const totalPrice = computed(() =>
     cartItems.value.reduce((total, item) => {
       if (item.product) {
-        return total + (item.product.basePrice * item.quantity)
+        return total + item.product.basePrice * item.quantity
       }
       return total
-    }, 0)
+    }, 0),
   )
   const hasItems = computed(() => cartItems.value.length > 0)
 
@@ -127,7 +127,7 @@ export const useUserCartStore = defineStore('userCart', () => {
             console.error(`Error fetching details for cart item ${item.id}:`, err)
             return item
           }
-        })
+        }),
       )
 
       cartItems.value = itemsWithDetails
@@ -144,7 +144,7 @@ export const useUserCartStore = defineStore('userCart', () => {
       await api.patch(`/cartItems/${cartItemId}`, { quantity: newQuantity })
 
       // Update local state
-      const itemIndex = cartItems.value.findIndex(item => item.id === cartItemId)
+      const itemIndex = cartItems.value.findIndex((item) => item.id === cartItemId)
       if (itemIndex !== -1) {
         cartItems.value[itemIndex].quantity = newQuantity
       }
@@ -165,7 +165,7 @@ export const useUserCartStore = defineStore('userCart', () => {
       await api.delete(`/cartItems/${cartItemId}`)
 
       // Remove from local state
-      cartItems.value = cartItems.value.filter(item => item.id !== cartItemId)
+      cartItems.value = cartItems.value.filter((item) => item.id !== cartItemId)
     } catch (e) {
       console.error('Failed to remove cart item:', e)
       if (e instanceof Error) {

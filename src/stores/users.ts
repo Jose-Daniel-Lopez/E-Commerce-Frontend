@@ -62,7 +62,7 @@ export const useUsersStore = defineStore('users', () => {
     totalUsers: 0,
     adminUsers: 0,
     enabledUsers: 0,
-    disabledUsers: 0
+    disabledUsers: 0,
   })
   const pagination = ref<PaginationInfo>({
     page: 0,
@@ -71,7 +71,7 @@ export const useUsersStore = defineStore('users', () => {
     totalPages: 0,
     first: true,
     last: true,
-    numberOfElements: 0
+    numberOfElements: 0,
   })
 
   // Addresses state for selected user
@@ -111,7 +111,7 @@ export const useUsersStore = defineStore('users', () => {
 
   const usersByRole = computed(() => {
     const grouped: Record<string, User[]> = {}
-    users.value.forEach(user => {
+    users.value.forEach((user) => {
       if (!grouped[user.role]) {
         grouped[user.role] = []
       }
@@ -129,8 +129,8 @@ export const useUsersStore = defineStore('users', () => {
       const response = await api.get('/users', {
         params: {
           page,
-          size
-        }
+          size,
+        },
       })
 
       // Si usas Spring Data REST, los usuarios están en response.data._embedded.users
@@ -145,7 +145,7 @@ export const useUsersStore = defineStore('users', () => {
         totalPages: data.page?.totalPages || data.totalPages || 0,
         first: data.page?.first || data.first || true,
         last: data.page?.last || data.last || true,
-        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0
+        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0,
       }
     } catch (err) {
       console.error('Error fetching users:', err)
@@ -239,7 +239,7 @@ export const useUsersStore = defineStore('users', () => {
         totalUsers: pagination.value.totalElements,
         adminUsers: 0,
         enabledUsers: 0,
-        disabledUsers: 0
+        disabledUsers: 0,
       }
     }
   }
@@ -270,7 +270,7 @@ export const useUsersStore = defineStore('users', () => {
   const getInitials = (displayName: string) => {
     return displayName
       .split(' ')
-      .map(name => name.charAt(0))
+      .map((name) => name.charAt(0))
       .join('')
       .toUpperCase()
       .slice(0, 2)

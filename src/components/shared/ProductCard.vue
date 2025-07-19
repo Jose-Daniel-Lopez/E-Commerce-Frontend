@@ -1,5 +1,7 @@
 <template>
-  <div class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4">
+  <div
+    class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4"
+  >
     <div class="absolute top-4 right-4 z-10">
       <button
         @click="toggleFavorite"
@@ -21,13 +23,10 @@
             d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
           />
         </svg>
-        <svg
-          v-else
-          class="w-6 h-6 text-red-600"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        <svg v-else class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+          />
         </svg>
       </button>
     </div>
@@ -47,22 +46,17 @@
       <div class="flex flex-col flex-1 gap-6">
         <div class="flex flex-col gap-4">
           <div class="h-[75px] sm:h-[50px]">
-            <a
-              href="#"
-              @click.prevent
-              class="block"
-            >
-              <h3 class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors">
+            <a href="#" @click.prevent class="block">
+              <h3
+                class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors"
+              >
                 {{ truncatedName }}
               </h3>
             </a>
           </div>
 
           <div class="flex justify-center items-center gap-2">
-            <span
-              v-if="hasDiscount"
-              class="font-figtree text-xl font-semibold text-green-600"
-            >
+            <span v-if="hasDiscount" class="font-figtree text-xl font-semibold text-green-600">
               ${{ product.discountPrice }}
             </span>
             <span
@@ -71,10 +65,7 @@
             >
               ${{ product.originalPrice }}
             </span>
-            <span
-              v-if="!hasDiscount"
-              class="font-figtree text-xl font-semibold"
-            >
+            <span v-if="!hasDiscount" class="font-figtree text-xl font-semibold">
               {{ isUpcoming ? 'N/A' : `$${product.originalPrice}` }}
             </span>
           </div>
@@ -106,21 +97,21 @@ import Button from './Button.vue'
 export default {
   name: 'ProductCard',
   components: {
-    Button
+    Button,
   },
   props: {
     product: {
       type: Object,
-      required: true
+      required: true,
     },
     className: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {
-      isFavorite: false
+      isFavorite: false,
     }
   },
   computed: {
@@ -128,12 +119,12 @@ export default {
       return this.product.name.length <= 40
         ? this.product.name
         : `${this.product.name.slice(0, 40)}...`
-    }
+    },
   },
   methods: {
     toggleFavorite() {
       this.isFavorite = !this.isFavorite
-    }
-  }
+    },
+  },
 }
 </script>

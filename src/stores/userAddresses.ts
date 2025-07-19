@@ -8,7 +8,7 @@ export interface UserAddress {
   city: string
   state: string
   postalCode?: string
-  zipCode?: string  // La API devuelve zipCode en lugar de postalCode
+  zipCode?: string // La API devuelve zipCode en lugar de postalCode
   country: string
   isShippingAddress?: boolean
   isBillingAddress?: boolean
@@ -40,7 +40,8 @@ export const useUserAddressesStore = defineStore('userAddresses', () => {
 
       // Manejar diferentes estructuras de respuesta
       if (response.data._embedded) {
-        addresses.value = response.data._embedded.userAddresses || response.data._embedded.addresses || []
+        addresses.value =
+          response.data._embedded.userAddresses || response.data._embedded.addresses || []
       } else if (Array.isArray(response.data)) {
         addresses.value = response.data
       } else {
@@ -70,6 +71,6 @@ export const useUserAddressesStore = defineStore('userAddresses', () => {
     shippingAddresses,
     billingAddresses,
     fetchUserAddresses,
-    clearAddresses
+    clearAddresses,
   }
 })

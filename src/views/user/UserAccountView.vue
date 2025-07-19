@@ -6,7 +6,9 @@
 
       <!-- Page Header -->
       <section class="max-w-7xl mx-auto mb-8">
-        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-black">{{ $t('account.title') }}</h1>
+        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-black">
+          {{ $t('account.title') }}
+        </h1>
       </section>
 
       <div class="max-w-7xl mx-auto">
@@ -22,8 +24,15 @@
                     :href="`#${section.id}`"
                     class="group flex items-center px-3 py-3 text-sm font-srProDisplay text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-lg cursor-pointer transition-all duration-200 border-l-4 border-transparent hover:border-black"
                   >
-                    <v-icon :name="section.icon" scale="1.1" class="mr-3 text-gray-500 group-hover:text-black transition-colors duration-200" />
-                    <span class="group-hover:text-black group-hover:font-medium transition-all duration-200">{{ section.label }}</span>
+                    <v-icon
+                      :name="section.icon"
+                      scale="1.1"
+                      class="mr-3 text-gray-500 group-hover:text-black transition-colors duration-200"
+                    />
+                    <span
+                      class="group-hover:text-black group-hover:font-medium transition-all duration-200"
+                      >{{ section.label }}</span
+                    >
                   </a>
                 </li>
               </ul>
@@ -48,7 +57,7 @@
             <nav
               :class="[
                 'lg:hidden fixed top-0 left-0 h-full w-80 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto',
-                isMobileNavOpen ? 'translate-x-0' : '-translate-x-full'
+                isMobileNavOpen ? 'translate-x-0' : '-translate-x-full',
               ]"
             >
               <div class="p-6">
@@ -65,8 +74,15 @@
                       @click="closeMobileNav"
                       class="group flex items-center px-3 py-3 text-sm font-srProDisplay text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-lg cursor-pointer transition-all duration-200 border-l-4 border-transparent hover:border-black"
                     >
-                      <v-icon :name="section.icon" scale="1.1" class="mr-3 text-gray-500 group-hover:text-black transition-colors duration-200" />
-                      <span class="group-hover:text-black group-hover:font-medium transition-all duration-200">{{ section.label }}</span>
+                      <v-icon
+                        :name="section.icon"
+                        scale="1.1"
+                        class="mr-3 text-gray-500 group-hover:text-black transition-colors duration-200"
+                      />
+                      <span
+                        class="group-hover:text-black group-hover:font-medium transition-all duration-200"
+                        >{{ section.label }}</span
+                      >
                     </a>
                   </li>
                 </ul>
@@ -77,65 +93,91 @@
           <!-- Main Content -->
           <main class="flex-1 space-y-8 lg:ml-0">
             <!-- Profile Section -->
-            <section :id="sections[0].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <section
+              :id="sections[0].id"
+              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+            >
               <div class="flex items-center justify-between mb-6">
-              <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.profile.title') }}</h2>
-              <div class="flex gap-2">  <!-- Agrupamos los botones -->
-                <Button
-                  @click="toggleEditProfile"
-                  text-color="black"
-                  bg-color="transparent"
-                  border-width="1px"
-                  border-color="#e5e7eb"
-                  hover-bg-color="#f9fafb"
-                  width="auto"
-                  height="36px"
-                  class="px-4 transition-all duration-200"
-                >
-                  <v-icon
-                    :name="isEditProfileOpen ? 'hi-x' : 'hi-pencil'"
-                    scale="0.9"
-                    class="mr-2 transition-transform duration-200"
-                    :class="{ 'rotate-90': isEditProfileOpen }"
-                  />
-                  {{ isEditProfileOpen ? $t('account.profile.cancelButton') : $t('account.profile.editButton') }}
-                </Button>
-                <!-- Nuevo botón de refrescar -->
-                <Button
-                  @click="refreshProfile"
-                  text-color="black"
-                  bg-color="transparent"
-                  border-width="1px"
-                  border-color="#e5e7eb"
-                  hover-bg-color="#f9fafb"
-                  width="auto"
-                  height="36px"
-                  class="px-4 transition-all duration-200"
-                >
-                  <v-icon name="hi-refresh" scale="0.9" class="mr-2" />  <!-- Asume que tienes un icono de refresh -->
-                  Refrescar
-                </Button>
+                <h2 class="font-srProDisplay text-xl font-semibold text-black">
+                  {{ $t('account.profile.title') }}
+                </h2>
+                <div class="flex gap-2">
+                  <!-- Agrupamos los botones -->
+                  <Button
+                    @click="toggleEditProfile"
+                    text-color="black"
+                    bg-color="transparent"
+                    border-width="1px"
+                    border-color="#e5e7eb"
+                    hover-bg-color="#f9fafb"
+                    width="auto"
+                    height="36px"
+                    class="px-4 transition-all duration-200"
+                  >
+                    <v-icon
+                      :name="isEditProfileOpen ? 'hi-x' : 'hi-pencil'"
+                      scale="0.9"
+                      class="mr-2 transition-transform duration-200"
+                      :class="{ 'rotate-90': isEditProfileOpen }"
+                    />
+                    {{
+                      isEditProfileOpen
+                        ? $t('account.profile.cancelButton')
+                        : $t('account.profile.editButton')
+                    }}
+                  </Button>
+                  <!-- Nuevo botón de refrescar -->
+                  <Button
+                    @click="refreshProfile"
+                    text-color="black"
+                    bg-color="transparent"
+                    border-width="1px"
+                    border-color="#e5e7eb"
+                    hover-bg-color="#f9fafb"
+                    width="auto"
+                    height="36px"
+                    class="px-4 transition-all duration-200"
+                  >
+                    <v-icon name="hi-refresh" scale="0.9" class="mr-2" />
+                    <!-- Asume que tienes un icono de refresh -->
+                    Refrescar
+                  </Button>
+                </div>
               </div>
-            </div>
 
               <!-- Profile Display -->
               <div
                 v-show="!isEditProfileOpen"
                 class="transition-all duration-300 ease-in-out"
-                :class="{ 'opacity-0 transform -translate-y-2': isEditProfileOpen, 'opacity-100 transform translate-y-0': !isEditProfileOpen }"
+                :class="{
+                  'opacity-0 transform -translate-y-2': isEditProfileOpen,
+                  'opacity-100 transform translate-y-0': !isEditProfileOpen,
+                }"
               >
                 <div class="flex flex-col md:flex-row gap-6 items-start">
                   <div class="relative">
-                    <img src="/images/User.png" alt="User avatar" class="w-24 h-24 rounded-full border-2 border-gray-200" />
-                    <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
+                    <img
+                      src="/images/User.png"
+                      alt="User avatar"
+                      class="w-24 h-24 rounded-full border-2 border-gray-200"
+                    />
+                    <div
+                      class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"
+                    ></div>
                   </div>
                   <div class="flex-1">
-                    <h3 class="font-srProDisplay text-xl font-semibold text-black mb-1">{{ user?.username }}</h3>
+                    <h3 class="font-srProDisplay text-xl font-semibold text-black mb-1">
+                      {{ user?.username }}
+                    </h3>
                     <p class="font-srProDisplay text-gray-600 mb-2">{{ user.email }}</p>
                     <div class="flex items-center gap-4 text-sm text-gray-500">
                       <span class="flex items-center gap-1">
                         <v-icon name="hi-shield-check" scale="0.9" />
-                        {{ user.isVerified ? $t('account.profile.verified') : $t('account.profile.unverified') }}
+                        {{
+                          user.isVerified
+                            ? $t('account.profile.verified')
+                            : $t('account.profile.unverified')
+                        }}
                       </span>
                       <span class="flex items-center gap-1">
                         <v-icon name="hi-badge-check" scale="0.9" />
@@ -150,22 +192,39 @@
               <div
                 v-show="isEditProfileOpen"
                 class="transition-all duration-300 ease-in-out"
-                :class="{ 'opacity-100 transform translate-y-0': isEditProfileOpen, 'opacity-0 transform translate-y-2': !isEditProfileOpen }"
+                :class="{
+                  'opacity-100 transform translate-y-0': isEditProfileOpen,
+                  'opacity-0 transform translate-y-2': !isEditProfileOpen,
+                }"
               >
-                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
+                <div
+                  class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200"
+                >
                   <form @submit.prevent="saveProfile" class="space-y-6">
                     <!-- Avatar Section -->
                     <div class="flex items-center gap-6">
                       <div class="relative group">
-                        <img src="/images/User.png" alt="User avatar" class="w-24 h-24 rounded-full border-2 border-gray-200 group-hover:border-blue-400 transition-colors duration-200" />
-                        <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"></div>
-                        <div class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer">
+                        <img
+                          src="/images/User.png"
+                          alt="User avatar"
+                          class="w-24 h-24 rounded-full border-2 border-gray-200 group-hover:border-blue-400 transition-colors duration-200"
+                        />
+                        <div
+                          class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"
+                        ></div>
+                        <div
+                          class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+                        >
                           <v-icon name="hi-camera" scale="1.2" class="text-white" />
                         </div>
                       </div>
                       <div>
-                        <h4 class="font-srProDisplay font-medium text-black mb-1">{{ $t('account.profile.editModal.avatarTitle') }}</h4>
-                        <p class="font-srProDisplay text-sm text-gray-600 mb-2">{{ $t('account.profile.editModal.avatarDescription') }}</p>
+                        <h4 class="font-srProDisplay font-medium text-black mb-1">
+                          {{ $t('account.profile.editModal.avatarTitle') }}
+                        </h4>
+                        <p class="font-srProDisplay text-sm text-gray-600 mb-2">
+                          {{ $t('account.profile.editModal.avatarDescription') }}
+                        </p>
                         <Button
                           type="button"
                           text-color="blue-600"
@@ -186,7 +245,10 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <!-- Name field -->
                       <div class="space-y-2">
-                        <label for="name" class="block text-sm font-medium text-gray-700 font-srProDisplay">
+                        <label
+                          for="name"
+                          class="block text-sm font-medium text-gray-700 font-srProDisplay"
+                        >
                           {{ $t('account.profile.editModal.nameLabel') }}
                         </label>
                         <input
@@ -195,12 +257,15 @@
                           v-model="editableUser.name"
                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-srProDisplay"
                           :placeholder="$t('account.profile.editModal.namePlaceholder')"
-                        >
+                        />
                       </div>
 
                       <!-- Email field (non-editable) -->
                       <div class="space-y-2">
-                        <label for="email" class="block text-sm font-medium text-gray-700 font-srProDisplay">
+                        <label
+                          for="email"
+                          class="block text-sm font-medium text-gray-700 font-srProDisplay"
+                        >
                           {{ $t('account.profile.editModal.emailLabel') }}
                         </label>
                         <input
@@ -210,12 +275,15 @@
                           disabled
                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-500 cursor-not-allowed font-srProDisplay"
                           :placeholder="$t('account.profile.editModal.emailPlaceholder')"
-                        >
+                        />
                       </div>
 
                       <!-- Location field (editable) -->
                       <div class="space-y-2 md:col-span-2">
-                        <label for="location" class="block text-sm font-medium text-gray-700 font-srProDisplay">
+                        <label
+                          for="location"
+                          class="block text-sm font-medium text-gray-700 font-srProDisplay"
+                        >
                           {{ $t('account.profile.editModal.locationLabel') }}
                         </label>
                         <input
@@ -224,10 +292,9 @@
                           v-model="editableUser.location"
                           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-srProDisplay"
                           :placeholder="$t('account.profile.editModal.locationPlaceholder')"
-                        >
+                        />
                       </div>
                     </div>
-
 
                     <!-- Action Buttons -->
                     <div class="flex justify-end gap-4 pt-4 border-t border-gray-200">
@@ -259,68 +326,101 @@
             </section>
 
             <!-- Orders Section -->
-            <section :id="sections[1].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <section
+              :id="sections[1].id"
+              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+            >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.orders.title') }}</h2>
-                <router-link to="/orders" class="text-sm text-gray-600 hover:text-black transition-colors font-medium">
+                <h2 class="font-srProDisplay text-xl font-semibold text-black">
+                  {{ $t('account.orders.title') }}
+                </h2>
+                <router-link
+                  to="/orders"
+                  class="text-sm text-gray-600 hover:text-black transition-colors font-medium"
+                >
                   {{ $t('account.orders.viewAll') }}
                 </router-link>
               </div>
               <div class="space-y-4">
-                <div v-for="order in orders" :key="order.id" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div
+                  v-for="order in orders"
+                  :key="order.id"
+                  class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                >
                   <div class="flex items-center gap-4">
                     <div class="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
                       <v-icon name="hi-clipboard-list" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <p class="font-srProDisplay font-medium text-black">{{ $t('account.orders.order') }} #{{ order.id }}</p>
+                      <p class="font-srProDisplay font-medium text-black">
+                        {{ $t('account.orders.order') }} #{{ order.id }}
+                      </p>
                       <p class="font-srProDisplay text-sm text-gray-600">{{ order.date }}</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-4">
-                  <span :class="getStatusColor(order.status)" class="px-3 py-1 rounded-full text-sm font-medium">
-                    {{ order.status }}
-                  </span>
-                  <Button
-                    bg-color="transparent"
-                    width="auto"
-                    height="auto"
-                    class="px-4 text-[10px] font-light text-gray-500 cursor-pointer"
-                  >
-                    {{ $t('account.orders.viewDetails') }}
-                  </Button>
-                </div>
+                    <span
+                      :class="getStatusColor(order.status)"
+                      class="px-3 py-1 rounded-full text-sm font-medium"
+                    >
+                      {{ order.status }}
+                    </span>
+                    <Button
+                      bg-color="transparent"
+                      width="auto"
+                      height="auto"
+                      class="px-4 text-[10px] font-light text-gray-500 cursor-pointer"
+                    >
+                      {{ $t('account.orders.viewDetails') }}
+                    </Button>
+                  </div>
                 </div>
               </div>
             </section>
 
             <!-- Resto de las secciones permanecen igual... -->
             <!-- Refunds and Drawbacks Section -->
-            <section :id="sections[2].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <section
+              :id="sections[2].id"
+              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+            >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.refunds.title') }}</h2>
+                <h2 class="font-srProDisplay text-xl font-semibold text-black">
+                  {{ $t('account.refunds.title') }}
+                </h2>
               </div>
               <div class="space-y-4">
-                <div v-for="refund in refunds" :key="refund.id" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div
+                  v-for="refund in refunds"
+                  :key="refund.id"
+                  class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                >
                   <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center">
+                    <div
+                      class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center"
+                    >
                       <v-icon name="hi-arrow-left" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <p class="font-srProDisplay font-medium text-black">{{ $t('account.refunds.refund') }} #{{ refund.id }}</p>
+                      <p class="font-srProDisplay font-medium text-black">
+                        {{ $t('account.refunds.refund') }} #{{ refund.id }}
+                      </p>
                       <p class="font-srProDisplay text-sm text-gray-600">{{ refund.reason }}</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-4">
-                    <span :class="getRefundStatusColor(refund.status)" class="px-3 py-1 rounded-full text-sm font-medium">
+                    <span
+                      :class="getRefundStatusColor(refund.status)"
+                      class="px-3 py-1 rounded-full text-sm font-medium"
+                    >
                       {{ refund.status }}
                     </span>
                     <Button
-                    bg-color="transparent"
-                    width="auto"
-                    height="auto"
-                    class="px-4 text-[10px] font-light text-gray-500 cursor-pointer"
-                  >
+                      bg-color="transparent"
+                      width="auto"
+                      height="auto"
+                      class="px-4 text-[10px] font-light text-gray-500 cursor-pointer"
+                    >
                       {{ $t('account.refunds.viewDetails') }}
                     </Button>
                   </div>
@@ -329,24 +429,46 @@
             </section>
 
             <!-- Wishlist Section -->
-            <section :id="sections[3].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <section
+              :id="sections[3].id"
+              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+            >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.wishlist.title') }}</h2>
-                <router-link to="/wishlist" class="text-sm text-gray-600 hover:text-black transition-colors font-medium">
+                <h2 class="font-srProDisplay text-xl font-semibold text-black">
+                  {{ $t('account.wishlist.title') }}
+                </h2>
+                <router-link
+                  to="/wishlist"
+                  class="text-sm text-gray-600 hover:text-black transition-colors font-medium"
+                >
                   {{ $t('account.wishlist.viewAll') }}
                 </router-link>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div v-for="item in wishlist" :key="item.id" class="group flex items-center gap-4 p-4 border border-gray-200 bg-gray-50 rounded-lg hover:shadow-md transition-all duration-200 hover:border-gray-300">
+                <div
+                  v-for="item in wishlist"
+                  :key="item.id"
+                  class="group flex items-center gap-4 p-4 border border-gray-200 bg-gray-50 rounded-lg hover:shadow-md transition-all duration-200 hover:border-gray-300"
+                >
                   <div class="relative">
-                    <img :src="item.image" :alt="item.name" class="w-16 h-16 object-contain rounded-lg p-2" />
-                    <button class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <img
+                      :src="item.image"
+                      :alt="item.name"
+                      class="w-16 h-16 object-contain rounded-lg p-2"
+                    />
+                    <button
+                      class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
                       <v-icon name="hi-x" scale="0.8" class="text-white" />
                     </button>
                   </div>
                   <div class="flex-1">
-                    <h4 class="font-srProDisplay font-medium text-black text-sm line-clamp-2">{{ item.name }}</h4>
-                    <p class="font-srProDisplay text-lg font-semibold text-black mt-1">{{ item.price }}</p>
+                    <h4 class="font-srProDisplay font-medium text-black text-sm line-clamp-2">
+                      {{ item.name }}
+                    </h4>
+                    <p class="font-srProDisplay text-lg font-semibold text-black mt-1">
+                      {{ item.price }}
+                    </p>
                   </div>
                   <Button
                     text-color="white"
@@ -363,7 +485,10 @@
             </section>
 
             <!-- Addresses Section -->
-            <section :id="sections[4].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <section
+              :id="sections[4].id"
+              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+            >
               <div class="flex items-center justify-between mb-6">
                 <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.addresses.title') }}</h2>
                 <div class="flex gap-2">
@@ -404,7 +529,10 @@
               </div>
 
               <!-- Error state for addresses -->
-              <div v-else-if="addressesError" class="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div
+                v-else-if="addressesError"
+                class="bg-red-50 border border-red-200 rounded-lg p-4"
+              >
                 <p class="text-red-700">{{ addressesError }}</p>
                 <Button
                   @click="refreshAddresses"
@@ -440,7 +568,11 @@
 
               <!-- Display grid of user addresses -->
               <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div v-for="address in addresses" :key="address.id" class="group border border-gray-200 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300">
+                <div
+                  v-for="address in addresses"
+                  :key="address.id"
+                  class="group border border-gray-200 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300"
+                >
                   <div class="flex items-start justify-between mb-3">
                     <div class="flex items-center gap-2">
                       <v-icon name="hi-location-marker" scale="1.1" class="text-gray-500" />
@@ -461,8 +593,8 @@
 
                   <!-- Display all address fields from the API -->
                   <p class="font-srProDisplay text-gray-600 text-sm leading-relaxed">
-                    {{ address.street }}<br>
-                    {{ address.city }}, {{ address.state }} {{ address.zipCode }}<br>
+                    {{ address.street }}<br />
+                    {{ address.city }}, {{ address.state }} {{ address.zipCode }}<br />
                     {{ address.country }}
                   </p>
                 </div>
@@ -470,13 +602,24 @@
             </section>
 
             <!-- Reviews Section -->
-            <section :id="sections[5].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <section
+              :id="sections[5].id"
+              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+            >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.reviews.title') }}</h2>
-                <span class="text-sm text-gray-600 font-medium">{{ reviews.length }} {{ $t('account.reviews.reviews') }}</span>
+                <h2 class="font-srProDisplay text-xl font-semibold text-black">
+                  {{ $t('account.reviews.title') }}
+                </h2>
+                <span class="text-sm text-gray-600 font-medium"
+                  >{{ reviews.length }} {{ $t('account.reviews.reviews') }}</span
+                >
               </div>
               <div class="space-y-4">
-                <div v-for="review in reviews" :key="review.id" class="border border-gray-200 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300">
+                <div
+                  v-for="review in reviews"
+                  :key="review.id"
+                  class="border border-gray-200 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300"
+                >
                   <div class="flex items-start justify-between mb-3">
                     <div>
                       <h4 class="font-srProDisplay font-medium text-black">{{ review.product }}</h4>
@@ -495,14 +638,21 @@
                     </div>
                     <span class="text-xs text-gray-500">{{ review.date }}</span>
                   </div>
-                  <p class="font-srProDisplay text-gray-700 text-sm leading-relaxed">{{ review.comment }}</p>
+                  <p class="font-srProDisplay text-gray-700 text-sm leading-relaxed">
+                    {{ review.comment }}
+                  </p>
                 </div>
               </div>
             </section>
 
             <!-- Settings Section -->
-            <section :id="sections[6].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">{{ $t('account.settings.title') }}</h2>
+            <section
+              :id="sections[6].id"
+              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+            >
+              <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">
+                {{ $t('account.settings.title') }}
+              </h2>
               <div class="space-y-6">
                 <!-- Language Setting -->
                 <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -511,11 +661,18 @@
                       <v-icon name="hi-globe" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <h4 class="font-srProDisplay font-medium text-black">{{ $t('account.settings.language.title') }}</h4>
-                      <p class="font-srProDisplay text-sm text-gray-600">{{ $t('account.settings.language.description') }}</p>
+                      <h4 class="font-srProDisplay font-medium text-black">
+                        {{ $t('account.settings.language.title') }}
+                      </h4>
+                      <p class="font-srProDisplay text-sm text-gray-600">
+                        {{ $t('account.settings.language.description') }}
+                      </p>
                     </div>
                   </div>
-                  <select v-model="selectedLanguage" class="px-3 py-2 border border-gray-300 rounded-lg font-srProDisplay text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent">
+                  <select
+                    v-model="selectedLanguage"
+                    class="px-3 py-2 border border-gray-300 rounded-lg font-srProDisplay text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                  >
                     <option value="en">English</option>
                     <option value="es">Español</option>
                     <option value="auto">Auto</option>
@@ -529,18 +686,40 @@
                       <v-icon name="hi-color-swatch" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <h4 class="font-srProDisplay font-medium text-black">{{ $t('account.settings.theme.title') }}</h4>
-                      <p class="font-srProDisplay text-sm text-gray-600">{{ $t('account.settings.theme.description') }}</p>
+                      <h4 class="font-srProDisplay font-medium text-black">
+                        {{ $t('account.settings.theme.title') }}
+                      </h4>
+                      <p class="font-srProDisplay text-sm text-gray-600">
+                        {{ $t('account.settings.theme.description') }}
+                      </p>
                     </div>
                   </div>
                   <div class="flex items-center gap-2">
-                    <button @click="setTheme('light')" :class="['p-2 rounded-lg', theme === 'light' ? 'bg-black text-white' : 'bg-gray-200 text-black']">
+                    <button
+                      @click="setTheme('light')"
+                      :class="[
+                        'p-2 rounded-lg',
+                        theme === 'light' ? 'bg-black text-white' : 'bg-gray-200 text-black',
+                      ]"
+                    >
                       <v-icon name="hi-sun" />
                     </button>
-                    <button @click="setTheme('dark')" :class="['p-2 rounded-lg', theme === 'dark' ? 'bg-black text-white' : 'bg-gray-200 text-black']">
+                    <button
+                      @click="setTheme('dark')"
+                      :class="[
+                        'p-2 rounded-lg',
+                        theme === 'dark' ? 'bg-black text-white' : 'bg-gray-200 text-black',
+                      ]"
+                    >
                       <v-icon name="hi-moon" />
                     </button>
-                    <button @click="setTheme('system')" :class="['p-2 rounded-lg', theme === 'system' ? 'bg-black text-white' : 'bg-gray-200 text-black']">
+                    <button
+                      @click="setTheme('system')"
+                      :class="[
+                        'p-2 rounded-lg',
+                        theme === 'system' ? 'bg-black text-white' : 'bg-gray-200 text-black',
+                      ]"
+                    >
                       <v-icon name="hi-chip" />
                     </button>
                   </div>
@@ -553,13 +732,19 @@
                       <v-icon name="hi-chat" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <h4 class="font-srProDisplay font-medium text-black">{{ $t('account.settings.notifications.title') }}</h4>
-                      <p class="font-srProDisplay text-sm text-gray-600">{{ $t('account.settings.notifications.description') }}</p>
+                      <h4 class="font-srProDisplay font-medium text-black">
+                        {{ $t('account.settings.notifications.title') }}
+                      </h4>
+                      <p class="font-srProDisplay text-sm text-gray-600">
+                        {{ $t('account.settings.notifications.description') }}
+                      </p>
                     </div>
                   </div>
                   <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" v-model="notifications.enabled" class="sr-only peer">
-                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                    <input type="checkbox" v-model="notifications.enabled" class="sr-only peer" />
+                    <div
+                      class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"
+                    ></div>
                   </label>
                 </div>
 
@@ -570,8 +755,12 @@
                       <v-icon name="hi-key" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <h4 class="font-srProDisplay font-medium text-black">{{ $t('account.settings.security.title') }}</h4>
-                      <p class="font-srProDisplay text-sm text-gray-600">{{ $t('account.settings.security.description') }}</p>
+                      <h4 class="font-srProDisplay font-medium text-black">
+                        {{ $t('account.settings.security.title') }}
+                      </h4>
+                      <p class="font-srProDisplay text-sm text-gray-600">
+                        {{ $t('account.settings.security.description') }}
+                      </p>
                     </div>
                   </div>
                   <Button
@@ -613,7 +802,7 @@ const usersStore = useUsersStore()
 
 const breadcrumbs = computed(() => [
   { label: t('breadcrumbs.home'), to: '/' },
-  { label: t('breadcrumbs.account'), to: '/account' }
+  { label: t('breadcrumbs.account'), to: '/account' },
 ])
 
 const sections = computed(() => [
@@ -623,9 +812,8 @@ const sections = computed(() => [
   { id: 'wishlist', label: t('account.wishlist.title'), icon: 'hi-heart' },
   { id: 'addresses', label: t('account.addresses.title'), icon: 'hi-location-marker' },
   { id: 'reviews', label: t('account.reviews.title'), icon: 'bi-star-fill' },
-  { id: 'settings', label: t('account.settings.title'), icon: 'hi-adjustments' }
+  { id: 'settings', label: t('account.settings.title'), icon: 'hi-adjustments' },
 ])
-
 
 // User state
 const user = computed(() => (authStore.user ?? {}) as User)
@@ -633,17 +821,17 @@ const user = computed(() => (authStore.user ?? {}) as User)
 const orders = ref([
   { id: '12345', date: '2025-07-01', status: 'Delivered' },
   { id: '67890', date: '2025-06-15', status: 'Shipped' },
-  { id: '54321', date: '2025-05-20', status: 'Cancelled' }
+  { id: '54321', date: '2025-05-20', status: 'Cancelled' },
 ])
 
 const refunds = ref([
   { id: 'R001', reason: 'Item defective', status: 'Completed' },
-  { id: 'R002', reason: 'Wrong size', status: 'Processing' }
+  { id: 'R002', reason: 'Wrong size', status: 'Processing' },
 ])
 
 const wishlist = ref([
   { id: 1, name: 'Apple Watch Series 8', price: '$399', image: '/images/Apple-Watch.png' },
-  { id: 2, name: 'Sony WH-1000XM5 Headphones', price: '$349', image: '/images/headphones.png' }
+  { id: 2, name: 'Sony WH-1000XM5 Headphones', price: '$349', image: '/images/headphones.png' },
 ])
 
 const addresses = computed(() => usersStore.userAddresses)
@@ -651,8 +839,20 @@ const addressesLoading = computed(() => usersStore.addressesLoading)
 const addressesError = computed(() => usersStore.addressesError)
 
 const reviews = ref([
-  { id: 1, product: 'iPhone 14 Pro', rating: 5, comment: 'Amazing phone, great camera!', date: '2 days ago' },
-  { id: 2, product: 'Samsung Galaxy Buds', rating: 4, comment: 'Good sound quality, but could be more comfortable.', date: '1 week ago' }
+  {
+    id: 1,
+    product: 'iPhone 14 Pro',
+    rating: 5,
+    comment: 'Amazing phone, great camera!',
+    date: '2 days ago',
+  },
+  {
+    id: 2,
+    product: 'Samsung Galaxy Buds',
+    rating: 4,
+    comment: 'Good sound quality, but could be more comfortable.',
+    date: '1 week ago',
+  },
 ])
 
 // Logic for the Edit Profile inline form
@@ -663,7 +863,7 @@ const editableUser = ref({
   location: '', // Keep for form compatibility
   avatar: '',
   role: '',
-  isVerified: false
+  isVerified: false,
 })
 
 const toggleEditProfile = () => {
@@ -685,12 +885,12 @@ const cancelEdit = () => {
   isEditProfileOpen.value = false
   // Restore original data
   editableUser.value = {
-    name: authStore.user?.username || '',
-    email: authStore.user?.email || '',
-    location: authStore.user?.location || '',
-    avatar: authStore.user?.avatar || '',
-    role: authStore.user?.role || '',
-    isVerified: authStore.user?.isVerified || false
+    name: user.value.name,
+    email: user.value.email,
+    location: user.value.location,
+    avatar: user.value.avatar,
+    role: user.value.role,
+    isVerified: user.value.isVerified
   }
 }
 
@@ -700,7 +900,7 @@ const saveProfile = async () => {
     await authStore.updateUserProfile({
       username: editableUser.value.name,
       avatar: editableUser.value.avatar,
-      location: editableUser.value.location
+      location: editableUser.value.location,
     })
   }
   isEditProfileOpen.value = false
@@ -743,23 +943,29 @@ const setTheme = (newTheme: string) => {
 // Helper functions to determine status colors.
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'Delivered': return 'bg-green-100 text-green-800'
-    case 'Shipped': return 'bg-blue-100 text-blue-800'
-    case 'Cancelled': return 'bg-red-100 text-red-800'
-    default: return 'bg-gray-100 text-gray-800'
+    case 'Delivered':
+      return 'bg-green-100 text-green-800'
+    case 'Shipped':
+      return 'bg-blue-100 text-blue-800'
+    case 'Cancelled':
+      return 'bg-red-100 text-red-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
   }
 }
 
 const getRefundStatusColor = (status: string) => {
   switch (status) {
-    case 'Completed': return 'bg-green-100 text-green-800'
-    case 'Processing': return 'bg-yellow-100 text-yellow-800'
-    default: return 'bg-gray-100 text-gray-800'
+    case 'Completed':
+      return 'bg-green-100 text-green-800'
+    case 'Processing':
+      return 'bg-yellow-100 text-yellow-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
   }
 }
 
 const activeSection = ref('profile')
-
 
 onMounted(async () => {
   // Set the initial theme based on system preference if the theme is set to 'system'.
@@ -793,7 +999,7 @@ onMounted(async () => {
         }
       })
     },
-    { threshold: 0.5 }
+    { threshold: 0.5 },
   )
 
   sections.value.forEach((section) => {
@@ -833,7 +1039,7 @@ const refreshAddresses = async () => {
   } catch (error) {
     console.error('Error al refrescar direcciones:', error)
   }
-}
+};
 
 </script>
 
@@ -872,7 +1078,7 @@ html {
 }
 
 /* Custom styles for the toggle switch. */
-input[type="checkbox"]:checked {
+input[type='checkbox']:checked {
   background-color: #000000;
   border-color: #000000;
 }
@@ -915,4 +1121,3 @@ body.nav-open {
   transform: rotate(90deg);
 }
 </style>
-

@@ -6,11 +6,7 @@
       <!-- logo start -->
       <div class="w-[96px]">
         <router-link to="/">
-          <img
-            src="/images/logo_black.png"
-            alt="logo"
-            class="w-24 h-8"
-          />
+          <img src="/images/logo_black.png" alt="logo" class="w-24 h-8" />
         </router-link>
       </div>
       <!-- logo end -->
@@ -28,23 +24,33 @@
         <ul
           :class="`fixed top-[81px] z-50 flex h-screen w-[250px] flex-col items-start justify-start gap-0 bg-[#f1f1f1] p-2 font-srProDisplay text-base font-medium text-black *:w-full lg:static lg:h-auto lg:w-auto lg:flex-row lg:items-center lg:justify-center lg:gap-3 lg:bg-transparent lg:p-0 lg:text-gray-400 *:lg:text-center ${showMobileMenu} duration-500 ease-linear lg:duration-0`"
         >
-          <li class="active block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+          <li
+            class="active block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+          >
             <router-link to="/">Inicio</router-link>
           </li>
-          <li class="flex items-center justify-between p-3 hover:bg-blue-200 lg:gap-[2px] lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+          <li
+            class="flex items-center justify-between p-3 hover:bg-blue-200 lg:gap-[2px] lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+          >
             <router-link to="/categories" class="flex items-center w-full">
               <span>Categorias</span>
               <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                <path
+                  fill-rule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
               </svg>
             </router-link>
           </li>
-          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
-            <router-link to="/about">
-              Acerca de
-            </router-link>
+          <li
+            class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+          >
+            <router-link to="/about"> Acerca de </router-link>
           </li>
-          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+          <li
+            class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+          >
             <router-link to="/contact">Contáctanos</router-link>
           </li>
         </ul>
@@ -52,10 +58,7 @@
       <!-- Navigation end -->
 
       <!-- icons start -->
-      <IconMenu
-        @update-mobile-menu="setShowMobileMenu"
-        @update-search-bar="setPositionSearchBar"
-      />
+      <IconMenu @update-mobile-menu="setShowMobileMenu" @update-search-bar="setPositionSearchBar" />
       <!-- icons end -->
     </Wrapper>
   </header>
@@ -72,7 +75,7 @@ export default {
   components: {
     Wrapper,
     HeaderSearch,
-    IconMenu
+    IconMenu,
   },
   setup() {
     const showMobileMenu = ref('left-[-300px]')
@@ -114,9 +117,9 @@ export default {
       positionSearchBar,
       show,
       setShowMobileMenu,
-      setPositionSearchBar
+      setPositionSearchBar,
     }
-  }
+  },
 }
 </script>
 
@@ -128,11 +131,7 @@ export default {
       <!-- logo start -->
       <div class="w-[96px]">
         <router-link to="/">
-          <img
-            src="/images/logo_black.png"
-            alt="logo"
-            class="w-24 h-8"
-          />
+          <img src="/images/logo_black.png" alt="logo" class="w-24 h-8" />
         </router-link>
       </div>
       <!-- logo end -->
@@ -150,23 +149,33 @@ export default {
         <ul
           :class="`fixed top-[81px] z-50 flex h-screen w-[250px] flex-col items-start justify-start gap-0 bg-[#f1f1f1] p-2 font-srProDisplay text-base font-medium text-black *:w-full lg:static lg:h-auto lg:w-auto lg:flex-row lg:items-center lg:justify-center lg:gap-3 lg:bg-transparent lg:p-0 lg:text-gray-400 *:lg:text-center ${showMobileMenu} duration-500 ease-linear lg:duration-0`"
         >
-          <li class="active block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+          <li
+            class="active block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+          >
             <router-link to="/">Inicio</router-link>
           </li>
-          <li class="flex cursor-pointer items-center justify-between p-3 hover:bg-blue-200 lg:gap-[2px] lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+          <li
+            class="flex cursor-pointer items-center justify-between p-3 hover:bg-blue-200 lg:gap-[2px] lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+          >
             <router-link to="/categories">Categorias</router-link>
             <span>
               <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                <path
+                  fill-rule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
               </svg>
             </span>
           </li>
-          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
-            <router-link to="/about" class="block">
-              Acerca de
-            </router-link>
+          <li
+            class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+          >
+            <router-link to="/about" class="block"> Acerca de </router-link>
           </li>
-          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+          <li
+            class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+          >
             <router-link to="/contact">Contáctanos</router-link>
           </li>
         </ul>
@@ -174,10 +183,7 @@ export default {
       <!-- Navigation end -->
 
       <!-- icons start -->
-      <IconMenu
-        @update-mobile-menu="setShowMobileMenu"
-        @update-search-bar="setPositionSearchBar"
-      />
+      <IconMenu @update-mobile-menu="setShowMobileMenu" @update-search-bar="setPositionSearchBar" />
       <!-- icons end -->
     </Wrapper>
   </header>
@@ -194,7 +200,7 @@ export default {
   components: {
     Wrapper,
     HeaderSearch,
-    IconMenu
+    IconMenu,
   },
   setup() {
     const showMobileMenu = ref('left-[-300px]')
@@ -236,27 +242,25 @@ export default {
       positionSearchBar,
       show,
       setShowMobileMenu,
-      setPositionSearchBar
+      setPositionSearchBar,
     }
-  }
+  },
 }
 </script>
 
 <style scoped>
-
 button:focus {
-    outline: none;
-    box-shadow: none;
-  }
+  outline: none;
+  box-shadow: none;
+}
 
-  a:focus {
-    outline: none;
-    box-shadow: none;
-  }
+a:focus {
+  outline: none;
+  box-shadow: none;
+}
 
-  svg:focus {
-    outline: none;
-    box-shadow: none;
-  }
-
+svg:focus {
+  outline: none;
+  box-shadow: none;
+}
 </style>
