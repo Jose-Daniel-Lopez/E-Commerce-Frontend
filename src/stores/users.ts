@@ -2,45 +2,38 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '@/lib/axios'
 
-interface Authority {
-  authority: string
+interface Address {
+  id: number
+  name: string
+  street: string
+  city: string
+  state: string
+  zipCode: string
+  country: string
+  isDefault?: boolean
 }
+
+
 
 interface User {
   id: number
   username: string
   email: string
-  password: string
   avatar: string
   role: string
-  enabled: boolean
-  displayName: string
-  accountNonExpired: boolean
-  accountNonLocked: boolean
-  admin: boolean
-  authorities: Authority[]
-  credentialsNonExpired: boolean
+  verified: boolean
   _links?: {
-    self?: {
-      href: string
-    }
-    user?: {
-      href: string
-    }
-    addresses?: {
-      href: string
-    }
-    orders?: {
-      href: string
-    }
-    cart?: {
-      href: string
-    }
-    productReviews?: {
-      href: string
-    }
+    self?: { href: string }
+    user?: { href: string }
+    addresses?: { href: string }
+    cart?: { href: string }
+    wishlists?: { href: string }
+    orders?: { href: string }
+    productReviews?: { href: string }
   }
 }
+
+export type { User }
 
 interface PaginationInfo {
   page: number
@@ -81,15 +74,40 @@ export const useUsersStore = defineStore('users', () => {
     numberOfElements: 0
   })
 
+  // Addresses state for selected user
+  const userAddresses = ref<Address[]>([])
+  const addressesLoading = ref(false)
+  const addressesError = ref('')
+  // Fetch addresses for a user using HATEOAS link
+  const fetchUserAddresses = async (user: User) => {
+    addressesLoading.value = true
+    addressesError.value = ''
+    userAddresses.value = []
+    try {
+      const url = user._links?.addresses?.href
+      if (!url) throw new Error('No address link found')
+      const response = await api.get(url)
+      // Ajusta según tu backend: puede ser response.data._embedded.addresses o response.data.content
+      userAddresses.value = response.data._embedded
+        ? response.data._embedded.addresses
+        : response.data.content || []
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Error fetching addresses'
+      addressesError.value = errorMessage
+    } finally {
+      addressesLoading.value = false
+    }
+  }
+
   // Getters
   const userCount = computed(() => users.value.length)
   const hasUsers = computed(() => users.value.length > 0)
 
-  const adminUsers = computed(() => users.value.filter(user => user.admin))
-  const enabledUsers = computed(() => users.value.filter(user => user.enabled))
-  const disabledUsers = computed(() => users.value.filter(user => !user.enabled))
-  const lockedAccounts = computed(() => users.value.filter(user => !user.accountNonLocked))
-  const expiredAccounts = computed(() => users.value.filter(user => !user.accountNonExpired))
+  // Nuevo getter: usuarios por rol
+  const adminUsers = computed(() => users.value.filter(user => user.role === 'ADMIN'))
+  const customerUsers = computed(() => users.value.filter(user => user.role === 'CUSTOMER'))
+  const verifiedUsers = computed(() => users.value.filter(user => user.verified))
+  const unverifiedUsers = computed(() => users.value.filter(user => !user.verified))
 
   const usersByRole = computed(() => {
     const grouped: Record<string, User[]> = {}
@@ -230,7 +248,7 @@ export const useUsersStore = defineStore('users', () => {
     switch (role.toUpperCase()) {
       case 'ADMIN':
         return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-      case 'USER':
+      case 'CUSTOMER':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
       case 'MODERATOR':
         return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300'
@@ -240,17 +258,13 @@ export const useUsersStore = defineStore('users', () => {
   }
 
   const getStatusColor = (user: User) => {
-    if (!user.enabled) return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-    if (!user.accountNonLocked) return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
-    if (!user.accountNonExpired) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
-    return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+    return user.verified
+      ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+      : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
   }
 
   const getStatusText = (user: User) => {
-    if (!user.enabled) return 'Disabled'
-    if (!user.accountNonLocked) return 'Locked'
-    if (!user.accountNonExpired) return 'Expired'
-    return 'Active'
+    return user.verified ? 'Verified' : 'Unverified'
   }
 
   const getInitials = (displayName: string) => {
@@ -270,14 +284,16 @@ export const useUsersStore = defineStore('users', () => {
     error,
     pagination,
     stats,
+    userAddresses,
+    addressesLoading,
+    addressesError,
     // Getters
     userCount,
     hasUsers,
     adminUsers,
-    enabledUsers,
-    disabledUsers,
-    lockedAccounts,
-    expiredAccounts,
+    customerUsers,
+    verifiedUsers,
+    unverifiedUsers,
     usersByRole,
     // Actions
     fetchUsers,
@@ -288,6 +304,7 @@ export const useUsersStore = defineStore('users', () => {
     getUserById,
     clearUsers,
     clearSelectedUser,
+    fetchUserAddresses,
     // Pagination actions
     goToPage,
     goToNextPage,

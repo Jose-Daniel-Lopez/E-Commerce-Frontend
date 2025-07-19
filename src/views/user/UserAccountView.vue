@@ -366,19 +366,35 @@
             <section :id="sections[4].id" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div class="flex items-center justify-between mb-6">
                 <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.addresses.title') }}</h2>
-                <Button
-                  text-color="black"
-                  bg-color="transparent"
-                  border-width="1px"
-                  border-color="#e5e7eb"
-                  hover-bg-color="#f9fafb"
-                  width="auto"
-                  height="36px"
-                  class="px-4"
-                >
-                  <v-icon name="hi-plus" scale="0.9" class="mr-2" />
-                  {{ $t('account.addresses.addButton') }}
-                </Button>
+                <div class="flex gap-2">
+                  <Button
+                    @click="refreshAddresses"
+                    text-color="black"
+                    bg-color="transparent"
+                    border-width="1px"
+                    border-color="#e5e7eb"
+                    hover-bg-color="#f9fafb"
+                    width="auto"
+                    height="36px"
+                    class="px-4"
+                  >
+                    <v-icon name="hi-refresh" scale="0.9" class="mr-2" />
+                    Refresh
+                  </Button>
+                  <Button
+                    text-color="black"
+                    bg-color="transparent"
+                    border-width="1px"
+                    border-color="#e5e7eb"
+                    hover-bg-color="#f9fafb"
+                    width="auto"
+                    height="36px"
+                    class="px-4"
+                  >
+                    <v-icon name="hi-plus" scale="0.9" class="mr-2" />
+                    {{ $t('account.addresses.addButton') }}
+                  </Button>
+                </div>
               </div>
 
               <!-- Loading state for addresses -->
@@ -391,7 +407,7 @@
               <div v-else-if="addressesError" class="bg-red-50 border border-red-200 rounded-lg p-4">
                 <p class="text-red-700">{{ addressesError }}</p>
                 <Button
-                  @click="authStore.fetchUserAddresses"
+                  @click="refreshAddresses"
                   text-color="red-600"
                   bg-color="transparent"
                   border-width="1px"
@@ -584,7 +600,8 @@
 import '@/assets/base.css'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import type { User } from '@/stores/auth'
+import { useUsersStore } from '@/stores/users'
+import type { User } from '@/stores/users'
 import { useI18n } from 'vue-i18n'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import Button from '@/components/shared/Button.vue'
@@ -592,6 +609,7 @@ import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
 const { t, locale } = useI18n()
 const authStore = useAuthStore()
+const usersStore = useUsersStore()
 
 const breadcrumbs = computed(() => [
   { label: t('breadcrumbs.home'), to: '/' },
@@ -628,9 +646,9 @@ const wishlist = ref([
   { id: 2, name: 'Sony WH-1000XM5 Headphones', price: '$349', image: '/images/headphones.png' }
 ])
 
-const addresses = computed(() => authStore.addresses)
-const addressesLoading = computed(() => authStore.addressesLoading)
-const addressesError = computed(() => authStore.addressesError)
+const addresses = computed(() => usersStore.userAddresses)
+const addressesLoading = computed(() => usersStore.addressesLoading)
+const addressesError = computed(() => usersStore.addressesError)
 
 const reviews = ref([
   { id: 1, product: 'iPhone 14 Pro', rating: 5, comment: 'Amazing phone, great camera!', date: '2 days ago' },
@@ -651,14 +669,14 @@ const editableUser = ref({
 const toggleEditProfile = () => {
   isEditProfileOpen.value = !isEditProfileOpen.value
   if (isEditProfileOpen.value) {
-    // Copy current data for editing
+    // Copy current data for editing (using authStore.user since it has the properties we need)
     editableUser.value = {
-      name: user.value.name,
-      email: user.value.email,
-      location: user.value.location, // This will be empty from computed user
-      avatar: user.value.avatar,
-      role: user.value.role,
-      isVerified: user.value.isVerified
+      name: authStore.user?.username || '',
+      email: authStore.user?.email || '',
+      location: authStore.user?.location || '',
+      avatar: authStore.user?.avatar || '',
+      role: authStore.user?.role || '',
+      isVerified: authStore.user?.isVerified || false
     }
   }
 }
@@ -667,12 +685,12 @@ const cancelEdit = () => {
   isEditProfileOpen.value = false
   // Restore original data
   editableUser.value = {
-    name: user.value.name,
-    email: user.value.email,
-    location: user.value.location,
-    avatar: user.value.avatar,
-    role: user.value.role,
-    isVerified: user.value.isVerified
+    name: authStore.user?.username || '',
+    email: authStore.user?.email || '',
+    location: authStore.user?.location || '',
+    avatar: authStore.user?.avatar || '',
+    role: authStore.user?.role || '',
+    isVerified: authStore.user?.isVerified || false
   }
 }
 
@@ -756,7 +774,14 @@ onMounted(async () => {
   // Fetch user data from backend using auth store
   if (authStore.isAuthenticated) {
     await authStore.fetchCurrentUser()
-    await authStore.fetchUserAddresses()
+    // Fetch the user with HATEOAS links using usersStore
+    if (authStore.user?.id) {
+      await usersStore.fetchUserById(authStore.user.id)
+      // Now fetch addresses using the user with _links
+      if (usersStore.selectedUser) {
+        await usersStore.fetchUserAddresses(usersStore.selectedUser)
+      }
+    }
   }
 
   // Set up an observer to highlight the active navigation link based on the currently visible section.
@@ -784,13 +809,31 @@ onUnmounted(() => {
 
 const refreshProfile = async () => {
   try {
-    await authStore.fetchCurrentUser();
-    // ...
+    await authStore.fetchCurrentUser()
+    // También refrescar las direcciones
+    if (authStore.user?.id) {
+      await usersStore.fetchUserById(authStore.user.id)
+      if (usersStore.selectedUser) {
+        await usersStore.fetchUserAddresses(usersStore.selectedUser)
+      }
+    }
   } catch (error) {
-    console.error('Error al refrescar perfil:', error);
-    // ...
+    console.error('Error al refrescar perfil:', error)
   }
-};
+}
+
+const refreshAddresses = async () => {
+  try {
+    if (authStore.user?.id) {
+      await usersStore.fetchUserById(authStore.user.id)
+      if (usersStore.selectedUser) {
+        await usersStore.fetchUserAddresses(usersStore.selectedUser)
+      }
+    }
+  } catch (error) {
+    console.error('Error al refrescar direcciones:', error)
+  }
+}
 
 </script>
 
