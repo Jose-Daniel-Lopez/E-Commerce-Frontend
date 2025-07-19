@@ -35,7 +35,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="app" class="min-h-screen bg-white">
+  <div id="app" class="bg-white">
     <!-- Header Component -->
     <MainHeader />
 
@@ -43,7 +43,7 @@ onMounted(() => {
     <SubnavBar :categories="subnavCategories" />
 
     <!-- Main Content -->
-    <main class="min-h-screen">
+    <main>
       <RouterView />
     </main>
 

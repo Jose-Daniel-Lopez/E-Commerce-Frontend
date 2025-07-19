@@ -74,6 +74,7 @@
 
   html {
     scroll-behavior: smooth;
+    overflow: hidden;
   }
 
   body {
@@ -84,13 +85,17 @@
     padding: 0;
     line-height: 1.6;
     overflow-x: hidden;
+    overflow-y: auto;
+    height: 100vh;
   }
 
-  /* Main container to prevent stretching */
+  /* Main container to prevent stretching and double scrollbars */
   #app {
     width: 100%;
     max-width: 100vw;
-    overflow-x: hidden;
+    overflow: visible;
+    height: auto;
+    min-height: 100vh;
   }
 
   /* Responsive image styles */
@@ -111,6 +116,33 @@
   a:focus {
     outline: 2px solid #3b82f6;
     outline-offset: 2px;
+  }
+
+  /* Prevent double scrollbars */
+  html, body {
+    overflow-x: hidden;
+  }
+  
+  body * {
+    box-sizing: border-box;
+  }
+  
+  /* Disable all min-h-screen to prevent conflicts */
+  .min-h-screen {
+    min-height: auto !important;
+  }
+  
+  /* Force single scrollbar control */
+  * {
+    overflow-y: visible !important;
+  }
+  
+  body {
+    overflow-y: auto !important;
+  }
+  
+  html {
+    overflow: hidden !important;
   }
 }
 
