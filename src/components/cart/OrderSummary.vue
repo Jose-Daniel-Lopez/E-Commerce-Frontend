@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white border border-[#EBEBEB] rounded-[10px] p-6 py-16 h-full">
     <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">Order Summary</h2>
-    
+
     <!-- Discount Code Form -->
     <form class="space-y-4" @submit.prevent>
       <div>
@@ -90,8 +90,8 @@ const emit = defineEmits<{
 const localDiscountCode = ref('')
 const couponEffect = ref(false)
 
-const total = computed(() => 
-  props.subtotal - (props.discount * 100) + props.estimatedTax + props.estimatedShipping
+const total = computed(
+  () => props.subtotal - props.discount * 100 + props.estimatedTax + props.estimatedShipping,
 )
 
 /**
@@ -116,7 +116,7 @@ const handleApplyDiscount = () => {
       couponEffect.value = false
     }, 1500)
   }
-  
+
   // Emit the discount code to parent
   emit('applyDiscount', localDiscountCode.value)
 }
