@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '@/lib/axios'
 
-interface User {
+export interface User {
   id: number
   username: string
   email: string
