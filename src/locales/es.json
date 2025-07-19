@@ -99,8 +99,8 @@
       "title": "Información",
       "email": {
         "title": "Correo Electrónico",
-        "info": "info@cyberstore.com",
-        "support": "soporte@cyberstore.com"
+        "info": "info{'@'}cyberstore.com",
+        "support": "soporte{'@'}cyberstore.com"
       },
       "phone": {
         "title": "Teléfono",
@@ -127,7 +127,7 @@
         },
         "email": {
           "label": "Correo Electrónico",
-          "placeholder": "tu@email.com"
+          "placeholder": "tu{'@'}email.com"
         },
         "subject": {
           "label": "Asunto",
@@ -213,7 +213,7 @@
         "nameLabel": "Nombre Completo",
         "namePlaceholder": "Introduce tu nombre completo",
         "emailLabel": "Correo Electrónico",
-        "emailPlaceholder": "tu@email.com",
+        "emailPlaceholder": "tu{'@'}email.com",
         "locationLabel": "Ubicación",
         "locationPlaceholder": "Introduce tu ubicación",
         "avatarTitle": "Foto de Perfil",
