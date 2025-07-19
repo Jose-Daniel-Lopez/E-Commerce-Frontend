@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import '@/assets/base.css'
 import { ref } from 'vue'
-import { OhVueIcon } from 'oh-vue-icons'
 import { useRouter } from 'vue-router'
 import { useLanguage } from '@/composables/useLanguage'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+import LoadingState from '@/components/shared/LoadingState.vue'
+import ErrorAlert from '@/components/shared/ErrorAlert.vue'
+import EmptyWishlistState from '@/components/wishlist/EmptyWishlistState.vue'
+import WishlistProductCard from '@/components/wishlist/WishlistProductCard.vue'
 
 const { t } = useLanguage()
 const router = useRouter()
@@ -86,61 +89,34 @@ function goToProduct(productId: number) {
 
       <!-- Wishlist Content -->
       <section class="max-w-7xl mx-auto mb-16 animate-fadeInUp">
-        <div v-if="loading" class="flex justify-center items-center h-40">
-          <span class="text-gray-500">{{ t('wishlist.loading') || 'Loading...' }}</span>
-        </div>
-        <div
-          v-else-if="error"
-          class="mb-6 flex items-center justify-between rounded-lg border border-red-200 bg-red-50 p-3 animate-slideDown"
-        >
-          <p class="font-srProDisplay text-sm text-red-700">{{ error }}</p>
-        </div>
+        <LoadingState 
+          v-if="loading" 
+          :loading-text="t('wishlist.loading') || 'Loading...'" 
+        />
+        
+        <ErrorAlert 
+          v-else-if="error" 
+          :message="error"
+          :show="!!error"
+        />
+        
         <div v-else>
-          <div v-if="wishlist.length === 0" class="text-center text-[#666] py-16 animate-fadeInUp">
-            <img
-              src="/public/images/Favorites.png"
-              alt="Wishlist"
-              class="mx-auto mb-6 w-24 h-24 opacity-60"
-            />
-            <h2 class="font-srProDisplay text-xl font-semibold mb-2">
-              {{ t('wishlist.empty') || 'Your wishlist is empty.' }}
-            </h2>
-            <p class="font-srProDisplay text-[#999] text-sm mb-6">
-              {{ t('wishlist.emptyDescription') || 'Browse products and add your favorites here.' }}
-            </p>
-            <button
-              @click="() => router.push('/catalog')"
-              class="px-6 py-3 bg-black text-white rounded-xl font-srProDisplay hover:bg-gray-900 transition"
-            >
-              {{ t('wishlist.goToCatalog') || 'Go to Catalog' }}
-            </button>
-          </div>
+          <EmptyWishlistState
+            v-if="wishlist.length === 0"
+            :empty-title="t('wishlist.empty') || 'Your wishlist is empty.'"
+            :empty-description="t('wishlist.emptyDescription') || 'Browse products and add your favorites here.'"
+            :catalog-button-text="t('wishlist.goToCatalog') || 'Go to Catalog'"
+            @go-to-catalog="() => router.push('/catalog')"
+          />
+          
           <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div
+            <WishlistProductCard
               v-for="item in wishlist"
               :key="item.id"
-              class="bg-white border border-[#EBEBEB] rounded-xl p-6 flex flex-col shadow-sm hover:shadow-lg transition cursor-pointer animate-fadeInUp"
-              @click="goToProduct(item.id)"
-            >
-              <img
-                :src="item.image || '/public/images/Favorites.png'"
-                :alt="item.name"
-                class="w-full h-48 object-contain mb-4 rounded-lg bg-gray-50"
-              />
-              <h3 class="font-srProDisplay text-lg font-semibold mb-2">{{ item.name }}</h3>
-              <p class="font-srProDisplay text-[#666] text-sm mb-4">{{ item.description }}</p>
-              <div class="flex items-center justify-between mt-auto">
-                <span class="font-srProDisplay text-black text-lg font-bold"
-                  >${{ item.price }}</span
-                >
-                <button
-                  @click.stop="removeFromWishlist(item.id)"
-                  class="px-4 py-2 bg-red-100 text-red-600 rounded-lg font-srProDisplay hover:bg-red-200 transition flex items-center justify-center"
-                >
-                  <OhVueIcon name="bi-trash" :scale="1.2" />
-                </button>
-              </div>
-            </div>
+              :product="item"
+              @go-to-product="goToProduct"
+              @remove="removeFromWishlist"
+            />
           </div>
         </div>
       </section>

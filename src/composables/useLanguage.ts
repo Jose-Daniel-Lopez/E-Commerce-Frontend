@@ -1,7 +1,23 @@
 import { computed } from 'vue'
+import type { Ref, ComputedRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { setLocale } from '@/plugins/i18n'
 import { availableLocales } from '@/locales'
+
+interface Locale {
+  code: string
+  name: string
+  [key: string]: unknown
+}
+
+interface UseLanguageReturn {
+  locale: Ref<string>
+  currentLocale: ComputedRef<Locale>
+  availableLocales: Locale[]
+  changeLanguage: (newLocale: string) => void
+  isCurrentLocale: (localeCode: string) => boolean
+  t: (key: string) => string
+}
 
 /**
  * Language management composable for Vue 3 applications
@@ -9,7 +25,7 @@ import { availableLocales } from '@/locales'
  * Provides reactive language switching functionality using Vue I18n.
  * Manages locale state, language changes, and translation utilities.
  *
- * @returns {Object} Language management utilities
+ * @returns {UseLanguageReturn} Language management utilities
  *
  * @example
  * ```typescript
@@ -36,7 +52,7 @@ import { availableLocales } from '@/locales'
  * }
  * ```
  */
-export function useLanguage(): object {
+export function useLanguage(): UseLanguageReturn {
   const { locale, t } = useI18n()
 
   /**
