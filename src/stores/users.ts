@@ -13,8 +13,6 @@ interface Address {
   isDefault?: boolean
 }
 
-
-
 interface User {
   id: number
   username: string
@@ -104,10 +102,10 @@ export const useUsersStore = defineStore('users', () => {
   const hasUsers = computed(() => users.value.length > 0)
 
   // Nuevo getter: usuarios por rol
-  const adminUsers = computed(() => users.value.filter(user => user.role === 'ADMIN'))
-  const customerUsers = computed(() => users.value.filter(user => user.role === 'CUSTOMER'))
-  const verifiedUsers = computed(() => users.value.filter(user => user.verified))
-  const unverifiedUsers = computed(() => users.value.filter(user => !user.verified))
+  const adminUsers = computed(() => users.value.filter((user) => user.role === 'ADMIN'))
+  const customerUsers = computed(() => users.value.filter((user) => user.role === 'CUSTOMER'))
+  const verifiedUsers = computed(() => users.value.filter((user) => user.verified))
+  const unverifiedUsers = computed(() => users.value.filter((user) => !user.verified))
 
   const usersByRole = computed(() => {
     const grouped: Record<string, User[]> = {}

@@ -490,7 +490,9 @@
               class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('account.addresses.title') }}</h2>
+                <h2 class="font-srProDisplay text-xl font-semibold text-black">
+                  {{ $t('account.addresses.title') }}
+                </h2>
                 <div class="flex gap-2">
                   <Button
                     @click="refreshAddresses"
@@ -876,7 +878,7 @@ const toggleEditProfile = () => {
       location: authStore.user?.location || '',
       avatar: authStore.user?.avatar || '',
       role: authStore.user?.role || '',
-      isVerified: authStore.user?.isVerified || false
+      isVerified: authStore.user?.isVerified || false,
     }
   }
 }
@@ -890,7 +892,7 @@ const cancelEdit = () => {
     location: user.value.location,
     avatar: user.value.avatar,
     role: user.value.role,
-    isVerified: user.value.isVerified
+    isVerified: user.value.isVerified,
   }
 }
 
@@ -1039,8 +1041,7 @@ const refreshAddresses = async () => {
   } catch (error) {
     console.error('Error al refrescar direcciones:', error)
   }
-};
-
+}
 </script>
 
 <style scoped>
