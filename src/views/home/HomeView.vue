@@ -37,7 +37,7 @@ export default {
     BrowseCategorySection,
     DiscountProductSection,
     HeroSection,
-    ProductsSection
-  }
+    ProductsSection,
+  },
 }
 </script>

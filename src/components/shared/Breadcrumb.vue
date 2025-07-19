@@ -19,10 +19,7 @@
         {{ breadcrumb.label }}
       </router-link>
 
-      <span
-        v-else
-        class="text-black font-srProDisplay font-medium"
-      >
+      <span v-else class="text-black font-srProDisplay font-medium">
         {{ breadcrumb.label }}
       </span>
     </template>

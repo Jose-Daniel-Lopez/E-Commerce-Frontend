@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 interface Category {
   id: number
   name: string
@@ -22,12 +21,10 @@ const sizeClasses = {
   xl: '4.5',
 }
 
-
 // Get the icon for the category, defaulting to 'hi-cube' if not provided
 const getCategoryIcon = (category: Category): string => {
   return category.icon || 'hi-cube'
 }
-
 </script>
 
 <template>

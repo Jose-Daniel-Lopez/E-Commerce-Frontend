@@ -1,6 +1,7 @@
 <template>
   <header
-    :class="`fixed z-50 h-[82px] w-full bg-white shadow-md lg:sticky lg:left-0 lg:top-0 lg:transition-transform lg:duration-300 ${show}`">
+    :class="`fixed z-50 h-[82px] w-full bg-white shadow-md lg:sticky lg:left-0 lg:top-0 lg:transition-transform lg:duration-300 ${show}`"
+  >
     <Wrapper class="flex h-[82px] items-center justify-between py-4 md:gap-3 xl:gap-8">
       <!-- logo start -->
       <div class="flex items-center justify-center lg:justify-start">
@@ -12,7 +13,8 @@
 
       <!-- search bar start -->
       <div
-        :class="`fixed left-0 ${positionSearchBar} w-full duration-500 ease-linear lg:visible lg:static lg:block lg:w-[401px] lg:opacity-100 lg:duration-0`">
+        :class="`fixed left-0 ${positionSearchBar} w-full duration-500 ease-linear lg:visible lg:static lg:block lg:w-[401px] lg:opacity-100 lg:duration-0`"
+      >
         <HeaderSearch />
       </div>
       <!-- search bar end -->
@@ -20,12 +22,16 @@
       <!-- Navigation start -->
       <div class="px-1 lg:w-[383px]">
         <ul
-          :class="`fixed top-[81px] z-50 flex h-screen w-[250px] flex-col items-start justify-start gap-0 bg-[#f1f1f1] p-2 font-srProDisplay text-base font-medium text-black *:w-full lg:static lg:h-auto lg:w-auto lg:flex-row lg:items-center lg:justify-center lg:gap-3 lg:bg-transparent lg:p-0 lg:text-gray-400 *:lg:text-center ${showMobileMenu} duration-500 ease-linear lg:duration-0`">
+          :class="`fixed top-[81px] z-50 flex h-screen w-[250px] flex-col items-start justify-start gap-0 bg-[#f1f1f1] p-2 font-srProDisplay text-base font-medium text-black *:w-full lg:static lg:h-auto lg:w-auto lg:flex-row lg:items-center lg:justify-center lg:gap-3 lg:bg-transparent lg:p-0 lg:text-gray-400 *:lg:text-center ${showMobileMenu} duration-500 ease-linear lg:duration-0`"
+        >
           <li
-            class="active block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+            class="active block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+          >
             <router-link to="/">{{ $t('nav.home') }}</router-link>
           </li>
-          <li class="relative flex cursor-pointer items-center justify-between p-3 hover:bg-blue-200 lg:gap-[2px] lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+          <li
+            class="relative flex cursor-pointer items-center justify-between p-3 hover:bg-blue-200 lg:gap-[2px] lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+          >
             <div @click.stop="toggleCategoriesDropdown" class="flex items-center w-full">
               <span>Categories</span>
               <svg
@@ -34,9 +40,11 @@
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
-                <path fill-rule="evenodd"
+                <path
+                  fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clip-rule="evenodd" />
+                  clip-rule="evenodd"
+                />
               </svg>
             </div>
 
@@ -54,18 +62,25 @@
                     @click="selectCategory(category)"
                     class="group flex items-center px-4 py-3 text-sm font-srProDisplay text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 cursor-pointer transition-all duration-200 border-l-4 border-transparent hover:border-gray-700"
                   >
-                    <span class="flex-1 group-hover:text-gray-800 group-hover:font-medium transition-all duration-200">{{ category.name }}</span>
+                    <span
+                      class="flex-1 group-hover:text-gray-800 group-hover:font-medium transition-all duration-200"
+                      >{{ category.name }}</span
+                    >
                   </div>
                 </div>
               </div>
             </div>
           </li>
-          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+          <li
+            class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+          >
             <router-link to="/about" class="block">
               {{ $t('nav.about') }}
             </router-link>
           </li>
-          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+          <li
+            class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+          >
             <router-link to="/contact">{{ $t('nav.contact') }}</router-link>
           </li>
         </ul>
@@ -78,11 +93,13 @@
         <div class="hidden lg:block">
           <LanguageSelector />
         </div>
-        <IconMenu @update-mobile-menu="setShowMobileMenu" @update-search-bar="setPositionSearchBar" />
+        <IconMenu
+          @update-mobile-menu="setShowMobileMenu"
+          @update-search-bar="setPositionSearchBar"
+        />
       </div>
       <!-- icons end -->
     </Wrapper>
-
   </header>
 </template>
 
@@ -115,7 +132,7 @@ const categories = [
   { name: 'Tablets', route: '/catalog/tablets' },
   { name: 'Hogar Inteligente', route: '/catalog/smart-home' },
   { name: 'Audio', route: '/catalog/audio' },
-  { name: 'Accesorios', route: '/catalog/accessories' }
+  { name: 'Accesorios', route: '/catalog/accessories' },
 ]
 
 // Function to show/hide the categories dropdown
@@ -171,25 +188,23 @@ onUnmounted(() => {
   window.removeEventListener('scroll', controlNavbar)
   document.removeEventListener('click', closeAllDropdowns)
 })
-
 </script>
 
 <style scoped>
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
 
-  button:focus {
-    outline: none;
-    box-shadow: none;
-  }
+a:focus {
+  outline: none;
+  box-shadow: none;
+}
 
-  a:focus {
-    outline: none;
-    box-shadow: none;
-  }
-
-  svg:focus {
-    outline: none;
-    box-shadow: none;
-  }
+svg:focus {
+  outline: none;
+  box-shadow: none;
+}
 
 /* Categories dropdown custom scrollbar */
 .categories-scroll::-webkit-scrollbar {

@@ -20,10 +20,7 @@
               class="cursor-pointer !w-auto !flex-shrink-0 font-srProDisplay text-base sm:text-lg font-medium outline-none"
               @click="handleTabClick(tab)"
             >
-              <span
-                class="tab whitespace-nowrap px-2 py-1"
-                :class="{ 'activeTab': value === tab }"
-              >
+              <span class="tab whitespace-nowrap px-2 py-1" :class="{ activeTab: value === tab }">
                 {{ tab }}
               </span>
             </SwiperSlide>
@@ -37,11 +34,19 @@
             type="button"
             aria-label="Previous slide"
             :disabled="!canGoPrev"
-            style="transform: scaleX(-1);"
+            style="transform: scaleX(-1)"
           >
             <!-- SVG personalizado, tamaño 1.2em, flecha izquierda -->
-            <svg :width="'1.2em'" :height="'1.2em'" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M294.1 256L167 129c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.3 34 0L345 239c9.1 9.1 9.3 23.7.7 33.1L201.1 417c-4.7 4.7-10.9 7-17 7s-12.3-2.3-17-7c-9.4-9.4-9.4-24.6 0-33.9l127-127.1z"></path>
+            <svg
+              :width="'1.2em'"
+              :height="'1.2em'"
+              viewBox="0 0 512 512"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M294.1 256L167 129c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.3 34 0L345 239c9.1 9.1 9.3 23.7.7 33.1L201.1 417c-4.7 4.7-10.9 7-17 7s-12.3-2.3-17-7c-9.4-9.4-9.4-24.6 0-33.9l127-127.1z"
+              ></path>
             </svg>
           </button>
           <button
@@ -52,8 +57,16 @@
             :disabled="!canGoNext"
           >
             <!-- SVG personalizado, tamaño 1.2em, flecha derecha -->
-            <svg :width="'1.2em'" :height="'1.2em'" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M294.1 256L167 129c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.3 34 0L345 239c9.1 9.1 9.3 23.7.7 33.1L201.1 417c-4.7 4.7-10.9 7-17 7s-12.3-2.3-17-7c-9.4-9.4-9.4-24.6 0-33.9l127-127.1z"></path>
+            <svg
+              :width="'1.2em'"
+              :height="'1.2em'"
+              viewBox="0 0 512 512"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M294.1 256L167 129c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.3 34 0L345 239c9.1 9.1 9.3 23.7.7 33.1L201.1 417c-4.7 4.7-10.9 7-17 7s-12.3-2.3-17-7c-9.4-9.4-9.4-24.6 0-33.9l127-127.1z"
+              ></path>
             </svg>
           </button>
         </div>
@@ -80,10 +93,7 @@
         >
           <!-- Products -->
           <template v-if="filteredProducts.length > 0">
-            <SwiperSlide
-              v-for="product in filteredProducts"
-              :key="product.id"
-            >
+            <SwiperSlide v-for="product in filteredProducts" :key="product.id">
               <ProductCard
                 :product="product"
                 class="mb-4 w-[163.5px] xs:w-[190px] sm:w-[298px] md:w-[240px] xl:w-[268px]"
@@ -93,9 +103,15 @@
 
           <!-- No Data State -->
           <SwiperSlide v-else>
-            <div class="mb-4 ml-[2px] h-auto w-[163.5px] rounded-[9px] px-3 py-6 duration-500 hover:scale-[1.02] xs:w-[190px] sm:mb-0 sm:w-[298px] md:h-[435px] md:w-[240px] md:px-4 xl:w-[268px]">
-              <div class="flex h-[355px] w-full flex-col items-center justify-center gap-4 sm:h-[330px] md:h-[390px]">
-                <div class="flex items-center justify-center font-srProDisplay text-xl font-semibold">
+            <div
+              class="mb-4 ml-[2px] h-auto w-[163.5px] rounded-[9px] px-3 py-6 duration-500 hover:scale-[1.02] xs:w-[190px] sm:mb-0 sm:w-[298px] md:h-[435px] md:w-[240px] md:px-4 xl:w-[268px]"
+            >
+              <div
+                class="flex h-[355px] w-full flex-col items-center justify-center gap-4 sm:h-[330px] md:h-[390px]"
+              >
+                <div
+                  class="flex items-center justify-center font-srProDisplay text-xl font-semibold"
+                >
                   No hay datos
                 </div>
               </div>
@@ -107,8 +123,6 @@
             <ViewMoreCard />
           </SwiperSlide>
         </Swiper>
-
-
       </div>
     </Wrapper>
   </section>
@@ -147,156 +161,156 @@ const tabs = ['Nuevos', 'Populares', 'Próximamente']
 const products = [
   {
     id: 1,
-    name: "Apple iPhone 14 Pro Max 128GB Deep Purple(MQ9T3RX/A)",
-    featureType: "New Arrival",
-    originalPrice: "900",
-    discountPrice: "",
+    name: 'Apple iPhone 14 Pro Max 128GB Deep Purple(MQ9T3RX/A)',
+    featureType: 'New Arrival',
+    originalPrice: '900',
+    discountPrice: '',
     image: {
-      url: "/images/Iphone-14-pro-purple.png",
-      altText: "Iphone-14-pro-purple",
+      url: '/images/Iphone-14-pro-purple.png',
+      altText: 'Iphone-14-pro-purple',
     },
   },
   {
     id: 2,
-    name: "Blackmagic Pocket Cinema Camera 6k",
-    featureType: "New Arrival",
-    originalPrice: "2535",
-    discountPrice: "",
+    name: 'Blackmagic Pocket Cinema Camera 6k',
+    featureType: 'New Arrival',
+    originalPrice: '2535',
+    discountPrice: '',
     image: {
-      url: "/images/Camera.png",
-      altText: "Camera",
+      url: '/images/Camera.png',
+      altText: 'Camera',
     },
   },
   {
     id: 3,
-    name: "Apple Watch Series 9 GPS 41mm Starlight Aluminum Case",
-    featureType: "New Arrival",
-    originalPrice: "399",
-    discountPrice: "",
+    name: 'Apple Watch Series 9 GPS 41mm Starlight Aluminum Case',
+    featureType: 'New Arrival',
+    originalPrice: '399',
+    discountPrice: '',
     image: {
-      url: "/images/Apple-Watch.png",
-      altText: "Apple-Watch",
+      url: '/images/Apple-Watch.png',
+      altText: 'Apple-Watch',
     },
   },
   {
     id: 4,
-    name: "AirPods Max Silver",
-    featureType: "New Arrival",
-    originalPrice: "549",
-    discountPrice: "",
+    name: 'AirPods Max Silver',
+    featureType: 'New Arrival',
+    originalPrice: '549',
+    discountPrice: '',
     image: {
-      url: "/images/Apple-airPods.png",
-      altText: "Apple-airPods",
+      url: '/images/Apple-airPods.png',
+      altText: 'Apple-airPods',
     },
   },
   {
     id: 5,
-    name: "Samsung Galaxy Watch6",
-    featureType: "New Arrival",
-    originalPrice: "369",
-    discountPrice: "",
+    name: 'Samsung Galaxy Watch6',
+    featureType: 'New Arrival',
+    originalPrice: '369',
+    discountPrice: '',
     image: {
-      url: "/images/Samsung-Watch.png",
-      altText: "Samsung-Watch",
+      url: '/images/Samsung-Watch.png',
+      altText: 'Samsung-Watch',
     },
   },
   {
     id: 6,
-    name: "Galaxy Z Fold5 Unlocked | 256GB | Phantom Black",
-    featureType: "New Arrival",
-    originalPrice: "1799",
-    discountPrice: "",
+    name: 'Galaxy Z Fold5 Unlocked | 256GB | Phantom Black',
+    featureType: 'New Arrival',
+    originalPrice: '1799',
+    discountPrice: '',
     image: {
-      url: "/images/Galaxy-Z-Mobile.png",
-      altText: "Galaxy-Z-Mobile",
+      url: '/images/Galaxy-Z-Mobile.png',
+      altText: 'Galaxy-Z-Mobile',
     },
   },
   {
     id: 7,
-    name: "Galaxy Buds FE Graphite",
-    featureType: "New Arrival",
-    originalPrice: "99.99",
-    discountPrice: "",
+    name: 'Galaxy Buds FE Graphite',
+    featureType: 'New Arrival',
+    originalPrice: '99.99',
+    discountPrice: '',
     image: {
-      url: "/images/Galaxy-buds-FE.png",
-      altText: "Galaxy-buds-FE",
+      url: '/images/Galaxy-buds-FE.png',
+      altText: 'Galaxy-buds-FE',
     },
   },
   {
     id: 8,
     name: "Apple iPad 9 10.2'' 64GB Wi-Fi Silver (MK2L3) 2021",
-    featureType: "New Arrival",
-    originalPrice: "398",
-    discountPrice: "",
+    featureType: 'New Arrival',
+    originalPrice: '398',
+    discountPrice: '',
     image: {
-      url: "/images/Apple-iPad.png",
-      altText: "Apple-iPad",
+      url: '/images/Apple-iPad.png',
+      altText: 'Apple-iPad',
     },
   },
   {
     id: 9,
-    name: "Apple iPhone 11 128GB White (MQ233)",
-    featureType: "New Arrival",
-    originalPrice: "550",
-    discountPrice: "",
+    name: 'Apple iPhone 11 128GB White (MQ233)',
+    featureType: 'New Arrival',
+    originalPrice: '550',
+    discountPrice: '',
     image: {
-      url: "/images/Iphone-14-pro-white.png",
-      altText: "Iphone-14-pro-white",
+      url: '/images/Iphone-14-pro-white.png',
+      altText: 'Iphone-14-pro-white',
     },
   },
   {
     id: 10,
-    name: "Apple iPhone 13 mini 128GB Pink (MLK23)",
-    featureType: "New Arrival",
-    originalPrice: "850",
-    discountPrice: "",
+    name: 'Apple iPhone 13 mini 128GB Pink (MLK23)',
+    featureType: 'New Arrival',
+    originalPrice: '850',
+    discountPrice: '',
     image: {
-      url: "/images/Iphone-14-pro-pink.png",
-      altText: "Iphone-14-pro-pink",
+      url: '/images/Iphone-14-pro-pink.png',
+      altText: 'Iphone-14-pro-pink',
     },
   },
   {
     id: 11,
-    name: "Apple iPhone 14 Pro 256GB Space Black (MQ0T3)",
-    featureType: "Up Coming...",
-    originalPrice: "N/A",
-    discountPrice: "",
+    name: 'Apple iPhone 14 Pro 256GB Space Black (MQ0T3)',
+    featureType: 'Up Coming...',
+    originalPrice: 'N/A',
+    discountPrice: '',
     image: {
-      url: "/images/Iphone-14-pro-black.png",
-      altText: "Iphone-14-pro-black",
+      url: '/images/Iphone-14-pro-black.png',
+      altText: 'Iphone-14-pro-black',
     },
   },
   {
     id: 12,
-    name: "Apple iPhone 14 Pro 256GB Silver (MQ103)",
-    featureType: "Up Coming...",
-    originalPrice: "1399",
-    discountPrice: "",
+    name: 'Apple iPhone 14 Pro 256GB Silver (MQ103)',
+    featureType: 'Up Coming...',
+    originalPrice: '1399',
+    discountPrice: '',
     image: {
-      url: "/images/Iphone-14-pro-silver.png",
-      altText: "Iphone-14-pro-silver",
+      url: '/images/Iphone-14-pro-silver.png',
+      altText: 'Iphone-14-pro-silver',
     },
   },
   {
     id: 13,
-    name: "Apple iPhone 14 Pro 1TB Gold (MQ2V3)",
-    featureType: "Up Coming...",
-    originalPrice: "1600",
-    discountPrice: "",
+    name: 'Apple iPhone 14 Pro 1TB Gold (MQ2V3)',
+    featureType: 'Up Coming...',
+    originalPrice: '1600',
+    discountPrice: '',
     image: {
-      url: "/images/Iphone-14-pro-gold.png",
-      altText: "Iphone-14-pro-gold",
+      url: '/images/Iphone-14-pro-gold.png',
+      altText: 'Iphone-14-pro-gold',
     },
   },
   {
     id: 14,
-    name: "Samsung Headphone Red",
-    featureType: "Up Coming...",
-    originalPrice: "299",
-    discountPrice: "",
+    name: 'Samsung Headphone Red',
+    featureType: 'Up Coming...',
+    originalPrice: '299',
+    discountPrice: '',
     image: {
-      url: "/images/Headphones.png",
-      altText: "samsung headphones",
+      url: '/images/Headphones.png',
+      altText: 'samsung headphones',
     },
   },
 ]
@@ -305,12 +319,12 @@ const products = [
 const filteredProducts = computed(() => {
   // Map Spanish tabs to English featureType
   const featureTypeMap = {
-    'Nuevos': 'New Arrival',
-    'Populares': 'BestSeller',
-    'Próximamente': 'Up Coming...'
+    Nuevos: 'New Arrival',
+    Populares: 'BestSeller',
+    Próximamente: 'Up Coming...',
   }
   const featureType = featureTypeMap[value.value] || value.value
-  return products.filter(item => item.featureType === featureType)
+  return products.filter((item) => item.featureType === featureType)
 })
 
 const productLength = computed(() => filteredProducts.value.length)
@@ -318,7 +332,7 @@ const productLength = computed(() => filteredProducts.value.length)
 // Grid settings (dinámico basado en cantidad de productos)
 const gridSettings = computed(() => ({
   rows: filteredProducts.value.length > 6 ? 2 : 1,
-  fill: 'row'
+  fill: 'row',
 }))
 
 // Helper functions (exactas del original)
@@ -339,20 +353,20 @@ const mobileRowSize = (productLength) => {
 const tabBreakpoints = {
   320: {
     slidesPerView: 2,
-    spaceBetween: 4
+    spaceBetween: 4,
   },
   480: {
     slidesPerView: 3,
-    spaceBetween: 8
+    spaceBetween: 8,
   },
   639: {
     slidesPerView: 3,
-    spaceBetween: 12
+    spaceBetween: 12,
   },
   1024: {
     slidesPerView: 3,
-    spaceBetween: 16
-  }
+    spaceBetween: 16,
+  },
 }
 
 const productBreakpoints = computed(() => ({
@@ -361,25 +375,25 @@ const productBreakpoints = computed(() => ({
     spaceBetween: 16,
     grid: {
       rows: 4,
-      fill: 'row'
-    }
+      fill: 'row',
+    },
   },
   767: {
     slidesPerView: 2,
     spaceBetween: 16,
     grid: {
       rows: mobileRowSize(productLength.value),
-      fill: 'row'
-    }
+      fill: 'row',
+    },
   },
   1024: {
     slidesPerView: 3,
     spaceBetween: 16,
     grid: {
       rows: tabletRowSize(productLength.value),
-      fill: 'row'
-    }
-  }
+      fill: 'row',
+    },
+  },
 }))
 
 // Methods
@@ -417,7 +431,7 @@ const handleTabClick = (tab) => {
 
   // Replicar el comportamiento de activeTab del original
   const tabs = document.querySelectorAll('.productTag .tab')
-  tabs.forEach(item => {
+  tabs.forEach((item) => {
     item.classList.remove('activeTab')
   })
   event.target.classList.add('activeTab')
@@ -460,7 +474,6 @@ onMounted(() => {
 .tab:hover {
   color: #000000;
 }
-
 
 /* BrowseCategory style navigation buttons for ProductsSection (sin círculo, solo icono, tamaño 1.2em) */
 .custom-swiper-button-prev-products-browse,

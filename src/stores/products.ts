@@ -42,7 +42,7 @@ export const useProductsStore = defineStore('products', () => {
     totalProducts: 0,
     inStockProducts: 0,
     outOfStockProducts: 0,
-    averagePrice: 0
+    averagePrice: 0,
   })
   const pagination = ref<PaginationInfo>({
     page: 0,
@@ -51,7 +51,7 @@ export const useProductsStore = defineStore('products', () => {
     totalPages: 0,
     first: true,
     last: true,
-    numberOfElements: 0
+    numberOfElements: 0,
   })
 
   // Getters
@@ -81,8 +81,8 @@ export const useProductsStore = defineStore('products', () => {
       const response = await api.get('/products', {
         params: {
           page,
-          size
-        }
+          size,
+        },
       })
 
       const data = response.data
@@ -97,7 +97,7 @@ export const useProductsStore = defineStore('products', () => {
         totalPages: data.page?.totalPages || data.totalPages || 0,
         first: data.page?.first || data.first || true,
         last: data.page?.last || data.last || true,
-        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0
+        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0,
       }
     } catch (err) {
       console.error('Error fetching products:', err)
@@ -131,15 +131,12 @@ export const useProductsStore = defineStore('products', () => {
     currentCategoryId.value = categoryId
 
     try {
-      const response = await api.get(
-        `/categories/${categoryId}/products`,
-        {
-          params: {
-            page,
-            size
-          }
-        }
-      )
+      const response = await api.get(`/categories/${categoryId}/products`, {
+        params: {
+          page,
+          size,
+        },
+      })
 
       const data = response.data
       products.value = data._embedded ? data._embedded.products : data.content
@@ -152,7 +149,7 @@ export const useProductsStore = defineStore('products', () => {
         totalPages: data.page?.totalPages || data.totalPages || 0,
         first: data.page?.first || data.first || true,
         last: data.page?.last || data.last || true,
-        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0
+        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0,
       }
     } catch (err) {
       console.error(`Error fetching products for category ${categoryId}:`, err)
@@ -235,7 +232,11 @@ export const useProductsStore = defineStore('products', () => {
   const goToNextPage = async () => {
     if (!pagination.value.last) {
       if (currentCategoryId.value) {
-        await fetchProductsByCategory(currentCategoryId.value, pagination.value.page + 1, pagination.value.size)
+        await fetchProductsByCategory(
+          currentCategoryId.value,
+          pagination.value.page + 1,
+          pagination.value.size,
+        )
       } else {
         await fetchProducts(pagination.value.page + 1, pagination.value.size)
       }
@@ -245,7 +246,11 @@ export const useProductsStore = defineStore('products', () => {
   const goToPreviousPage = async () => {
     if (!pagination.value.first) {
       if (currentCategoryId.value) {
-        await fetchProductsByCategory(currentCategoryId.value, pagination.value.page - 1, pagination.value.size)
+        await fetchProductsByCategory(
+          currentCategoryId.value,
+          pagination.value.page - 1,
+          pagination.value.size,
+        )
       } else {
         await fetchProducts(pagination.value.page - 1, pagination.value.size)
       }
@@ -265,7 +270,11 @@ export const useProductsStore = defineStore('products', () => {
   const goToLastPage = async () => {
     if (!pagination.value.last) {
       if (currentCategoryId.value) {
-        await fetchProductsByCategory(currentCategoryId.value, pagination.value.totalPages - 1, pagination.value.size)
+        await fetchProductsByCategory(
+          currentCategoryId.value,
+          pagination.value.totalPages - 1,
+          pagination.value.size,
+        )
       } else {
         await fetchProducts(pagination.value.totalPages - 1, pagination.value.size)
       }
@@ -291,7 +300,7 @@ export const useProductsStore = defineStore('products', () => {
         totalProducts: pagination.value.totalElements,
         inStockProducts: 0,
         outOfStockProducts: 0,
-        averagePrice: 0
+        averagePrice: 0,
       }
     }
   }

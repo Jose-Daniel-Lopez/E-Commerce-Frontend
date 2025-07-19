@@ -24,16 +24,16 @@ import MinimalNavButtons from './MinimalNavButtons.vue'
 defineProps({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   canGoPrev: {
     type: Boolean,
-    default: false
+    default: false,
   },
   canGoNext: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 
 // Emits

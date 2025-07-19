@@ -3,7 +3,6 @@ import { onMounted, ref, computed, watch } from 'vue'
 import { useProductsStore } from '@/stores/products'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
-
 const productsStore = useProductsStore()
 
 // State
@@ -24,7 +23,7 @@ const collapsedFilters = ref({
   protectionClass: false,
   screenDiagonal: false,
   screenType: false,
-  batteryCapacity: false
+  batteryCapacity: false,
 })
 
 // Watch for price range changes to ensure correct logic
@@ -32,21 +31,21 @@ watch(
   () => priceRange.value.min,
   (newMin: number) => {
     if (newMin > priceRange.value.max) {
-      priceRange.value.min = priceRange.value.max;
+      priceRange.value.min = priceRange.value.max
     } else if (newMin < 0) {
-      priceRange.value.min = 0;
+      priceRange.value.min = 0
     }
-  }
+  },
 )
 watch(
   () => priceRange.value.max,
   (newMax: number) => {
     if (newMax < priceRange.value.min) {
-      priceRange.value.max = priceRange.value.min;
+      priceRange.value.max = priceRange.value.min
     } else if (newMax > 5000) {
-      priceRange.value.max = 5000;
+      priceRange.value.max = 5000
     }
-  }
+  },
 )
 
 // Computed
@@ -59,7 +58,7 @@ const filteredBrands = computed(() => {
   if (!query || query.length < 2) return productsStore.brands
 
   return productsStore.brands
-    .map(brand => {
+    .map((brand) => {
       const brandName = brand.name.toLowerCase()
       let score = 0
 
@@ -68,7 +67,8 @@ const filteredBrands = computed(() => {
       // Starts with query
       else if (brandName.startsWith(query)) score = 500 + (100 - query.length)
       // Word starts with query
-      else if (brandName.split(/\s+/).some(word => word.startsWith(query))) score = 300 + (100 - query.length)
+      else if (brandName.split(/\s+/).some((word) => word.startsWith(query)))
+        score = 300 + (100 - query.length)
       // Contains query
       else if (brandName.includes(query)) score = 100 + (100 - brandName.indexOf(query))
 
@@ -87,7 +87,7 @@ const filteredMemoryOptions = computed(() => {
   if (!query || query.length < 2) return productsStore.memories
 
   return productsStore.memories
-    .map(memory => {
+    .map((memory) => {
       const memoryValue = memory.value.toLowerCase()
       let score = 0
 
@@ -108,7 +108,7 @@ const filteredMemoryOptions = computed(() => {
 // Breadcrumb config
 const breadcrumbs = ref([
   { label: 'catalog.title', to: '/catalog' },
-  { label: 'smartphones.title' }
+  { label: 'smartphones.title' },
 ])
 
 // Mock products data
@@ -118,64 +118,64 @@ const mockProducts = [
     name: 'Apple iPhone 14 Pro 512GB Gold (MQ233)',
     price: 1437,
     image: '/images/Iphone-14-pro-Gold.png',
-    favorite: false
+    favorite: false,
   },
   {
     id: 2,
     name: 'Apple iPhone 11 128GB White (MQ233)',
     price: 510,
     image: '/images/Apple-phone.png',
-    favorite: false
+    favorite: false,
   },
   {
     id: 3,
     name: 'Apple iPhone 11 128GB White (MQ233)',
     price: 550,
     image: '/images/Apple-phone.png',
-    favorite: false
+    favorite: false,
   },
   {
     id: 4,
     name: 'Apple iPhone 14 Pro 1TB Gold (MQ2YJ)',
     price: 1490,
     image: '/images/Iphone-14-pro-Gold.png',
-    favorite: false
+    favorite: false,
   },
   {
     id: 5,
     name: 'Apple iPhone 14 Pro 1TB Gold (MQ2YJ)',
     price: 1399,
     image: '/images/Iphone-14-pro-Gold.png',
-    favorite: false
+    favorite: false,
   },
   {
     id: 6,
     name: 'Apple iPhone 14 Pro 128GB Deep Purple (MQ0G3)',
     price: 1600,
     image: '/images/Iphone-14-pro-purple.png',
-    favorite: false
+    favorite: false,
   },
   {
     id: 7,
     name: 'Apple iPhone 13 mini 128GB Pink (MLK23)',
     price: 850,
     image: '/images/Iphone-14-pro-pink.png',
-    favorite: false
+    favorite: false,
   },
   {
     id: 8,
     name: 'Apple iPhone 14 Pro 256GB Space Black (MQ0T3)',
     price: 1399,
     image: '/images/Iphone-14-pro-black.png',
-    favorite: false
+    favorite: false,
   },
   {
     id: 9,
     name: 'Apple iPhone 14 Pro 256GB Silver (MQ103)',
     price: 1399,
     image: '/images/Iphone-14-pro-silver.png',
-    favorite: false
-  }
+    favorite: false,
+  },
 ]
 
 onMounted(async () => {
@@ -183,7 +183,7 @@ onMounted(async () => {
   await Promise.all([
     productsStore.fetchProducts(),
     productsStore.fetchBrands(),
-    productsStore.fetchMemories()
+    productsStore.fetchMemories(),
   ])
 })
 
@@ -197,16 +197,18 @@ const toggleFavorite = (productId: number) => {
   favoriteProducts.value.set(productId, !isFavorite)
 }
 
-
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const goToProductDetails = (productId: number) => {
-  router.push({ name: 'productDetails', params: { productId } }).then(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }).catch(error => {
-    console.error('Navigation error:', error)
-  })
+  router
+    .push({ name: 'productDetails', params: { productId } })
+    .then(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    })
+    .catch((error) => {
+      console.error('Navigation error:', error)
+    })
 }
 
 const buyNow = (productId: number) => {
@@ -252,22 +254,42 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
                 </svg>
               </button>
             </div>
-            <div v-show="!collapsedFilters.price" class="flex flex-col space-y-4 transition-all duration-200">
+            <div
+              v-show="!collapsedFilters.price"
+              class="flex flex-col space-y-4 transition-all duration-200"
+            >
               <div class="flex items-center space-x-4">
                 <div class="flex-1">
-                  <label class="text-xs font-srProDisplay text-gray-500 mt-1 block mb-2">From</label>
-                  <input type="number" v-model="priceRange.min" placeholder="1200"
-                    class="w-full px-2 py-2 text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <label class="text-xs font-srProDisplay text-gray-500 mt-1 block mb-2"
+                    >From</label
+                  >
+                  <input
+                    type="number"
+                    v-model="priceRange.min"
+                    placeholder="1200"
+                    class="w-full px-2 py-2 text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
                 <span class="text-gray-200 font-srProDisplay mt-6"> — </span>
                 <div class="flex-1">
-                  <label class="text-xs text-right font-srProDisplay text-gray-500 mt-1 block mb-2">To</label>
-                  <input type="number" v-model="priceRange.max" placeholder="1200"
-                    class="w-full py-2 text-right text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <label class="text-xs text-right font-srProDisplay text-gray-500 mt-1 block mb-2"
+                    >To</label
+                  >
+                  <input
+                    type="number"
+                    v-model="priceRange.max"
+                    placeholder="1200"
+                    class="w-full py-2 text-right text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
               </div>
 
@@ -278,8 +300,8 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                   <div
                     class="absolute h-1 bg-black rounded-full"
                     :style="{
-                      left: ((priceRange.min / 5000) * 100) + '%',
-                      width: (((priceRange.max - priceRange.min) / 5000) * 100) + '%'
+                      left: (priceRange.min / 5000) * 100 + '%',
+                      width: ((priceRange.max - priceRange.min) / 5000) * 100 + '%',
                     }"
                   ></div>
 
@@ -291,7 +313,7 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                     :max="5000"
                     step="50"
                     class="absolute w-full h-1 appearance-none bg-transparent pointer-events-none slider-thumb-min"
-                  >
+                  />
 
                   <!-- Max range input -->
                   <input
@@ -301,7 +323,7 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                     :max="5000"
                     step="50"
                     class="absolute w-full h-1 appearance-none bg-transparent pointer-events-none slider-thumb-max"
-                  >
+                  />
                 </div>
               </div>
             </div>
@@ -324,7 +346,12 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
                 </svg>
               </button>
             </div>
@@ -341,9 +368,16 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
               </div>
               <div class="space-y-3 max-h-64 overflow-y-auto">
                 <div v-for="brand in filteredBrands" :key="brand.name" class="flex items-center">
-                  <input :id="'brand-' + brand.name" type="checkbox" v-model="brand.checked"
-                    class="custom-checkbox focus:ring-1 focus:ring-gray-400">
-                  <label :for="'brand-' + brand.name" class="ml-3 flex-1 flex items-center justify-between">
+                  <input
+                    :id="'brand-' + brand.name"
+                    type="checkbox"
+                    v-model="brand.checked"
+                    class="custom-checkbox focus:ring-1 focus:ring-gray-400"
+                  />
+                  <label
+                    :for="'brand-' + brand.name"
+                    class="ml-3 flex-1 flex items-center justify-between"
+                  >
                     <span class="text-sm font-srProDisplay text-gray-1000">{{ brand.name }}</span>
                   </label>
                 </div>
@@ -368,7 +402,12 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
                 </svg>
               </button>
             </div>
@@ -384,17 +423,27 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                 />
               </div>
               <div class="space-y-3 max-h-48 overflow-y-auto">
-                <div v-for="memory in filteredMemoryOptions" :key="memory.value" class="flex items-center">
-                  <input :id="'memory-' + memory.value" type="checkbox" v-model="memory.checked"
-                    class="custom-checkbox focus:ring-1 focus:ring-gray-400">
-                  <label :for="'memory-' + memory.value" class="ml-3 flex-1 flex items-center justify-between">
+                <div
+                  v-for="memory in filteredMemoryOptions"
+                  :key="memory.value"
+                  class="flex items-center"
+                >
+                  <input
+                    :id="'memory-' + memory.value"
+                    type="checkbox"
+                    v-model="memory.checked"
+                    class="custom-checkbox focus:ring-1 focus:ring-gray-400"
+                  />
+                  <label
+                    :for="'memory-' + memory.value"
+                    class="ml-3 flex-1 flex items-center justify-between"
+                  >
                     <span class="text-sm font-srProDisplay text-gray-1000">{{ memory.value }}</span>
                   </label>
                 </div>
               </div>
             </div>
           </div>
-
 
           <!-- Additional Filters -->
           <div class="mb-6">
@@ -413,14 +462,16 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
                 </svg>
               </button>
             </div>
-            <div
-              v-show="!collapsedFilters.protectionClass"
-              class="transition-all duration-200"
-            >
+            <div v-show="!collapsedFilters.protectionClass" class="transition-all duration-200">
               <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
             </div>
           </div>
@@ -441,14 +492,16 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
                 </svg>
               </button>
             </div>
-            <div
-              v-show="!collapsedFilters.screenDiagonal"
-              class="transition-all duration-200"
-            >
+            <div v-show="!collapsedFilters.screenDiagonal" class="transition-all duration-200">
               <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
             </div>
           </div>
@@ -469,14 +522,16 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
                 </svg>
               </button>
             </div>
-            <div
-              v-show="!collapsedFilters.screenType"
-              class="transition-all duration-200"
-            >
+            <div v-show="!collapsedFilters.screenType" class="transition-all duration-200">
               <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
             </div>
           </div>
@@ -497,14 +552,16 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
                 </svg>
               </button>
             </div>
-            <div
-              v-show="!collapsedFilters.batteryCapacity"
-              class="transition-all duration-200"
-            >
+            <div v-show="!collapsedFilters.batteryCapacity" class="transition-all duration-200">
               <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
             </div>
           </div>
@@ -516,10 +573,15 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
           <div class="flex items-center justify-between mb-6">
             <div>
               <h1 class="font-srProDisplay text-xl font-semibold text-black">Selected Products</h1>
-              <p class="font-srProDisplay text-gray-600">{{ mockProducts.length }} products found</p>
+              <p class="font-srProDisplay text-gray-600">
+                {{ mockProducts.length }} products found
+              </p>
             </div>
             <div class="flex items-center">
-              <select v-model="sortBy" class="font-srProDisplay border border-[#EBEBEB] rounded-md w-70 px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-gray-500">
+              <select
+                v-model="sortBy"
+                class="font-srProDisplay border border-[#EBEBEB] rounded-md w-70 px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-gray-500"
+              >
                 <option value="rating">By rating</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
@@ -557,13 +619,10 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                       d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                     />
                   </svg>
-                  <svg
-                    v-else
-                    class="w-6 h-6 text-red-600"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  <svg v-else class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
                   </svg>
                 </button>
               </div>
@@ -585,15 +644,21 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
                   <div class="flex flex-col gap-4">
                     <!-- Product Name -->
                     <div class="h-[75px] sm:h-[50px]">
-                    <a
-                      href="#"
-                      @click.prevent="goToProductDetails(product.id)"
-                      class="block cursor-pointer"
-                    >
-                      <h3 class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2">
-                        {{ product.name.length <= 40 ? product.name : `${product.name.slice(0, 40)}...` }}
-                      </h3>
-                    </a>
+                      <a
+                        href="#"
+                        @click.prevent="goToProductDetails(product.id)"
+                        class="block cursor-pointer"
+                      >
+                        <h3
+                          class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2"
+                        >
+                          {{
+                            product.name.length <= 40
+                              ? product.name
+                              : `${product.name.slice(0, 40)}...`
+                          }}
+                        </h3>
+                      </a>
                     </div>
 
                     <!-- Product Price -->
@@ -620,30 +685,52 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
 
           <!-- Pagination -->
           <div class="flex items-center justify-center space-x-2">
-            <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
-              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+            <button
+              @click="goToPage(currentPage - 1)"
+              :disabled="currentPage === 1"
+              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                ></path>
               </svg>
             </button>
 
-            <button v-for="page in totalPages" :key="page" @click="goToPage(page)"
+            <button
+              v-for="page in totalPages"
+              :key="page"
+              @click="goToPage(page)"
               :class="[
                 'px-3 py-2 rounded-md text-sm font-medium',
-                page === currentPage
-                  ? 'bg-black text-white'
-                  : 'text-gray-700 hover:bg-gray-100'
-              ]">
+                page === currentPage ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-100',
+              ]"
+            >
               {{ page }}
             </button>
 
             <span class="px-3 py-2 text-gray-500">...</span>
-            <button class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100">12</button>
+            <button
+              class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+            >
+              12
+            </button>
 
-            <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
-              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+            <button
+              @click="goToPage(currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                ></path>
               </svg>
             </button>
           </div>

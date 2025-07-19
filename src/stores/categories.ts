@@ -38,39 +38,37 @@ export const useCategoriesStore = defineStore('categories', () => {
   })
 
   // Actions
-const fetchCategories = async () => {
-  loading.value = true
-  error.value = ''
+  const fetchCategories = async () => {
+    loading.value = true
+    error.value = ''
 
-  try {
-    const response = await api.get('/categories')
+    try {
+      const response = await api.get('/categories')
 
-    // Check if response contains embedded categories
-    categories.value = response.data._embedded
-      ? response.data._embedded.categories
-      : response.data
+      // Check if response contains embedded categories
+      categories.value = response.data._embedded
+        ? response.data._embedded.categories
+        : response.data
 
-    // Load products for each category
-    for (const category of categories.value) {
-      try {
-        await fetchCategoryWithProducts(category.id)
-      } catch (err) {
-        console.warn(`Could not load products for category ${category.id}:`, err)
+      // Load products for each category
+      for (const category of categories.value) {
+        try {
+          await fetchCategoryWithProducts(category.id)
+        } catch (err) {
+          console.warn(`Could not load products for category ${category.id}:`, err)
+        }
       }
+    } catch (err) {
+      console.error('Error fetching categories:', err)
+      error.value = 'Error loading categories'
+    } finally {
+      loading.value = false
     }
-  } catch (err) {
-    console.error('Error fetching categories:', err)
-    error.value = 'Error loading categories'
-  } finally {
-    loading.value = false
   }
-}
 
   const fetchCategoryWithProducts = async (categoryId: number) => {
     try {
-      const response = await api.get(
-        `/categories/${categoryId}/products`,
-      )
+      const response = await api.get(`/categories/${categoryId}/products`)
       const products = response.data._embedded ? response.data._embedded.products : response.data
 
       // Actualizar la categoría con sus productos

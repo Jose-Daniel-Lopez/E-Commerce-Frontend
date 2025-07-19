@@ -69,7 +69,7 @@ export const useUsersStore = defineStore('users', () => {
     totalUsers: 0,
     adminUsers: 0,
     enabledUsers: 0,
-    disabledUsers: 0
+    disabledUsers: 0,
   })
   const pagination = ref<PaginationInfo>({
     page: 0,
@@ -78,22 +78,22 @@ export const useUsersStore = defineStore('users', () => {
     totalPages: 0,
     first: true,
     last: true,
-    numberOfElements: 0
+    numberOfElements: 0,
   })
 
   // Getters
   const userCount = computed(() => users.value.length)
   const hasUsers = computed(() => users.value.length > 0)
 
-  const adminUsers = computed(() => users.value.filter(user => user.admin))
-  const enabledUsers = computed(() => users.value.filter(user => user.enabled))
-  const disabledUsers = computed(() => users.value.filter(user => !user.enabled))
-  const lockedAccounts = computed(() => users.value.filter(user => !user.accountNonLocked))
-  const expiredAccounts = computed(() => users.value.filter(user => !user.accountNonExpired))
+  const adminUsers = computed(() => users.value.filter((user) => user.admin))
+  const enabledUsers = computed(() => users.value.filter((user) => user.enabled))
+  const disabledUsers = computed(() => users.value.filter((user) => !user.enabled))
+  const lockedAccounts = computed(() => users.value.filter((user) => !user.accountNonLocked))
+  const expiredAccounts = computed(() => users.value.filter((user) => !user.accountNonExpired))
 
   const usersByRole = computed(() => {
     const grouped: Record<string, User[]> = {}
-    users.value.forEach(user => {
+    users.value.forEach((user) => {
       if (!grouped[user.role]) {
         grouped[user.role] = []
       }
@@ -111,8 +111,8 @@ export const useUsersStore = defineStore('users', () => {
       const response = await api.get('/users', {
         params: {
           page,
-          size
-        }
+          size,
+        },
       })
 
       // Si usas Spring Data REST, los usuarios están en response.data._embedded.users
@@ -127,7 +127,7 @@ export const useUsersStore = defineStore('users', () => {
         totalPages: data.page?.totalPages || data.totalPages || 0,
         first: data.page?.first || data.first || true,
         last: data.page?.last || data.last || true,
-        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0
+        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0,
       }
     } catch (err) {
       console.error('Error fetching users:', err)
@@ -221,7 +221,7 @@ export const useUsersStore = defineStore('users', () => {
         totalUsers: pagination.value.totalElements,
         adminUsers: 0,
         enabledUsers: 0,
-        disabledUsers: 0
+        disabledUsers: 0,
       }
     }
   }
@@ -241,8 +241,10 @@ export const useUsersStore = defineStore('users', () => {
 
   const getStatusColor = (user: User) => {
     if (!user.enabled) return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-    if (!user.accountNonLocked) return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
-    if (!user.accountNonExpired) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+    if (!user.accountNonLocked)
+      return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300'
+    if (!user.accountNonExpired)
+      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
     return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
   }
 
@@ -256,7 +258,7 @@ export const useUsersStore = defineStore('users', () => {
   const getInitials = (displayName: string) => {
     return displayName
       .split(' ')
-      .map(name => name.charAt(0))
+      .map((name) => name.charAt(0))
       .join('')
       .toUpperCase()
       .slice(0, 2)

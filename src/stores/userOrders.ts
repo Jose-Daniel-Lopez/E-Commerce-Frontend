@@ -37,11 +37,11 @@ export const useUserOrdersStore = defineStore('userOrders', () => {
 
   const ordersByStatus = computed(() => {
     return {
-      CREATED: orders.value.filter(order => order.status === 'CREATED'),
-      PAID: orders.value.filter(order => order.status === 'PAID'),
-      SHIPPED: orders.value.filter(order => order.status === 'SHIPPED'),
-      DELIVERED: orders.value.filter(order => order.status === 'DELIVERED'),
-      CANCELED: orders.value.filter(order => order.status === 'CANCELED')
+      CREATED: orders.value.filter((order) => order.status === 'CREATED'),
+      PAID: orders.value.filter((order) => order.status === 'PAID'),
+      SHIPPED: orders.value.filter((order) => order.status === 'SHIPPED'),
+      DELIVERED: orders.value.filter((order) => order.status === 'DELIVERED'),
+      CANCELED: orders.value.filter((order) => order.status === 'CANCELED'),
     }
   })
 
@@ -88,7 +88,7 @@ export const useUserOrdersStore = defineStore('userOrders', () => {
       PAID: 'Paid',
       SHIPPED: 'Shipped',
       DELIVERED: 'Delivered',
-      CANCELED: 'Canceled'
+      CANCELED: 'Canceled',
     }
     return texts[status] || status
   }
@@ -99,7 +99,7 @@ export const useUserOrdersStore = defineStore('userOrders', () => {
       PAID: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200',
       SHIPPED: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200',
       DELIVERED: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200',
-      CANCELED: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
+      CANCELED: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200',
     }
     return colors[status] || colors.CREATED
   }
@@ -117,7 +117,7 @@ export const useUserOrdersStore = defineStore('userOrders', () => {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     })
   }
 
@@ -137,6 +137,6 @@ export const useUserOrdersStore = defineStore('userOrders', () => {
     getStatusText,
     getStatusColor,
     formatPrice,
-    formatDate
+    formatDate,
   }
 })

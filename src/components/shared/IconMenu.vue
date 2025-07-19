@@ -1,19 +1,26 @@
 <template>
   <div class="flex w-[220px] items-center justify-end lg:block lg:w-[144px]">
-    <ul class="fixed bottom-0 left-0 grid h-[66px] w-full grid-cols-4 items-center justify-between border-t-[1px] border-t-slate-100 bg-white sm:static sm:justify-end sm:gap-0 sm:bg-transparent lg:grid-cols-3">
+    <ul
+      class="fixed bottom-0 left-0 grid h-[66px] w-full grid-cols-4 items-center justify-between border-t-[1px] border-t-slate-100 bg-white sm:static sm:justify-end sm:gap-0 sm:bg-transparent lg:grid-cols-3"
+    >
       <li
         class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent lg:hidden"
         @click="toggleSearchBar"
       >
         <svg class="w-7 h-7 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          />
         </svg>
-        <span class="font-srProDisplay text-sm font-medium sm:hidden">
-          Search
-        </span>
+        <span class="font-srProDisplay text-sm font-medium sm:hidden"> Search </span>
       </li>
 
-      <li class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 group hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent">
+      <li
+        class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 group hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent"
+      >
         <div class="relative">
           <router-link to="/wishlist">
             <img
@@ -21,17 +28,23 @@
               alt="favorites icon"
               class="w-8 h-8 group-hover:scale-120 group-hover:drop-shadow-md transition-all duration-200"
             />
-            <span class="absolute -right-[3px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white">
+            <span
+              class="absolute -right-[3px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white"
+            >
               99
             </span>
           </router-link>
         </div>
-        <span class="mt-[-5px] font-srProDisplay text-sm font-medium sm:hidden group-hover:text-blue-600 transition-colors duration-200">
+        <span
+          class="mt-[-5px] font-srProDisplay text-sm font-medium sm:hidden group-hover:text-blue-600 transition-colors duration-200"
+        >
           Favorites
         </span>
       </li>
 
-      <li class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 group hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent">
+      <li
+        class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 group hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent"
+      >
         <div class="relative">
           <router-link to="/cart">
             <img
@@ -39,27 +52,40 @@
               alt="cart icon"
               class="w-8 h-8 group-hover:scale-120 group-hover:drop-shadow-md transition-all duration-200"
             />
-            <span class="absolute -right-[6px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white">
+            <span
+              class="absolute -right-[6px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white"
+            >
               99
             </span>
           </router-link>
         </div>
-        <span class="mt-[-5px] font-srProDisplay text-sm font-medium sm:hidden group-hover:text-blue-600 transition-colors duration-200">
+        <span
+          class="mt-[-5px] font-srProDisplay text-sm font-medium sm:hidden group-hover:text-blue-600 transition-colors duration-200"
+        >
           Cart
         </span>
       </li>
 
-      <li class="relative flex h-[66px] cursor-pointer flex-col items-center justify-center group hover:bg-blue-50 sm:hover:bg-transparent" @click.stop="toggleUserDropdown">
+      <li
+        class="relative flex h-[66px] cursor-pointer flex-col items-center justify-center group hover:bg-blue-50 sm:hover:bg-transparent"
+        @click.stop="toggleUserDropdown"
+      >
         <img
           src="/images/User.png"
           alt="user icon"
           class="w-8 h-8 group-hover:scale-120 group-hover:drop-shadow-md transition-all duration-200"
         />
-        <span class="font-srProDisplay text-sm font-medium sm:hidden group-hover:text-blue-600 transition-colors duration-200">
+        <span
+          class="font-srProDisplay text-sm font-medium sm:hidden group-hover:text-blue-600 transition-colors duration-200"
+        >
           User
         </span>
         <!-- User Dropdown -->
-        <div v-show="showUserDropdown" class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-2xl z-[100]" @click.stop>
+        <div
+          v-show="showUserDropdown"
+          class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-2xl z-[100]"
+          @click.stop
+        >
           <div class="py-3">
             <div class="max-h-80 overflow-y-auto categories-scroll">
               <div
@@ -67,13 +93,17 @@
                 :key="option.label"
                 @click="selectUserOption(option)"
                 class="group flex items-center px-4 py-3 text-sm font-srProDisplay cursor-pointer transition-all duration-200 border-l-4 border-transparent"
-                :class="option.isLogout
-                  ? 'text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-500'
-                  : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:border-gray-700'"
+                :class="
+                  option.isLogout
+                    ? 'text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-500'
+                    : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:border-gray-700'
+                "
               >
                 <span
                   class="flex-1 group-hover:font-medium transition-all duration-200"
-                  :class="option.isLogout ? 'group-hover:text-red-700' : 'group-hover:text-gray-800'"
+                  :class="
+                    option.isLogout ? 'group-hover:text-red-700' : 'group-hover:text-gray-800'
+                  "
                 >
                   {{ option.label }}
                 </span>
@@ -81,7 +111,6 @@
             </div>
           </div>
         </div>
-
       </li>
     </ul>
     <li class="block cursor-pointer lg:hidden">
@@ -96,7 +125,12 @@
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
         </svg>
         <svg
           v-else
@@ -105,7 +139,12 @@
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       </div>
     </li>
@@ -152,12 +191,7 @@ watch(showSearchBar, (newValue) => {
 })
 
 // Use the user dropdown composable
-const {
-  showUserDropdown,
-  userOptions,
-  toggleUserDropdown,
-  selectUserOption
-} = useUserDropdown()
+const { showUserDropdown, userOptions, toggleUserDropdown, selectUserOption } = useUserDropdown()
 
 // Close dropdown when clicking outside
 if (typeof window !== 'undefined') {
@@ -168,20 +202,18 @@ if (typeof window !== 'undefined') {
 </script>
 
 <style scoped>
-
 button:focus {
-    outline: none;
-    box-shadow: none;
-  }
+  outline: none;
+  box-shadow: none;
+}
 
-  a:focus {
-    outline: none;
-    box-shadow: none;
-  }
+a:focus {
+  outline: none;
+  box-shadow: none;
+}
 
-  svg:focus {
-    outline: none;
-    box-shadow: none;
-  }
-
+svg:focus {
+  outline: none;
+  box-shadow: none;
+}
 </style>

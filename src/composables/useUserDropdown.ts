@@ -15,7 +15,7 @@ export const useUserDropdown = () => {
     { label: 'My addresses', route: '/account', hash: '#addresses' },
     { label: 'My reviews', route: '/account', hash: '#reviews' },
     { label: 'Settings', route: '/account', hash: '#settings' },
-    { label: 'Log out', route: null, isLogout: true }
+    { label: 'Log out', route: null, isLogout: true },
   ]
 
   const toggleUserDropdown = () => {
@@ -26,7 +26,12 @@ export const useUserDropdown = () => {
     showUserDropdown.value = false
   }
 
-  const selectUserOption = async (option: { label: string; route: string | null; hash?: string; isLogout?: boolean }) => {
+  const selectUserOption = async (option: {
+    label: string
+    route: string | null
+    hash?: string
+    isLogout?: boolean
+  }) => {
     closeUserDropdown()
 
     if (option.isLogout) {
@@ -59,6 +64,6 @@ export const useUserDropdown = () => {
     toggleUserDropdown,
     closeUserDropdown,
     selectUserOption,
-    handleLogout
+    handleLogout,
   }
 }

@@ -37,7 +37,8 @@ const showAllDetails = ref(false)
 const mockProduct: Product = {
   id: 1,
   name: 'Apple iPhone 14 Pro Max',
-  description: 'Enhanced capabilities thanks to an enlarged display of 6.7 inches and work without recharging throughout the day. Incredible photos as in weak, yes and in bright light using the new system with two cameras.',
+  description:
+    'Enhanced capabilities thanks to an enlarged display of 6.7 inches and work without recharging throughout the day. Incredible photos as in weak, yes and in bright light using the new system with two cameras.',
   basePrice: 1399,
   totalStock: 50,
   image: '/images/Iphone-14-pro-Gold.png',
@@ -52,8 +53,8 @@ const mockProduct: Product = {
     battery: '4323 mAh',
     storage: ['128GB', '256GB', '512GB', '1TB'],
     colors: ['Deep Purple', 'Gold', 'Silver', 'Space Black'],
-    memory: '6GB'
-  }
+    memory: '6GB',
+  },
 }
 
 // Product images for different colors/angles
@@ -61,14 +62,14 @@ const productImages = [
   '/images/Iphone-14-pro-Gold.png',
   '/images/Iphone-14-pro-purple.png',
   '/images/Iphone-14-pro-silver.png',
-  '/images/Iphone-14-pro-black.png'
+  '/images/Iphone-14-pro-black.png',
 ]
 
 // Breadcrumb config
 const breadcrumbs = ref([
   { label: 'Catálogo', to: '/catalog' },
   { label: 'Smartphones', to: '/catalog/smartphones' },
-  { label: 'iPhone 14 Pro Max' }
+  { label: 'iPhone 14 Pro Max' },
 ])
 
 // Computed properties
@@ -102,7 +103,6 @@ onMounted(async () => {
     setTimeout(() => {
       loading.value = false
     }, 500)
-
   } catch (err) {
     console.error('Error fetching product:', err)
     error.value = 'Error loading product details'
@@ -131,7 +131,7 @@ const addToCart = () => {
     product: product.value?.name,
     color: selectedColor.value,
     storage: selectedStorage.value,
-    price: finalPrice.value
+    price: finalPrice.value,
   })
   // Implement add to cart functionality
 }
@@ -148,9 +148,9 @@ const formatPrice = (price: number) => {
 const getColorClass = (color: string) => {
   const colorMap: { [key: string]: string } = {
     'Deep Purple': 'bg-purple-600',
-    'Gold': 'bg-yellow-400',
-    'Silver': 'bg-gray-300',
-    'Space Black': 'bg-gray-900'
+    Gold: 'bg-yellow-400',
+    Silver: 'bg-gray-300',
+    'Space Black': 'bg-gray-900',
   }
   return colorMap[color] || 'bg-gray-400'
 }
@@ -159,7 +159,9 @@ const getColorClass = (color: string) => {
 import { computed as vComputed } from 'vue'
 const showFullDescription = ref(false)
 const descriptionLimit = 180
-const isDescriptionLong = vComputed(() => (product.value?.description || mockProduct.description).length > descriptionLimit)
+const isDescriptionLong = vComputed(
+  () => (product.value?.description || mockProduct.description).length > descriptionLimit,
+)
 const displayedDescription = vComputed(() => {
   const desc = product.value?.description || mockProduct.description
   if (!showFullDescription.value && desc.length > descriptionLimit) {
@@ -177,7 +179,6 @@ const toggleDetails = () => {
   detailsCollapsed.value = !detailsCollapsed.value
 }
 
-
 // Reviews section collapse toggle
 const reviewsCollapsed = ref(false)
 const toggleReviews = () => {
@@ -190,7 +191,6 @@ const toggleRelated = () => {
   relatedCollapsed.value = !relatedCollapsed.value
 }
 
-
 // Mock reviews data
 const reviews = [
   {
@@ -198,49 +198,55 @@ const reviews = [
     name: 'Grace Carey',
     rating: 4,
     date: '24 January 2023',
-    comment: 'I was a bit nervous to be buying a secondhand phone from Amazon, but I couldn\'t be happier with my purchase!! I have a pre-paid data plan so I was worried that this phone wouldn\'t connect with my data plan, since the new phones don\'t have the physical Sim tray anymore, but couldn\'t have been easier! I bought an Unlocked black iPhone 14 Pro Max in excellent condition and everything is PERFECT! It was super easy to set up and the phone works and looks great. It truly was in excellent condition. Highly recommend!!🖤',
-    avatar: '/images/user-1.jpg'
+    comment:
+      "I was a bit nervous to be buying a secondhand phone from Amazon, but I couldn't be happier with my purchase!! I have a pre-paid data plan so I was worried that this phone wouldn't connect with my data plan, since the new phones don't have the physical Sim tray anymore, but couldn't have been easier! I bought an Unlocked black iPhone 14 Pro Max in excellent condition and everything is PERFECT! It was super easy to set up and the phone works and looks great. It truly was in excellent condition. Highly recommend!!🖤",
+    avatar: '/images/user-1.jpg',
   },
   {
     id: 2,
     name: 'Ronald Richards',
     rating: 5,
     date: '24 January 2023',
-    comment: 'Perfect phone in perfect condition. Great value for money and fast shipping. Highly recommended!',
-    avatar: '/images/user-2.jpg'
+    comment:
+      'Perfect phone in perfect condition. Great value for money and fast shipping. Highly recommended!',
+    avatar: '/images/user-2.jpg',
   },
   {
     id: 3,
     name: 'Michael Smith',
     rating: 2,
     date: '12 September 2021',
-    comment: 'The phone arrived with a few scratches and the battery life is not as good as expected. Disappointed with the quality.',
-    avatar: '/images/user-2.jpg'
+    comment:
+      'The phone arrived with a few scratches and the battery life is not as good as expected. Disappointed with the quality.',
+    avatar: '/images/user-2.jpg',
   },
   {
     id: 4,
     name: 'Samantha Johnson',
     rating: 4,
     date: '09 April 2023',
-    comment: 'Great phone overall, but the camera quality is not as good as I hoped. Still a solid purchase for the price.',
-    avatar: '/images/user-4.jpg'
+    comment:
+      'Great phone overall, but the camera quality is not as good as I hoped. Still a solid purchase for the price.',
+    avatar: '/images/user-4.jpg',
   },
   {
     id: 5,
     name: 'Jonathan Doe',
     rating: 5,
     date: '17 October 2024',
-    comment: 'Absolutely love this phone! The performance is top-notch and the design is sleek. Highly recommend it to anyone looking for a premium smartphone experience.',
-    avatar: '/images/user-5.jpg'
+    comment:
+      'Absolutely love this phone! The performance is top-notch and the design is sleek. Highly recommend it to anyone looking for a premium smartphone experience.',
+    avatar: '/images/user-5.jpg',
   },
   {
     id: 6,
     name: 'Veronica Taylor',
     rating: 1,
     date: '01 May 2025',
-    comment: 'I had high expectations, but the phone has been underwhelming. The battery drains quickly and the software is buggy. Not worth the price.',
-    avatar: '/images/user-6.jpg'
-  }
+    comment:
+      'I had high expectations, but the phone has been underwhelming. The battery drains quickly and the software is buggy. Not worth the price.',
+    avatar: '/images/user-6.jpg',
+  },
 ]
 
 // Reviews show more/less logic
@@ -261,7 +267,7 @@ const reviewStats = {
   good: 11,
   average: 3,
   belowAverage: 8,
-  poor: 1
+  poor: 1,
 }
 </script>
 
@@ -290,7 +296,6 @@ const reviewStats = {
     <!-- Product Details -->
     <div v-else class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
         <!-- Left Column - Product Images -->
         <div class="space-y-4">
           <!-- Main Product Image -->
@@ -310,7 +315,7 @@ const reviewStats = {
               @click="selectImage(index)"
               :class="[
                 'flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden',
-                selectedImageIndex === index ? 'border-black' : 'border-gray-200'
+                selectedImageIndex === index ? 'border-black' : 'border-gray-200',
               ]"
             >
               <img
@@ -352,7 +357,7 @@ const reviewStats = {
                 :class="[
                   'w-8 h-8 rounded-full border-1 transition-all',
                   selectedColor === color ? 'border-black ring-2 ring-gray-300' : 'border-gray-300',
-                  getColorClass(color)
+                  getColorClass(color),
                 ]"
                 :title="color"
               ></button>
@@ -370,7 +375,7 @@ const reviewStats = {
                   'px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium transition-colors',
                   selectedStorage === storage
                     ? 'border-black bg-black text-white'
-                    : 'border-gray-300 text-gray-700 hover:border-gray-400'
+                    : 'border-gray-300 text-gray-700 hover:border-gray-400',
                 ]"
               >
                 {{ storage }}
@@ -387,7 +392,9 @@ const reviewStats = {
               </div>
               <div>
                 <p class="text-xs text-gray-500">Screen size</p>
-                <p class="font-srProDisplay text-sm font-semibold">{{ mockProduct.specifications?.screenSize }}</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ mockProduct.specifications?.screenSize }}
+                </p>
               </div>
             </div>
 
@@ -398,7 +405,9 @@ const reviewStats = {
               </div>
               <div>
                 <p class="text-xs text-gray-500">CPU</p>
-                <p class="font-srProDisplay text-sm font-semibold">{{ mockProduct.specifications?.processor }}</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ mockProduct.specifications?.processor }}
+                </p>
               </div>
             </div>
 
@@ -409,7 +418,9 @@ const reviewStats = {
               </div>
               <div>
                 <p class="text-xs text-gray-500">Number of Cores</p>
-                <p class="font-srProDisplay text-sm font-semibold">{{ mockProduct.specifications?.ncores }}</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ mockProduct.specifications?.ncores }}
+                </p>
               </div>
             </div>
 
@@ -420,7 +431,9 @@ const reviewStats = {
               </div>
               <div>
                 <p class="text-xs text-gray-500">Camera</p>
-                <p class="font-srProDisplay text-sm font-semibold">{{ mockProduct.specifications?.camera }}</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ mockProduct.specifications?.camera }}
+                </p>
               </div>
             </div>
 
@@ -431,7 +444,9 @@ const reviewStats = {
               </div>
               <div>
                 <p class="text-xs text-gray-500">Front-Camera</p>
-                <p class="font-srProDisplay text-sm font-semibold">{{ mockProduct.specifications?.frontCamera }}</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ mockProduct.specifications?.frontCamera }}
+                </p>
               </div>
             </div>
 
@@ -442,7 +457,9 @@ const reviewStats = {
               </div>
               <div>
                 <p class="text-xs text-gray-500">Battery</p>
-                <p class="font-srProDisplay text-sm font-semibold">{{ mockProduct.specifications?.battery }}</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ mockProduct.specifications?.battery }}
+                </p>
               </div>
             </div>
           </div>
@@ -507,7 +524,6 @@ const reviewStats = {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -530,24 +546,44 @@ const reviewStats = {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
         </div>
         <transition name="fade-details">
           <div v-show="!detailsCollapsed">
             <p class="text-gray-400 mb-8 max-w-auto">
-              Just as a book is judged by its cover, the first thing you notice when you pick up a modern smartphone is the display. Nothing surprising, because advanced technologies allow you to practically level the display frames and cutouts for the front camera and speaker, leaving no room for bold design solutions. And how good that in such realities Apple everything is fine with displays. Both critics and mass consumers always praise the quality of the picture provided by the products of the Californian brand. And last year's 6.7-inch Retina panels, which had ProMotion, caused real admiration for many.
+              Just as a book is judged by its cover, the first thing you notice when you pick up a
+              modern smartphone is the display. Nothing surprising, because advanced technologies
+              allow you to practically level the display frames and cutouts for the front camera and
+              speaker, leaving no room for bold design solutions. And how good that in such
+              realities Apple everything is fine with displays. Both critics and mass consumers
+              always praise the quality of the picture provided by the products of the Californian
+              brand. And last year's 6.7-inch Retina panels, which had ProMotion, caused real
+              admiration for many.
             </p>
 
             <!-- Details content with fade effect -->
             <div class="space-y-6 relative">
               <div
-                :class="['transition-all duration-300 overflow-hidden', showAllDetails ? '' : 'max-h-[600px]']"
-                style="position: relative;"
+                :class="[
+                  'transition-all duration-300 overflow-hidden',
+                  showAllDetails ? '' : 'max-h-[600px]',
+                ]"
+                style="position: relative"
               >
-                <div :style="showAllDetails ? '' : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'">
-
+                <div
+                  :style="
+                    showAllDetails
+                      ? ''
+                      : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
+                  "
+                >
                   <!-- Screen Section -->
                   <h3 class="text-xl font-semibold mb-4 mt-8">Screen</h3>
                   <div class="border-t border-gray-200">
@@ -656,7 +692,10 @@ const reviewStats = {
                 </div>
 
                 <!-- Fade overlay when not showing all details -->
-                <div v-if="!showAllDetails" class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+                <div
+                  v-if="!showAllDetails"
+                  class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"
+                ></div>
               </div>
 
               <!-- View More/Less Button -->
@@ -666,11 +705,35 @@ const reviewStats = {
                   class="flex items-center justify-center gap-2 px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
                   <span>{{ showAllDetails ? 'View Less' : 'View More' }}</span>
-                  <svg v-if="!showAllDetails" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  <svg
+                    v-if="!showAllDetails"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
-                  <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                  <svg
+                    v-else
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 15l7-7 7 7"
+                    />
                   </svg>
                 </button>
               </div>
@@ -698,7 +761,12 @@ const reviewStats = {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
         </div>
@@ -710,14 +778,22 @@ const reviewStats = {
               <!-- Overall Rating -->
               <div class="text-center space-x-3 bg-[#F4F4F4] rounded-[25px] w-auto h-auto p-8">
                 <div class="text-6xl font-bold mb-2">{{ reviewStats.averageRating }}</div>
-                <div class="text-gray-400 text-sm mb-2">of {{ reviewStats.totalReviews }} reviews</div>
+                <div class="text-gray-400 text-sm mb-2">
+                  of {{ reviewStats.totalReviews }} reviews
+                </div>
                 <div class="flex justify-center">
                   <div class="flex">
                     <v-icon
                       v-for="star in 5"
                       :key="star"
-                      :name="star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'"
-                      :class="star <= Math.floor(reviewStats.averageRating) ? 'text-yellow-400' : 'text-gray-300'"
+                      :name="
+                        star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'
+                      "
+                      :class="
+                        star <= Math.floor(reviewStats.averageRating)
+                          ? 'text-yellow-400'
+                          : 'text-gray-300'
+                      "
                       scale="1.2"
                     />
                   </div>
@@ -730,35 +806,60 @@ const reviewStats = {
                   <div class="flex items-center gap-4">
                     <span class="text-lg text-gray-600 w-30">Excellent</span>
                     <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{ width: (reviewStats.excellent / reviewStats.totalReviews * 100) + '%' }"></div>
+                      <div
+                        class="bg-yellow-400 h-1.5 rounded-full"
+                        :style="{
+                          width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
+                        }"
+                      ></div>
                     </div>
                     <span class="text-sm text-gray-400 w-8">{{ reviewStats.excellent }}</span>
                   </div>
                   <div class="flex items-center gap-4">
                     <span class="text-lg text-gray-600 w-30">Good</span>
                     <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{ width: (reviewStats.good / reviewStats.totalReviews * 100) + '%' }"></div>
+                      <div
+                        class="bg-yellow-400 h-1.5 rounded-full"
+                        :style="{
+                          width: (reviewStats.good / reviewStats.totalReviews) * 100 + '%',
+                        }"
+                      ></div>
                     </div>
                     <span class="text-sm text-gray-400 w-8">{{ reviewStats.good }}</span>
                   </div>
                   <div class="flex items-center gap-4">
                     <span class="text-lg text-gray-600 w-30">Average</span>
                     <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{ width: (reviewStats.average / reviewStats.totalReviews * 100) + '%' }"></div>
+                      <div
+                        class="bg-yellow-400 h-1.5 rounded-full"
+                        :style="{
+                          width: (reviewStats.average / reviewStats.totalReviews) * 100 + '%',
+                        }"
+                      ></div>
                     </div>
                     <span class="text-sm text-gray-400 w-8">{{ reviewStats.average }}</span>
                   </div>
                   <div class="flex items-center gap-4">
                     <span class="text-lg text-gray-600 w-30">Below Average</span>
                     <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{ width: (reviewStats.belowAverage / reviewStats.totalReviews * 100) + '%' }"></div>
+                      <div
+                        class="bg-yellow-400 h-1.5 rounded-full"
+                        :style="{
+                          width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
+                        }"
+                      ></div>
                     </div>
                     <span class="text-sm text-gray-400 w-8">{{ reviewStats.belowAverage }}</span>
                   </div>
                   <div class="flex items-center gap-4">
                     <span class="text-lg text-gray-600 w-30">Poor</span>
                     <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{ width: (reviewStats.poor / reviewStats.totalReviews * 100) + '%' }"></div>
+                      <div
+                        class="bg-yellow-400 h-1.5 rounded-full"
+                        :style="{
+                          width: (reviewStats.poor / reviewStats.totalReviews) * 100 + '%',
+                        }"
+                      ></div>
                     </div>
                     <span class="text-sm text-gray-400 w-8">{{ reviewStats.poor }}</span>
                   </div>
@@ -778,19 +879,30 @@ const reviewStats = {
             <!-- Individual Reviews with View More/Less and Fade -->
             <div class="space-y-6 relative">
               <div
-                :class="['transition-all duration-300 overflow-hidden', showAllReviews ? '' : 'max-h-[600px]']"
-                style="position: relative;"
+                :class="[
+                  'transition-all duration-300 overflow-hidden',
+                  showAllReviews ? '' : 'max-h-[600px]',
+                ]"
+                style="position: relative"
               >
-                <div :style="showAllReviews ? '' : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'">
-                  <div
-                    v-for="review in displayedReviews"
-                    :key="review.id"
-                    class="relative mb-6"
-                  >
-                    <div class="flex items-start gap-4 bg-[#F4F4F4] rounded-[10px] w-auto h-auto p-8">
+                <div
+                  :style="
+                    showAllReviews
+                      ? ''
+                      : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
+                  "
+                >
+                  <div v-for="review in displayedReviews" :key="review.id" class="relative mb-6">
+                    <div
+                      class="flex items-start gap-4 bg-[#F4F4F4] rounded-[10px] w-auto h-auto p-8"
+                    >
                       <!-- Avatar -->
-                      <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-gray-600 text-sm font-medium">{{ review.name.charAt(0) }}</span>
+                      <div
+                        class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0"
+                      >
+                        <span class="text-gray-600 text-sm font-medium">{{
+                          review.name.charAt(0)
+                        }}</span>
                       </div>
 
                       <!-- Review Content -->
@@ -819,7 +931,10 @@ const reviewStats = {
                 </div>
 
                 <!-- Fade overlay when not showing all reviews -->
-                <div v-if="!showAllReviews && hasMoreReviews" class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+                <div
+                  v-if="!showAllReviews && hasMoreReviews"
+                  class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"
+                ></div>
               </div>
               <div v-if="hasMoreReviews" class="flex justify-center mt-6">
                 <button
@@ -827,11 +942,35 @@ const reviewStats = {
                   class="flex items-center justify-center gap-2 px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
                   <span>{{ showAllReviews ? 'View Less' : 'View More' }}</span>
-                  <svg v-if="!showAllReviews" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  <svg
+                    v-if="!showAllReviews"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
-                  <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                  <svg
+                    v-else
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 15l7-7 7 7"
+                    />
                   </svg>
                 </button>
               </div>
@@ -840,7 +979,6 @@ const reviewStats = {
         </transition>
       </div>
     </section>
-
 
     <!-- Related Products Section -->
     <section class="w-full flex justify-center bg-[#fafbfc] py-32">
@@ -860,7 +998,12 @@ const reviewStats = {
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
         </div>
@@ -868,37 +1011,57 @@ const reviewStats = {
           <div v-show="!relatedCollapsed">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
               <!-- Product 1 -->
-              <div class="bg-white rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300">
+              <div
+                class="bg-white rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300"
+              >
                 <div class="h-32 w-full flex items-center justify-center mb-6">
-                  <img src="/images/Apple-phone.png" alt="iPhone 14" class="h-full object-contain" />
+                  <img
+                    src="/images/Apple-phone.png"
+                    alt="iPhone 14"
+                    class="h-full object-contain"
+                  />
                 </div>
                 <h3 class="font-srProDisplay text-lg font-medium mb-2 text-black">iPhone 14</h3>
                 <p class="font-srProDisplay text-[#787878] text-sm mb-4">Starting at $699</p>
-                <button class="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+                <button
+                  class="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                >
                   View Details
                 </button>
               </div>
 
               <!-- Product 2 -->
-              <div class="bg-white rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300">
+              <div
+                class="bg-white rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300"
+              >
                 <div class="h-32 w-full flex items-center justify-center mb-6">
                   <img src="/images/Apple-iPad.png" alt="iPad Pro" class="h-full object-contain" />
                 </div>
                 <h3 class="font-srProDisplay text-lg font-medium mb-2 text-black">iPad Pro</h3>
                 <p class="font-srProDisplay text-[#787878] text-sm mb-4">Starting at $999</p>
-                <button class="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+                <button
+                  class="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                >
                   View Details
                 </button>
               </div>
 
               <!-- Product 3 -->
-              <div class="bg-white rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300">
+              <div
+                class="bg-white rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300"
+              >
                 <div class="h-32 w-full flex items-center justify-center mb-6">
-                  <img src="/images/Apple-airPods.png" alt="AirPods Pro" class="h-full object-contain" />
+                  <img
+                    src="/images/Apple-airPods.png"
+                    alt="AirPods Pro"
+                    class="h-full object-contain"
+                  />
                 </div>
                 <h3 class="font-srProDisplay text-lg font-medium mb-2 text-black">AirPods Pro</h3>
                 <p class="font-srProDisplay text-[#787878] text-sm mb-4">Starting at $249</p>
-                <button class="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+                <button
+                  class="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                >
                   View Details
                 </button>
               </div>
@@ -907,13 +1070,10 @@ const reviewStats = {
         </transition>
       </div>
     </section>
-
   </div>
-
 </template>
 
 <style scoped>
-
 /* Remove Vue's Blue Effect on selected item */
 button:focus {
   outline: none;
@@ -978,7 +1138,7 @@ input::placeholder {
 
 /* Fade effect for reviews */
 .review-fade-overlay {
-  background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, #ffffff 100%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
   z-index: 2;
 }
 </style>

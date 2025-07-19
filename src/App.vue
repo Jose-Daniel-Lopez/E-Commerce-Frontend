@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import MainHeader from '@/components/shared/MainHeader.vue'
@@ -11,10 +10,11 @@ const categoriesStore = useCategoriesStore()
 
 // Normalizar categorías para SubnavBar
 const subnavCategories = computed(() =>
-  categoriesStore.categories.map(category => ({
+  categoriesStore.categories.map((category) => ({
     name: category.name,
     icon: category.icon,
-    slug: category.name.toLowerCase()
+    slug: category.name
+      .toLowerCase()
       .replace(/\s+/g, '-')
       .replace(/[áàäâã]/g, 'a')
       .replace(/[éèëê]/g, 'e')
@@ -24,7 +24,7 @@ const subnavCategories = computed(() =>
       .replace(/[ñ]/g, 'n')
       .replace(/[ç]/g, 'c')
       .replace(/[^a-z0-9-]/g, ''),
-  }))
+  })),
 )
 
 onMounted(() => {

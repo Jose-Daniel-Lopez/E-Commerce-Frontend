@@ -13,13 +13,15 @@ const { t } = useLanguage()
 const currentPage = ref(1)
 const sortBy = ref('name')
 const searchQuery = ref('')
-const categoryTypes = ref<Array<{ name: string; originalName: string; count: number; checked: boolean }>>([])
+const categoryTypes = ref<
+  Array<{ name: string; originalName: string; count: number; checked: boolean }>
+>([])
 
 // Filter collapse states
 const collapsedFilters = ref({
   search: false,
   productCount: false,
-  alphabetical: false
+  alphabetical: false,
 })
 
 // Computed
@@ -30,17 +32,15 @@ const filteredCategories = computed(() => {
   // Search filter
   if (searchQuery.value.trim()) {
     const query = searchQuery.value.toLowerCase().trim()
-    filtered = filtered.filter(category =>
-      category.name.toLowerCase().includes(query)
-    )
+    filtered = filtered.filter((category) => category.name.toLowerCase().includes(query))
   }
 
   // Type filter - only show categories that are checked
-  const selectedTypes = categoryTypes.value.filter(type => type.checked).map(type => type.originalName)
+  const selectedTypes = categoryTypes.value
+    .filter((type) => type.checked)
+    .map((type) => type.originalName)
   if (selectedTypes.length > 0) {
-    filtered = filtered.filter(category =>
-      selectedTypes.includes(category.name)
-    )
+    filtered = filtered.filter((category) => selectedTypes.includes(category.name))
   }
 
   // Sort categories
@@ -52,10 +52,14 @@ const filteredCategories = computed(() => {
       filtered.sort((a, b) => b.name.localeCompare(a.name))
       break
     case 'products-high':
-      filtered.sort((a, b) => categoriesStore.getProductCount(b.id) - categoriesStore.getProductCount(a.id))
+      filtered.sort(
+        (a, b) => categoriesStore.getProductCount(b.id) - categoriesStore.getProductCount(a.id),
+      )
       break
     case 'products-low':
-      filtered.sort((a, b) => categoriesStore.getProductCount(a.id) - categoriesStore.getProductCount(b.id))
+      filtered.sort(
+        (a, b) => categoriesStore.getProductCount(a.id) - categoriesStore.getProductCount(b.id),
+      )
       break
   }
 
@@ -71,12 +75,14 @@ const paginatedCategories = computed(() => {
 const totalPages = computed(() => Math.ceil(filteredCategories.value.length / itemsPerPage))
 
 // Breadcrumbs for navigation (reactivo y traducido)
-const breadcrumbs = computed(() => [
-  { label: 'catalog.title', to: '/catalog' },
-])
+const breadcrumbs = computed(() => [{ label: 'catalog.title', to: '/catalog' }])
 
 // Translate category name using i18n, supporting both accented and unaccented keys
-const removeAccents = (str: string) => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[ -]/g, '')
+const removeAccents = (str: string) =>
+  str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[ -]/g, '')
 const translateCategoryName = (categoryName: string): string => {
   const normalizedName = categoryName.toLowerCase()
   const translationKey = `shop.categories.${normalizedName}`
@@ -95,83 +101,83 @@ const getCategoryImageName = (categoryName: string): string => {
 
   const categoryMapping: { [key: string]: string } = {
     // Audio
-    'audio': 'audio',
-    'sonido': 'audio',
+    audio: 'audio',
+    sonido: 'audio',
 
     // Gaming
-    'gaming': 'gaming',
-    'juegos': 'gaming',
-    'videojuegos': 'gaming',
-    'consolas': 'gaming',
+    gaming: 'gaming',
+    juegos: 'gaming',
+    videojuegos: 'gaming',
+    consolas: 'gaming',
 
     // Tablets
-    'tablets': 'tablets',
-    'tabletas': 'tablets',
-    'ipad': 'tablets',
+    tablets: 'tablets',
+    tabletas: 'tablets',
+    ipad: 'tablets',
 
     // Smartphones
-    'smartphones': 'smartphones',
-    'phones': 'smartphones',
-    'teléfonos': 'smartphones',
-    'telefonos': 'smartphones',
-    'móviles': 'smartphones',
-    'moviles': 'smartphones',
-    'celulares': 'smartphones',
-    'iphone': 'smartphones',
+    smartphones: 'smartphones',
+    phones: 'smartphones',
+    teléfonos: 'smartphones',
+    telefonos: 'smartphones',
+    móviles: 'smartphones',
+    moviles: 'smartphones',
+    celulares: 'smartphones',
+    iphone: 'smartphones',
 
     // Computers
-    'computers': 'computers',
-    'computadoras': 'computers',
-    'ordenadores': 'computers',
-    'laptops': 'computers',
-    'pc': 'computers',
-    'macbook': 'computers',
+    computers: 'computers',
+    computadoras: 'computers',
+    ordenadores: 'computers',
+    laptops: 'computers',
+    pc: 'computers',
+    macbook: 'computers',
 
     // Cameras
-    'cameras': 'cameras',
-    'cámaras': 'cameras',
-    'camaras': 'cameras',
-    'fotografía': 'cameras',
-    'fotografia': 'cameras',
+    cameras: 'cameras',
+    cámaras: 'cameras',
+    camaras: 'cameras',
+    fotografía: 'cameras',
+    fotografia: 'cameras',
 
     // Headphones
-    'headphones': 'headphones',
-    'auriculares': 'headphones',
-    'audífonos': 'headphones',
-    'cascos': 'headphones',
+    headphones: 'headphones',
+    auriculares: 'headphones',
+    audífonos: 'headphones',
+    cascos: 'headphones',
 
     // Accessories
-    'accessories': 'accessories',
-    'accesorios': 'accessories',
-    'complementos': 'accessories',
+    accessories: 'accessories',
+    accesorios: 'accessories',
+    complementos: 'accessories',
 
     // Keyboards
-    'keyboards': 'keyboards',
-    'teclados': 'keyboards',
+    keyboards: 'keyboards',
+    teclados: 'keyboards',
 
     // Mice - Más específico primero
-    'mice': 'mice',
-    'ratones': 'mice',
-    'mouse': 'mice',
-    'ratón': 'mice',
+    mice: 'mice',
+    ratones: 'mice',
+    mouse: 'mice',
+    ratón: 'mice',
 
     // Smart Home - Más específico primero
     'smart home': 'smarthome',
-    'smarthome': 'smarthome',
+    smarthome: 'smarthome',
     'casa inteligente': 'smarthome',
     'hogar inteligente': 'smarthome',
-    'hogarinteligente': 'smarthome',
-    'casainteligente': 'smarthome',
-    'domótica': 'smarthome',
-    'domotica': 'smarthome',
+    hogarinteligente: 'smarthome',
+    casainteligente: 'smarthome',
+    domótica: 'smarthome',
+    domotica: 'smarthome',
 
     // Smart Watches
     'smart watches': 'smartwatches',
-    'smartwatches': 'smartwatches',
+    smartwatches: 'smartwatches',
     'relojes inteligentes': 'smartwatches',
-    'relojesinteligentes': 'smartwatches',
+    relojesinteligentes: 'smartwatches',
     'apple watch': 'smartwatches',
-    'wearables': 'smartwatches'
+    wearables: 'smartwatches',
   }
 
   // Try exact match first
@@ -200,19 +206,16 @@ const getCategoryImage = (categoryName: string): string[] => {
   // Debug: log to see which images are being searched
   console.log(`Categoria: "${categoryName}" -> Imagen: "${imageName}" -> Path: "${base}"`)
 
-  return [
-    `${base}.webp`,
-    `${base}.png`
-  ]
+  return [`${base}.webp`, `${base}.png`]
 }
 
 // Categories for catalog grid, with image path candidates
 const translatedPaginatedCategories = computed(() => {
-  return paginatedCategories.value.map(category => {
+  return paginatedCategories.value.map((category) => {
     return {
       ...category,
       name: translateCategoryName(category.name),
-      imageCandidates: getCategoryImage(category.name)
+      imageCandidates: getCategoryImage(category.name),
     }
   })
 })
@@ -220,11 +223,11 @@ const translatedPaginatedCategories = computed(() => {
 onMounted(async () => {
   await categoriesStore.fetchCategories()
   // Initialize category types after categories are loaded
-  categoryTypes.value = categoriesStore.categories.map(category => ({
+  categoryTypes.value = categoriesStore.categories.map((category) => ({
     name: translateCategoryName(category.name),
     originalName: category.name,
     count: categoriesStore.getProductCount(category.id),
-    checked: false
+    checked: false,
   }))
 })
 
@@ -234,13 +237,15 @@ const handleImageError = (event: Event) => {
   const currentSrc = img.src
 
   // Find the corresponding category to get the image candidates
-  const category = translatedPaginatedCategories.value.find(cat =>
-    cat.imageCandidates?.some(candidate => currentSrc.includes(candidate.split('/').pop()?.split('.')[0] || ''))
+  const category = translatedPaginatedCategories.value.find((cat) =>
+    cat.imageCandidates?.some((candidate) =>
+      currentSrc.includes(candidate.split('/').pop()?.split('.')[0] || ''),
+    ),
   )
 
   if (category && category.imageCandidates) {
-    const currentIndex = category.imageCandidates.findIndex(candidate =>
-      currentSrc.includes(candidate.split('/').pop()?.split('.')[0] || '')
+    const currentIndex = category.imageCandidates.findIndex((candidate) =>
+      currentSrc.includes(candidate.split('/').pop()?.split('.')[0] || ''),
     )
 
     // Try the next candidate
@@ -266,21 +271,25 @@ const handleImageError = (event: Event) => {
 
 const viewCategoryProducts = (categoryId: number) => {
   // Find the category by ID to get its name
-  const category = categoriesStore.categories.find(cat => cat.id === categoryId)
+  const category = categoriesStore.categories.find((cat) => cat.id === categoryId)
   if (category) {
     // Normalize the name for the URL
-    const categoryName = category.name.toLowerCase()
-      .replace(/\s+/g, '-')           // Replace spaces with dashes
-      .replace(/[^\w\-]+/g, '')       // Remove special characters
-      .replace(/\-\-+/g, '-')         // Replace multiple dashes with a single one
-      .replace(/^-+/, '')             // Remove dashes at the start
-      .replace(/-+$/, '')             // Remove dashes at the end
+    const categoryName = category.name
+      .toLowerCase()
+      .replace(/\s+/g, '-') // Replace spaces with dashes
+      .replace(/[^\w-]+/g, '') // Remove special characters
+      .replace(/--+/g, '-') // Replace multiple dashes with a single one
+      .replace(/^-+/, '') // Remove dashes at the start
+      .replace(/-+$/, '') // Remove dashes at the end
 
-    router.push(`/catalog/${categoryName}`).then(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-   }).catch(error => {
-      console.error('Error navigating to category:', error)
-    })
+    router
+      .push(`/catalog/${categoryName}`)
+      .then(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      })
+      .catch((error) => {
+        console.error('Error navigating to category:', error)
+      })
   }
 }
 
@@ -293,7 +302,7 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
 }
 
 const clearTypeFilters = () => {
-  categoryTypes.value.forEach(type => {
+  categoryTypes.value.forEach((type) => {
     type.checked = false
   })
 }
@@ -304,9 +313,13 @@ watch(searchQuery, () => {
 })
 
 // Watch for category type filter changes to reset pagination
-watch(categoryTypes, () => {
-  currentPage.value = 1
-}, { deep: true })
+watch(
+  categoryTypes,
+  () => {
+    currentPage.value = 1
+  },
+  { deep: true },
+)
 </script>
 
 <template>
@@ -339,7 +352,12 @@ watch(categoryTypes, () => {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
                 </svg>
               </button>
             </div>
@@ -362,7 +380,7 @@ watch(categoryTypes, () => {
               <h3 class="font-srProDisplay text-lg font-semibold text-black">Tipos</h3>
               <div class="flex items-center space-x-2">
                 <button
-                  v-if="categoryTypes.some(type => type.checked)"
+                  v-if="categoryTypes.some((type) => type.checked)"
                   @click="clearTypeFilters"
                   class="text-xs text-gray-500 hover:text-gray-700 transition-colors"
                   type="button"
@@ -383,7 +401,12 @@ watch(categoryTypes, () => {
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
                   </svg>
                 </button>
               </div>
@@ -391,11 +414,20 @@ watch(categoryTypes, () => {
             <div v-show="!collapsedFilters.productCount" class="transition-all duration-200">
               <div class="space-y-3 max-h-64 overflow-y-auto">
                 <div v-for="type in categoryTypes" :key="type.name" class="flex items-center">
-                  <input :id="'type-' + type.name" type="checkbox" v-model="type.checked"
-                    class="custom-checkbox focus:ring-1 focus:ring-gray-400">
-                  <label :for="'type-' + type.name" class="ml-3 flex-1 flex items-center justify-between">
+                  <input
+                    :id="'type-' + type.name"
+                    type="checkbox"
+                    v-model="type.checked"
+                    class="custom-checkbox focus:ring-1 focus:ring-gray-400"
+                  />
+                  <label
+                    :for="'type-' + type.name"
+                    class="ml-3 flex-1 flex items-center justify-between"
+                  >
                     <span class="text-sm font-srProDisplay text-gray-1000">{{ type.name }}</span>
-                    <span class="text-xs font-srProDisplay text-gray-400 pr-4">{{ type.count }}</span>
+                    <span class="text-xs font-srProDisplay text-gray-400 pr-4">{{
+                      type.count
+                    }}</span>
                   </label>
                 </div>
               </div>
@@ -427,11 +459,18 @@ watch(categoryTypes, () => {
           <!-- Header with category count and sorting -->
           <div class="flex items-center justify-between mb-6">
             <div>
-              <h1 class="font-srProDisplay text-xl font-semibold text-black">Catálogo de Categorías</h1>
-              <p class="font-srProDisplay text-gray-600">{{ filteredCategories.length }} categorías encontradas</p>
+              <h1 class="font-srProDisplay text-xl font-semibold text-black">
+                Catálogo de Categorías
+              </h1>
+              <p class="font-srProDisplay text-gray-600">
+                {{ filteredCategories.length }} categorías encontradas
+              </p>
             </div>
             <div class="flex items-center">
-              <select v-model="sortBy" class="font-srProDisplay border border-[#EBEBEB] rounded-md w-70 px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-gray-500">
+              <select
+                v-model="sortBy"
+                class="font-srProDisplay border border-[#EBEBEB] rounded-md w-70 px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-gray-500"
+              >
                 <option value="name">Nombre A-Z</option>
                 <option value="name-desc">Nombre Z-A</option>
                 <option value="products-high">Más productos</option>
@@ -447,10 +486,16 @@ watch(categoryTypes, () => {
           </div>
 
           <!-- Error State -->
-          <div v-else-if="categoriesStore.error"
-            class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2 mb-8">
+          <div
+            v-else-if="categoriesStore.error"
+            class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2 mb-8"
+          >
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
             </svg>
             <span>{{ categoriesStore.error }}</span>
           </div>
@@ -459,17 +504,23 @@ watch(categoryTypes, () => {
           <div v-else-if="filteredCategories.length === 0" class="text-center py-12">
             <div class="flex justify-center mb-4">
               <div class="bg-gray-100 p-6 rounded-full">
-                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                <svg
+                  class="w-12 h-12 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  />
                 </svg>
               </div>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">
-              No se encontraron categorías
-            </h3>
-            <p class="text-gray-600">
-              No hay categorías que coincidan con tu búsqueda
-            </p>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No se encontraron categorías</h3>
+            <p class="text-gray-600">No hay categorías que coincidan con tu búsqueda</p>
           </div>
 
           <!-- Categories Grid -->
@@ -479,33 +530,53 @@ watch(categoryTypes, () => {
               :key="category.id"
               class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4 flex flex-col"
             >
-
               <div class="flex flex-col h-full">
                 <!-- Category Image/Icon -->
-              <div class="flex items-center justify-center mb-4">
-                <div class="h-[160px] w-[160px] bg-white rounded-xl flex items-center justify-center shadow-sm overflow-hidden relative">
-                  <!-- Imagen principal con candidates -->
-                  <img
-                    v-if="category.imageCandidates"
-                    :src="category.imageCandidates[0]"
-                    :alt="`Imagen de ${category.name}`"
-                    class="object-contain w-full h-full transition-transform duration-300 hover:scale-105"
-                    loading="lazy"
-                    @error="handleImageError"
-                  />
+                <div class="flex items-center justify-center mb-4">
+                  <div
+                    class="h-[160px] w-[160px] bg-white rounded-xl flex items-center justify-center shadow-sm overflow-hidden relative"
+                  >
+                    <!-- Imagen principal con candidates -->
+                    <img
+                      v-if="category.imageCandidates"
+                      :src="category.imageCandidates[0]"
+                      :alt="`Imagen de ${category.name}`"
+                      class="object-contain w-full h-full transition-transform duration-300 hover:scale-105"
+                      loading="lazy"
+                      @error="handleImageError"
+                    />
 
-                  <!-- Fallback icon con mejor diseño -->
-                  <div v-else class="w-[80px] h-[80px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
-                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 10H6L5 9z" />
-                    </svg>
+                    <!-- Fallback icon con mejor diseño -->
+                    <div
+                      v-else
+                      class="w-[80px] h-[80px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center"
+                    >
+                      <svg
+                        class="w-12 h-12 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="1.5"
+                          d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 10H6L5 9z"
+                        />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
                 <!-- Category Name -->
                 <div class="flex-1 flex flex-col items-center justify-center">
-                  <h3 class="font-srProDisplay text-lg font-semibold text-black mb-2 text-center line-clamp-2">{{ category.name }}</h3>
-                  <p class="text-sm text-gray-600 text-center">{{ categoriesStore.getProductCount(category.id) }} productos</p>
+                  <h3
+                    class="font-srProDisplay text-lg font-semibold text-black mb-2 text-center line-clamp-2"
+                  >
+                    {{ category.name }}
+                  </h3>
+                  <p class="text-sm text-gray-600 text-center">
+                    {{ categoriesStore.getProductCount(category.id) }} productos
+                  </p>
                 </div>
                 <!-- View Button -->
                 <div class="flex items-center justify-center mt-4">
@@ -522,27 +593,45 @@ watch(categoryTypes, () => {
 
           <!-- Pagination -->
           <div v-if="totalPages > 1" class="flex items-center justify-center space-x-2">
-            <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
-              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+            <button
+              @click="goToPage(currentPage - 1)"
+              :disabled="currentPage === 1"
+              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                ></path>
               </svg>
             </button>
 
-            <button v-for="page in Math.min(totalPages, 5)" :key="page" @click="goToPage(page)"
+            <button
+              v-for="page in Math.min(totalPages, 5)"
+              :key="page"
+              @click="goToPage(page)"
               :class="[
                 'px-3 py-2 rounded-md text-sm font-medium',
-                page === currentPage
-                  ? 'bg-black text-white'
-                  : 'text-gray-700 hover:bg-gray-100'
-              ]">
+                page === currentPage ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-100',
+              ]"
+            >
               {{ page }}
             </button>
 
-            <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
-              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
+            <button
+              @click="goToPage(currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                ></path>
               </svg>
             </button>
           </div>
@@ -554,20 +643,20 @@ watch(categoryTypes, () => {
 
 <style scoped>
 /* Remove default Tailwind blue outline on button focus */
-  button:focus {
-    outline: none;
-    box-shadow: none;
-  }
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
 
-  a:focus {
-    outline: none;
-    box-shadow: none;
-  }
+a:focus {
+  outline: none;
+  box-shadow: none;
+}
 
-  svg:focus {
-    outline: none;
-    box-shadow: none;
-  }
+svg:focus {
+  outline: none;
+  box-shadow: none;
+}
 
 /* Custom scrollbar for filter sections */
 .overflow-y-auto::-webkit-scrollbar {

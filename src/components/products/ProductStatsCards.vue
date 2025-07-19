@@ -5,21 +5,19 @@ import { computed } from 'vue'
 const productsStore = useProductsStore()
 
 // Use global stats if available, otherwise use pagination info
-const totalProducts = computed(() =>
-  productsStore.stats.totalProducts || productsStore.pagination.totalElements
+const totalProducts = computed(
+  () => productsStore.stats.totalProducts || productsStore.pagination.totalElements,
 )
 
-const inStockProductsCount = computed(() =>
-  productsStore.stats.inStockProducts || productsStore.inStockProducts.length
+const inStockProductsCount = computed(
+  () => productsStore.stats.inStockProducts || productsStore.inStockProducts.length,
 )
 
-const outOfStockProductsCount = computed(() =>
-  productsStore.stats.outOfStockProducts || productsStore.outOfStockProducts.length
+const outOfStockProductsCount = computed(
+  () => productsStore.stats.outOfStockProducts || productsStore.outOfStockProducts.length,
 )
 
-const averagePrice = computed(() =>
-  productsStore.stats.averagePrice || productsStore.averagePrice
-)
+const averagePrice = computed(() => productsStore.stats.averagePrice || productsStore.averagePrice)
 </script>
 
 <template>
@@ -86,7 +84,11 @@ const averagePrice = computed(() =>
           </p>
         </div>
         <div class="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full">
-          <v-icon name="hi-currency-euro" scale="1.5" class="text-yellow-600 dark:text-yellow-400" />
+          <v-icon
+            name="hi-currency-euro"
+            scale="1.5"
+            class="text-yellow-600 dark:text-yellow-400"
+          />
         </div>
       </div>
     </div>

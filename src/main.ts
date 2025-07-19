@@ -106,7 +106,7 @@ addIcons(
   AllIcons.HiEye,
   AllIcons.HiEyeOff,
   AllIcons.HiX,
-  AllIcons.HiXCircle
+  AllIcons.HiXCircle,
 )
 
 const app = createApp(App)

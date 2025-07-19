@@ -27,14 +27,12 @@ export const useCouponsStore = defineStore('coupons', () => {
   // Getters
   const couponCount = computed(() => coupons.value.length)
   const hasCoupons = computed(() => coupons.value.length > 0)
-  const activeCoupons = computed(() => coupons.value.filter(coupon => coupon.active))
+  const activeCoupons = computed(() => coupons.value.filter((coupon) => coupon.active))
   const expiredCoupons = computed(() =>
-    coupons.value.filter(coupon => new Date(coupon.expiryDate) < new Date())
+    coupons.value.filter((coupon) => new Date(coupon.expiryDate) < new Date()),
   )
   const validCoupons = computed(() =>
-    coupons.value.filter(coupon =>
-      coupon.active && new Date(coupon.expiryDate) >= new Date()
-    )
+    coupons.value.filter((coupon) => coupon.active && new Date(coupon.expiryDate) >= new Date()),
   )
 
   // Actions

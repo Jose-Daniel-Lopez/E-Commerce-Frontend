@@ -1,5 +1,7 @@
 <template>
-  <section class="h-[448px] w-full bg-[url('/images/banner-2.png')] bg-cover bg-center bg-no-repeat md:bg-[url('/images/banner.png')]">
+  <section
+    class="h-[448px] w-full bg-[url('/images/banner-2.png')] bg-cover bg-center bg-no-repeat md:bg-[url('/images/banner.png')]"
+  >
     <Wrapper class="flex h-[448px] items-center justify-center">
       <div>
         <h1 class="text-center font-srProDisplay text-[48px] font-thin text-white md:text-[72px]">
@@ -36,7 +38,7 @@ export default {
   name: 'BannerSection',
   components: {
     Wrapper,
-    Button
-  }
+    Button,
+  },
 }
 </script>

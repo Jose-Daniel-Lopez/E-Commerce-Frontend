@@ -1,9 +1,8 @@
 <template>
-  <section
-    class="h-auto md:h-[472px] lg:h-[632px]"
-    :style="sectionStyle"
-  >
-    <Wrapper class="flex h-auto flex-col p-[88px_16px_0px_16px] md:h-[472px] md:flex-row md:gap-8 md:p-[0px_16px_0px_16px] lg:h-[632px] lg:gap-0">
+  <section class="h-auto md:h-[472px] lg:h-[632px]" :style="sectionStyle">
+    <Wrapper
+      class="flex h-auto flex-col p-[88px_16px_0px_16px] md:h-[472px] md:flex-row md:gap-8 md:p-[0px_16px_0px_16px] lg:h-[632px] lg:gap-0"
+    >
       <!-- left side start -->
       <div class="flex h-auto basis-[60%] flex-col justify-center gap-4 md:gap-8 md:px-2">
         <div class="flex flex-col text-center md:gap-3 md:text-left">
@@ -75,50 +74,50 @@ export default {
   name: 'HeroSection',
   components: {
     Wrapper,
-    Button
+    Button,
   },
   data() {
     return {
       data: {
-        sectionBgColor: "",
+        sectionBgColor: '',
         isGradient: true,
-        gradientPosition: "to right",
-        gradientFrom: "#211c24",
-        gradientTo: "#211c24",
+        gradientPosition: 'to right',
+        gradientFrom: '#211c24',
+        gradientTo: '#211c24',
         left: {
-          smallTitle: "Pro.Beyond",
-          smallTitleColor: "#909090",
-          bigTitle: "IPhone 14",
-          bigTitleColor: "white",
-          bigTitleBold: "Pro",
-          bigTitleBoldColor: "white",
-          description: "Created to change everything for the better. For everyone",
-          descriptionColor: "#909090",
+          smallTitle: 'Pro.Beyond',
+          smallTitleColor: '#909090',
+          bigTitle: 'IPhone 14',
+          bigTitleColor: 'white',
+          bigTitleBold: 'Pro',
+          bigTitleBoldColor: 'white',
+          description: 'Created to change everything for the better. For everyone',
+          descriptionColor: '#909090',
           isButton: true,
           button: {
-            buttonBgColor: "",
-            buttonText: "Shop Now",
-            buttonTextColor: "white",
-            buttonBorderWidth: "1px",
-            buttonBorderColor: "grey",
-            buttonHoverBgColor: "#333333",
-            buttonHoverTextColor: "",
+            buttonBgColor: '',
+            buttonText: 'Shop Now',
+            buttonTextColor: 'white',
+            buttonBorderWidth: '1px',
+            buttonBorderColor: 'grey',
+            buttonHoverBgColor: '#333333',
+            buttonHoverTextColor: '',
           },
         },
         right: {
-          imageUrl: "/images/iphone.png",
-          imageAlt: "iphone",
-          paddingTop: "",
-          paddingBottom: "",
+          imageUrl: '/images/iphone.png',
+          imageAlt: 'iphone',
+          paddingTop: '',
+          paddingBottom: '',
         },
-      }
+      },
     }
   },
   computed: {
     sectionStyle() {
       const styles = {}
 
-      if (this.data.sectionBgColor !== "" && !this.data.isGradient) {
+      if (this.data.sectionBgColor !== '' && !this.data.isGradient) {
         styles.background = this.data.sectionBgColor
       }
 
@@ -130,15 +129,16 @@ export default {
     },
     rightSideStyle() {
       return {
-        '--padding-top': this.data.right.paddingTop !== "" ? this.data.right.paddingTop : "0px",
-        '--padding-bottom': this.data.right.paddingBottom !== "" ? this.data.right.paddingBottom : "0px"
+        '--padding-top': this.data.right.paddingTop !== '' ? this.data.right.paddingTop : '0px',
+        '--padding-bottom':
+          this.data.right.paddingBottom !== '' ? this.data.right.paddingBottom : '0px',
       }
-    }
+    },
   },
   methods: {
     bgGradient(data) {
       return `linear-gradient(${data.gradientPosition}, ${data.gradientFrom}, ${data.gradientTo})`
-    }
-  }
+    },
+  },
 }
 </script>

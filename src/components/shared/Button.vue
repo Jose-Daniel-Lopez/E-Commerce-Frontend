@@ -8,13 +8,12 @@
     :disabled="disabled"
   >
     <slot />
-    <svg
-      v-if="icon"
-      class="w-4 h-4"
-      fill="currentColor"
-      viewBox="0 0 20 20"
-    >
-      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+    <svg v-if="icon" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+      <path
+        fill-rule="evenodd"
+        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+        clip-rule="evenodd"
+      />
     </svg>
   </button>
 </template>
@@ -26,56 +25,56 @@ export default {
   props: {
     icon: {
       type: Boolean,
-      default: false
+      default: false,
     },
     borderColor: {
       type: String,
-      default: ''
+      default: '',
     },
     hoverBgColor: {
       type: String,
-      default: ''
+      default: '',
     },
     hoverTextColor: {
       type: String,
-      default: ''
+      default: '',
     },
     textColor: {
       type: String,
-      default: 'black'
+      default: 'black',
     },
     textSize: {
       type: String,
-      default: '16px'
+      default: '16px',
     },
     fontWeight: {
       type: String,
-      default: '400'
+      default: '400',
     },
     width: {
       type: String,
-      default: 'auto'
+      default: 'auto',
     },
     height: {
       type: String,
-      default: '40px' // Cambiar a un valor más grande si es necesario
+      default: '40px', // Cambiar a un valor más grande si es necesario
     },
     borderWidth: {
       type: String,
-      default: ''
+      default: '',
     },
     bgColor: {
       type: String,
-      default: ''
+      default: '',
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-      isHovered: false
+      isHovered: false,
     }
   },
   computed: {
@@ -87,7 +86,7 @@ export default {
         color: this.isHovered && this.hoverTextColor ? this.hoverTextColor : this.textColor,
         border: `${this.borderWidth === '' ? '0px' : this.borderWidth} solid ${this.borderColor}`,
         fontSize: this.textSize,
-        fontWeight: this.fontWeight
+        fontWeight: this.fontWeight,
       }
     },
     buttonClass() {
@@ -96,16 +95,18 @@ export default {
         'font-srProDisplay outline-none transition-all duration-200',
         this.disabled ? 'bg-gray-600 cursor-not-allowed' : '',
         // Agregar clases de hover solo si no está disabled
-        !this.disabled ? 'hover:transition-all hover:duration-200' : ''
-      ].filter(Boolean).join(' ')
-    }
+        !this.disabled ? 'hover:transition-all hover:duration-200' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')
+    },
   },
   methods: {
     handleClick() {
       if (!this.disabled) {
         this.$emit('click')
       }
-    }
-  }
+    },
+  },
 }
 </script>

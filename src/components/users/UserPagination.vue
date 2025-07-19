@@ -30,15 +30,10 @@ const pageNumbers = computed(() => {
 
 const pageSizeOptions = [10, 20, 50, 100]
 
-const startItem = computed(() =>
-  pagination.value.page * pagination.value.size + 1
-)
+const startItem = computed(() => pagination.value.page * pagination.value.size + 1)
 
 const endItem = computed(() =>
-  Math.min(
-    (pagination.value.page + 1) * pagination.value.size,
-    pagination.value.totalElements
-  )
+  Math.min((pagination.value.page + 1) * pagination.value.size, pagination.value.totalElements),
 )
 </script>
 
@@ -95,7 +90,7 @@ const endItem = computed(() =>
             'px-3 py-1 text-sm border rounded-md transition-colors',
             pageNum === pagination.page
               ? 'bg-emerald-600 border-emerald-600 text-white'
-              : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
+              : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white',
           ]"
         >
           {{ pageNum + 1 }}

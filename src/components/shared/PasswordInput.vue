@@ -42,7 +42,7 @@ withDefaults(defineProps<Props>(), {
   autocomplete: 'current-password',
   required: false,
   animationClass: '',
-  hasError: false
+  hasError: false,
 })
 
 defineEmits<{

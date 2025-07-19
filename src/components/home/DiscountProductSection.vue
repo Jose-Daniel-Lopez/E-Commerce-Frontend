@@ -2,12 +2,9 @@
   <section class="h-auto w-full">
     <Wrapper class="flex h-fit w-full flex-col gap-8 py-[80px]">
       <div class="relative flex h-9 w-full items-center justify-between">
-        <h3 class="font-srProDisplay text-2xl font-medium">
-          Productos en Descuento
-        </h3>
+        <h3 class="font-srProDisplay text-2xl font-medium">Productos en Descuento</h3>
         <!-- Navigation buttons -->
-        <div class="flex items-center gap-2 absolute right-0 top-1/2 -translate-y-1/2 z-20">
-        </div>
+        <div class="flex items-center gap-2 absolute right-0 top-1/2 -translate-y-1/2 z-20"></div>
       </div>
 
       <!-- Main container -->
@@ -25,11 +22,7 @@
           class="discountProduct flex w-full items-center pt-3 !overflow-visible"
           @swiper="onSwiperInit"
         >
-          <SwiperSlide
-            v-for="product in data"
-            :key="product.id"
-            class="!overflow-visible"
-          >
+          <SwiperSlide v-for="product in data" :key="product.id" class="!overflow-visible">
             <!-- Product container -->
             <div class="px-1 py-2">
               <ProductCard
@@ -68,7 +61,7 @@ export default {
     SwiperSlide,
     Wrapper,
     ProductCard,
-    ViewMoreCard
+    ViewMoreCard,
   },
   data() {
     return {
@@ -77,42 +70,42 @@ export default {
       data: [
         {
           id: 1,
-          name: "Apple iPhone 14 Pro Max 512GB Gold(MQ233)",
-          originalPrice: "1437",
-          discountPrice: "1350",
+          name: 'Apple iPhone 14 Pro Max 512GB Gold(MQ233)',
+          originalPrice: '1437',
+          discountPrice: '1350',
           image: {
-            url: "/images/Iphone-14-pro-Gold.png",
-            altText: "Iphone-14-pro-Gold",
+            url: '/images/Iphone-14-pro-Gold.png',
+            altText: 'Iphone-14-pro-Gold',
           },
         },
         {
           id: 2,
-          name: "AirPods Max Silver",
-          originalPrice: "549",
-          discountPrice: "510",
+          name: 'AirPods Max Silver',
+          originalPrice: '549',
+          discountPrice: '510',
           image: {
-            url: "/images/Apple-airPods.png",
-            altText: "Apple-airPods",
+            url: '/images/Apple-airPods.png',
+            altText: 'Apple-airPods',
           },
         },
         {
           id: 3,
-          name: "Apple Watch Series 9 GPS 41mm Starlight Aluminum Case",
-          originalPrice: "399",
-          discountPrice: "350",
+          name: 'Apple Watch Series 9 GPS 41mm Starlight Aluminum Case',
+          originalPrice: '399',
+          discountPrice: '350',
           image: {
-            url: "/images/Apple-Watch.png",
-            altText: "Apple-Watch",
+            url: '/images/Apple-Watch.png',
+            altText: 'Apple-Watch',
           },
         },
         {
           id: 4,
-          name: "Apple iPhone 14 Pro 1TB Gold (MQ2V3)",
-          originalPrice: "1499",
-          discountPrice: "1450",
+          name: 'Apple iPhone 14 Pro 1TB Gold (MQ2V3)',
+          originalPrice: '1499',
+          discountPrice: '1450',
           image: {
-            url: "/images/Iphone-14-pro-Gold.png",
-            altText: "Iphone-14-pro-Gold",
+            url: '/images/Iphone-14-pro-Gold.png',
+            altText: 'Iphone-14-pro-Gold',
           },
         },
       ],
@@ -122,28 +115,28 @@ export default {
           spaceBetween: 8,
           grid: {
             rows: 2,
-            fill: 'row'
-          }
+            fill: 'row',
+          },
         },
         767: {
           slidesPerView: 2,
           spaceBetween: 16,
           grid: {
             rows: this.data?.length > 3 ? 2 : 1,
-            fill: 'row'
-          }
+            fill: 'row',
+          },
         },
         1024: {
           slidesPerView: 3,
-          spaceBetween: 20
+          spaceBetween: 20,
         },
         1280: {
           slidesPerView: 4,
-          spaceBetween: 24
-        }
+          spaceBetween: 24,
+        },
       },
     }
-  }
+  },
 }
 </script>
 
