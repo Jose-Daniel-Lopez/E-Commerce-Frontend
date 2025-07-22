@@ -99,37 +99,21 @@ export const useOrdersStore = defineStore('orders', () => {
   })
 
   // Actions
-  const fetchOrders = async () => {
-    loading.value = true
-    error.value = ''
-
-    try {
-      const response = await api.get('/orders')
-      orders.value = response.data._embedded ? response.data._embedded.orders : response.data
-      currentUserId.value = null
-    } catch (err) {
-      console.error('Error fetching orders:', err)
-      error.value = 'Error al cargar los pedidos'
-    } finally {
-      loading.value = false
-    }
-  }
-
   const fetchOrdersByUser = async (userId: number) => {
-    loading.value = true
-    error.value = ''
-    currentUserId.value = userId
+  loading.value = true
+  error.value = ''
+  currentUserId.value = userId
 
-    try {
-      const response = await api.get(`/orders`)
-      orders.value = response.data._embedded ? response.data._embedded.orders : response.data
-    } catch (err) {
-      console.error(`Error fetching orders for user ${userId}:`, err)
-      error.value = 'Error al cargar los pedidos del usuario'
-    } finally {
-      loading.value = false
-    }
+  try {
+    const response = await api.get(`/users/${userId}/orders`)
+    orders.value = response.data._embedded?.orders || []
+  } catch (err) {
+    console.error(`Error fetching orders for user ${userId}:`, err)
+    error.value = 'Error al cargar los pedidos del usuario'
+  } finally {
+    loading.value = false
   }
+}
 
   const fetchOrderById = async (orderId: number) => {
     try {
@@ -309,7 +293,6 @@ export const useOrdersStore = defineStore('orders', () => {
     pendingOrders,
     completedOrders,
     // Actions
-    fetchOrders,
     fetchOrdersByUser,
     fetchOrderById,
     fetchOrdersByStatus,

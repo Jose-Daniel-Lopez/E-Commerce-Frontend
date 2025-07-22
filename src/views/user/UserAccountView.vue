@@ -829,146 +829,54 @@ const sections = computed(() => [
 // User state
 const user = computed(() => (authStore.user ?? {}) as User)
 
-const orders = ref([
-  {
-    id: '12345',
-    date: '2025-07-01',
-    status: 'Delivered',
-    expectedDelivery: 'July 3, 2025',
-    items: [
-      {
-        id: 1,
-        name: 'iPhone 14 Pro 256GB Space Black',
-        description: 'Latest Apple smartphone with Pro camera system',
-        image: '/images/Iphone-14-pro-black.png',
-        price: 1299,
-        quantity: 1,
-      },
-      {
-        id: 2,
-        name: 'Apple Watch Series 8',
-        description: 'Advanced fitness tracking and health monitoring',
-        image: '/images/Apple-Watch.png',
-        price: 399,
-        quantity: 1,
-      },
-    ],
-    subtotal: 1698,
-    shipping: 0,
-    tax: 152.82,
-    discount: 0,
-    total: 1850.82,
+// Orders state
+import { useOrdersStore } from '@/stores/orders'
+const ordersStore = useOrdersStore()
+// Reactive reference to orders from the store
+const orders = computed(() =>
+  ordersStore.orders.map(order => ({
+    id: order.id.toString(),
+    date: new Date(order.orderDate).toISOString().split('T')[0],
+    status: order.status === 'CANCELED' ? 'Cancelled' : order.status,
+    expectedDelivery: 'N/A', // You can enhance this later if available
+    items: order.orderItems?.map(item => ({
+      id: item.id,
+      name: item.product.name,
+      description: item.product.description,
+      image: '/images/default-product.png', // Placeholder; improve later
+      price: item.unitPrice,
+      quantity: item.quantity,
+    })) || [],
+    subtotal: order.orderItems?.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0) || 0,
+    shipping: 0, // Add if available
+    tax: 0, // Add if available
+    discount: order.hasDiscount ? 10 : 0, // Mock or fetch from discountCode
+    total: order.totalAmount,
     shippingAddress: {
-      name: 'John Doe',
-      street: '123 Main Street',
-      city: 'San Francisco',
-      state: 'CA',
-      zipCode: '94102',
-      country: 'United States',
+      name: user.value?.username || '',
+      street: 'N/A',
+      city: 'N/A',
+      state: 'N/A',
+      zipCode: 'N/A',
+      country: 'N/A'
     },
     billingAddress: {
-      name: 'John Doe',
-      street: '123 Main Street',
-      city: 'San Francisco',
-      state: 'CA',
-      zipCode: '94102',
-      country: 'United States',
+      name: user.value?.username || '',
+      street: 'N/A',
+      city: 'N/A',
+      state: 'N/A',
+      zipCode: 'N/A',
+      country: 'N/A'
     },
     paymentMethod: {
-      type: 'Visa',
-      lastFour: '4242',
+      type: order.payment?.paymentMethod || 'N/A',
+      lastFour: '4242' // Mock for now
     },
-    paymentStatus: 'Paid',
-    trackingNumber: 'TN123456789US',
-    carrier: 'UPS',
-  },
-  {
-    id: '67890',
-    date: '2025-06-15',
-    status: 'Shipped',
-    expectedDelivery: 'July 25, 2025',
-    items: [
-      {
-        id: 3,
-        name: 'iPad Pro 12.9-inch',
-        description: 'Professional tablet for creative work',
-        image: '/images/Apple-iPad.png',
-        price: 1099,
-        quantity: 1,
-      },
-    ],
-    subtotal: 1099,
-    shipping: 9.99,
-    tax: 98.91,
-    discount: 50,
-    total: 1157.90,
-    shippingAddress: {
-      name: 'John Doe',
-      street: '123 Main Street',
-      city: 'San Francisco',
-      state: 'CA',
-      zipCode: '94102',
-      country: 'United States',
-    },
-    billingAddress: {
-      name: 'John Doe',
-      street: '123 Main Street',
-      city: 'San Francisco',
-      state: 'CA',
-      zipCode: '94102',
-      country: 'United States',
-    },
-    paymentMethod: {
-      type: 'Mastercard',
-      lastFour: '8888',
-    },
-    paymentStatus: 'Paid',
-    trackingNumber: 'TN987654321US',
-    carrier: 'FedEx',
-  },
-  {
-    id: '54321',
-    date: '2025-05-20',
-    status: 'Cancelled',
-    expectedDelivery: 'N/A',
-    items: [
-      {
-        id: 4,
-        name: 'MacBook Pro 14-inch',
-        description: 'Professional laptop with M2 Pro chip',
-        image: '/images/Macbook.png',
-        price: 2499,
-        quantity: 1,
-      },
-    ],
-    subtotal: 2499,
-    shipping: 0,
-    tax: 224.91,
-    discount: 0,
-    total: 2723.91,
-    shippingAddress: {
-      name: 'John Doe',
-      street: '123 Main Street',
-      city: 'San Francisco',
-      state: 'CA',
-      zipCode: '94102',
-      country: 'United States',
-    },
-    billingAddress: {
-      name: 'John Doe',
-      street: '123 Main Street',
-      city: 'San Francisco',
-      state: 'CA',
-      zipCode: '94102',
-      country: 'United States',
-    },
-    paymentMethod: {
-      type: 'American Express',
-      lastFour: '1005',
-    },
-    paymentStatus: 'Refunded',
-  },
-])
+    paymentStatus: order.payment?.paymentStatus || 'Pending',
+    trackingNumber: 'TN' + order.id,
+    carrier: 'UPS'
+  }))
+)
 
 const refunds = ref([
   { id: 'R001', reason: 'Item defective', status: 'Completed' },
@@ -1253,16 +1161,16 @@ onMounted(async () => {
   }
 
   // Fetch user data from backend using auth store
-  if (authStore.isAuthenticated) {
+  if (authStore.isAuthenticated && authStore.user?.id) {
     await authStore.fetchCurrentUser()
-    // Fetch the user with HATEOAS links using usersStore
-    if (authStore.user?.id) {
-      await usersStore.fetchUserById(authStore.user.id)
-      // Now fetch addresses using the user with _links
-      if (usersStore.selectedUser) {
-        await usersStore.fetchUserAddresses(usersStore.selectedUser)
-      }
+    await usersStore.fetchUserById(authStore.user.id)
+
+    if (usersStore.selectedUser) {
+      await usersStore.fetchUserAddresses(usersStore.selectedUser)
     }
+
+    // ✅ Fetch user's orders using orders store
+    await ordersStore.fetchOrdersByUser(authStore.user.id)
   }
 
   // Set up an observer to highlight the active navigation link based on the currently visible section.
