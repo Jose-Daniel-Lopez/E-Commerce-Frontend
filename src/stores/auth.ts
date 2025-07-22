@@ -61,14 +61,22 @@ export const useAuthStore = defineStore('auth', () => {
     const savedToken = localStorage.getItem('authToken')
     const savedUser = localStorage.getItem('user')
 
+    console.log('Initializing auth...')
+    console.log('Saved token exists:', !!savedToken)
+    console.log('Saved user data:', savedUser)
+
     if (savedToken && savedUser) {
       token.value = savedToken
       try {
-        user.value = JSON.parse(savedUser)
+        const parsedUser = JSON.parse(savedUser)
+        user.value = parsedUser
+        console.log('Auth initialized with user:', parsedUser)
       } catch (e) {
         console.error('Error parsing saved user data:', e)
         clearAuth()
       }
+    } else {
+      console.log('No saved auth data found')
     }
   }
 
@@ -81,18 +89,31 @@ export const useAuthStore = defineStore('auth', () => {
 
       if (response.data.token && response.data.user) {
         token.value = response.data.token
-        // Map backend user response to frontend user format
+
+        // First, set basic user data from login response
         user.value = {
           id: response.data.user.id,
           username: response.data.user.username,
           email: response.data.user.email,
           role: response.data.user.role,
-          avatar: '', // Backend doesn't provide avatar in login response
+          avatar: '', // Will be fetched below
           isVerified: true, // If user can login, they're verified
         }
 
-        // Save to localStorage
+        // Save token immediately
         localStorage.setItem('authToken', response.data.token)
+
+        // Now fetch complete user data including avatar
+        try {
+          const userDataResponse = await api.get<User>('/users/me')
+          user.value = userDataResponse.data
+          console.log('Complete user data fetched after login:', userDataResponse.data)
+        } catch (fetchError) {
+          console.warn('Could not fetch complete user data after login:', fetchError)
+          // Continue with basic user data if fetch fails
+        }
+
+        // Save complete user data to localStorage
         localStorage.setItem('user', JSON.stringify(user.value))
 
         return { success: true }
@@ -145,9 +166,14 @@ export const useAuthStore = defineStore('auth', () => {
 
     loading.value = true
     try {
+      console.log('Fetching current user from server...')
       const response = await api.get<User>('/users/me')
+      console.log('Fetched user data from server:', response.data)
+
       user.value = response.data
       localStorage.setItem('user', JSON.stringify(response.data))
+
+      console.log('User data saved to localStorage:', response.data)
       return { success: true }
     } catch (err: unknown) {
       console.error('Error fetching current user:', err)
@@ -243,11 +269,25 @@ export const useAuthStore = defineStore('auth', () => {
         avatar: updatedData.avatar,
       }
 
+      console.log('Updating user profile with data:', allowedFields)
+
       const url = `/users/${user.value.id}`
       const response = await api.patch(url, allowedFields)
 
+      console.log('Server response:', response.data)
+
+      // Verify that the avatar was actually updated in the response
+      if (allowedFields.avatar && response.data.avatar !== allowedFields.avatar) {
+        console.warn('Server response avatar does not match sent avatar')
+        console.warn('Sent:', allowedFields.avatar)
+        console.warn('Received:', response.data.avatar)
+      }
+
+      // Update local user data with the response from server
       user.value = { ...user.value, ...response.data }
       localStorage.setItem('user', JSON.stringify(user.value))
+
+      console.log('Updated user data saved to localStorage:', user.value)
 
       return { success: true }
     } catch (err: unknown) {

@@ -1179,22 +1179,44 @@ const saveAvatar = async (avatarUrl: string) => {
   try {
     // Update the user's avatar in the auth store
     if (authStore.user) {
-      await authStore.updateUserProfile({
+      console.log('Saving avatar:', avatarUrl)
+      console.log('Current user before update:', authStore.user)
+      console.log('LocalStorage before update:', localStorage.getItem('user'))
+
+      const result = await authStore.updateUserProfile({
         username: authStore.user.username,
         avatar: avatarUrl,
         location: authStore.user.location || ''
       })
-      
-      // Update the editable user if edit mode is open
-      if (isEditProfileOpen.value) {
-        editableUser.value.avatar = avatarUrl
+
+      console.log('Update result:', result)
+
+      if (result.success) {
+        // Fetch fresh user data from server to ensure we have the latest
+        await authStore.fetchCurrentUser()
+        console.log('Current user after refresh:', authStore.user)
+        console.log('LocalStorage after update:', localStorage.getItem('user'))
+
+        // Update the editable user if edit mode is open
+        if (isEditProfileOpen.value) {
+          editableUser.value.avatar = avatarUrl
+        }
+
+        // Close the modal
+        closeAvatarSelector()
+
+        // Show success message (optional)
+        console.log('Avatar updated successfully')
+      } else {
+        console.error('Failed to update avatar:', result.error)
+        // You might want to show an error message to the user here
+        alert(`Failed to update avatar: ${result.error}`)
       }
-      
-      // Close the modal
-      closeAvatarSelector()
     }
   } catch (error) {
     console.error('Error saving avatar:', error)
+    // You might want to show an error message to the user here
+    alert('Error saving avatar. Please try again.')
   }
 }
 
