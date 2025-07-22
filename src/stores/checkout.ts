@@ -6,7 +6,9 @@ export interface ShippingMethod {
   id: string
   name: string
   price: number
+  description: string
   estimatedDelivery: string
+  selectedDate?: string
 }
 
 export const useCheckoutStore = defineStore('checkout', () => {
