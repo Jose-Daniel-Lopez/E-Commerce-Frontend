@@ -174,14 +174,14 @@
                       <span class="flex items-center gap-1">
                         <v-icon name="hi-shield-check" scale="0.9" />
                         {{
-                          user.isVerified
+                          authStore.user?.isVerified
                             ? $t('account.profile.verified')
                             : $t('account.profile.unverified')
                         }}
                       </span>
                       <span class="flex items-center gap-1">
                         <v-icon name="hi-badge-check" scale="0.9" />
-                        {{ user.role }}
+                        {{ authStore.user?.role }}
                       </span>
                     </div>
                   </div>
@@ -366,10 +366,11 @@
                       {{ order.status }}
                     </span>
                     <Button
+                      @click="openOrderDetailsModal(order)"
                       bg-color="transparent"
                       width="auto"
                       height="auto"
-                      class="px-4 text-[10px] font-light text-gray-500 cursor-pointer"
+                      class="px-4 text-[10px] font-light text-gray-500 cursor-pointer hover:text-black transition-colors"
                     >
                       {{ $t('account.orders.viewDetails') }}
                     </Button>
@@ -784,6 +785,13 @@
         </div>
       </div>
     </Wrapper>
+
+    <!-- Order Details Modal -->
+    <OrderDetailsModal
+      :is-open="isOrderDetailsModalOpen"
+      :order="selectedOrder"
+      @close="closeOrderDetailsModal"
+    />
   </div>
 </template>
 
@@ -797,6 +805,7 @@ import { useI18n } from 'vue-i18n'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import Button from '@/components/shared/Button.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+import OrderDetailsModal from '@/components/orders/OrderDetailsModal.vue'
 
 const { t, locale } = useI18n()
 const authStore = useAuthStore()
@@ -821,9 +830,144 @@ const sections = computed(() => [
 const user = computed(() => (authStore.user ?? {}) as User)
 
 const orders = ref([
-  { id: '12345', date: '2025-07-01', status: 'Delivered' },
-  { id: '67890', date: '2025-06-15', status: 'Shipped' },
-  { id: '54321', date: '2025-05-20', status: 'Cancelled' },
+  {
+    id: '12345',
+    date: '2025-07-01',
+    status: 'Delivered',
+    expectedDelivery: 'July 3, 2025',
+    items: [
+      {
+        id: 1,
+        name: 'iPhone 14 Pro 256GB Space Black',
+        description: 'Latest Apple smartphone with Pro camera system',
+        image: '/images/Iphone-14-pro-black.png',
+        price: 1299,
+        quantity: 1,
+      },
+      {
+        id: 2,
+        name: 'Apple Watch Series 8',
+        description: 'Advanced fitness tracking and health monitoring',
+        image: '/images/Apple-Watch.png',
+        price: 399,
+        quantity: 1,
+      },
+    ],
+    subtotal: 1698,
+    shipping: 0,
+    tax: 152.82,
+    discount: 0,
+    total: 1850.82,
+    shippingAddress: {
+      name: 'John Doe',
+      street: '123 Main Street',
+      city: 'San Francisco',
+      state: 'CA',
+      zipCode: '94102',
+      country: 'United States',
+    },
+    billingAddress: {
+      name: 'John Doe',
+      street: '123 Main Street',
+      city: 'San Francisco',
+      state: 'CA',
+      zipCode: '94102',
+      country: 'United States',
+    },
+    paymentMethod: {
+      type: 'Visa',
+      lastFour: '4242',
+    },
+    paymentStatus: 'Paid',
+    trackingNumber: 'TN123456789US',
+    carrier: 'UPS',
+  },
+  {
+    id: '67890',
+    date: '2025-06-15',
+    status: 'Shipped',
+    expectedDelivery: 'July 25, 2025',
+    items: [
+      {
+        id: 3,
+        name: 'iPad Pro 12.9-inch',
+        description: 'Professional tablet for creative work',
+        image: '/images/Apple-iPad.png',
+        price: 1099,
+        quantity: 1,
+      },
+    ],
+    subtotal: 1099,
+    shipping: 9.99,
+    tax: 98.91,
+    discount: 50,
+    total: 1157.90,
+    shippingAddress: {
+      name: 'John Doe',
+      street: '123 Main Street',
+      city: 'San Francisco',
+      state: 'CA',
+      zipCode: '94102',
+      country: 'United States',
+    },
+    billingAddress: {
+      name: 'John Doe',
+      street: '123 Main Street',
+      city: 'San Francisco',
+      state: 'CA',
+      zipCode: '94102',
+      country: 'United States',
+    },
+    paymentMethod: {
+      type: 'Mastercard',
+      lastFour: '8888',
+    },
+    paymentStatus: 'Paid',
+    trackingNumber: 'TN987654321US',
+    carrier: 'FedEx',
+  },
+  {
+    id: '54321',
+    date: '2025-05-20',
+    status: 'Cancelled',
+    expectedDelivery: 'N/A',
+    items: [
+      {
+        id: 4,
+        name: 'MacBook Pro 14-inch',
+        description: 'Professional laptop with M2 Pro chip',
+        image: '/images/Macbook.png',
+        price: 2499,
+        quantity: 1,
+      },
+    ],
+    subtotal: 2499,
+    shipping: 0,
+    tax: 224.91,
+    discount: 0,
+    total: 2723.91,
+    shippingAddress: {
+      name: 'John Doe',
+      street: '123 Main Street',
+      city: 'San Francisco',
+      state: 'CA',
+      zipCode: '94102',
+      country: 'United States',
+    },
+    billingAddress: {
+      name: 'John Doe',
+      street: '123 Main Street',
+      city: 'San Francisco',
+      state: 'CA',
+      zipCode: '94102',
+      country: 'United States',
+    },
+    paymentMethod: {
+      type: 'American Express',
+      lastFour: '1005',
+    },
+    paymentStatus: 'Refunded',
+  },
 ])
 
 const refunds = ref([
@@ -887,12 +1031,12 @@ const cancelEdit = () => {
   isEditProfileOpen.value = false
   // Restore original data
   editableUser.value = {
-    name: user.value.name,
-    email: user.value.email,
-    location: user.value.location,
-    avatar: user.value.avatar,
-    role: user.value.role,
-    isVerified: user.value.isVerified,
+    name: authStore.user?.username || '',
+    email: authStore.user?.email || '',
+    location: authStore.user?.location || '',
+    avatar: authStore.user?.avatar || '',
+    role: authStore.user?.role || '',
+    isVerified: authStore.user?.isVerified || false,
   }
 }
 
@@ -916,6 +1060,44 @@ const notifications = ref({ enabled: true })
 
 // Logic for mobile navigation.
 const isMobileNavOpen = ref(false)
+
+// Order Details Modal state
+const isOrderDetailsModalOpen = ref(false)
+const selectedOrder = ref<OrderType>({
+  id: '',
+  date: '',
+  status: '',
+  expectedDelivery: '',
+  items: [],
+  subtotal: 0,
+  shipping: 0,
+  tax: 0,
+  discount: 0,
+  total: 0,
+  shippingAddress: {
+    name: '',
+    street: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: '',
+  },
+  billingAddress: {
+    name: '',
+    street: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: '',
+  },
+  paymentMethod: {
+    type: '',
+    lastFour: '',
+  },
+  paymentStatus: '',
+  trackingNumber: '',
+  carrier: '',
+})
 
 const toggleMobileNav = () => {
   isMobileNavOpen.value = !isMobileNavOpen.value
@@ -969,6 +1151,97 @@ const getRefundStatusColor = (status: string) => {
 
 const activeSection = ref('profile')
 
+// Order Details Modal Methods
+interface OrderItem {
+  id: number
+  name: string
+  description: string
+  image: string
+  price: number
+  quantity: number
+}
+
+interface Address {
+  name: string
+  street: string
+  city: string
+  state: string
+  zipCode: string
+  country: string
+}
+
+interface PaymentMethod {
+  type: string
+  lastFour: string
+}
+
+interface OrderType {
+  id: string
+  date: string
+  status: string
+  expectedDelivery: string
+  items: OrderItem[]
+  subtotal: number
+  shipping: number
+  tax: number
+  discount: number
+  total: number
+  shippingAddress: Address
+  billingAddress: Address
+  paymentMethod: PaymentMethod
+  paymentStatus: string
+  trackingNumber?: string
+  carrier?: string
+}
+
+const openOrderDetailsModal = (order: OrderType) => {
+  selectedOrder.value = order
+  isOrderDetailsModalOpen.value = true
+  // Prevent body scrolling when modal is open
+  document.body.style.overflow = 'hidden'
+}
+
+const closeOrderDetailsModal = () => {
+  isOrderDetailsModalOpen.value = false
+  selectedOrder.value = {
+    id: '',
+    date: '',
+    status: '',
+    expectedDelivery: '',
+    items: [],
+    subtotal: 0,
+    shipping: 0,
+    tax: 0,
+    discount: 0,
+    total: 0,
+    shippingAddress: {
+      name: '',
+      street: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: '',
+    },
+    billingAddress: {
+      name: '',
+      street: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: '',
+    },
+    paymentMethod: {
+      type: '',
+      lastFour: '',
+    },
+    paymentStatus: '',
+    trackingNumber: '',
+    carrier: '',
+  }
+  // Restore body scrolling
+  document.body.style.overflow = 'auto'
+}
+
 onMounted(async () => {
   // Set the initial theme based on system preference if the theme is set to 'system'.
   if (theme.value === 'system') {
@@ -1013,6 +1286,8 @@ onMounted(async () => {
 // Clean up side effects when the component is unmounted.
 onUnmounted(() => {
   document.body.classList.remove('nav-open')
+  // Restore body scrolling in case modal was open
+  document.body.style.overflow = 'auto'
 })
 
 const refreshProfile = async () => {
