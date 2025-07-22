@@ -800,7 +800,7 @@ import '@/assets/base.css'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useUsersStore } from '@/stores/users'
-import type { User } from '@/stores/users'
+import type { User } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import Button from '@/components/shared/Button.vue'
@@ -937,7 +937,7 @@ const toggleEditProfile = () => {
 
 const cancelEdit = () => {
   isEditProfileOpen.value = false
-  // Restore original data
+  // Restore original data using authStore.user properties
   editableUser.value = {
     name: authStore.user?.username || '',
     email: authStore.user?.email || '',
