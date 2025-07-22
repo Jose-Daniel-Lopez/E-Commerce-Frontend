@@ -99,9 +99,9 @@
                     selectedAddress.country
                   }}</span>
                   <span
-                    v-if="selectedAddress.type"
+                    v-if="selectedAddress.addressType"
                     class="font-srProDisplay text-xs text-white bg-black rounded px-2 py-0.5 w-fit mt-1"
-                    >{{ selectedAddress.type }}</span
+                    >{{ selectedAddress.addressType }}</span
                   >
                 </div>
                 <p v-else class="font-srProDisplay text-gray-400 text-sm">No address selected</p>
@@ -112,9 +112,17 @@
                 <h3 class="font-srProDisplay text-base font-semibold text-black mb-2">
                   Shipment method
                 </h3>
-                <p v-if="selectedShipping" class="font-srProDisplay text-[#232340] text-sm">
-                  {{ selectedShipping.name }}
-                </p>
+                <div v-if="selectedShipping" class="space-y-1">
+                  <p class="font-srProDisplay text-[#232340] text-sm">
+                    {{ selectedShipping.name }}
+                  </p>
+                  <p
+                    v-if="selectedShipping.id === '3' && selectedShipping.selectedDate"
+                    class="font-srProDisplay text-[#666] text-xs"
+                  >
+                    Scheduled for: {{ selectedShipping.selectedDate }}
+                  </p>
+                </div>
                 <p v-else class="font-srProDisplay text-gray-400 text-sm">
                   No shipping method selected
                 </p>

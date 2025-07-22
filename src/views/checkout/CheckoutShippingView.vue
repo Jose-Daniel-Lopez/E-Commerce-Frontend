@@ -50,11 +50,11 @@
       <!-- Select Shipping Method -->
       <section class="max-w-5xl mx-auto">
         <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">Shipment Method</h2>
-        <div class="space-y-6">
+        <div class="space-y-6 overflow-visible">
           <div
             v-for="method in shippingMethods"
             :key="method.id"
-            class="bg-[#F7F7F7] rounded-xl p-6 flex items-center justify-between"
+            class="bg-[#F7F7F7] rounded-xl p-6 flex items-center justify-between overflow-visible relative"
           >
             <label class="flex items-start gap-4 cursor-pointer flex-1 w-full">
               <input
@@ -65,7 +65,7 @@
                 class="accent-black w-5 h-5 mt-1"
               />
               <div class="flex flex-1 items-center justify-between w-full">
-                <div>
+                <div class="flex-1">
                   <div class="flex items-center gap-2 mb-1">
                     <span class="font-srProDisplay text-base font-semibold text-black">{{
                       method.name
@@ -75,13 +75,23 @@
                       >{{ userCartStore.formatPrice(method.price) }}</span
                     >
                   </div>
-                  <div class="font-srProDisplay text-[#232340] text-base">
+                  <div class="font-srProDisplay text-[#232340] text-base mb-2">
                     {{ method.description }}
                   </div>
                 </div>
-                <span class="font-srProDisplay text-[#232340] text-base whitespace-nowrap">{{
-                  method.estimatedDelivery
-                }}</span>
+                <div class="flex items-center relative overflow-visible">
+                  <!-- Date picker for Schedule option -->
+                  <div v-if="method.id === '3' && selectedShippingId === '3'" class="relative overflow-visible">
+                    <DatePicker v-model="selectedScheduleDate" />
+                  </div>
+                  <!-- Regular estimated delivery for other options -->
+                  <span
+                    v-else
+                    class="font-srProDisplay text-[#232340] text-base whitespace-nowrap"
+                  >
+                    {{ method.estimatedDelivery }}
+                  </span>
+                </div>
               </div>
             </label>
           </div>
@@ -108,17 +118,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import Wrapper from '@/components/shared/Wrapper.vue'
+import DatePicker from '@/components/shared/DatePicker.vue'
 import { useRouter } from 'vue-router'
-import { useCheckoutStore } from '@/stores/checkout'
+import { useCheckoutStore, type ShippingMethod } from '@/stores/checkout'
 import { useUserCartStore } from '@/stores/userCart'
 
 const router = useRouter()
 const checkoutStore = useCheckoutStore()
 const userCartStore = useUserCartStore()
 
-const shippingMethods = ref([
+const shippingMethods = ref<ShippingMethod[]>([
   {
     id: '1',
     name: 'Free',
@@ -143,6 +154,14 @@ const shippingMethods = ref([
 ])
 
 const selectedShippingId = ref(shippingMethods.value[0].id)
+const selectedScheduleDate = ref('')
+
+// Clear selected date when switching away from Schedule option
+watch(selectedShippingId, (newValue) => {
+  if (newValue !== '3') {
+    selectedScheduleDate.value = ''
+  }
+})
 
 function goBack() {
   router
@@ -159,6 +178,17 @@ function goBack() {
 function goNext() {
   const selectedMethod = shippingMethods.value.find((m) => m.id === selectedShippingId.value)
   if (selectedMethod) {
+    // Validate that a date is selected for Schedule option
+    if (selectedMethod.id === '3' && !selectedScheduleDate.value) {
+      alert('Please select a delivery date for the scheduled shipping option.')
+      return
+    }
+
+    // Add the selected date for Schedule option
+    if (selectedMethod.id === '3' && selectedScheduleDate.value) {
+      selectedMethod.selectedDate = selectedScheduleDate.value
+      selectedMethod.estimatedDelivery = selectedScheduleDate.value
+    }
     checkoutStore.setSelectedShippingMethod(selectedMethod)
   }
   router

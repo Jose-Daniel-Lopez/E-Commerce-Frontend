@@ -1,0 +1,519 @@
+<template>
+  <Transition name="modal-overlay">
+    <div
+      v-if="isOpen"
+      class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md z-50 flex items-center justify-center p-4"
+      @click="closeModal"
+    >
+      <Transition name="modal-content">
+        <div
+          v-if="isOpen"
+          class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto transform border border-gray-100"
+          @click.stop
+        >
+          <!-- Modal Header -->
+          <div class="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-gray-200 px-6 py-4 rounded-t-xl z-10">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="font-srProDisplay text-2xl font-semibold text-black">
+                  Order #{{ order.id }}
+                </h2>
+                <p class="font-srProDisplay text-sm text-gray-600 mt-1">
+                  Placed on {{ formatDate(order.date) }}
+                </p>
+              </div>
+              <button
+                @click="closeModal"
+                class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <v-icon name="hi-x" scale="1.4" class="text-gray-500" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Modal Content -->
+          <div class="p-6 space-y-8">
+            <!-- Order Status and Progress -->
+            <section>
+              <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">
+                Order Status
+              </h3>
+              <div class="bg-gray-50 rounded-lg p-6">
+                <div class="flex items-center justify-between mb-6">
+                  <span
+                    :class="[
+                      getStatusColor(order.status),
+                      'px-4 py-2 rounded-full text-sm font-medium'
+                    ]"
+                  >
+                    {{ order.status }}
+                  </span>
+                  <span class="font-srProDisplay text-sm text-gray-600">
+                    Expected delivery: {{ order.expectedDelivery }}
+                  </span>
+                </div>
+
+                <!-- Order Progress -->
+                <div class="relative">
+                  <div class="flex items-center justify-between">
+                    <div
+                      v-for="(step, index) in orderSteps"
+                      :key="step.id"
+                      class="flex flex-col items-center"
+                      :class="{ 'flex-1': index < orderSteps.length - 1 }"
+                    >
+                      <div
+                        :class="[
+                          'w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300',
+                          step.completed
+                            ? 'bg-green-500 border-green-500 text-white'
+                            : step.current
+                            ? 'bg-blue-500 border-blue-500 text-white'
+                            : 'bg-gray-200 border-gray-300 text-gray-500'
+                        ]"
+                      >
+                        <v-icon
+                          v-if="step.completed"
+                          name="hi-check"
+                          scale="1.2"
+                          class="text-white"
+                        />
+                        <v-icon v-else :name="step.icon" scale="1.2" />
+                      </div>
+                      <span
+                        :class="[
+                          'font-srProDisplay text-xs mt-2 text-center',
+                          step.completed || step.current ? 'text-black' : 'text-gray-500'
+                        ]"
+                      >
+                        {{ step.label }}
+                      </span>
+                      <span
+                        v-if="step.date"
+                        class="font-srProDisplay text-xs text-gray-500 mt-1"
+                      >
+                        {{ step.date }}
+                      </span>
+                    </div>
+                  </div>
+                  <!-- Progress Line -->
+                  <div class="absolute top-5 left-5 right-5 h-0.5 bg-gray-300 -z-10">
+                    <div
+                      class="h-full bg-green-500 transition-all duration-500"
+                      :style="{ width: progressWidth + '%' }"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Order Items -->
+            <section>
+              <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">Order Items</h3>
+              <div class="space-y-4">
+                <div
+                  v-for="item in order.items"
+                  :key="item.id"
+                  class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <img
+                    :src="item.image"
+                    :alt="item.name"
+                    class="w-16 h-16 object-contain rounded-lg bg-white"
+                  />
+                  <div class="flex-1">
+                    <h4 class="font-srProDisplay font-medium text-black">{{ item.name }}</h4>
+                    <p class="font-srProDisplay text-sm text-gray-600 mt-1">
+                      {{ item.description }}
+                    </p>
+                    <div class="flex items-center gap-4 mt-2">
+                      <span class="font-srProDisplay text-sm text-gray-600">
+                        Qty: {{ item.quantity }}
+                      </span>
+                      <span class="font-srProDisplay text-sm text-gray-600">
+                        Unit Price: {{ formatPrice(item.price) }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <span class="font-srProDisplay text-lg font-semibold text-black">
+                      {{ formatPrice(item.price * item.quantity) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Order Summary -->
+            <section>
+              <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">
+                Order Summary
+              </h3>
+              <div class="bg-gray-50 rounded-lg p-6">
+                <div class="space-y-3">
+                  <div class="flex justify-between">
+                    <span class="font-srProDisplay text-gray-600">Subtotal</span>
+                    <span class="font-srProDisplay text-black">{{
+                      formatPrice(order.subtotal)
+                    }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="font-srProDisplay text-gray-600">Shipping</span>
+                    <span class="font-srProDisplay text-black">{{
+                      formatPrice(order.shipping)
+                    }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="font-srProDisplay text-gray-600">Tax</span>
+                    <span class="font-srProDisplay text-black">{{ formatPrice(order.tax) }}</span>
+                  </div>
+                  <div v-if="order.discount > 0" class="flex justify-between text-green-600">
+                    <span class="font-srProDisplay">Discount</span>
+                    <span class="font-srProDisplay">-{{ formatPrice(order.discount) }}</span>
+                  </div>
+                  <div class="border-t border-gray-300 pt-3 flex justify-between">
+                    <span class="font-srProDisplay text-lg font-semibold text-black">Total</span>
+                    <span class="font-srProDisplay text-lg font-semibold text-black">
+                      {{ formatPrice(order.total) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Shipping Information -->
+            <section>
+              <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">
+                Shipping Information
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Shipping Address -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <h4 class="font-srProDisplay font-medium text-black mb-2">Shipping Address</h4>
+                  <div class="font-srProDisplay text-sm text-gray-700 space-y-1">
+                    <p>{{ order.shippingAddress.name }}</p>
+                    <p>{{ order.shippingAddress.street }}</p>
+                    <p>
+                      {{ order.shippingAddress.city }}, {{ order.shippingAddress.state }}
+                      {{ order.shippingAddress.zipCode }}
+                    </p>
+                    <p>{{ order.shippingAddress.country }}</p>
+                  </div>
+                </div>
+
+                <!-- Billing Address -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <h4 class="font-srProDisplay font-medium text-black mb-2">Billing Address</h4>
+                  <div class="font-srProDisplay text-sm text-gray-700 space-y-1">
+                    <p>{{ order.billingAddress.name }}</p>
+                    <p>{{ order.billingAddress.street }}</p>
+                    <p>
+                      {{ order.billingAddress.city }}, {{ order.billingAddress.state }}
+                      {{ order.billingAddress.zipCode }}
+                    </p>
+                    <p>{{ order.billingAddress.country }}</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Payment Information -->
+            <section>
+              <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">
+                Payment Information
+              </h3>
+              <div class="bg-gray-50 rounded-lg p-4">
+                <div class="flex items-center gap-4">
+                  <div
+                    class="w-12 h-8 bg-gradient-to-r from-blue-600 to-blue-800 rounded flex items-center justify-center"
+                  >
+                    <v-icon name="hi-credit-card" scale="1.2" class="text-white" />
+                  </div>
+                  <div>
+                    <p class="font-srProDisplay font-medium text-black">
+                      {{ order.paymentMethod.type }}
+                    </p>
+                    <p class="font-srProDisplay text-sm text-gray-600">
+                      **** **** **** {{ order.paymentMethod.lastFour }}
+                    </p>
+                  </div>
+                  <div class="ml-auto">
+                    <span
+                      :class="[
+                        'px-3 py-1 rounded-full text-sm font-medium',
+                        order.paymentStatus === 'Paid'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      ]"
+                    >
+                      {{ order.paymentStatus }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Tracking Information -->
+            <section v-if="order.trackingNumber">
+              <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">
+                Tracking Information
+              </h3>
+              <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex items-center gap-3">
+                  <v-icon name="hi-truck" scale="1.2" class="text-blue-600" />
+                  <div>
+                    <p class="font-srProDisplay font-medium text-black">
+                      Tracking Number: {{ order.trackingNumber }}
+                    </p>
+                    <p class="font-srProDisplay text-sm text-gray-600">
+                      Carrier: {{ order.carrier }}
+                    </p>
+                  </div>
+                  <button
+                    class="ml-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                  >
+                    Track Package
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Modal Footer -->
+          <div
+            class="sticky bottom-0 bg-white/90 backdrop-blur-sm border-t border-gray-200 px-6 py-4 rounded-b-xl z-10"
+          >
+            <div class="flex gap-3 justify-end">
+              <button
+                @click="closeModal"
+                class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              >
+                Close
+              </button>
+              <button
+                v-if="order.status !== 'Delivered' && order.status !== 'Cancelled'"
+                class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+              >
+                Cancel Order
+              </button>
+              <button
+                class="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
+              >
+                Reorder
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </div>
+  </Transition>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+
+interface OrderItem {
+  id: number
+  name: string
+  description: string
+  image: string
+  price: number
+  quantity: number
+}
+
+interface Address {
+  name: string
+  street: string
+  city: string
+  state: string
+  zipCode: string
+  country: string
+}
+
+interface PaymentMethod {
+  type: string
+  lastFour: string
+}
+
+interface Order {
+  id: string
+  date: string
+  status: string
+  expectedDelivery: string
+  items: OrderItem[]
+  subtotal: number
+  shipping: number
+  tax: number
+  discount: number
+  total: number
+  shippingAddress: Address
+  billingAddress: Address
+  paymentMethod: PaymentMethod
+  paymentStatus: string
+  trackingNumber?: string
+  carrier?: string
+}
+
+interface Props {
+  isOpen: boolean
+  order: Order
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<{
+  close: []
+}>()
+
+const orderSteps = computed(() => {
+  const steps = [
+    {
+      id: 'created',
+      label: 'Order Created',
+      icon: 'hi-clipboard-list',
+      completed: true,
+      current: false,
+      date: props.order.date,
+    },
+    {
+      id: 'paid',
+      label: 'Payment Confirmed',
+      icon: 'hi-credit-card',
+      completed: ['Paid', 'Shipped', 'Delivered'].includes(props.order.status),
+      current: props.order.status === 'Paid',
+      date: ['Paid', 'Shipped', 'Delivered'].includes(props.order.status)
+        ? props.order.date
+        : null,
+    },
+    {
+      id: 'shipped',
+      label: 'Shipped',
+      icon: 'hi-truck',
+      completed: ['Shipped', 'Delivered'].includes(props.order.status),
+      current: props.order.status === 'Shipped',
+      date: ['Shipped', 'Delivered'].includes(props.order.status) ? props.order.date : null,
+    },
+    {
+      id: 'delivered',
+      label: 'Delivered',
+      icon: 'hi-check-circle',
+      completed: props.order.status === 'Delivered',
+      current: props.order.status === 'Delivered',
+      date: props.order.status === 'Delivered' ? props.order.expectedDelivery : null,
+    },
+  ]
+
+  return steps
+})
+
+const progressWidth = computed(() => {
+  const completedSteps = orderSteps.value.filter((step) => step.completed).length
+  return ((completedSteps - 1) / (orderSteps.value.length - 1)) * 100
+})
+
+const formatPrice = (price: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(price)
+}
+
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'Delivered':
+      return 'bg-green-100 text-green-800'
+    case 'Shipped':
+      return 'bg-blue-100 text-blue-800'
+    case 'Paid':
+      return 'bg-yellow-100 text-yellow-800'
+    case 'Cancelled':
+      return 'bg-red-100 text-red-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
+}
+
+const closeModal = () => {
+  emit('close')
+}
+</script>
+
+<style scoped>
+/* Custom scrollbar */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Enhanced backdrop-filter with fallbacks */
+.backdrop-blur-md {
+  /* Fallback para navegadores sin soporte */
+  background: rgba(0, 0, 0, 0.6);
+
+  /* Soporte nativo */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Detectar soporte para backdrop-filter y ajustar */
+@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+  .backdrop-blur-md {
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Modal Transitions */
+.modal-overlay-enter-active,
+.modal-overlay-leave-active {
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay-enter-from,
+.modal-overlay-leave-to {
+  opacity: 0;
+}
+
+.modal-content-enter-active,
+.modal-content-leave-active {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-content-enter-from,
+.modal-content-leave-to {
+  opacity: 0;
+  transform: scale(0.95) translateY(20px);
+}
+
+/* Custom shadow for modal with elevated appearance */
+.shadow-2xl {
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure modal appears above everything */
+.z-50 {
+  z-index: 9999;
+}
+</style>
