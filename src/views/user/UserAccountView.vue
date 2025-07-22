@@ -157,9 +157,9 @@
                 <div class="flex flex-col md:flex-row gap-6 items-start">
                   <div class="relative">
                     <img
-                      src="/images/User.png"
+                      :src="authStore.user?.avatar || '/images/User.png'"
                       alt="User avatar"
-                      class="w-24 h-24 rounded-full border-2 border-gray-200"
+                      class="w-24 h-24 rounded-full border-2 border-gray-200 object-cover"
                     />
                     <div
                       class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"
@@ -205,14 +205,15 @@
                     <div class="flex items-center gap-6">
                       <div class="relative group">
                         <img
-                          src="/images/User.png"
+                          :src="authStore.user?.avatar || '/images/User.png'"
                           alt="User avatar"
-                          class="w-24 h-24 rounded-full border-2 border-gray-200 group-hover:border-blue-400 transition-colors duration-200"
+                          class="w-24 h-24 rounded-full border-2 border-gray-200 group-hover:border-blue-400 transition-colors duration-200 object-cover"
                         />
                         <div
                           class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"
                         ></div>
                         <div
+                          @click="openAvatarSelector"
                           class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer"
                         >
                           <v-icon name="hi-camera" scale="1.2" class="text-white" />
@@ -227,6 +228,7 @@
                         </p>
                         <Button
                           type="button"
+                          @click="openAvatarSelector"
                           text-color="blue-600"
                           bg-color="transparent"
                           border-width="1px"
@@ -792,6 +794,16 @@
       :order="selectedOrder"
       @close="closeOrderDetailsModal"
     />
+
+    <!-- Avatar Selector Modal -->
+    <AvatarSelector
+      v-if="isAvatarSelectorOpen"
+      :current-avatar="authStore.user?.avatar || ''"
+      :user-name="authStore.user?.username || ''"
+      :user-id="authStore.user?.id || 0"
+      @close="closeAvatarSelector"
+      @save="saveAvatar"
+    />
   </div>
 </template>
 
@@ -806,6 +818,7 @@ import Wrapper from '@/components/shared/Wrapper.vue'
 import Button from '@/components/shared/Button.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import OrderDetailsModal from '@/components/orders/OrderDetailsModal.vue'
+import AvatarSelector from '@/components/users/AvatarSelector.vue'
 
 const { t, locale } = useI18n()
 const authStore = useAuthStore()
@@ -1063,6 +1076,7 @@ const isMobileNavOpen = ref(false)
 
 // Order Details Modal state
 const isOrderDetailsModalOpen = ref(false)
+const isAvatarSelectorOpen = ref(false)
 const selectedOrder = ref<OrderType>({
   id: '',
   date: '',
@@ -1240,6 +1254,40 @@ const closeOrderDetailsModal = () => {
   }
   // Restore body scrolling
   document.body.style.overflow = 'auto'
+}
+
+// Avatar Selector Modal Methods
+const openAvatarSelector = () => {
+  isAvatarSelectorOpen.value = true
+  document.body.style.overflow = 'hidden'
+}
+
+const closeAvatarSelector = () => {
+  isAvatarSelectorOpen.value = false
+  document.body.style.overflow = 'auto'
+}
+
+const saveAvatar = async (avatarUrl: string) => {
+  try {
+    // Update the user's avatar in the auth store
+    if (authStore.user) {
+      await authStore.updateUserProfile({
+        username: authStore.user.username,
+        avatar: avatarUrl,
+        location: authStore.user.location || ''
+      })
+      
+      // Update the editable user if edit mode is open
+      if (isEditProfileOpen.value) {
+        editableUser.value.avatar = avatarUrl
+      }
+      
+      // Close the modal
+      closeAvatarSelector()
+    }
+  } catch (error) {
+    console.error('Error saving avatar:', error)
+  }
 }
 
 onMounted(async () => {
