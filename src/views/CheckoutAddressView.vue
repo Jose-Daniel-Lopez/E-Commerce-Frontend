@@ -109,7 +109,7 @@
               <button
                 class="text-xl text-black hover:text-[#666]"
                 @click="editAddress(address)"
-                :disabled="!!editingAddress"
+                :disabled="editingAddress"
               >
                 <svg
                   width="18"
@@ -259,7 +259,7 @@
                     <option value="" disabled>Select type</option>
                     <option value="HOME">Home</option>
                     <option value="OFFICE">Office</option>
-                    <option value="PICKUP">Pickup</option>
+                    <option value="PICKUP">Pick up point</option>
                   </select>
                 </div>
 
@@ -414,23 +414,6 @@ const addressForm = ref<CreateShippingAddressRequest>({
   userId: authStore.user?.id || 0
 })
 
-// ========== METHODS ==========
-
-/**
- * Load user addresses
- */
-const loadAddresses = async () => {
-  if (!authStore.user?.id) return
-
-  await shippingAddressStore.fetchUserAddresses(authStore.user.id)
-
-  // Auto-select first address if none selected
-  if (addresses.value.length > 0 && !selectedAddressId.value) {
-    selectedAddressId.value = addresses.value[0].id!
-    checkoutStore.setSelectedAddress(addresses.value[0])
-  }
-}
-
 // ========== LIFECYCLE ==========
 onMounted(async () => {
   await loadAddresses()
@@ -447,6 +430,23 @@ watch(
   },
   { immediate: true }
 )
+
+// ========== METHODS ==========
+
+/**
+ * Load user addresses
+ */
+const loadAddresses = async () => {
+  if (!authStore.user?.id) return
+
+  await shippingAddressStore.fetchUserAddresses(authStore.user.id)
+
+  // Auto-select first address if none selected
+  if (addresses.value.length > 0 && !selectedAddressId.value) {
+    selectedAddressId.value = addresses.value[0].id!
+    checkoutStore.setSelectedAddress(addresses.value[0])
+  }
+}
 
 /**
  * Handle address selection
@@ -613,25 +613,5 @@ const goNext = () => {
 .fade-slide-leave-to {
   opacity: 0;
   transform: translateY(-10px);
-}
-</style>
-
-
-<style scoped>
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition:
-    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.fade-slide-enter-from,
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateY(24px);
-}
-.fade-slide-enter-to,
-.fade-slide-leave-from {
-  opacity: 1;
-  transform: translateY(0);
 }
 </style>

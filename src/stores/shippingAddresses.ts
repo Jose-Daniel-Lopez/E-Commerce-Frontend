@@ -1,205 +1,255 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '@/lib/axios'
-import type { UserOrder } from '@/stores/userOrders'
-
-export interface ShippingAddress {
-  id: number
-  type: string
-  street: string
-  city: string
-  state: string
-  zipCode: string
-  country: string
-  _links?: {
-    self?: { href: string }
-    shippingAddress?: { href: string }
-    order?: { href: string }
-  }
-}
+import type {
+  ShippingAddress,
+  CreateShippingAddressRequest,
+  UpdateShippingAddressRequest,
+  AssignAddressToOrderRequest,
+  ShippingAddressApiResponse
+} from '@/types/shippingAddress'
 
 export const useShippingAddressStore = defineStore('shippingAddresses', () => {
-  // State
+  // ========== STATE ==========
   const shippingAddresses = ref<ShippingAddress[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
 
-  // Getters
+  // ========== GETTERS ==========
   const addressCount = computed(() => shippingAddresses.value.length)
   const hasAddresses = computed(() => shippingAddresses.value.length > 0)
 
-  const addressesByCountry = computed(() => {
-    const countries: Record<string, ShippingAddress[]> = {}
+  const addressesByType = computed(() => {
+    const types: Record<string, ShippingAddress[]> = {}
     shippingAddresses.value.forEach((address) => {
-      if (!countries[address.country]) {
-        countries[address.country] = []
+      if (!types[address.addressType]) {
+        types[address.addressType] = []
       }
-      countries[address.country].push(address)
+      types[address.addressType].push(address)
     })
-    return countries
+    return types
   })
 
-  const addressesByState = computed(() => {
-    const states: Record<string, ShippingAddress[]> = {}
-    shippingAddresses.value.forEach((address) => {
-      const key = `${address.state}, ${address.country}`
-      if (!states[key]) {
-        states[key] = []
-      }
-      states[key].push(address)
-    })
-    return states
+  const getDefaultAddress = computed(() => {
+    return shippingAddresses.value.length > 0 ? shippingAddresses.value[0] : null
   })
 
-  const addressesByCity = computed(() => {
-    const cities: Record<string, ShippingAddress[]> = {}
-    shippingAddresses.value.forEach((address) => {
-      const key = `${address.city}, ${address.state}`
-      if (!cities[key]) {
-        cities[key] = []
-      }
-      cities[key].push(address)
-    })
-    return cities
-  })
+  // ========== API ACTIONS ==========
 
-  const uniqueCountries = computed(() => {
-    return [...new Set(shippingAddresses.value.map((addr) => addr.country))].sort()
-  })
-
-  const uniqueStates = computed(() => {
-    return [...new Set(shippingAddresses.value.map((addr) => addr.state))].sort()
-  })
-
-  const uniqueCities = computed(() => {
-    return [...new Set(shippingAddresses.value.map((addr) => addr.city))].sort()
-  })
-
-  // Actions
-  const fetchShippingAddresses = async (userId: string | number) => {
+  /**
+   * Fetch all shipping addresses for a specific user
+   */
+  const fetchUserAddresses = async (userId: number) => {
     loading.value = true
     error.value = null
+
     try {
-      const ordersResponse = await api.get(`/users/${userId}/orders`)
-      const orders: UserOrder[] = ordersResponse.data._embedded
-        ? ordersResponse.data._embedded.orders
-        : []
+      const response = await api.get(`/shippingAddresses/user/${userId}`)
+      const addressData: ShippingAddressApiResponse[] = response.data
 
-      const addresses = await Promise.all(
-        orders.map(async (order) => {
-          try {
-            // The link to the shipping address is on the order object itself in spring data rest
-            if (order._links?.shippingAddress?.href) {
-              const addressResponse = await api.get(order._links.shippingAddress.href)
-              return addressResponse.data
-            }
-          } catch (e) {
-            console.error(`Failed to fetch shipping address for order ${order.id}:`, e)
-          }
-          return null
-        }),
-      )
+      // Convert API response to our interface format
+      shippingAddresses.value = addressData.map(convertApiResponseToAddress)
 
-      shippingAddresses.value = addresses.filter(
-        (address): address is ShippingAddress => address !== null,
-      )
     } catch (e) {
-      console.error('Failed to fetch shipping addresses:', e)
-      if (e instanceof Error) {
-        error.value = `Error loading shipping addresses: ${e.message}`
-      } else {
-        error.value = 'An unknown error occurred while loading shipping addresses'
-      }
+      console.error('Failed to fetch user addresses:', e)
+      error.value = e instanceof Error ? e.message : 'Failed to load addresses'
+      shippingAddresses.value = []
     } finally {
       loading.value = false
     }
   }
 
-  const fetchAddressById = async (addressId: number) => {
+  /**
+   * Create a new shipping address
+   */
+  const createAddress = async (addressData: CreateShippingAddressRequest): Promise<ShippingAddress | null> => {
+    loading.value = true
+    error.value = null
+
     try {
-      const response = await api.get(`/shippingAddresses/${addressId}`)
-      return response.data
-    } catch (err) {
-      console.error(`Error fetching shipping address ${addressId}:`, err)
-      throw err
+      const response = await api.post('/shippingAddresses', addressData)
+      const newAddress = convertApiResponseToAddress(response.data)
+
+      // Add to local state
+      shippingAddresses.value.push(newAddress)
+
+      return newAddress
+    } catch (e) {
+      console.error('Failed to create address:', e)
+      error.value = e instanceof Error ? e.message : 'Failed to create address'
+      return null
+    } finally {
+      loading.value = false
     }
   }
 
-  const addAddress = (address: ShippingAddress) => {
-    shippingAddresses.value.push(address)
-  }
+  /**
+   * Update an existing shipping address
+   */
+  const updateAddress = async (addressData: UpdateShippingAddressRequest): Promise<boolean> => {
+    loading.value = true
+    error.value = null
 
-  const removeAddress = (addressId: number) => {
-    const index = shippingAddresses.value.findIndex((addr) => addr.id === addressId)
-    if (index > -1) {
-      shippingAddresses.value.splice(index, 1)
+    try {
+      const response = await api.put(`/shippingAddresses/${addressData.id}`, addressData)
+      const updatedAddress = convertApiResponseToAddress(response.data)
+
+      // Update local state
+      const index = shippingAddresses.value.findIndex(addr => addr.id === addressData.id)
+      if (index !== -1) {
+        shippingAddresses.value[index] = updatedAddress
+      }
+
+      return true
+    } catch (e) {
+      console.error('Failed to update address:', e)
+      error.value = e instanceof Error ? e.message : 'Failed to update address'
+      return false
+    } finally {
+      loading.value = false
     }
   }
 
-  const updateAddress = (addressId: number, updatedAddress: Partial<ShippingAddress>) => {
-    const index = shippingAddresses.value.findIndex((addr) => addr.id === addressId)
-    if (index > -1) {
-      shippingAddresses.value[index] = { ...shippingAddresses.value[index], ...updatedAddress }
+  /**
+   * Delete a shipping address
+   */
+  const deleteAddress = async (addressId: number): Promise<boolean> => {
+    loading.value = true
+    error.value = null
+
+    try {
+      await api.delete(`/shippingAddresses/${addressId}`)
+
+      // Remove from local state
+      const index = shippingAddresses.value.findIndex(addr => addr.id === addressId)
+      if (index !== -1) {
+        shippingAddresses.value.splice(index, 1)
+      }
+
+      return true
+    } catch (e) {
+      console.error('Failed to delete address:', e)
+      error.value = e instanceof Error ? e.message : 'Failed to delete address'
+      return false
+    } finally {
+      loading.value = false
     }
   }
 
-  const getAddressById = (addressId: number) => {
-    return shippingAddresses.value.find((addr) => addr.id === addressId)
+  /**
+   * Assign a shipping address to an order
+   */
+  const assignAddressToOrder = async (orderId: number, addressId: number): Promise<boolean> => {
+    loading.value = true
+    error.value = null
+
+    try {
+      const request: AssignAddressToOrderRequest = { orderId, addressId }
+      await api.post('/shippingAddresses/assign-to-order', request)
+      return true
+    } catch (e) {
+      console.error('Failed to assign address to order:', e)
+      error.value = e instanceof Error ? e.message : 'Failed to assign address to order'
+      return false
+    } finally {
+      loading.value = false
+    }
   }
 
-  const searchAddresses = (searchTerm: string) => {
-    if (!searchTerm.trim()) return shippingAddresses.value
-
-    const term = searchTerm.toLowerCase()
-    return shippingAddresses.value.filter(
-      (addr) =>
-        addr.street.toLowerCase().includes(term) ||
-        addr.city.toLowerCase().includes(term) ||
-        addr.state.toLowerCase().includes(term) ||
-        addr.country.toLowerCase().includes(term) ||
-        addr.zipCode.toLowerCase().includes(term),
-    )
+  /**
+   * Get default address for a user
+   */
+  const fetchDefaultAddress = async (userId: number): Promise<ShippingAddress | null> => {
+    try {
+      const response = await api.get(`/shippingAddresses/user/${userId}/default`)
+      return convertApiResponseToAddress(response.data)
+    } catch (e) {
+      console.error('Failed to fetch default address:', e)
+      return null
+    }
   }
 
-  const filterByCountry = (country: string) => {
-    return shippingAddresses.value.filter((addr) => addr.country === country)
+  /**
+   * Get shipping address for a specific order
+   */
+  const fetchOrderAddress = async (orderId: number): Promise<ShippingAddress | null> => {
+    try {
+      const response = await api.get(`/shippingAddresses/order/${orderId}`)
+      return convertApiResponseToAddress(response.data)
+    } catch (e) {
+      console.error('Failed to fetch order address:', e)
+      return null
+    }
   }
 
-  const filterByState = (state: string) => {
-    return shippingAddresses.value.filter((addr) => addr.state === state)
+  // ========== UTILITY FUNCTIONS ==========
+
+  /**
+   * Convert API response to our ShippingAddress interface
+   */
+  const convertApiResponseToAddress = (apiData: ShippingAddressApiResponse): ShippingAddress => {
+    return {
+      id: apiData.id,
+      title: apiData.title,
+      addressType: apiData.addressType as 'HOME' | 'OFFICE' | 'PICKUP',
+      street: apiData.street,
+      city: apiData.city,
+      state: apiData.state,
+      zipCode: apiData.zipCode,
+      country: apiData.country,
+      userId: apiData.userId
+    }
   }
 
-  const filterByCity = (city: string) => {
-    return shippingAddresses.value.filter((addr) => addr.city === city)
-  }
-
-  const clearAddresses = () => {
-    shippingAddresses.value = []
-    error.value = ''
-  }
-
-  const formatFullAddress = (address: ShippingAddress) => {
+  /**
+   * Format address for display
+   */
+  const formatAddress = (address: ShippingAddress): string => {
     return `${address.street}, ${address.city}, ${address.state} ${address.zipCode}, ${address.country}`
   }
 
-  const getCountryFlag = (country: string) => {
-    // Simple mapping for common countries - you could expand this
-    const flags: Record<string, string> = {
-      Spain: '🇪🇸',
-      USA: '🇺🇸',
-      'United States': '🇺🇸',
-      France: '🇫🇷',
-      Germany: '🇩🇪',
-      Italy: '🇮🇹',
-      'United Kingdom': '🇬🇧',
-      Canada: '🇨🇦',
-      Mexico: '🇲🇽',
-      Brazil: '🇧🇷',
-      Argentina: '🇦🇷',
-      Portugal: '🇵🇹',
-      Netherlands: '🇳🇱',
+  /**
+   * Get address type display label
+   */
+  const getAddressTypeLabel = (type: string): string => {
+    const labels: Record<string, string> = {
+      'HOME': 'Home',
+      'OFFICE': 'Office',
+      'PICKUP': 'Pick up point'
     }
-    return flags[country] || '🌍'
+    return labels[type] || type
+  }
+
+  /**
+   * Find address by ID
+   */
+  const getAddressById = (addressId: number): ShippingAddress | undefined => {
+    return shippingAddresses.value.find(addr => addr.id === addressId)
+  }
+
+  /**
+   * Clear all addresses and reset state
+   */
+  const clearAddresses = () => {
+    shippingAddresses.value = []
+    error.value = null
+    loading.value = false
+  }
+
+  /**
+   * Search addresses
+   */
+  const searchAddresses = (searchTerm: string): ShippingAddress[] => {
+    if (!searchTerm.trim()) return shippingAddresses.value
+
+    const term = searchTerm.toLowerCase()
+    return shippingAddresses.value.filter(addr =>
+      addr.title.toLowerCase().includes(term) ||
+      addr.street.toLowerCase().includes(term) ||
+      addr.city.toLowerCase().includes(term) ||
+      addr.state.toLowerCase().includes(term) ||
+      addr.country.toLowerCase().includes(term)
+    )
   }
 
   return {
@@ -207,28 +257,27 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
     shippingAddresses,
     loading,
     error,
+
     // Getters
     addressCount,
     hasAddresses,
-    addressesByCountry,
-    addressesByState,
-    addressesByCity,
-    uniqueCountries,
-    uniqueStates,
-    uniqueCities,
-    // Actions
-    fetchShippingAddresses,
-    fetchAddressById,
-    addAddress,
-    removeAddress,
+    addressesByType,
+    getDefaultAddress,
+
+    // API Actions
+    fetchUserAddresses,
+    createAddress,
     updateAddress,
+    deleteAddress,
+    assignAddressToOrder,
+    fetchDefaultAddress,
+    fetchOrderAddress,
+
+    // Utilities
+    formatAddress,
+    getAddressTypeLabel,
     getAddressById,
-    searchAddresses,
-    filterByCountry,
-    filterByState,
-    filterByCity,
     clearAddresses,
-    formatFullAddress,
-    getCountryFlag,
+    searchAddresses
   }
 })

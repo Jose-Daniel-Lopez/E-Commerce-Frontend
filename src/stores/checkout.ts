@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { ShippingAddress } from './shippingAddresses'
+import type { ShippingAddress } from '@/types/shippingAddress'
 
 export interface ShippingMethod {
   id: string
@@ -13,7 +13,7 @@ export const useCheckoutStore = defineStore('checkout', () => {
   const selectedAddress = ref<ShippingAddress | null>(null)
   const selectedShippingMethod = ref<ShippingMethod | null>(null)
 
-  function setSelectedAddress(address: ShippingAddress) {
+  function setSelectedAddress(address: ShippingAddress | null) {
     selectedAddress.value = address
   }
 
