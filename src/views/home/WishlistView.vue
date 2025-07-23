@@ -1,6 +1,12 @@
 <script setup lang="ts">
+function openProductUrl(url?: string) {
+  if (url) {
+    window.open(url, '_blank')
+  }
+}
+import { useWishlistStore } from '@/stores/wishlist'
 import '@/assets/base.css'
-import { ref } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLanguage } from '@/composables/useLanguage'
 import Wrapper from '@/components/shared/Wrapper.vue'
@@ -10,66 +16,31 @@ import ErrorAlert from '@/components/shared/ErrorAlert.vue'
 import EmptyWishlistState from '@/components/wishlist/EmptyWishlistState.vue'
 import WishlistProductCard from '@/components/wishlist/WishlistProductCard.vue'
 
-const { t } = useLanguage()
+import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
+const { t } = useLanguage()
 
-// Hardcoded product list (ejemplo similar a ShopView.vue y ProductsView (new design).vue)
-interface WishlistProduct {
-  id: number
-  name: string
-  description: string
-  price: number
-  image: string
-}
-
-const wishlist = ref<WishlistProduct[]>([
-  {
-    id: 1,
-    name: 'iPhone 14 Pro',
-    description: 'El iPhone más avanzado con cámara profesional y chip A16 Bionic.',
-    price: 1099,
-    image: '/images/Iphone-14-pro-black.png',
-  },
-  {
-    id: 2,
-    name: 'AirPods Pro',
-    description: 'Auriculares inalámbricos con cancelación activa de ruido.',
-    price: 249,
-    image: '/images/Apple-airPods.png',
-  },
-  {
-    id: 3,
-    name: 'MacBook Pro',
-    description: 'Portátil profesional con chip M2 para máximo rendimiento.',
-    price: 1999,
-    image: '/images/Macbook.png',
-  },
-  {
-    id: 4,
-    name: 'Apple Watch',
-    description: 'Reloj inteligente con seguimiento avanzado de salud.',
-    price: 399,
-    image: '/images/Apple-Watch.png',
-  },
-  {
-    id: 5,
-    name: 'Galaxy Buds',
-    description: 'Auriculares inalámbricos Samsung con sonido premium.',
-    price: 149,
-    image: '/images/Galaxy-buds-FE.png',
-  },
-])
-
-const loading = ref(false)
-const error = ref('')
+const authStore = useAuthStore()
+const {
+  wishlistProducts,
+  wishlistLoading,
+  wishlistError,
+  fetchUserWishlist,
+} = useWishlistStore()
 
 const removeFromWishlist = (productId: number) => {
-  wishlist.value = wishlist.value.filter((item) => item.id !== productId)
+  wishlistProducts.value = wishlistProducts.value.filter((item: import('@/stores/wishlist').WishlistProduct) => item.id !== productId)
 }
 
 function goToProduct(productId: number) {
   router.push({ name: 'productDetails', params: { productId } })
 }
+
+onMounted(() => {
+  if (authStore.user?.id) {
+    fetchUserWishlist(authStore.user.id)
+  }
+})
 </script>
 
 <template>
@@ -89,34 +60,64 @@ function goToProduct(productId: number) {
 
       <!-- Wishlist Content -->
       <section class="max-w-7xl mx-auto mb-16 animate-fadeInUp">
-        <LoadingState 
-          v-if="loading" 
-          :loading-text="t('wishlist.loading') || 'Loading...'" 
+        <LoadingState
+          v-if="wishlistLoading"
+          :loading-text="t('wishlist.loading') || 'Loading...'"
         />
-        
-        <ErrorAlert 
-          v-else-if="error" 
-          :message="error"
-          :show="!!error"
+
+        <ErrorAlert
+          v-else-if="wishlistError"
+          :message="wishlistError"
+          :show="!!wishlistError"
         />
-        
+
         <div v-else>
           <EmptyWishlistState
-            v-if="wishlist.length === 0"
+            v-if="wishlistProducts.length === 0"
             :empty-title="t('wishlist.empty') || 'Your wishlist is empty.'"
             :empty-description="t('wishlist.emptyDescription') || 'Browse products and add your favorites here.'"
             :catalog-button-text="t('wishlist.goToCatalog') || 'Go to Catalog'"
             @go-to-catalog="() => router.push('/catalog')"
           />
-          
+
           <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <WishlistProductCard
-              v-for="item in wishlist"
+            <div
+              v-for="item in wishlistProducts"
               :key="item.id"
-              :product="item"
-              @go-to-product="goToProduct"
-              @remove="removeFromWishlist"
-            />
+              class="relative rounded-xl bg-white shadow-lg border border-gray-100 flex flex-col overflow-hidden transition hover:shadow-xl cursor-pointer group"
+              @click="openProductUrl(item.productUrl)"
+            >
+              <!-- Remove 'x' button -->
+              <button
+                class="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-500 text-gray-500 hover:text-white transition"
+                @click.stop="removeFromWishlist(item.id)"
+                aria-label="{{ t('wishlist.remove') || 'Remove' }}"
+              >
+                <span class="text-lg font-bold">&times;</span>
+              </button>
+              <div class="bg-gray-50 flex items-center justify-center h-48">
+                <img :src="item.imageUrl" :alt="item.name" class="h-40 object-contain group-hover:scale-105 transition-transform duration-200" />
+              </div>
+              <div class="p-5 flex flex-col flex-1">
+                <h2 class="font-srProDisplay text-lg font-semibold mb-1 text-black">{{ item.name }}</h2>
+                <p class="text-sm text-gray-500 mb-2">{{ item.description }}</p>
+                <div class="flex flex-wrap gap-2 mb-2">
+                  <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-medium">{{ item.brand }}</span>
+                  <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium">${{ item.basePrice }}</span>
+                  <span v-if="item.screenSize" class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-medium">{{ item.screenSize }}</span>
+                  <span v-if="item.ramCapacity" class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-medium">RAM: {{ item.ramCapacity }}GB</span>
+                  <span v-if="item.storageCapacity" class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-medium">Almacenamiento: {{ item.storageCapacity }}GB</span>
+                  <span v-if="item.operatingSystem" class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-medium">{{ item.operatingSystem }}</span>
+                  <span v-if="item.totalStock !== undefined" class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-medium">Stock: {{ item.totalStock }}</span>
+                </div>
+                <div class="flex flex-col items-center mt-auto">
+                  <button
+                    class="w-full bg-black text-white py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:bg-gray-800 transition-colors"
+                    @click.stop="goToProduct(item.id)"
+                  >{{ t('wishlist.details') || 'View details' }}</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

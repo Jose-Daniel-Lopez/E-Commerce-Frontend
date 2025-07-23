@@ -179,7 +179,10 @@
     "removeError": "No se pudo eliminar el producto.",
     "empty": "Tu lista de deseados está vacía.",
     "emptyDescription": "Busca productos y añade tus favoritos aquí.",
-    "goToCatalog": "Ir al Catálogo"
+    "goToCatalog": "Ir al Catálogo",
+    "viewProduct": "Ver producto",
+    "details": "Ver detalles",
+    "remove": "Quitar"
   },
   "common": {
     "loading": "Cargando...",

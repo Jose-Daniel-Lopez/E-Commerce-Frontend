@@ -179,7 +179,10 @@
     "removeError": "Could not remove item.",
     "empty": "Your wishlist is empty.",
     "emptyDescription": "Browse products and add your favorites here.",
-    "goToCatalog": "Go to Catalog"
+    "goToCatalog": "Go to Catalog",
+    "viewProduct": "View product",
+    "details": "View details",
+    "remove": "Remove"
   },
   "common": {
     "loading": "Loading...",
