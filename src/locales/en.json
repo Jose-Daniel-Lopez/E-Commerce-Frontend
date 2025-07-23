@@ -229,6 +229,7 @@
       "viewAll": "View all orders",
       "order": "Order",
       "viewDetails": "View Details"
+      ,"empty": "You have no orders yet."
     },
     "refunds": {
       "title": "Refunds and Returns",

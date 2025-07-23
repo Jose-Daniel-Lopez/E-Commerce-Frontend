@@ -344,38 +344,44 @@
                 </router-link>
               </div>
               <div class="space-y-4">
-                <div
-                  v-for="order in orders"
-                  :key="order.id"
-                  class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
-                      <v-icon name="hi-clipboard-list" scale="1.2" class="text-white" />
+                <div v-if="orders.length === 0" class="py-8 text-center text-gray-500">
+                  <v-icon name="hi-clipboard-list" scale="2" class="mb-3 text-gray-300" />
+                  <p class="font-srProDisplay text-lg">{{ $t('account.orders.empty') || 'You have no orders yet.' }}</p>
+                </div>
+                <div v-else>
+                  <div
+                    v-for="order in orders"
+                    :key="order.id"
+                    class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <div class="flex items-center gap-4">
+                      <div class="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
+                        <v-icon name="hi-clipboard-list" scale="1.2" class="text-white" />
+                      </div>
+                      <div>
+                        <p class="font-srProDisplay font-medium text-black">
+                          {{ $t('account.orders.order') }} #{{ order.id }}
+                        </p>
+                        <p class="font-srProDisplay text-sm text-gray-600">{{ order.date }}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p class="font-srProDisplay font-medium text-black">
-                        {{ $t('account.orders.order') }} #{{ order.id }}
-                      </p>
-                      <p class="font-srProDisplay text-sm text-gray-600">{{ order.date }}</p>
+                    <div class="flex items-center gap-4">
+                      <span
+                        :class="getStatusColor(order.status)"
+                        class="px-3 py-1 rounded-full text-sm font-medium"
+                      >
+                        {{ order.status }}
+                      </span>
+                      <Button
+                        @click="openOrderDetailsModal(order)"
+                        bg-color="transparent"
+                        width="auto"
+                        height="auto"
+                        class="px-4 text-[10px] font-light text-gray-500 cursor-pointer hover:text-black transition-colors"
+                      >
+                        {{ $t('account.orders.viewDetails') }}
+                      </Button>
                     </div>
-                  </div>
-                  <div class="flex items-center gap-4">
-                    <span
-                      :class="getStatusColor(order.status)"
-                      class="px-3 py-1 rounded-full text-sm font-medium"
-                    >
-                      {{ order.status }}
-                    </span>
-                    <Button
-                      @click="openOrderDetailsModal(order)"
-                      bg-color="transparent"
-                      width="auto"
-                      height="auto"
-                      class="px-4 text-[10px] font-light text-gray-500 cursor-pointer hover:text-black transition-colors"
-                    >
-                      {{ $t('account.orders.viewDetails') }}
-                    </Button>
                   </div>
                 </div>
               </div>
@@ -620,26 +626,25 @@
                 >
               </div>
               <div class="space-y-4">
+                <div v-if="reviewsLoading" class="py-4 text-center text-gray-500">
+                  Loading reviews...
+                </div>
+                <div v-else-if="reviewsError" class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+                  {{ reviewsError }}
+                </div>
+                <div v-else-if="reviews.length === 0" class="py-4 text-center text-gray-500">
+                  No reviews found.
+                </div>
                 <div
+                  v-else
                   v-for="review in reviews"
                   :key="review.id"
                   class="border border-gray-200 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300"
                 >
                   <div class="flex items-start justify-between mb-3">
                     <div>
-                      <h4 class="font-srProDisplay font-medium text-black">{{ review.product }}</h4>
-                      <div class="flex items-center gap-1 mt-1">
-                        <div class="flex">
-                          <v-icon
-                            v-for="i in 5"
-                            :key="i"
-                            :name="i <= review.rating ? 'bi-star-fill' : 'bi-star'"
-                            :class="i <= review.rating ? 'text-yellow-400' : 'text-gray-300'"
-                            scale="1.1"
-                          />
-                        </div>
-                        <span class="text-sm text-gray-600 ml-1">{{ review.rating }}/5</span>
-                      </div>
+                      <span class="font-semibold text-black">{{ review.product }}</span>
+                      <span class="ml-2 text-yellow-500">{{ '★'.repeat(review.rating) }}</span>
                     </div>
                     <span class="text-xs text-gray-500">{{ review.date }}</span>
                   </div>
@@ -819,6 +824,7 @@ import Button from '@/components/shared/Button.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import OrderDetailsModal from '@/components/orders/OrderDetailsModal.vue'
 import AvatarSelector from '@/components/users/AvatarSelector.vue'
+import { useReviewsStore } from '@/stores/reviews'
 
 const { t, locale } = useI18n()
 const authStore = useAuthStore()
@@ -905,22 +911,12 @@ const addresses = computed(() => usersStore.userAddresses)
 const addressesLoading = computed(() => usersStore.addressesLoading)
 const addressesError = computed(() => usersStore.addressesError)
 
-const reviews = ref([
-  {
-    id: 1,
-    product: 'iPhone 14 Pro',
-    rating: 5,
-    comment: 'Amazing phone, great camera!',
-    date: '2 days ago',
-  },
-  {
-    id: 2,
-    product: 'Samsung Galaxy Buds',
-    rating: 4,
-    comment: 'Good sound quality, but could be more comfortable.',
-    date: '1 week ago',
-  },
-])
+const {
+  reviews,
+  reviewsLoading,
+  reviewsError,
+  fetchUserReviews,
+} = useReviewsStore()
 
 // Logic for the Edit Profile inline form
 const isEditProfileOpen = ref(false)
@@ -1241,6 +1237,7 @@ onMounted(async () => {
 
     // ✅ Fetch user's orders using orders store
     await ordersStore.fetchOrdersByUser(authStore.user.id)
+    await fetchUserReviews(authStore.user.id)
   }
 
   // Set up an observer to highlight the active navigation link based on the currently visible section.
@@ -1298,80 +1295,5 @@ const refreshAddresses = async () => {
 </script>
 
 <style scoped>
-/* Apply smooth scrolling behavior for anchor links. */
-html {
-  scroll-behavior: smooth;
-}
-
-/* A utility for truncating text to a specific number of lines. */
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
-}
-
-/* Custom scrollbar styling for a cleaner look. */
-.categories-scroll::-webkit-scrollbar {
-  width: 4px;
-}
-
-.categories-scroll::-webkit-scrollbar-track {
-  background: #f8fafc;
-  border-radius: 8px;
-}
-
-.categories-scroll::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #374151, #1f2937);
-  border-radius: 8px;
-}
-
-.categories-scroll::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #1f2937, #111827);
-}
-
-/* Custom styles for the toggle switch. */
-input[type='checkbox']:checked {
-  background-color: #000000;
-  border-color: #000000;
-}
-
-/* Better focus states for improved accessibility. */
-.focus\:ring-black:focus {
-  --tw-ring-color: #000000;
-}
-
-/* Standardize transitions for a consistent feel. */
-.transition-all {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
-}
-
-/* Lock body scrolling when the mobile navigation menu is open. */
-body.nav-open {
-  overflow: hidden;
-}
-
-/* Estilos adicionales para las transiciones del formulario inline */
-.form-enter-active,
-.form-leave-active {
-  transition: all 0.3s ease-in-out;
-}
-
-.form-enter-from {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-.form-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-/* Animación para el icono rotativo */
-.rotate-90 {
-  transform: rotate(90deg);
-}
+/* Agrega aquí tus estilos específicos para este componente */
 </style>

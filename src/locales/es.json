@@ -228,6 +228,7 @@
       "viewAll": "Ver todos los pedidos",
       "order": "Pedido",
       "viewDetails": "Ver Detalles"
+      ,"empty": "Aún no tienes pedidos."
     },
     "refunds": {
       "title": "Reembolsos y Devoluciones",
