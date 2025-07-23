@@ -344,44 +344,38 @@
                 </router-link>
               </div>
               <div class="space-y-4">
-                <div v-if="orders.length === 0" class="py-8 text-center text-gray-500">
-                  <v-icon name="hi-clipboard-list" scale="2" class="mb-3 text-gray-300" />
-                  <p class="font-srProDisplay text-lg">{{ $t('account.orders.empty') || 'You have no orders yet.' }}</p>
-                </div>
-                <div v-else>
-                  <div
-                    v-for="order in orders"
-                    :key="order.id"
-                    class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    <div class="flex items-center gap-4">
-                      <div class="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
-                        <v-icon name="hi-clipboard-list" scale="1.2" class="text-white" />
-                      </div>
-                      <div>
-                        <p class="font-srProDisplay font-medium text-black">
-                          {{ $t('account.orders.order') }} #{{ order.id }}
-                        </p>
-                        <p class="font-srProDisplay text-sm text-gray-600">{{ order.date }}</p>
-                      </div>
+                <div
+                  v-for="order in orders"
+                  :key="order.id"
+                  class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
+                      <v-icon name="hi-clipboard-list" scale="1.2" class="text-white" />
                     </div>
-                    <div class="flex items-center gap-4">
-                      <span
-                        :class="getStatusColor(order.status)"
-                        class="px-3 py-1 rounded-full text-sm font-medium"
-                      >
-                        {{ order.status }}
-                      </span>
-                      <Button
-                        @click="openOrderDetailsModal(order)"
-                        bg-color="transparent"
-                        width="auto"
-                        height="auto"
-                        class="px-4 text-[10px] font-light text-gray-500 cursor-pointer hover:text-black transition-colors"
-                      >
-                        {{ $t('account.orders.viewDetails') }}
-                      </Button>
+                    <div>
+                      <p class="font-srProDisplay font-medium text-black">
+                        {{ $t('account.orders.order') }} #{{ order.id }}
+                      </p>
+                      <p class="font-srProDisplay text-sm text-gray-600">{{ order.date }}</p>
                     </div>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span
+                      :class="getStatusColor(order.status)"
+                      class="px-3 py-1 rounded-full text-sm font-medium"
+                    >
+                      {{ order.status }}
+                    </span>
+                    <Button
+                      @click="openOrderDetailsModal(order)"
+                      bg-color="transparent"
+                      width="auto"
+                      height="auto"
+                      class="px-4 text-[10px] font-light text-gray-500 cursor-pointer hover:text-black transition-colors"
+                    >
+                      {{ $t('account.orders.viewDetails') }}
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -453,18 +447,42 @@
                   {{ $t('account.wishlist.viewAll') }}
                 </router-link>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <!-- Loading state for wishlist -->
+              <div v-if="wishlistLoading" class="flex items-center justify-center py-8">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
+              </div>
+
+              <!-- Error state for wishlist -->
+              <div v-else-if="wishlistError" class="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p class="text-red-700 text-sm">{{ wishlistError }}</p>
+              </div>
+
+              <!-- Empty state when no wishlist items are available -->
+              <div v-else-if="wishlistProducts.length === 0" class="text-center py-8">
+                <v-icon name="hi-heart" scale="2" class="text-gray-300 mb-4" />
+                <p class="text-gray-500 text-lg font-medium mb-2">{{ $t('account.wishlist.empty.title') }}</p>
+                <p class="text-gray-400 text-sm">{{ $t('account.wishlist.empty.description') }}</p>
+              </div>
+
+              <!-- Display grid of wishlist items -->
+              <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div
-                  v-for="item in wishlist"
+                  v-for="item in wishlistProducts"
                   :key="item.id"
                   class="group flex items-center gap-4 p-4 border border-gray-200 bg-gray-50 rounded-lg hover:shadow-md transition-all duration-200 hover:border-gray-300"
                 >
                   <div class="relative">
-                    <img
-                      :src="item.image"
-                      :alt="item.name"
-                      class="w-16 h-16 object-contain rounded-lg p-2"
-                    />
+                    <router-link
+                      :to="`/products/${item.id}`"
+                      class="block"
+                    >
+                      <img
+                        :src="item.imageUrl"
+                        :alt="item.name"
+                        class="w-16 h-16 object-contain rounded-lg p-2 hover:scale-105 transition-transform"
+                      />
+                    </router-link>
                     <button
                       class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                     >
@@ -476,7 +494,7 @@
                       {{ item.name }}
                     </h4>
                     <p class="font-srProDisplay text-lg font-semibold text-black mt-1">
-                      {{ item.price }}
+                      ${{ item.basePrice.toFixed(2) }}
                     </p>
                   </div>
                   <Button
@@ -824,7 +842,7 @@ import Button from '@/components/shared/Button.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import OrderDetailsModal from '@/components/orders/OrderDetailsModal.vue'
 import AvatarSelector from '@/components/users/AvatarSelector.vue'
-import { useReviewsStore } from '@/stores/reviews'
+import axios from '@/lib/axios'
 
 const { t, locale } = useI18n()
 const authStore = useAuthStore()
@@ -850,7 +868,11 @@ const user = computed(() => (authStore.user ?? {}) as User)
 
 // Orders state
 import { useOrdersStore } from '@/stores/orders'
+import { useWishlistStore } from '@/stores/wishlist'
+
 const ordersStore = useOrdersStore()
+const { wishlistProducts, wishlistLoading, wishlistError, fetchUserWishlist } = useWishlistStore()
+
 // Reactive reference to orders from the store
 const orders = computed(() =>
   ordersStore.orders.map(order => ({
@@ -902,21 +924,50 @@ const refunds = ref([
   { id: 'R002', reason: 'Wrong size', status: 'Processing' },
 ])
 
-const wishlist = ref([
-  { id: 1, name: 'Apple Watch Series 8', price: '$399', image: '/images/Apple-Watch.png' },
-  { id: 2, name: 'Sony WH-1000XM5 Headphones', price: '$349', image: '/images/headphones.png' },
-])
-
 const addresses = computed(() => usersStore.userAddresses)
 const addressesLoading = computed(() => usersStore.addressesLoading)
 const addressesError = computed(() => usersStore.addressesError)
 
-const {
-  reviews,
-  reviewsLoading,
-  reviewsError,
-  fetchUserReviews,
-} = useReviewsStore()
+interface Review {
+  id: number
+  product: string
+  rating: number
+  comment: string
+  date: string
+}
+const reviews = ref<Review[]>([])
+const reviewsLoading = ref(false)
+const reviewsError = ref('')
+
+const fetchUserReviews = async (userId: number) => {
+  reviewsLoading.value = true
+  reviewsError.value = ''
+  try {
+    const res = await axios.get(`/users/${userId}/productReviews`)
+    const rawReviews = res.data._embedded?.productReviews || []
+    const reviewPromises = rawReviews.map(async (review: { id: number; rating: number; comment: string; createdAt: string; _links: { product: { href: string } } }) => {
+      let productName = ''
+      try {
+        const productRes = await axios.get(review._links.product.href.replace('http://localhost:8080', ''))
+        productName = productRes.data.name
+      } catch {
+        productName = 'Unknown Product'
+      }
+      return {
+        id: review.id,
+        product: productName,
+        rating: review.rating,
+        comment: review.comment,
+        date: new Date(review.createdAt).toLocaleDateString(),
+      }
+    })
+    reviews.value = await Promise.all(reviewPromises)
+  } catch (err: unknown) {
+    reviewsError.value = (err as Error)?.message || 'Failed to load reviews.'
+  } finally {
+    reviewsLoading.value = false
+  }
+}
 
 // Logic for the Edit Profile inline form
 const isEditProfileOpen = ref(false)
@@ -970,7 +1021,7 @@ const saveProfile = async () => {
   // ...
 }
 
-// State for user settings.
+// State for user settings
 const selectedLanguage = ref(locale.value)
 const theme = ref('system')
 const notifications = ref({ enabled: true })
@@ -1237,6 +1288,8 @@ onMounted(async () => {
 
     // ✅ Fetch user's orders using orders store
     await ordersStore.fetchOrdersByUser(authStore.user.id)
+    // ✅ Fetch user's wishlist using wishlist store
+    await fetchUserWishlist(authStore.user.id)
     await fetchUserReviews(authStore.user.id)
   }
 

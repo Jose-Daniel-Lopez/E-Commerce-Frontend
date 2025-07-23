@@ -241,7 +241,11 @@
     "wishlist": {
       "title": "Lista de Deseados",
       "viewAll": "Ver todo",
-      "addToCart": "Añadir al Carrito"
+      "addToCart": "Añadir al Carrito",
+      "empty": {
+        "title": "Tu lista de deseados está vacía",
+        "description": "¡Comienza a navegar y agrega productos que te gusten!"
+      }
     },
     "addresses": {
       "title": "Mis Direcciones",

@@ -242,7 +242,11 @@
     "wishlist": {
       "title": "Wishlist",
       "viewAll": "View all",
-      "addToCart": "Add to Cart"
+      "addToCart": "Add to Cart",
+      "empty": {
+        "title": "Your wishlist is empty",
+        "description": "Start browsing and add products you love!"
+      }
     },
     "addresses": {
       "title": "My Addresses",
