@@ -30,9 +30,10 @@
               aria-label="Favorites"
             />
             <span
-              class="absolute -right-[3px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white shadow-md"
+              v-if="wishlistCount > 0"
+              class="absolute -right-[3px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white shadow-md min-w-[18px] text-center"
             >
-              99
+              {{ wishlistCount }}
             </span>
           </router-link>
         </div>
@@ -57,7 +58,7 @@
             <span
               class="absolute -right-[6px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white shadow-md"
             >
-              99
+              {{ totalQuantity }}
             </span>
           </router-link>
         </div>
@@ -157,6 +158,9 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useUserDropdown } from '@/composables/useUserDropdown'
+import { storeToRefs } from 'pinia'
+import { useUserCartStore } from '@/stores/userCart'
+import { useWishlistStore } from '@/stores/wishlistStore'
 
 const emit = defineEmits(['update-mobile-menu', 'update-search-bar'])
 
@@ -195,6 +199,14 @@ watch(showSearchBar, (newValue) => {
 
 // Use the user dropdown composable
 const { showUserDropdown, userOptions, toggleUserDropdown, selectUserOption } = useUserDropdown()
+
+// User cart store
+const userCartStore = useUserCartStore()
+const { totalQuantity } = storeToRefs(userCartStore)
+
+// Wishlist store
+const wishlistStore = useWishlistStore()
+const { count: wishlistCount } = storeToRefs(wishlistStore)
 
 // Close dropdown when clicking outside
 if (typeof window !== 'undefined') {
