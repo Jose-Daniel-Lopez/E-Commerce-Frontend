@@ -4,11 +4,12 @@ function openProductUrl(url?: string) {
     window.open(url, '_blank')
   }
 }
-import { useWishlistStore } from '@/stores/wishlist'
+import { useWishlistStore } from '@/stores/wishlistStore'
 import '@/assets/base.css'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLanguage } from '@/composables/useLanguage'
+import { storeToRefs } from 'pinia'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import LoadingState from '@/components/shared/LoadingState.vue'
@@ -21,15 +22,11 @@ const router = useRouter()
 const { t } = useLanguage()
 
 const authStore = useAuthStore()
-const {
-  wishlistProducts,
-  wishlistLoading,
-  wishlistError,
-  fetchUserWishlist,
-} = useWishlistStore()
+const wishlistStore = useWishlistStore()
+const { wishlistProducts, wishlistLoading, wishlistError } = storeToRefs(wishlistStore)
 
 const removeFromWishlist = (productId: number) => {
-  wishlistProducts.value = wishlistProducts.value.filter((item: import('@/stores/wishlist').WishlistProduct) => item.id !== productId)
+  wishlistProducts.value = wishlistProducts.value.filter((item: import('@/stores/wishlistStore').WishlistProduct) => item.id !== productId)
 }
 
 function goToProduct(productId: number) {
@@ -38,7 +35,7 @@ function goToProduct(productId: number) {
 
 onMounted(() => {
   if (authStore.user?.id) {
-    fetchUserWishlist(authStore.user.id)
+    wishlistStore.fetchUserWishlist(authStore.user.id)
   }
 })
 </script>
@@ -52,14 +49,14 @@ onMounted(() => {
       />
 
       <!-- Header -->
-      <section class="max-w-7xl mx-auto mb-8">
-        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-black">
+      <section class="mx-auto mb-8 max-w-7xl">
+        <h1 class="text-2xl font-semibold text-left text-black font-srProDisplay">
           {{ t('wishlist.title') || 'Wishlist' }}
         </h1>
       </section>
 
       <!-- Wishlist Content -->
-      <section class="max-w-7xl mx-auto mb-16 animate-fadeInUp">
+      <section class="mx-auto mb-16 max-w-7xl animate-fadeInUp">
         <LoadingState
           v-if="wishlistLoading"
           :loading-text="t('wishlist.loading') || 'Loading...'"
@@ -80,35 +77,35 @@ onMounted(() => {
             @go-to-catalog="() => router.push('/catalog')"
           />
 
-          <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div v-else class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <div
               v-for="item in wishlistProducts"
               :key="item.id"
-              class="relative rounded-xl bg-white shadow-lg border border-gray-100 flex flex-col overflow-hidden transition hover:shadow-xl cursor-pointer group"
+              class="relative flex flex-col overflow-hidden transition bg-white border border-gray-100 shadow-lg cursor-pointer rounded-xl hover:shadow-xl group"
               @click="openProductUrl(item.productUrl)"
             >
               <!-- Remove 'x' button -->
               <button
-                class="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-500 text-gray-500 hover:text-white transition"
+                class="absolute z-10 flex items-center justify-center w-8 h-8 text-gray-500 transition bg-gray-100 rounded-full top-3 right-3 hover:bg-red-500 hover:text-white"
                 @click.stop="removeFromWishlist(item.id)"
                 aria-label="{{ t('wishlist.remove') || 'Remove' }}"
               >
                 <span class="text-lg font-bold">&times;</span>
               </button>
-              <div class="bg-gray-50 flex items-center justify-center h-48">
-                <img :src="item.imageUrl" :alt="item.name" class="h-40 object-contain group-hover:scale-105 transition-transform duration-200" />
+              <div class="flex items-center justify-center h-48 bg-gray-50">
+                <img :src="item.imageUrl" :alt="item.name" class="object-contain h-40 transition-transform duration-200 group-hover:scale-105" />
               </div>
-              <div class="p-5 flex flex-col flex-1">
-                <h2 class="font-srProDisplay text-lg font-semibold mb-1 text-black">{{ item.name }}</h2>
-                <p class="text-sm text-gray-500 mb-2">{{ item.description }}</p>
+              <div class="flex flex-col flex-1 p-5">
+                <h2 class="mb-1 text-lg font-semibold text-black font-srProDisplay">{{ item.name }}</h2>
+                <p class="mb-2 text-sm text-gray-500">{{ item.description }}</p>
                 <div class="flex flex-wrap gap-2 mb-2">
-                  <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-medium">{{ item.brand }}</span>
-                  <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium">${{ item.basePrice }}</span>
-                  <span v-if="item.screenSize" class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-medium">{{ item.screenSize }}</span>
-                  <span v-if="item.ramCapacity" class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-medium">RAM: {{ item.ramCapacity }}GB</span>
-                  <span v-if="item.storageCapacity" class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-medium">Almacenamiento: {{ item.storageCapacity }}GB</span>
-                  <span v-if="item.operatingSystem" class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-medium">{{ item.operatingSystem }}</span>
-                  <span v-if="item.totalStock !== undefined" class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-medium">Stock: {{ item.totalStock }}</span>
+                  <span class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">{{ item.brand }}</span>
+                  <span class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded">${{ item.basePrice }}</span>
+                  <span v-if="item.screenSize" class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">{{ item.screenSize }}</span>
+                  <span v-if="item.ramCapacity" class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">RAM: {{ item.ramCapacity }}GB</span>
+                  <span v-if="item.storageCapacity" class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">Almacenamiento: {{ item.storageCapacity }}GB</span>
+                  <span v-if="item.operatingSystem" class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">{{ item.operatingSystem }}</span>
+                  <span v-if="item.totalStock !== undefined" class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Stock: {{ item.totalStock }}</span>
                 </div>
                 <div class="flex flex-col items-center mt-auto">
                   <button
