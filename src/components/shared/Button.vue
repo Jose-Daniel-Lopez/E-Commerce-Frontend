@@ -18,95 +18,74 @@
   </button>
 </template>
 
-<script lang="ts">
-export default {
-  name: 'Button',
-  emits: ['click'],
-  props: {
-    icon: {
-      type: Boolean,
-      default: false,
-    },
-    borderColor: {
-      type: String,
-      default: '',
-    },
-    hoverBgColor: {
-      type: String,
-      default: '',
-    },
-    hoverTextColor: {
-      type: String,
-      default: '',
-    },
-    textColor: {
-      type: String,
-      default: 'black',
-    },
-    textSize: {
-      type: String,
-      default: '16px',
-    },
-    fontWeight: {
-      type: String,
-      default: '400',
-    },
-    width: {
-      type: String,
-      default: 'auto',
-    },
-    height: {
-      type: String,
-      default: '40px', // Cambiar a un valor más grande si es necesario
-    },
-    borderWidth: {
-      type: String,
-      default: '',
-    },
-    bgColor: {
-      type: String,
-      default: '',
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  data() {
-    return {
-      isHovered: false,
-    }
-  },
-  computed: {
-    buttonStyle() {
-      return {
-        height: this.height,
-        width: this.width,
-        backgroundColor: this.isHovered && this.hoverBgColor ? this.hoverBgColor : this.bgColor,
-        color: this.isHovered && this.hoverTextColor ? this.hoverTextColor : this.textColor,
-        border: `${this.borderWidth === '' ? '0px' : this.borderWidth} solid ${this.borderColor}`,
-        fontSize: this.textSize,
-        fontWeight: this.fontWeight,
-      }
-    },
-    buttonClass() {
-      return [
-        'flex items-center justify-center gap-2 rounded-md px-3',
-        'font-srProDisplay outline-none transition-all duration-200',
-        this.disabled ? 'bg-gray-600 cursor-not-allowed' : 'cursor-pointer',
-        // Agregar clases de hover solo si no está disabled
-        !this.disabled ? 'hover:transition-all hover:duration-200' : '',
-      ]
-        .filter(Boolean)
-        .join(' ')
-    },
-  },
-  methods: {
-    handleClick() {
-      if (!this.disabled) {
-        this.$emit('click')
-      }
-    },
-  },
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+
+defineOptions({
+  name: 'SharedButton', // "Button" is too generic and can cause conflicts, so we use a more specific name
+})
+
+const emit = defineEmits<{
+  click: []
+}>()
+
+const props = withDefaults(defineProps<{
+  icon?: boolean
+  borderColor?: string
+  hoverBgColor?: string
+  hoverTextColor?: string
+  textColor?: string
+  textSize?: string
+  fontWeight?: string
+  width?: string
+  height?: string
+  borderWidth?: string
+  bgColor?: string
+  disabled?: boolean
+}>(), {
+  icon: false,
+  borderColor: '',
+  hoverBgColor: '',
+  hoverTextColor: '',
+  textColor: 'black',
+  textSize: '16px',
+  fontWeight: '400',
+  width: 'auto',
+  height: '40px',
+  borderWidth: '',
+  bgColor: '',
+  disabled: false,
+})
+
+const isHovered = ref(false)
+
+const buttonStyle = computed(() => {
+  return {
+    height: props.height,
+    width: props.width,
+    backgroundColor: isHovered.value && props.hoverBgColor ? props.hoverBgColor : props.bgColor,
+    color: isHovered.value && props.hoverTextColor ? props.hoverTextColor : props.textColor,
+    border: `${props.borderWidth === '' ? '0px' : props.borderWidth} solid ${props.borderColor}`,
+    fontSize: props.textSize,
+    fontWeight: props.fontWeight,
+  }
+})
+
+const buttonClass = computed(() => {
+  return [
+    'flex items-center justify-center gap-2 rounded-md px-3',
+    'font-srProDisplay outline-none transition-all duration-200',
+    props.disabled ? 'bg-gray-600 cursor-not-allowed' : 'cursor-pointer',
+    // if the button is not disabled, apply hover styles
+    !props.disabled ? 'hover:transition-all hover:duration-200' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+})
+
+const handleClick = () => {
+  if (!props.disabled) {
+    emit('click')
+  }
 }
 </script>
