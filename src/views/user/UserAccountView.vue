@@ -805,6 +805,7 @@
                     width="auto"
                     height="36px"
                     class="px-4 text-sm"
+                    @click="openChangePasswordModal"
                   >
                     {{ $t('account.settings.security.changePasswordButton') }}
                   </Button>
@@ -832,6 +833,13 @@
       @close="closeAvatarSelector"
       @save="saveAvatar"
     />
+
+    <!-- Change Password Modal -->
+    <ChangePasswordModal
+      :is-open="isChangePasswordModalOpen"
+      @close="closeChangePasswordModal"
+      @success="onPasswordChangeSuccess"
+    />
   </div>
 </template>
 
@@ -847,6 +855,7 @@ import Button from '@/components/shared/Button.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import OrderDetailsModal from '@/components/orders/OrderDetailsModal.vue'
 import AvatarSelector from '@/components/users/AvatarSelector.vue'
+import ChangePasswordModal from '@/components/users/ChangePasswordModal.vue'
 import axios from '@/lib/axios'
 
 const { t, locale } = useI18n()
@@ -1080,6 +1089,7 @@ const isMobileNavOpen = ref(false)
 // Order Details Modal state
 const isOrderDetailsModalOpen = ref(false)
 const isAvatarSelectorOpen = ref(false)
+const isChangePasswordModalOpen = ref(false)
 const selectedOrder = ref<OrderType>({
   id: '',
   date: '',
@@ -1270,6 +1280,22 @@ const openAvatarSelector = () => {
 const closeAvatarSelector = () => {
   isAvatarSelectorOpen.value = false
   document.body.style.overflow = 'auto'
+}
+
+// Change Password Modal Methods
+const openChangePasswordModal = () => {
+  isChangePasswordModalOpen.value = true
+  document.body.style.overflow = 'hidden'
+}
+
+const closeChangePasswordModal = () => {
+  isChangePasswordModalOpen.value = false
+  document.body.style.overflow = 'auto'
+}
+
+const onPasswordChangeSuccess = () => {
+  // You can add any additional logic here if needed
+  console.log('Password changed successfully!')
 }
 
 const saveAvatar = async (avatarUrl: string) => {
