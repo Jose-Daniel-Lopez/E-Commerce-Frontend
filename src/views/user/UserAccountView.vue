@@ -382,7 +382,7 @@
             </section>
 
             <!-- Resto de las secciones permanecen igual... -->
-            <!-- Refunds and Drawbacks Section -->
+            <!-- Refunds and Returns Section -->
             <section
               :id="sections[2].id"
               class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
@@ -392,7 +392,11 @@
                   {{ $t('account.refunds.title') }}
                 </h2>
               </div>
-              <div class="space-y-4">
+              <div v-if="refunds.length === 0" class="text-center py-8">
+                <v-icon name="hi-arrow-left" scale="2" class="text-gray-300 mb-4" />
+                <p class="font-srProDisplay text-gray-500">No refunds or returns found</p>
+              </div>
+              <div v-else class="space-y-4">
                 <div
                   v-for="refund in refunds"
                   :key="refund.id"
@@ -406,9 +410,9 @@
                     </div>
                     <div>
                       <p class="font-srProDisplay font-medium text-black">
-                        {{ $t('account.refunds.refund') }} #{{ refund.id }}
+                        {{ refund.status === 'Returned' ? 'Return' : 'Refund' }} #{{ refund.id }}
                       </p>
-                      <p class="font-srProDisplay text-sm text-gray-600">{{ refund.reason }}</p>
+                      <p class="font-srProDisplay text-sm text-gray-600">{{ refund.date }}</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-4">
@@ -419,10 +423,11 @@
                       {{ refund.status }}
                     </span>
                     <Button
+                      @click="openOrderDetailsModal(refund)"
                       bg-color="transparent"
                       width="auto"
                       height="auto"
-                      class="px-4 text-[10px] font-light text-gray-500 cursor-pointer"
+                      class="px-4 text-[10px] font-light text-gray-500 cursor-pointer hover:text-black transition-colors"
                     >
                       {{ $t('account.refunds.viewDetails') }}
                     </Button>
@@ -873,9 +878,11 @@ import { useWishlistStore } from '@/stores/wishlist'
 const ordersStore = useOrdersStore()
 const { wishlistProducts, wishlistLoading, wishlistError, fetchUserWishlist } = useWishlistStore()
 
-// Reactive reference to orders from the store
+// Reactive reference to orders from the store (excluding RETURNED and REFUNDED orders)
 const orders = computed(() =>
-  ordersStore.orders.map(order => ({
+  ordersStore.orders
+    .filter(order => order.status !== 'RETURNED' && order.status !== 'REFUNDED')
+    .map(order => ({
     id: order.id.toString(),
     date: new Date(order.orderDate).toISOString().split('T')[0],
     status: order.status === 'CANCELED' ? 'Cancelled' : order.status,
@@ -919,10 +926,51 @@ const orders = computed(() =>
   }))
 )
 
-const refunds = ref([
-  { id: 'R001', reason: 'Item defective', status: 'Completed' },
-  { id: 'R002', reason: 'Wrong size', status: 'Processing' },
-])
+// Refunds state - computed from orders with RETURNED and REFUNDED status
+const refunds = computed(() =>
+  ordersStore.returnsAndRefunds.map(order => ({
+      id: order.id.toString(),
+      date: new Date(order.orderDate).toISOString().split('T')[0],
+      status: order.status === 'RETURNED' ? 'Returned' : 'Refunded',
+      expectedDelivery: 'N/A',
+      items: order.orderItems?.map(item => ({
+        id: item.id,
+        name: item.product.name,
+        description: item.product.description,
+        image: '/images/default-product.png', // Placeholder; improve later
+        price: item.unitPrice,
+        quantity: item.quantity,
+      })) || [],
+      subtotal: order.orderItems?.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0) || 0,
+      shipping: 0, // Add if available
+      tax: 0, // Add if available
+      discount: order.hasDiscount ? 10 : 0, // Mock or fetch from discountCode
+      total: order.totalAmount,
+      shippingAddress: {
+        name: user.value?.username || '',
+        street: 'N/A',
+        city: 'N/A',
+        state: 'N/A',
+        zipCode: 'N/A',
+        country: 'N/A'
+      },
+      billingAddress: {
+        name: user.value?.username || '',
+        street: 'N/A',
+        city: 'N/A',
+        state: 'N/A',
+        zipCode: 'N/A',
+        country: 'N/A'
+      },
+      paymentMethod: {
+        type: order.payment?.paymentMethod || 'N/A',
+        lastFour: '4242' // Mock for now
+      },
+      paymentStatus: order.payment?.paymentStatus || 'Pending',
+      trackingNumber: 'TN' + order.id,
+      carrier: 'UPS'
+    }))
+)
 
 const addresses = computed(() => usersStore.userAddresses)
 const addressesLoading = computed(() => usersStore.addressesLoading)
@@ -1110,9 +1158,11 @@ const getStatusColor = (status: string) => {
 const getRefundStatusColor = (status: string) => {
   switch (status) {
     case 'Completed':
+    case 'Refunded':
       return 'bg-green-100 text-green-800'
     case 'Processing':
-      return 'bg-yellow-100 text-yellow-800'
+    case 'Returned':
+      return 'bg-orange-100 text-orange-800'
     default:
       return 'bg-gray-100 text-gray-800'
   }
@@ -1348,5 +1398,4 @@ const refreshAddresses = async () => {
 </script>
 
 <style scoped>
-/* Agrega aquí tus estilos específicos para este componente */
 </style>

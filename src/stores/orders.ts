@@ -40,7 +40,7 @@ export interface OrderItem {
 export interface Order {
   id: number
   orderDate: string
-  status: 'CREATED' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELED'
+  status: 'CREATED' | 'PAID' | 'SHIPPED' | 'DELIVERED' | 'CANCELED' | 'RETURNED' | 'REFUNDED'
   totalAmount: number
   hasDiscount: boolean
   payment?: Payment
@@ -76,6 +76,8 @@ export const useOrdersStore = defineStore('orders', () => {
       SHIPPED: orders.value.filter((order) => order.status === 'SHIPPED'),
       DELIVERED: orders.value.filter((order) => order.status === 'DELIVERED'),
       CANCELED: orders.value.filter((order) => order.status === 'CANCELED'),
+      RETURNED: orders.value.filter((order) => order.status === 'RETURNED'),
+      REFUNDED: orders.value.filter((order) => order.status === 'REFUNDED'),
     }
   })
 
@@ -96,6 +98,18 @@ export const useOrdersStore = defineStore('orders', () => {
 
   const completedOrders = computed(() => {
     return orders.value.filter((order) => order.status === 'DELIVERED')
+  })
+
+  const returnedOrders = computed(() => {
+    return orders.value.filter((order) => order.status === 'RETURNED')
+  })
+
+  const refundedOrders = computed(() => {
+    return orders.value.filter((order) => order.status === 'REFUNDED')
+  })
+
+  const returnsAndRefunds = computed(() => {
+    return orders.value.filter((order) => order.status === 'RETURNED' || order.status === 'REFUNDED')
   })
 
   // Actions
@@ -236,6 +250,8 @@ export const useOrdersStore = defineStore('orders', () => {
       SHIPPED: 'Enviado',
       DELIVERED: 'Entregado',
       CANCELED: 'Cancelado',
+      RETURNED: 'Devuelto',
+      REFUNDED: 'Reembolsado',
     }
     return texts[status] || status
   }
@@ -247,6 +263,8 @@ export const useOrdersStore = defineStore('orders', () => {
       SHIPPED: 'yellow',
       DELIVERED: 'green',
       CANCELED: 'red',
+      RETURNED: 'orange',
+      REFUNDED: 'purple',
     }
     return colors[status] || 'gray'
   }
@@ -292,6 +310,9 @@ export const useOrdersStore = defineStore('orders', () => {
     paidOrders,
     pendingOrders,
     completedOrders,
+    returnedOrders,
+    refundedOrders,
+    returnsAndRefunds,
     // Actions
     fetchOrdersByUser,
     fetchOrderById,
