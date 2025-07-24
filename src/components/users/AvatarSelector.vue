@@ -1,28 +1,28 @@
 <template>
-  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click="closeModal">
-    <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4" @click.stop>
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" @click="closeModal">
+    <div class="w-full max-w-md p-6 mx-4 bg-white rounded-xl" @click.stop>
       <div class="flex items-center justify-between mb-6">
-        <h3 class="text-xl font-srProDisplay font-semibold text-black">
+        <h3 class="text-xl font-semibold text-black font-srProDisplay">
           Choose Your Avatar
         </h3>
-        <button @click="closeModal" class="text-gray-500 hover:text-black transition-colors">
+        <button @click="closeModal" class="text-gray-500 transition-colors cursor-pointer hover:text-black">
           <v-icon name="hi-x" scale="1.2" />
         </button>
       </div>
 
       <!-- Current Avatar -->
-      <div class="text-center mb-6">
-        <h4 class="text-sm font-srProDisplay font-medium text-gray-700 mb-3">Current Avatar</h4>
+      <div class="mb-6 text-center">
+        <h4 class="mb-3 text-xs font-semibold tracking-wide text-gray-500 uppercase font-srProDisplay">Current Avatar</h4>
         <div class="flex justify-center">
-          <div class="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200">
-            <img :src="currentAvatar" :alt="userName" class="w-full h-full object-cover" />
+          <div class="w-20 h-20 overflow-hidden border-2 border-gray-200 rounded-full shadow-md">
+            <img :src="currentAvatar" :alt="userName" class="object-cover w-full h-full" />
           </div>
         </div>
       </div>
 
       <!-- Avatar Options -->
       <div class="mb-6">
-        <h4 class="text-sm font-srProDisplay font-medium text-gray-700 mb-3">Select New Avatar</h4>
+        <h4 class="mb-3 text-xs font-semibold tracking-wide text-gray-500 uppercase font-srProDisplay">Select New Avatar</h4>
         <div class="grid grid-cols-4 gap-3">
           <div
             v-for="(avatar, index) in avatarOptions"
@@ -30,16 +30,16 @@
             class="relative cursor-pointer group"
             @click="selectAvatar(avatar)"
           >
-            <div 
-              class="w-16 h-16 rounded-full overflow-hidden border-2 transition-all duration-200"
-              :class="selectedAvatar === avatar ? 'border-black scale-105' : 'border-gray-200 group-hover:border-gray-400'"
+            <div
+              class="w-16 h-16 overflow-hidden transition-all duration-200 border-2 rounded-full shadow group-hover:scale-110 group-hover:shadow-lg group-hover:border-blue-400"
+              :class="selectedAvatar === avatar ? 'border-black scale-110' : 'border-gray-200'"
             >
-              <img :src="avatar" :alt="`Avatar option ${index + 1}`" class="w-full h-full object-cover" />
+              <img :src="avatar" :alt="`Avatar option ${index + 1}`" class="object-cover w-full h-full" />
             </div>
             <!-- Selected indicator -->
-            <div 
+            <div
               v-if="selectedAvatar === avatar"
-              class="absolute -top-1 -right-1 w-5 h-5 bg-black rounded-full flex items-center justify-center"
+              class="absolute flex items-center justify-center w-5 h-5 bg-black rounded-full -top-1 -right-1"
             >
               <v-icon name="hi-check" scale="0.7" class="text-white" />
             </div>
@@ -51,11 +51,11 @@
       <button
         @click="generateNewAvatars"
         :disabled="isGenerating"
-        class="w-full mb-6 px-4 py-3 border border-gray-300 rounded-lg font-srProDisplay text-gray-700 hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="w-full px-4 py-3 mb-6 text-gray-700 transition-all duration-200 border border-gray-300 rounded-lg shadow cursor-pointer font-srProDisplay hover:bg-blue-50 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <v-icon 
-          name="hi-refresh" 
-          scale="0.9" 
+        <v-icon
+          name="hi-refresh"
+          scale="0.9"
           class="mr-2 transition-transform duration-200"
           :class="{ 'animate-spin': isGenerating }"
         />
@@ -66,14 +66,14 @@
       <div class="flex gap-3">
         <button
           @click="closeModal"
-          class="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-srProDisplay text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+          class="flex-1 px-4 py-3 text-gray-700 transition-all duration-200 border border-gray-300 rounded-lg shadow cursor-pointer font-srProDisplay hover:bg-blue-50 hover:shadow-lg active:scale-95"
         >
           Cancel
         </button>
         <button
           @click="saveAvatar"
           :disabled="!selectedAvatar || isSaving"
-          class="flex-1 px-4 py-3 bg-black text-white rounded-lg font-srProDisplay hover:bg-gray-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="flex-1 px-4 py-3 text-white transition-all duration-200 bg-black rounded-lg shadow cursor-pointer font-srProDisplay hover:bg-blue-900 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {{ isSaving ? 'Saving...' : 'Save Avatar' }}
         </button>
@@ -112,12 +112,12 @@ const generateAvatarUrl = (seed: string, set: string = 'set1') => {
 const generateNewAvatars = async () => {
   isGenerating.value = true
   avatarOptions.value = []
-  
+
   try {
     // Generate 8 different avatar options using different seeds
     const sets = ['set1', 'set2', 'set3', 'set4'] // Different robot styles
     const seeds = []
-    
+
     // Create unique seeds for variety
     for (let i = 0; i < 8; i++) {
       const timestamp = Date.now()
@@ -126,9 +126,9 @@ const generateNewAvatars = async () => {
       const set = sets[i % sets.length]
       seeds.push(generateAvatarUrl(seed, set))
     }
-    
+
     avatarOptions.value = seeds
-    
+
     // Auto-select the first option
     if (seeds.length > 0) {
       selectedAvatar.value = seeds[0]
@@ -150,9 +150,9 @@ const closeModal = () => {
 
 const saveAvatar = async () => {
   if (!selectedAvatar.value) return
-  
+
   isSaving.value = true
-  
+
   try {
     // Emit the selected avatar URL to parent
     emit('save', selectedAvatar.value)
