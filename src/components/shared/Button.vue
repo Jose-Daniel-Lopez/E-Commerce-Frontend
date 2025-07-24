@@ -18,7 +18,7 @@
   </button>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: 'Button',
   emits: ['click'],
@@ -93,7 +93,7 @@ export default {
       return [
         'flex items-center justify-center gap-2 rounded-md px-3',
         'font-srProDisplay outline-none transition-all duration-200',
-        this.disabled ? 'bg-gray-600 cursor-not-allowed' : '',
+        this.disabled ? 'bg-gray-600 cursor-not-allowed' : 'cursor-pointer',
         // Agregar clases de hover solo si no está disabled
         !this.disabled ? 'hover:transition-all hover:duration-200' : '',
       ]
