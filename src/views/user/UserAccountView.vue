@@ -344,38 +344,44 @@
                 </router-link>
               </div>
               <div class="space-y-4">
-                <div
-                  v-for="order in orders"
-                  :key="order.id"
-                  class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
-                      <v-icon name="hi-clipboard-list" scale="1.2" class="text-white" />
+                <div v-if="orders.length === 0" class="text-center py-8">
+                  <v-icon name="hi-clipboard-list" scale="2" class="text-gray-300 mb-4" />
+                  <p class="font-srProDisplay text-gray-500">{{ $t('account.orders.emptyMessage') }}</p>
+                </div>
+                <div v-else>
+                  <div
+                    v-for="order in orders"
+                    :key="order.id"
+                    class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <div class="flex items-center gap-4">
+                      <div class="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
+                        <v-icon name="hi-clipboard-list" scale="1.2" class="text-white" />
+                      </div>
+                      <div>
+                        <p class="font-srProDisplay font-medium text-black">
+                          {{ $t('account.orders.order') }} #{{ order.id }}
+                        </p>
+                        <p class="font-srProDisplay text-sm text-gray-600">{{ order.date }}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p class="font-srProDisplay font-medium text-black">
-                        {{ $t('account.orders.order') }} #{{ order.id }}
-                      </p>
-                      <p class="font-srProDisplay text-sm text-gray-600">{{ order.date }}</p>
+                    <div class="flex items-center gap-4">
+                      <span
+                        :class="getStatusColor(order.status)"
+                        class="px-3 py-1 rounded-full text-sm font-medium"
+                      >
+                        {{ order.status }}
+                      </span>
+                      <Button
+                        @click="openOrderDetailsModal(order)"
+                        bg-color="transparent"
+                        width="auto"
+                        height="auto"
+                        class="px-4 text-[10px] font-light text-gray-500 cursor-pointer hover:text-black transition-colors"
+                      >
+                        {{ $t('account.orders.viewDetails') }}
+                      </Button>
                     </div>
-                  </div>
-                  <div class="flex items-center gap-4">
-                    <span
-                      :class="getStatusColor(order.status)"
-                      class="px-3 py-1 rounded-full text-sm font-medium"
-                    >
-                      {{ order.status }}
-                    </span>
-                    <Button
-                      @click="openOrderDetailsModal(order)"
-                      bg-color="transparent"
-                      width="auto"
-                      height="auto"
-                      class="px-4 text-[10px] font-light text-gray-500 cursor-pointer hover:text-black transition-colors"
-                    >
-                      {{ $t('account.orders.viewDetails') }}
-                    </Button>
                   </div>
                 </div>
               </div>
@@ -394,7 +400,7 @@
               </div>
               <div v-if="refunds.length === 0" class="text-center py-8">
                 <v-icon name="hi-arrow-left" scale="2" class="text-gray-300 mb-4" />
-                <p class="font-srProDisplay text-gray-500">No refunds or returns found</p>
+                <p class="font-srProDisplay text-gray-500">{{ $t('account.refunds.empty') }}</p>
               </div>
               <div v-else class="space-y-4">
                 <div
@@ -466,8 +472,7 @@
               <!-- Empty state when no wishlist items are available -->
               <div v-else-if="wishlistProducts.length === 0" class="text-center py-8">
                 <v-icon name="hi-heart" scale="2" class="text-gray-300 mb-4" />
-                <p class="text-gray-500 text-lg font-medium mb-2">{{ $t('account.wishlist.empty.title') }}</p>
-                <p class="text-gray-400 text-sm">{{ $t('account.wishlist.empty.description') }}</p>
+                <p class="font-srProDisplay text-gray-500">{{ $t('account.wishlist.emptyMessage') }}</p>
               </div>
 
               <!-- Display grid of wishlist items -->
@@ -655,8 +660,9 @@
                 <div v-else-if="reviewsError" class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
                   {{ reviewsError }}
                 </div>
-                <div v-else-if="reviews.length === 0" class="py-4 text-center text-gray-500">
-                  No reviews found.
+                <div v-else-if="reviews.length === 0" class="py-8 text-center">
+                  <v-icon name="hi-annotation" scale="2" class="text-gray-300 mb-4" />
+                  <p class="font-srProDisplay text-gray-500">{{ $t('account.reviews.empty') }}</p>
                 </div>
                 <div
                   v-else
@@ -756,29 +762,6 @@
                       <v-icon name="hi-chip" />
                     </button>
                   </div>
-                </div>
-
-                <!-- Notifications Setting -->
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-                      <v-icon name="hi-chat" scale="1.2" class="text-white" />
-                    </div>
-                    <div>
-                      <h4 class="font-srProDisplay font-medium text-black">
-                        {{ $t('account.settings.notifications.title') }}
-                      </h4>
-                      <p class="font-srProDisplay text-sm text-gray-600">
-                        {{ $t('account.settings.notifications.description') }}
-                      </p>
-                    </div>
-                  </div>
-                  <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" v-model="notifications.enabled" class="sr-only peer" />
-                    <div
-                      class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"
-                    ></div>
-                  </label>
                 </div>
 
                 <!-- Security Setting -->

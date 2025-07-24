@@ -231,13 +231,15 @@
       "title": "My Orders",
       "viewAll": "View all orders",
       "order": "Order",
-      "viewDetails": "View Details"
-      ,"empty": "You have no orders yet."
+      "viewDetails": "View Details",
+      "empty": "You have no orders yet.",
+      "emptyMessage": "You have not placed any orders yet."
     },
     "refunds": {
       "title": "Refunds and Returns",
       "refund": "Refund",
-      "viewDetails": "View Details"
+      "viewDetails": "View Details",
+      "empty": "No refunds or returns found."
     },
     "wishlist": {
       "title": "Wishlist",
@@ -246,7 +248,8 @@
       "empty": {
         "title": "Your wishlist is empty",
         "description": "Start browsing and add products you love!"
-      }
+      },
+      "emptyMessage": "You have no items in your wishlist."
     },
     "addresses": {
       "title": "My Addresses",
@@ -254,7 +257,8 @@
     },
     "reviews": {
       "title": "My Reviews",
-      "reviews": "Reviews"
+      "reviews": "Reviews",
+      "empty": "You have not written any reviews yet."
     },
     "settings": {
       "title": "Settings",

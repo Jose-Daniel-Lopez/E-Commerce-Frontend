@@ -230,13 +230,15 @@
       "title": "Mis Pedidos",
       "viewAll": "Ver todos los pedidos",
       "order": "Pedido",
-      "viewDetails": "Ver Detalles"
-      ,"empty": "Aún no tienes pedidos."
+      "viewDetails": "Ver Detalles",
+      "empty": "Aún no tienes pedidos.",
+      "emptyMessage": "Aún no has realizado ningún pedido."
     },
     "refunds": {
       "title": "Reembolsos y Devoluciones",
       "refund": "Reembolso",
-      "viewDetails": "Ver Detalles"
+      "viewDetails": "Ver Detalles",
+      "empty": "No se encontraron reembolsos ni devoluciones."
     },
     "wishlist": {
       "title": "Lista de Deseados",
@@ -245,7 +247,8 @@
       "empty": {
         "title": "Tu lista de deseados está vacía",
         "description": "¡Comienza a navegar y agrega productos que te gusten!"
-      }
+      },
+      "emptyMessage": "No tienes productos en tu lista de deseados."
     },
     "addresses": {
       "title": "Mis Direcciones",
@@ -253,7 +256,8 @@
     },
     "reviews": {
       "title": "Mis Reseñas",
-      "reviews": "Reseñas"
+      "reviews": "Reseñas",
+      "empty": "Aún no has escrito ninguna reseña."
     },
     "settings": {
       "title": "Configuración",
