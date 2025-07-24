@@ -2,29 +2,27 @@
   <Transition name="modal-overlay">
     <div
       v-if="isOpen"
-      class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md z-50 flex items-center justify-center p-4"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75"
       @click="closeModal"
     >
-      <Transition name="modal-content">
-        <div
-          v-if="isOpen"
-          class="bg-white rounded-xl shadow-2xl max-w-md w-full transform border border-gray-100"
-          @click.stop
-        >
+      <div
+        class="w-full max-w-md transform bg-white border border-gray-200 shadow-2xl rounded-xl modal-content"
+        @click.stop
+      >
           <!-- Modal Header -->
-          <div class="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-gray-200 px-6 py-4 rounded-t-xl z-10">
+          <div class="sticky top-0 z-10 px-6 py-4 bg-white border-b border-gray-200 rounded-t-xl">
             <div class="flex items-center justify-between">
               <div>
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">
+                <h2 class="text-xl font-semibold text-black font-srProDisplay">
                   Change Password
                 </h2>
-                <p class="font-srProDisplay text-sm text-gray-600 mt-1">
+                <p class="mt-1 text-sm text-gray-600 font-srProDisplay">
                   Enter your current password and choose a new one
                 </p>
               </div>
               <button
                 @click="closeModal"
-                class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                class="p-2 transition-colors rounded-full hover:bg-gray-100"
               >
                 <v-icon name="hi-x" scale="1.4" class="text-gray-500" />
               </button>
@@ -36,110 +34,69 @@
             <!-- Error Message -->
             <div
               v-if="error"
-              class="bg-red-50 border border-red-200 rounded-lg p-4"
+              class="p-4 border border-red-200 rounded-lg bg-red-50"
             >
               <div class="flex items-center">
-                <v-icon name="hi-exclamation-circle" scale="1.2" class="text-red-600 mr-3" />
-                <p class="font-srProDisplay text-sm text-red-700">{{ error }}</p>
+                <v-icon name="hi-exclamation-circle" scale="1.2" class="mr-3 text-red-600" />
+                <p class="text-sm text-red-700 font-srProDisplay">{{ error }}</p>
               </div>
             </div>
 
             <!-- Success Message -->
             <div
               v-if="success"
-              class="bg-green-50 border border-green-200 rounded-lg p-4"
+              class="p-4 border border-green-200 rounded-lg bg-green-50"
             >
               <div class="flex items-center">
-                <v-icon name="hi-check-circle" scale="1.2" class="text-green-600 mr-3" />
-                <p class="font-srProDisplay text-sm text-green-700">{{ success }}</p>
+                <v-icon name="hi-check-circle" scale="1.2" class="mr-3 text-green-600" />
+                <p class="text-sm text-green-700 font-srProDisplay">{{ success }}</p>
               </div>
             </div>
 
             <!-- Form -->
             <form @submit.prevent="handleSubmit" class="space-y-4">
               <!-- Current Password -->
-              <div>
-                <label for="currentPassword" class="block font-srProDisplay text-sm font-medium text-black mb-2">
-                  Current Password
-                </label>
-                <div class="relative">
-                  <input
-                    id="currentPassword"
-                    v-model="formData.currentPassword"
-                    :type="showCurrentPassword ? 'text' : 'password'"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg font-srProDisplay text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200"
-                    placeholder="Enter your current password"
-                    required
-                    :disabled="loading"
-                  />
-                  <button
-                    type="button"
-                    @click="showCurrentPassword = !showCurrentPassword"
-                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                    :disabled="loading"
-                  >
-                    <v-icon :name="showCurrentPassword ? 'hi-eye-off' : 'hi-eye'" scale="1.1" />
-                  </button>
-                </div>
-              </div>
+              <PasswordInput
+                id="currentPassword"
+                label="Current Password"
+                :model-value="formData.currentPassword"
+                autocomplete="current-password"
+                :required="true"
+                :disabled="loading"
+                @update:model-value="updateCurrentPassword"
+              />
 
               <!-- New Password -->
-              <div>
-                <label for="newPassword" class="block font-srProDisplay text-sm font-medium text-black mb-2">
-                  New Password
-                </label>
-                <div class="relative">
-                  <input
-                    id="newPassword"
-                    v-model="formData.newPassword"
-                    :type="showNewPassword ? 'text' : 'password'"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg font-srProDisplay text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200"
-                    placeholder="Enter your new password"
-                    required
-                    :disabled="loading"
-                    minlength="8"
-                  />
-                  <button
-                    type="button"
-                    @click="showNewPassword = !showNewPassword"
-                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                    :disabled="loading"
-                  >
-                    <v-icon :name="showNewPassword ? 'hi-eye-off' : 'hi-eye'" scale="1.1" />
-                  </button>
-                </div>
-                <p class="font-srProDisplay text-xs text-gray-500 mt-1">
+              <div class="space-y-1">
+                <PasswordInput
+                  id="newPassword"
+                  label="New Password"
+                  :model-value="formData.newPassword"
+                  autocomplete="new-password"
+                  :required="true"
+                  :disabled="loading"
+                  :min-length="8"
+                  @update:model-value="updateNewPassword"
+                />
+                <p class="mt-1 text-xs text-gray-500 font-srProDisplay">
                   Password must be at least 8 characters long
                 </p>
               </div>
 
               <!-- Confirm New Password -->
-              <div>
-                <label for="confirmPassword" class="block font-srProDisplay text-sm font-medium text-black mb-2">
-                  Confirm New Password
-                </label>
-                <div class="relative">
-                  <input
-                    id="confirmPassword"
-                    v-model="formData.confirmPassword"
-                    :type="showConfirmPassword ? 'text' : 'password'"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg font-srProDisplay text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200"
-                    placeholder="Confirm your new password"
-                    required
-                    :disabled="loading"
-                  />
-                  <button
-                    type="button"
-                    @click="showConfirmPassword = !showConfirmPassword"
-                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                    :disabled="loading"
-                  >
-                    <v-icon :name="showConfirmPassword ? 'hi-eye-off' : 'hi-eye'" scale="1.1" />
-                  </button>
-                </div>
+              <div class="space-y-1">
+                <PasswordInput
+                  id="confirmPassword"
+                  label="Confirm New Password"
+                  :model-value="formData.confirmPassword"
+                  autocomplete="new-password"
+                  :required="true"
+                  :disabled="loading"
+                  @update:model-value="updateConfirmPassword"
+                />
                 <p
                   v-if="formData.confirmPassword && formData.newPassword !== formData.confirmPassword"
-                  class="font-srProDisplay text-xs text-red-500 mt-1"
+                  class="mt-1 text-xs text-red-500 font-srProDisplay"
                 >
                   Passwords do not match
                 </p>
@@ -148,7 +105,7 @@
               <!-- Password Strength Indicator -->
               <div v-if="formData.newPassword" class="space-y-2">
                 <div class="flex items-center justify-between">
-                  <span class="font-srProDisplay text-xs text-gray-600">Password Strength:</span>
+                  <span class="text-xs text-gray-600 font-srProDisplay">Password Strength:</span>
                   <span
                     :class="[
                       'font-srProDisplay text-xs font-medium',
@@ -158,7 +115,7 @@
                     {{ passwordStrength.label }}
                   </span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="w-full h-2 bg-gray-200 rounded-full">
                   <div
                     :class="[
                       'h-2 rounded-full transition-all duration-300',
@@ -173,12 +130,12 @@
 
           <!-- Modal Footer -->
           <div
-            class="sticky bottom-0 bg-white/90 backdrop-blur-sm border-t border-gray-200 px-6 py-4 rounded-b-xl z-10"
+            class="sticky bottom-0 z-10 px-6 py-4 bg-white border-t border-gray-200 rounded-b-xl"
           >
-            <div class="flex gap-3 justify-end">
+            <div class="flex justify-end gap-3">
               <button
                 @click="closeModal"
-                class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                class="px-6 py-2 font-medium text-gray-700 transition-colors border border-gray-300 rounded-lg hover:bg-gray-50"
                 :disabled="loading"
               >
                 Cancel
@@ -186,7 +143,7 @@
               <button
                 @click="handleSubmit"
                 :disabled="!isFormValid || loading"
-                class="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                class="flex items-center px-6 py-2 font-medium text-white transition-colors bg-black rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <v-icon
                   v-if="loading"
@@ -199,14 +156,14 @@
             </div>
           </div>
         </div>
-      </Transition>
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, shallowRef } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import PasswordInput from '@/components/shared/PasswordInput.vue'
 
 interface Props {
   isOpen: boolean
@@ -220,59 +177,96 @@ const emit = defineEmits<{
 
 const authStore = useAuthStore()
 
-// Form state
-const formData = ref({
+// Form state - usar shallowRef para mejor rendimiento
+const formData = shallowRef({
   currentPassword: '',
   newPassword: '',
   confirmPassword: ''
 })
 
 // UI state
-const showCurrentPassword = ref(false)
-const showNewPassword = ref(false)
-const showConfirmPassword = ref(false)
 const loading = ref(false)
 const error = ref('')
 const success = ref('')
 
-// Form validation
+// Cache para password strength para evitar recalculos
+const strengthCache = new Map()
+
+// Form validation con debounce implícito
 const isFormValid = computed(() => {
+  const data = formData.value
   return (
-    formData.value.currentPassword.length > 0 &&
-    formData.value.newPassword.length >= 8 &&
-    formData.value.newPassword === formData.value.confirmPassword
+    data.currentPassword.length > 0 &&
+    data.newPassword.length >= 8 &&
+    data.newPassword === data.confirmPassword
   )
 })
 
-// Password strength calculator
+// Event handlers optimizados
+const updateCurrentPassword = (value: string) => {
+  formData.value = { ...formData.value, currentPassword: value }
+}
+
+const updateNewPassword = (value: string) => {
+  formData.value = { ...formData.value, newPassword: value }
+}
+
+const updateConfirmPassword = (value: string) => {
+  formData.value = { ...formData.value, confirmPassword: value }
+}
+
+// Password strength calculator optimizado con cache
 const passwordStrength = computed(() => {
   const password = formData.value.newPassword
-  let score = 0
 
-  if (password.length >= 8) score += 1
-  if (password.match(/[a-z]/)) score += 1
-  if (password.match(/[A-Z]/)) score += 1
-  if (password.match(/[0-9]/)) score += 1
-  if (password.match(/[^a-zA-Z0-9]/)) score += 1
-
-  const strength = {
-    0: { label: 'Very Weak', color: 'text-red-600', bgColor: 'bg-red-500', width: 20 },
-    1: { label: 'Weak', color: 'text-red-500', bgColor: 'bg-red-400', width: 40 },
-    2: { label: 'Fair', color: 'text-yellow-500', bgColor: 'bg-yellow-400', width: 60 },
-    3: { label: 'Good', color: 'text-blue-500', bgColor: 'bg-blue-400', width: 80 },
-    4: { label: 'Strong', color: 'text-green-500', bgColor: 'bg-green-400', width: 90 },
-    5: { label: 'Very Strong', color: 'text-green-600', bgColor: 'bg-green-500', width: 100 }
+  // Usar cache para evitar recalculos
+  if (strengthCache.has(password)) {
+    return strengthCache.get(password)
   }
 
-  return strength[score as keyof typeof strength] || strength[0]
+  let score = 0
+  if (password.length >= 8) score += 1
+  if (/[a-z]/.test(password)) score += 1
+  if (/[A-Z]/.test(password)) score += 1
+  if (/[0-9]/.test(password)) score += 1
+  if (/[^a-zA-Z0-9]/.test(password)) score += 1
+
+  const strengthLevels = [
+    { label: 'Very Weak', color: 'text-red-600', bgColor: 'bg-red-500', width: 20 },
+    { label: 'Weak', color: 'text-red-500', bgColor: 'bg-red-400', width: 40 },
+    { label: 'Fair', color: 'text-yellow-500', bgColor: 'bg-yellow-400', width: 60 },
+    { label: 'Good', color: 'text-blue-500', bgColor: 'bg-blue-400', width: 80 },
+    { label: 'Strong', color: 'text-green-500', bgColor: 'bg-green-400', width: 90 },
+    { label: 'Very Strong', color: 'text-green-600', bgColor: 'bg-green-500', width: 100 }
+  ]
+
+  const result = strengthLevels[score] || strengthLevels[0]
+
+  // Guardar en cache
+  strengthCache.set(password, result)
+
+  // Limpiar cache si crece mucho
+  if (strengthCache.size > 50) {
+    strengthCache.clear()
+  }
+
+  return result
 })
 
-// Reset form when modal opens/closes
+// Reset form cuando el modal se abre - optimizado
 watch(() => props.isOpen, (newValue) => {
   if (newValue) {
-    resetForm()
+    // Reset inmediato sin watchers anidados
+    formData.value = {
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    }
+    error.value = ''
+    success.value = ''
+    strengthCache.clear() // Limpiar cache al abrir
   }
-})
+}, { immediate: false })
 
 const resetForm = () => {
   formData.value = {
@@ -280,11 +274,9 @@ const resetForm = () => {
     newPassword: '',
     confirmPassword: ''
   }
-  showCurrentPassword.value = false
-  showNewPassword.value = false
-  showConfirmPassword.value = false
   error.value = ''
   success.value = ''
+  strengthCache.clear()
 }
 
 const handleSubmit = async () => {
@@ -347,27 +339,10 @@ const closeModal = () => {
   background: #a8a8a8;
 }
 
-/* Enhanced backdrop-filter with fallbacks */
-.backdrop-blur-md {
-  /* Fallback para navegadores sin soporte */
-  background: rgba(0, 0, 0, 0.6);
-
-  /* Soporte nativo */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-/* Detectar soporte para backdrop-filter y ajustar */
-@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
-  .backdrop-blur-md {
-    background: rgba(0, 0, 0, 0.4);
-  }
-}
-
-/* Modal Transitions */
+/* Modal Transitions - Optimizadas */
 .modal-overlay-enter-active,
 .modal-overlay-leave-active {
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.25s ease-out;
 }
 
 .modal-overlay-enter-from,
@@ -375,23 +350,27 @@ const closeModal = () => {
   opacity: 0;
 }
 
-.modal-content-enter-active,
-.modal-content-leave-active {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+/* Animación del contenido del modal aplicada directamente */
+.modal-content {
+  animation: modal-content-enter 0.25s ease-out;
 }
 
-.modal-content-enter-from,
-.modal-content-leave-to {
-  opacity: 0;
-  transform: scale(0.95) translateY(20px);
+@keyframes modal-content-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-/* Custom shadow for modal with elevated appearance */
+/* Custom shadow for modal - Optimizada */
 .shadow-2xl {
   box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(0, 0, 0, 0.05),
-    0 8px 32px rgba(0, 0, 0, 0.1);
+    0 20px 40px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
 /* Ensure modal appears above everything */
