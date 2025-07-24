@@ -709,12 +709,13 @@
                     </div>
                   </div>
                   <select
-                    v-model="selectedLanguage"
+                    :value="currentLocale.code"
+                    @change="changeLanguage(($event.target as HTMLSelectElement).value)"
                     class="px-3 py-2 border border-gray-300 rounded-lg font-srProDisplay text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                   >
-                    <option value="en">English</option>
-                    <option value="es">Español</option>
-                    <option value="auto">Auto</option>
+                    <option v-for="locale in availableLocales" :key="locale.code" :value="locale.code">
+                      {{ locale.name }}
+                    </option>
                   </select>
                 </div>
 
@@ -833,6 +834,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useUsersStore } from '@/stores/users'
 import type { User } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
+import { useLanguage } from '@/composables/useLanguage'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import Button from '@/components/shared/Button.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
@@ -841,7 +843,10 @@ import AvatarSelector from '@/components/users/AvatarSelector.vue'
 import ChangePasswordModal from '@/components/users/ChangePasswordModal.vue'
 import axios from '@/lib/axios'
 
-const { t, locale } = useI18n()
+// Language composable for global language sync
+const { currentLocale, availableLocales, changeLanguage } = useLanguage()
+
+const { t } = useI18n()
 const authStore = useAuthStore()
 const usersStore = useUsersStore()
 
@@ -1062,9 +1067,7 @@ const saveProfile = async () => {
 }
 
 // State for user settings
-const selectedLanguage = ref(locale.value)
 const theme = ref('system')
-const notifications = ref({ enabled: true })
 
 // Logic for mobile navigation.
 const isMobileNavOpen = ref(false)

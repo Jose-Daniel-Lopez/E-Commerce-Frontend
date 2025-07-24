@@ -89,10 +89,6 @@
 
       <!-- icons start -->
       <div class="flex items-center gap-3">
-        <!-- Language Selector -->
-        <div class="hidden lg:block">
-          <LanguageSelector />
-        </div>
         <IconMenu
           @update-mobile-menu="setShowMobileMenu"
           @update-search-bar="setPositionSearchBar"
@@ -108,7 +104,6 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import Wrapper from './Wrapper.vue'
 import HeaderSearch from './HeaderSearch.vue'
 import IconMenu from './IconMenu.vue'
-import LanguageSelector from './LanguageSelector.vue'
 
 const showMobileMenu = ref('left-[-300px]')
 const positionSearchBar = ref('invisible opacity-0 top-[100px]')
