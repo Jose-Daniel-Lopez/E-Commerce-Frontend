@@ -7,7 +7,7 @@
         class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent lg:hidden"
         @click="toggleSearchBar"
       >
-        <svg class="w-7 h-7 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="text-gray-500 w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -15,21 +15,22 @@
             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
           />
         </svg>
-        <span class="font-srProDisplay text-sm font-medium sm:hidden"> Search </span>
+        <span class="text-sm font-medium font-srProDisplay sm:hidden"> Search </span>
       </li>
 
       <li
         class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 group hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent"
       >
         <div class="relative">
-          <router-link to="/wishlist">
-            <img
-              src="/images/Favorites.png"
-              alt="favorites icon"
-              class="w-8 h-8 group-hover:scale-120 group-hover:drop-shadow-md transition-all duration-200"
+          <router-link to="/wishlist" class="relative flex items-center justify-center">
+            <v-icon
+              name="hi-heart"
+              scale="1.7"
+              class="text-gray-600 transition-all duration-200 group-hover:text-pink-500 group-hover:scale-110 group-hover:drop-shadow-md"
+              aria-label="Favorites"
             />
             <span
-              class="absolute -right-[3px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white"
+              class="absolute -right-[3px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white shadow-md"
             >
               99
             </span>
@@ -46,14 +47,15 @@
         class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 group hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent"
       >
         <div class="relative">
-          <router-link to="/cart">
-            <img
-              src="/images/Cart.png"
-              alt="cart icon"
-              class="w-8 h-8 group-hover:scale-120 group-hover:drop-shadow-md transition-all duration-200"
+          <router-link to="/cart" class="relative flex items-center justify-center">
+            <v-icon
+              name="hi-shopping-cart"
+              scale="1.7"
+              class="text-gray-600 transition-all duration-200 group-hover:text-blue-600 group-hover:scale-110 group-hover:drop-shadow-md"
+              aria-label="Cart"
             />
             <span
-              class="absolute -right-[6px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white"
+              class="absolute -right-[6px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white shadow-md"
             >
               99
             </span>
@@ -70,13 +72,14 @@
         class="relative flex h-[66px] cursor-pointer flex-col items-center justify-center group hover:bg-blue-50 sm:hover:bg-transparent"
         @click.stop="toggleUserDropdown"
       >
-        <img
-          src="/images/User.png"
-          alt="user icon"
-          class="w-8 h-8 group-hover:scale-120 group-hover:drop-shadow-md transition-all duration-200"
+        <v-icon
+          name="hi-user-circle"
+          scale="1.7"
+          class="text-gray-600 transition-all duration-200 group-hover:text-blue-600 group-hover:scale-110 group-hover:drop-shadow-md"
+          aria-label="User"
         />
         <span
-          class="font-srProDisplay text-sm font-medium sm:hidden group-hover:text-blue-600 transition-colors duration-200"
+          class="text-sm font-medium transition-colors duration-200 font-srProDisplay sm:hidden group-hover:text-blue-600"
         >
           User
         </span>
@@ -87,12 +90,12 @@
           @click.stop
         >
           <div class="py-3">
-            <div class="max-h-80 overflow-y-auto categories-scroll">
+            <div class="overflow-y-auto max-h-80 categories-scroll">
               <div
                 v-for="option in userOptions"
                 :key="option.label"
                 @click="selectUserOption(option)"
-                class="group flex items-center px-4 py-3 text-sm font-srProDisplay cursor-pointer transition-all duration-200 border-l-4 border-transparent"
+                class="flex items-center px-4 py-3 text-sm transition-all duration-200 border-l-4 border-transparent cursor-pointer group font-srProDisplay"
                 :class="
                   option.isLogout
                     ? 'text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-500'
@@ -100,7 +103,7 @@
                 "
               >
                 <span
-                  class="flex-1 group-hover:font-medium transition-all duration-200"
+                  class="flex-1 transition-all duration-200 group-hover:font-medium"
                   :class="
                     option.isLogout ? 'group-hover:text-red-700' : 'group-hover:text-gray-800'
                   "
@@ -115,7 +118,7 @@
     </ul>
     <li class="block cursor-pointer lg:hidden">
       <div
-        class="flex h-9 w-9 items-center justify-center duration-300 ease-in-out"
+        class="flex items-center justify-center duration-300 ease-in-out h-9 w-9"
         @click="toggleMenu"
       >
         <svg
@@ -134,7 +137,7 @@
         </svg>
         <svg
           v-else
-          class="w-9 h-9 text-black"
+          class="text-black w-9 h-9"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
