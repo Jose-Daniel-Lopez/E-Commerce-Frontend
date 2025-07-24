@@ -5,32 +5,32 @@
       <BreadcrumbNav :breadcrumbs="breadcrumbs" />
 
       <!-- Page Header -->
-      <section class="max-w-7xl mx-auto mb-8">
-        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-black">
+      <section class="mx-auto mb-8 max-w-7xl">
+        <h1 class="text-2xl font-semibold text-left text-black font-srProDisplay">
           {{ $t('account.title') }}
         </h1>
       </section>
 
-      <div class="max-w-7xl mx-auto">
-        <div class="flex flex-col lg:flex-row gap-8">
+      <div class="mx-auto max-w-7xl">
+        <div class="flex flex-col gap-8 lg:flex-row">
           <!-- Sidebar Navigation -->
-          <aside class="w-full lg:w-1/4 mb-4 lg:mb-0 self-start">
+          <aside class="self-start w-full mb-4 lg:w-1/4 lg:mb-0">
             <!-- Desktop Navigation -->
-            <nav class="bg-white rounded-lg shadow-lg border border-gray-200 p-6 hidden lg:block">
-              <h2 class="font-srProDisplay text-lg font-semibold text-black mb-4">Navigation</h2>
+            <nav class="hidden p-6 bg-white border border-gray-200 rounded-lg shadow-lg lg:block">
+              <h2 class="mb-4 text-lg font-extrabold tracking-tight text-black uppercase font-srProDisplay">Navigation</h2>
               <ul class="space-y-1">
                 <li v-for="section in sections" :key="section.id">
                   <a
                     :href="`#${section.id}`"
-                    class="group flex items-center px-3 py-3 text-sm font-srProDisplay text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-lg cursor-pointer transition-all duration-200 border-l-4 border-transparent hover:border-black"
+                    class="flex items-center px-3 py-3 text-sm text-gray-700 transition-all duration-200 border-l-4 border-transparent rounded-lg cursor-pointer group font-srProDisplay hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:border-black focus:outline-none focus:ring-2 focus:ring-blue-300"
                   >
                     <v-icon
                       :name="section.icon"
                       scale="1.1"
-                      class="mr-3 text-gray-500 group-hover:text-black transition-colors duration-200"
+                      class="mr-3 text-gray-500 transition-colors duration-200 group-hover:text-black"
                     />
                     <span
-                      class="group-hover:text-black group-hover:font-medium transition-all duration-200"
+                      class="transition-all duration-200 group-hover:text-black group-hover:font-semibold"
                       >{{ section.label }}</span
                     >
                   </a>
@@ -41,7 +41,7 @@
             <!-- Mobile Navigation Toggle -->
             <button
               @click="toggleMobileNav"
-              class="lg:hidden fixed top-28 left-4 z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-3 hover:shadow-xl transition-all duration-200"
+              class="fixed z-50 p-3 transition-all duration-200 bg-white border border-gray-200 rounded-lg shadow-lg lg:hidden top-28 left-4 hover:shadow-xl"
             >
               <v-icon name="hi-menu" scale="1.2" class="text-black" />
             </button>
@@ -49,7 +49,7 @@
             <!-- Mobile Navigation Overlay -->
             <div
               v-if="isMobileNavOpen"
-              class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+              class="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
               @click="closeMobileNav"
             ></div>
 
@@ -62,8 +62,8 @@
             >
               <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
-                  <h2 class="font-srProDisplay text-lg font-semibold text-black">Navigation</h2>
-                  <button @click="closeMobileNav" class="text-gray-500 hover:text-black">
+                  <h2 class="text-lg font-semibold text-black font-srProDisplay">Navigation</h2>
+                  <button @click="closeMobileNav" class="text-gray-500 transition-colors cursor-pointer hover:text-black">
                     <v-icon name="hi-x" scale="1.2" />
                   </button>
                 </div>
@@ -72,15 +72,15 @@
                     <a
                       :href="`#${section.id}`"
                       @click="closeMobileNav"
-                      class="group flex items-center px-3 py-3 text-sm font-srProDisplay text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-lg cursor-pointer transition-all duration-200 border-l-4 border-transparent hover:border-black"
+                      class="flex items-center px-3 py-3 text-sm text-gray-700 transition-all duration-200 border-l-4 border-transparent rounded-lg cursor-pointer group font-srProDisplay hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:border-black"
                     >
                       <v-icon
                         :name="section.icon"
                         scale="1.1"
-                        class="mr-3 text-gray-500 group-hover:text-black transition-colors duration-200"
+                        class="mr-3 text-gray-500 transition-colors duration-200 group-hover:text-black"
                       />
                       <span
-                        class="group-hover:text-black group-hover:font-medium transition-all duration-200"
+                        class="transition-all duration-200 group-hover:text-black group-hover:font-medium"
                         >{{ section.label }}</span
                       >
                     </a>
@@ -95,11 +95,11 @@
             <!-- Profile Section -->
             <section
               :id="sections[0].id"
-              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">
-                  {{ $t('account.profile.title') }}
+                <h2 class="text-xl font-semibold text-black font-srProDisplay">
+                <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.profile.title') }}</span>
                 </h2>
                 <div class="flex gap-2">
                   <!-- Agrupamos los botones -->
@@ -154,22 +154,22 @@
                   'opacity-100 transform translate-y-0': !isEditProfileOpen,
                 }"
               >
-                <div class="flex flex-col md:flex-row gap-6 items-start">
+                <div class="flex flex-col items-start gap-6 md:flex-row">
                   <div class="relative">
                     <img
                       :src="authStore.user?.avatar || '/images/User.png'"
                       alt="User avatar"
-                      class="w-24 h-24 rounded-full border-2 border-gray-200 object-cover"
+                      class="object-cover w-24 h-24 border-2 border-gray-200 rounded-full"
                     />
                     <div
-                      class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"
+                      class="absolute w-6 h-6 bg-green-500 border-2 border-white rounded-full -bottom-1 -right-1"
                     ></div>
                   </div>
                   <div class="flex-1">
-                    <h3 class="font-srProDisplay text-xl font-semibold text-black mb-1">
+                    <h3 class="mb-1 text-xl font-semibold text-black font-srProDisplay">
                       {{ user?.username }}
                     </h3>
-                    <p class="font-srProDisplay text-gray-600 mb-2">{{ user.email }}</p>
+                    <p class="mb-2 text-gray-600 font-srProDisplay">{{ user.email }}</p>
                     <div class="flex items-center gap-4 text-sm text-gray-500">
                       <span class="flex items-center gap-1">
                         <v-icon name="hi-shield-check" scale="0.9" />
@@ -198,7 +198,7 @@
                 }"
               >
                 <div
-                  class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200"
+                  class="p-6 border border-blue-100 rounded-lg bg-blue-50"
                 >
                   <form @submit.prevent="saveProfile" class="space-y-6">
                     <!-- Avatar Section -->
@@ -207,36 +207,31 @@
                         <img
                           :src="authStore.user?.avatar || '/images/User.png'"
                           alt="User avatar"
-                          class="w-24 h-24 rounded-full border-2 border-gray-200 group-hover:border-blue-400 transition-colors duration-200 object-cover"
+                          class="object-cover w-24 h-24 transition-all duration-200 border-2 border-gray-200 rounded-full cursor-pointer group-hover:border-blue-400 group-hover:shadow-lg"
+                          @click="openAvatarSelector"
                         />
                         <div
-                          class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-2 border-white rounded-full"
+                          class="absolute w-6 h-6 bg-green-500 border-2 border-white rounded-full -bottom-1 -right-1"
                         ></div>
-                        <div
-                          @click="openAvatarSelector"
-                          class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer"
-                        >
-                          <v-icon name="hi-camera" scale="1.2" class="text-white" />
-                        </div>
                       </div>
                       <div>
-                        <h4 class="font-srProDisplay font-medium text-black mb-1">
+                        <h4 class="mb-1 font-medium text-black font-srProDisplay">
                           {{ $t('account.profile.editModal.avatarTitle') }}
                         </h4>
-                        <p class="font-srProDisplay text-sm text-gray-600 mb-2">
+                        <p class="mb-2 text-sm text-gray-600 font-srProDisplay">
                           {{ $t('account.profile.editModal.avatarDescription') }}
                         </p>
                         <Button
                           type="button"
                           @click="openAvatarSelector"
-                          text-color="blue-600"
+                          text-color="gray-700"
                           bg-color="transparent"
                           border-width="1px"
-                          border-color="#3b82f6"
-                          hover-bg-color="#eff6ff"
+                          border-color="#d1d5db"
+                          hover-bg-color="#f3f4f6"
                           width="auto"
                           height="32px"
-                          class="px-3 text-sm"
+                          class="px-3 text-sm text-gray-700 border-gray-200 hover:bg-gray-100"
                         >
                           {{ $t('account.profile.editModal.changeAvatarButton') }}
                         </Button>
@@ -244,7 +239,7 @@
                     </div>
 
                     <!-- Form Fields -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                       <!-- Name field -->
                       <div class="space-y-2">
                         <label
@@ -257,7 +252,7 @@
                           type="text"
                           id="name"
                           v-model="editableUser.name"
-                          class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-srProDisplay"
+                          class="w-full px-4 py-3 text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 font-srProDisplay focus:shadow-lg"
                           :placeholder="$t('account.profile.editModal.namePlaceholder')"
                         />
                       </div>
@@ -275,7 +270,7 @@
                           id="email"
                           :value="user.email"
                           disabled
-                          class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-gray-50 text-gray-500 cursor-not-allowed font-srProDisplay"
+                          class="w-full px-4 py-3 text-blue-700 placeholder-blue-400 border border-blue-200 rounded-lg shadow-sm cursor-not-allowed bg-blue-50 font-srProDisplay opacity-80"
                           :placeholder="$t('account.profile.editModal.emailPlaceholder')"
                         />
                       </div>
@@ -292,7 +287,7 @@
                           type="text"
                           id="location"
                           v-model="editableUser.location"
-                          class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-srProDisplay"
+                          class="w-full px-4 py-3 text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 font-srProDisplay focus:shadow-lg"
                           :placeholder="$t('account.profile.editModal.locationPlaceholder')"
                         />
                       </div>
@@ -303,12 +298,12 @@
                       <Button
                         @click="cancelEdit"
                         type="button"
-                        text-color="gray-600"
+                        text-color="gray-700"
                         bg-color="transparent"
                         border-width="1px"
                         border-color="#d1d5db"
-                        hover-bg-color="#f9fafb"
-                        class="px-6 py-2 transition-all duration-200"
+                        hover-bg-color="#f3f4f6"
+                        class="px-6 py-2 text-gray-700 transition-all duration-200 border-gray-200 hover:bg-gray-100"
                       >
                         {{ $t('account.profile.editModal.cancelButton') }}
                       </Button>
@@ -317,7 +312,7 @@
                         text-color="white"
                         bg-color="black"
                         hover-bg-color="#333333"
-                        class="px-6 py-2 shadow-lg hover:shadow-xl transition-all duration-200"
+                        class="px-6 py-2 transition-all duration-200 shadow-lg hover:shadow-xl"
                       >
                         {{ $t('account.profile.editModal.saveButton') }}
                       </Button>
@@ -330,45 +325,45 @@
             <!-- Orders Section -->
             <section
               :id="sections[1].id"
-              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">
-                  {{ $t('account.orders.title') }}
+                <h2 class="text-xl font-semibold text-black font-srProDisplay">
+                <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.orders.title') }}</span>
                 </h2>
                 <router-link
                   to="/orders"
-                  class="text-sm text-gray-600 hover:text-black transition-colors font-medium"
+                  class="text-sm font-medium text-gray-600 transition-colors hover:text-black"
                 >
                   {{ $t('account.orders.viewAll') }}
                 </router-link>
               </div>
               <div class="space-y-4">
-                <div v-if="orders.length === 0" class="text-center py-8">
-                  <v-icon name="hi-clipboard-list" scale="2" class="text-gray-300 mb-4" />
-                  <p class="font-srProDisplay text-gray-500">{{ $t('account.orders.emptyMessage') }}</p>
+                <div v-if="orders.length === 0" class="py-8 text-center">
+                  <v-icon name="hi-clipboard-list" scale="2" class="mb-4 text-gray-300 opacity-80" />
+                  <p class="text-base text-gray-500 font-srProDisplay">{{ $t('account.orders.emptyMessage') }}</p>
                 </div>
                 <div v-else>
                   <div
                     v-for="order in orders"
                     :key="order.id"
-                    class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    class="flex items-center justify-between p-4 transition-all duration-200 border border-gray-200 rounded-xl bg-gray-50 hover:shadow-lg hover:bg-white hover:border-gray-300"
                   >
                     <div class="flex items-center gap-4">
-                      <div class="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
+                      <div class="flex items-center justify-center w-10 h-10 bg-black rounded-lg">
                         <v-icon name="hi-clipboard-list" scale="1.2" class="text-white" />
                       </div>
                       <div>
-                        <p class="font-srProDisplay font-medium text-black">
+                        <p class="font-medium text-black font-srProDisplay">
                           {{ $t('account.orders.order') }} #{{ order.id }}
                         </p>
-                        <p class="font-srProDisplay text-sm text-gray-600">{{ order.date }}</p>
+                        <p class="text-sm text-gray-600 font-srProDisplay">{{ order.date }}</p>
                       </div>
                     </div>
                     <div class="flex items-center gap-4">
                       <span
                         :class="getStatusColor(order.status)"
-                        class="px-3 py-1 rounded-full text-sm font-medium"
+                        class="px-3 py-1 text-sm font-medium rounded-full"
                       >
                         {{ order.status }}
                       </span>
@@ -391,40 +386,40 @@
             <!-- Refunds and Returns Section -->
             <section
               :id="sections[2].id"
-              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">
-                  {{ $t('account.refunds.title') }}
+                <h2 class="text-xl font-semibold text-black font-srProDisplay">
+                <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.refunds.title') }}</span>
                 </h2>
               </div>
-              <div v-if="refunds.length === 0" class="text-center py-8">
-                <v-icon name="hi-arrow-left" scale="2" class="text-gray-300 mb-4" />
-                <p class="font-srProDisplay text-gray-500">{{ $t('account.refunds.empty') }}</p>
+              <div v-if="refunds.length === 0" class="py-8 text-center">
+                <v-icon name="hi-arrow-left" scale="2" class="mb-4 text-gray-300 opacity-80" />
+                <p class="text-base text-gray-500 font-srProDisplay">{{ $t('account.refunds.empty') }}</p>
               </div>
               <div v-else class="space-y-4">
                 <div
                   v-for="refund in refunds"
                   :key="refund.id"
-                  class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  class="flex items-center justify-between p-4 transition-all duration-200 border border-gray-200 rounded-xl bg-gray-50 hover:shadow-lg hover:bg-white hover:border-gray-300"
                 >
                   <div class="flex items-center gap-4">
                     <div
-                      class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center"
+                      class="flex items-center justify-center w-10 h-10 bg-orange-500 rounded-lg"
                     >
                       <v-icon name="hi-arrow-left" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <p class="font-srProDisplay font-medium text-black">
+                      <p class="font-medium text-black font-srProDisplay">
                         {{ refund.status === 'Returned' ? 'Return' : 'Refund' }} #{{ refund.id }}
                       </p>
-                      <p class="font-srProDisplay text-sm text-gray-600">{{ refund.date }}</p>
+                      <p class="text-sm text-gray-600 font-srProDisplay">{{ refund.date }}</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-4">
                     <span
                       :class="getRefundStatusColor(refund.status)"
-                      class="px-3 py-1 rounded-full text-sm font-medium"
+                      class="px-3 py-1 text-sm font-medium rounded-full"
                     >
                       {{ refund.status }}
                     </span>
@@ -445,15 +440,15 @@
             <!-- Wishlist Section -->
             <section
               :id="sections[3].id"
-              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">
-                  {{ $t('account.wishlist.title') }}
+                <h2 class="text-xl font-semibold text-black font-srProDisplay">
+                <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.wishlist.title') }}</span>
                 </h2>
                 <router-link
                   to="/wishlist"
-                  class="text-sm text-gray-600 hover:text-black transition-colors font-medium"
+                  class="text-sm font-medium text-gray-600 transition-colors hover:text-black"
                 >
                   {{ $t('account.wishlist.viewAll') }}
                 </router-link>
@@ -461,26 +456,26 @@
 
               <!-- Loading state for wishlist -->
               <div v-if="wishlistLoading" class="flex items-center justify-center py-8">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
+                <div class="w-8 h-8 border-b-2 border-black rounded-full animate-spin opacity-70"></div>
               </div>
 
               <!-- Error state for wishlist -->
-              <div v-else-if="wishlistError" class="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p class="text-red-700 text-sm">{{ wishlistError }}</p>
+              <div v-else-if="wishlistError" class="p-4 border border-red-200 rounded-lg bg-red-50">
+                <p class="text-sm font-semibold text-red-700">{{ wishlistError }}</p>
               </div>
 
               <!-- Empty state when no wishlist items are available -->
-              <div v-else-if="wishlistProducts.length === 0" class="text-center py-8">
-                <v-icon name="hi-heart" scale="2" class="text-gray-300 mb-4" />
-                <p class="font-srProDisplay text-gray-500">{{ $t('account.wishlist.emptyMessage') }}</p>
+              <div v-else-if="wishlistProducts.length === 0" class="py-8 text-center">
+                <v-icon name="hi-heart" scale="2" class="mb-4 text-gray-300 opacity-80" />
+                <p class="text-base text-gray-500 font-srProDisplay">{{ $t('account.wishlist.emptyMessage') }}</p>
               </div>
 
               <!-- Display grid of wishlist items -->
-              <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div
                   v-for="item in wishlistProducts"
                   :key="item.id"
-                  class="group flex items-center gap-4 p-4 border border-gray-200 bg-gray-50 rounded-lg hover:shadow-md transition-all duration-200 hover:border-gray-300"
+                  class="flex items-center gap-4 p-4 transition-all duration-200 border border-gray-200 rounded-xl group bg-gray-50 hover:shadow-lg hover:bg-white hover:border-gray-300"
                 >
                   <div class="relative">
                     <router-link
@@ -490,20 +485,23 @@
                       <img
                         :src="item.imageUrl"
                         :alt="item.name"
-                        class="w-16 h-16 object-contain rounded-lg p-2 hover:scale-105 transition-transform"
+                        class="object-contain w-16 h-16 p-2 transition-transform rounded-lg hover:scale-105"
                       />
                     </router-link>
                     <button
-                      class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      class="absolute flex items-center justify-center w-6 h-6 transition-opacity bg-red-500 rounded-full opacity-0 cursor-pointer -top-2 -right-2 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-300 hover:bg-red-600"
+                      aria-label="Eliminar de wishlist"
+                      tabindex="0"
+                      type="button"
                     >
                       <v-icon name="hi-x" scale="0.8" class="text-white" />
                     </button>
                   </div>
                   <div class="flex-1">
-                    <h4 class="font-srProDisplay font-medium text-black text-sm line-clamp-2">
+                    <h4 class="text-sm font-medium text-black font-srProDisplay line-clamp-2">
                       {{ item.name }}
                     </h4>
-                    <p class="font-srProDisplay text-lg font-semibold text-black mt-1">
+                    <p class="mt-1 text-lg font-semibold text-black font-srProDisplay">
                       ${{ item.basePrice.toFixed(2) }}
                     </p>
                   </div>
@@ -524,11 +522,11 @@
             <!-- Addresses Section -->
             <section
               :id="sections[4].id"
-              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">
-                  {{ $t('account.addresses.title') }}
+                <h2 class="text-xl font-semibold text-black font-srProDisplay">
+                <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.addresses.title') }}</span>
                 </h2>
                 <div class="flex gap-2">
                   <Button
@@ -563,16 +561,16 @@
 
               <!-- Loading state for addresses -->
               <div v-if="addressesLoading" class="flex items-center justify-center py-8">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
-                <span class="ml-3 text-gray-600">Loading addresses...</span>
+                <div class="w-8 h-8 border-b-2 border-black rounded-full animate-spin opacity-70"></div>
+                <span class="ml-3 font-medium text-gray-600">Loading addresses...</span>
               </div>
 
               <!-- Error state for addresses -->
               <div
                 v-else-if="addressesError"
-                class="bg-red-50 border border-red-200 rounded-lg p-4"
+                class="p-4 border border-red-200 rounded-lg bg-red-50"
               >
-                <p class="text-red-700">{{ addressesError }}</p>
+                <p class="font-semibold text-red-700">{{ addressesError }}</p>
                 <Button
                   @click="refreshAddresses"
                   text-color="red-600"
@@ -582,23 +580,23 @@
                   hover-bg-color="#fef2f2"
                   width="auto"
                   height="32px"
-                  class="px-3 text-sm mt-2"
+                  class="px-3 mt-2 text-sm font-semibold"
                 >
                   Retry
                 </Button>
               </div>
 
               <!-- Empty state when no addresses are available -->
-              <div v-else-if="addresses.length === 0" class="text-center py-8">
-                <v-icon name="hi-location-marker" scale="2" class="text-gray-400 mb-3" />
-                <p class="text-gray-600 mb-4">You have no saved addresses</p>
+              <div v-else-if="addresses.length === 0" class="py-8 text-center">
+                <v-icon name="hi-location-marker" scale="2" class="mb-3 text-gray-400 opacity-80" />
+                <p class="mb-4 text-base text-gray-600 font-srProDisplay">You have no saved addresses</p>
                 <Button
                   text-color="white"
                   bg-color="black"
                   hover-bg-color="#333333"
                   width="auto"
                   height="36px"
-                  class="px-4"
+                  class="px-4 font-semibold"
                 >
                   <v-icon name="hi-plus" scale="0.9" class="mr-2" />
                   Add your first address
@@ -606,32 +604,40 @@
               </div>
 
               <!-- Display grid of user addresses -->
-              <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div
                   v-for="address in addresses"
                   :key="address.id"
-                  class="group border border-gray-200 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300"
+                  class="p-4 transition-all duration-200 border border-gray-200 rounded-xl group bg-gray-50 hover:shadow-lg hover:bg-white hover:border-gray-300"
                 >
                   <div class="flex items-start justify-between mb-3">
                     <div class="flex items-center gap-2">
                       <v-icon name="hi-location-marker" scale="1.1" class="text-gray-500" />
                       <!-- Address Name -->
-                      <h4 class="font-srProDisplay font-semibold text-black">
+                      <h4 class="font-semibold text-black font-srProDisplay">
                         {{ address.name }}
                       </h4>
                     </div>
-                    <div class="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
-                      <button class="p-1 text-gray-500 hover:text-black transition-colors">
+                    <div class="flex gap-1 transition-opacity opacity-0 group-hover:opacity-100">
+                      <button
+                        class="p-1 text-gray-500 transition-colors rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300 hover:bg-gray-100 hover:text-black"
+                        aria-label="Editar dirección"
+                        tabindex="0"
+                      >
                         <v-icon name="hi-pencil" scale="0.9" />
                       </button>
-                      <button class="p-1 text-gray-500 hover:text-red-500 transition-colors">
+                      <button
+                        class="p-1 text-gray-500 transition-colors rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-300 hover:bg-red-50 hover:text-red-600"
+                        aria-label="Eliminar dirección"
+                        tabindex="0"
+                      >
                         <v-icon name="hi-trash" scale="0.9" />
                       </button>
                     </div>
                   </div>
 
                   <!-- Display all address fields from the API -->
-                  <p class="font-srProDisplay text-gray-600 text-sm leading-relaxed">
+                  <p class="text-sm leading-relaxed text-gray-600 font-srProDisplay">
                     {{ address.street }}<br />
                     {{ address.city }}, {{ address.state }} {{ address.zipCode }}<br />
                     {{ address.country }}
@@ -643,32 +649,32 @@
             <!-- Reviews Section -->
             <section
               :id="sections[5].id"
-              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="font-srProDisplay text-xl font-semibold text-black">
-                  {{ $t('account.reviews.title') }}
+                <h2 class="text-xl font-semibold text-black font-srProDisplay">
+                <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.reviews.title') }}</span>
                 </h2>
-                <span class="text-sm text-gray-600 font-medium"
+                <span class="text-sm font-medium text-gray-600"
                   >{{ reviews.length }} {{ $t('account.reviews.reviews') }}</span
                 >
               </div>
               <div class="space-y-4">
                 <div v-if="reviewsLoading" class="py-4 text-center text-gray-500">
-                  Loading reviews...
+                  <span class="font-medium opacity-80">Loading reviews...</span>
                 </div>
-                <div v-else-if="reviewsError" class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
-                  {{ reviewsError }}
+                <div v-else-if="reviewsError" class="p-4 text-red-700 border border-red-200 rounded-lg bg-red-50">
+                  <span class="font-semibold">{{ reviewsError }}</span>
                 </div>
                 <div v-else-if="reviews.length === 0" class="py-8 text-center">
-                  <v-icon name="hi-annotation" scale="2" class="text-gray-300 mb-4" />
-                  <p class="font-srProDisplay text-gray-500">{{ $t('account.reviews.empty') }}</p>
+                  <v-icon name="hi-annotation" scale="2" class="mb-4 text-gray-300 opacity-80" />
+                  <p class="text-base text-gray-500 font-srProDisplay">{{ $t('account.reviews.empty') }}</p>
                 </div>
                 <div
                   v-else
                   v-for="review in reviews"
                   :key="review.id"
-                  class="border border-gray-200 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-gray-300"
+                  class="p-4 transition-all duration-200 border border-gray-200 rounded-xl bg-gray-50 hover:shadow-lg hover:bg-white hover:border-gray-300"
                 >
                   <div class="flex items-start justify-between mb-3">
                     <div>
@@ -677,7 +683,7 @@
                     </div>
                     <span class="text-xs text-gray-500">{{ review.date }}</span>
                   </div>
-                  <p class="font-srProDisplay text-gray-700 text-sm leading-relaxed">
+                  <p class="text-sm leading-relaxed text-gray-700 font-srProDisplay">
                     {{ review.comment }}
                   </p>
                 </div>
@@ -687,23 +693,23 @@
             <!-- Settings Section -->
             <section
               :id="sections[6].id"
-              class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
             >
-              <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">
-                {{ $t('account.settings.title') }}
+              <h2 class="mb-6 text-xl font-semibold text-black font-srProDisplay">
+                <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.settings.title') }}</span>
               </h2>
               <div class="space-y-6">
                 <!-- Language Setting -->
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                    <div class="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-lg">
                       <v-icon name="hi-globe" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <h4 class="font-srProDisplay font-medium text-black">
+                      <h4 class="font-medium text-black font-srProDisplay">
                         {{ $t('account.settings.language.title') }}
                       </h4>
-                      <p class="font-srProDisplay text-sm text-gray-600">
+                      <p class="text-sm text-gray-600 font-srProDisplay">
                         {{ $t('account.settings.language.description') }}
                       </p>
                     </div>
@@ -711,7 +717,7 @@
                   <select
                     :value="currentLocale.code"
                     @change="changeLanguage(($event.target as HTMLSelectElement).value)"
-                    class="px-3 py-2 border border-gray-300 rounded-lg font-srProDisplay text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                    class="px-3 py-2 text-sm placeholder-gray-400 transition-all duration-200 border border-gray-300 rounded-lg cursor-pointer font-srProDisplay focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:shadow-lg"
                   >
                     <option v-for="locale in availableLocales" :key="locale.code" :value="locale.code">
                       {{ locale.name }}
@@ -720,16 +726,16 @@
                 </div>
 
                 <!-- App Theme Setting -->
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
+                    <div class="flex items-center justify-center w-10 h-10 bg-gray-800 rounded-lg">
                       <v-icon name="hi-color-swatch" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <h4 class="font-srProDisplay font-medium text-black">
+                      <h4 class="font-medium text-black font-srProDisplay">
                         {{ $t('account.settings.theme.title') }}
                       </h4>
-                      <p class="font-srProDisplay text-sm text-gray-600">
+                      <p class="text-sm text-gray-600 font-srProDisplay">
                         {{ $t('account.settings.theme.description') }}
                       </p>
                     </div>
@@ -738,27 +744,33 @@
                     <button
                       @click="setTheme('light')"
                       :class="[
-                        'p-2 rounded-lg',
-                        theme === 'light' ? 'bg-black text-white' : 'bg-gray-200 text-black',
+                        'p-2 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300',
+                        theme === 'light' ? 'bg-black text-white shadow' : 'bg-gray-200 text-black hover:bg-gray-100',
                       ]"
+                      aria-label="Tema claro"
+                      tabindex="0"
                     >
                       <v-icon name="hi-sun" />
                     </button>
                     <button
                       @click="setTheme('dark')"
                       :class="[
-                        'p-2 rounded-lg',
-                        theme === 'dark' ? 'bg-black text-white' : 'bg-gray-200 text-black',
+                        'p-2 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300',
+                        theme === 'dark' ? 'bg-black text-white shadow' : 'bg-gray-200 text-black hover:bg-gray-100',
                       ]"
+                      aria-label="Tema oscuro"
+                      tabindex="0"
                     >
                       <v-icon name="hi-moon" />
                     </button>
                     <button
                       @click="setTheme('system')"
                       :class="[
-                        'p-2 rounded-lg',
-                        theme === 'system' ? 'bg-black text-white' : 'bg-gray-200 text-black',
+                        'p-2 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300',
+                        theme === 'system' ? 'bg-black text-white shadow' : 'bg-gray-200 text-black hover:bg-gray-100',
                       ]"
+                      aria-label="Tema del sistema"
+                      tabindex="0"
                     >
                       <v-icon name="hi-chip" />
                     </button>
@@ -766,16 +778,16 @@
                 </div>
 
                 <!-- Security Setting -->
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center">
+                    <div class="flex items-center justify-center w-10 h-10 bg-red-500 rounded-lg">
                       <v-icon name="hi-key" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <h4 class="font-srProDisplay font-medium text-black">
+                      <h4 class="font-medium text-black font-srProDisplay">
                         {{ $t('account.settings.security.title') }}
                       </h4>
-                      <p class="font-srProDisplay text-sm text-gray-600">
+                      <p class="text-sm text-gray-600 font-srProDisplay">
                         {{ $t('account.settings.security.description') }}
                       </p>
                     </div>
@@ -820,6 +832,7 @@
 
     <!-- Change Password Modal -->
     <ChangePasswordModal
+      v-if="isChangePasswordModalOpen"
       :is-open="isChangePasswordModalOpen"
       @close="closeChangePasswordModal"
       @success="onPasswordChangeSuccess"
