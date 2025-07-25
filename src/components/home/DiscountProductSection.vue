@@ -2,154 +2,157 @@
   <section class="h-auto w-full">
     <Wrapper class="flex h-fit w-full flex-col gap-8 py-[80px]">
       <div class="relative flex h-9 w-full items-center justify-between">
-        <h3 class="font-srProDisplay text-2xl font-medium">Productos en Descuento</h3>
+        <h3 class="font-srProDisplay text-2xl font-medium">{{ $t('discountProducts.title') }}</h3>
         <!-- Navigation buttons -->
-        <div class="flex items-center gap-2 absolute right-0 top-1/2 -translate-y-1/2 z-20"></div>
+        <div class="absolute right-0 top-1/2 z-20 flex -translate-y-1/2 items-center gap-2">
+          <button
+            @click="goToPrev()"
+            :disabled="!canGoPrev"
+            class="custom-swiper-button-prev-discount flex items-center justify-center bg-transparent p-0 transition disabled:cursor-not-allowed disabled:opacity-40"
+            style="transform: scaleX(-1)"
+          >
+            <svg
+              :width="'1.2em'"
+              :height="'1.2em'"
+              viewBox="0 0 512 512"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M294.1 256L167 129c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.3 34 0L345 239c9.1 9.1 9.3 23.7.7 33.1L201.1 417c-4.7 4.7-10.9 7-17 7s-12.3-2.3-17-7c-9.4-9.4-9.4-24.6 0-33.9l127-127.1z"
+              ></path>
+            </svg>
+          </button>
+          <button
+            @click="goToNext()"
+            :disabled="!canGoNext"
+            class="custom-swiper-button-next-discount flex items-center justify-center bg-transparent p-0 transition disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <svg
+              :width="'1.2em'"
+              :height="'1.2em'"
+              viewBox="0 0 512 512"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M294.1 256L167 129c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.3 34 0L345 239c9.1 9.1 9.3 23.7.7 33.1L201.1 417c-4.7 4.7-10.9 7-17 7s-12.3-2.3-17-7c-9.4-9.4-9.4-24.6 0-33.9l127-127.1z"
+              ></path>
+            </svg>
+          </button>
+        </div>
       </div>
 
-      <!-- Main container -->
-      <div class="relative px-2 -mx-2">
-        <Swiper
-          :modules="modules"
-          :slides-per-view="4"
-          :space-between="16"
-          :navigation="{
-            prevEl: '.custom-swiper-button-prev-discount',
-            nextEl: '.custom-swiper-button-next-discount',
-          }"
-          :breakpoints="breakpoints"
-          :watch-overflow="true"
-          class="discountProduct flex w-full items-center pt-3 !overflow-visible"
-          @swiper="onSwiperInit"
+      <!-- Main container - CUSTOM CAROUSEL LIKE CATEGORIES -->
+      <div class="relative w-full overflow-hidden mt-4">
+        <div
+          class="flex transition-transform duration-300 ease-in-out"
+          :style="{ transform: `translateX(-${(currentIndex * 100) / itemsPerView}%)` }"
+          ref="carouselContainer"
         >
-          <SwiperSlide v-for="product in data" :key="product.id" class="!overflow-visible">
-            <!-- Product container -->
+          <div
+            v-for="product in formattedProducts"
+            :key="product.id"
+            class="flex-shrink-0 px-2"
+            :style="{ width: `${100 / itemsPerView}%` }"
+          >
             <div class="px-1 py-2">
-              <ProductCard
-                :product="product"
-                class="mb-4 w-[163.5px] xs:w-[190px] sm:w-[298px] md:mb-0 md:w-[240px] xl:w-[268px]"
-              />
+              <ProductCard :product="product" />
             </div>
-          </SwiperSlide>
+          </div>
 
-          <SwiperSlide v-if="data.length >= 16" class="!overflow-visible">
+          <!-- View More Card -->
+          <div
+            v-if="formattedProducts.length >= 16"
+            class="flex-shrink-0 px-2"
+            :style="{ width: `${100 / itemsPerView}%` }"
+          >
             <div class="px-1 py-2">
               <ViewMoreCard />
             </div>
-          </SwiperSlide>
-        </Swiper>
+          </div>
+        </div>
       </div>
     </Wrapper>
   </section>
 </template>
 
-<script>
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Navigation } from 'swiper/modules'
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useProductsStore } from '@/stores/products'
 import Wrapper from '../shared/Wrapper.vue'
 import ProductCard from '../shared/ProductCard.vue'
 import ViewMoreCard from '../shared/ViewMoreCard.vue'
 
-// Import Swiper styles
-import 'swiper/css'
-import 'swiper/css/navigation'
+const productsStore = useProductsStore()
 
-export default {
-  name: 'DiscountProductSection',
-  components: {
-    Swiper,
-    SwiperSlide,
-    Wrapper,
-    ProductCard,
-    ViewMoreCard,
-  },
-  data() {
-    return {
-      swiperInstance: null,
-      modules: [Navigation],
-      data: [
-        {
-          id: 1,
-          name: 'Apple iPhone 14 Pro Max 512GB Gold(MQ233)',
-          originalPrice: '1437',
-          discountPrice: '1350',
-          image: {
-            url: '/images/Iphone-14-pro-Gold.png',
-            altText: 'Iphone-14-pro-Gold',
-          },
-        },
-        {
-          id: 2,
-          name: 'AirPods Max Silver',
-          originalPrice: '549',
-          discountPrice: '510',
-          image: {
-            url: '/images/Apple-airPods.png',
-            altText: 'Apple-airPods',
-          },
-        },
-        {
-          id: 3,
-          name: 'Apple Watch Series 9 GPS 41mm Starlight Aluminum Case',
-          originalPrice: '399',
-          discountPrice: '350',
-          image: {
-            url: '/images/Apple-Watch.png',
-            altText: 'Apple-Watch',
-          },
-        },
-        {
-          id: 4,
-          name: 'Apple iPhone 14 Pro 1TB Gold (MQ2V3)',
-          originalPrice: '1499',
-          discountPrice: '1450',
-          image: {
-            url: '/images/Iphone-14-pro-Gold.png',
-            altText: 'Iphone-14-pro-Gold',
-          },
-        },
-      ],
-      breakpoints: {
-        359: {
-          slidesPerView: 1,
-          spaceBetween: 8,
-          grid: {
-            rows: 2,
-            fill: 'row',
-          },
-        },
-        767: {
-          slidesPerView: 2,
-          spaceBetween: 16,
-          grid: {
-            rows: this.data?.length > 3 ? 2 : 1,
-            fill: 'row',
-          },
-        },
-        1024: {
-          slidesPerView: 3,
-          spaceBetween: 20,
-        },
-        1280: {
-          slidesPerView: 4,
-          spaceBetween: 24,
-        },
-      },
+onMounted(() => {
+  productsStore.fetchFeaturedProducts()
+  updateContainerWidth()
+  window.addEventListener('resize', updateContainerWidth)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateContainerWidth)
+})
+
+// State
+const currentIndex = ref(0)
+const containerWidth = ref(0)
+const carouselContainer = ref<HTMLElement | null>(null)
+
+// Computed
+const formattedProducts = computed(() => {
+  return productsStore.featuredProducts.map((product) => ({
+    id: product.id,
+    name: product.name,
+    originalPrice: product.basePrice,
+    discountPrice: product.basePrice,
+    image: {
+      url:
+        product.imageUrl ||
+        'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+      altText: product.name
     }
-  },
+  }))
+})
+
+const itemsPerView = computed(() => {
+  if (containerWidth.value <= 640) return 1
+  if (containerWidth.value <= 768) return 2
+  if (containerWidth.value <= 1024) return 3
+  return 4 // 4 items for larger screens
+})
+
+const maxIndex = computed(() => Math.max(0, formattedProducts.value.length - itemsPerView.value))
+const canGoPrev = computed(() => currentIndex.value > 0)
+const canGoNext = computed(() => currentIndex.value < maxIndex.value)
+
+// Methods
+const goToPrev = () => {
+  if (canGoPrev.value) {
+    currentIndex.value = Math.max(0, currentIndex.value - itemsPerView.value)
+  }
 }
+
+const goToNext = () => {
+  if (canGoNext.value) {
+    currentIndex.value = Math.min(maxIndex.value, currentIndex.value + itemsPerView.value)
+  }
+}
+
+const updateContainerWidth = () => {
+  const parent = carouselContainer.value?.parentElement as HTMLElement | null
+  if (parent) {
+    containerWidth.value = parent.clientWidth
+  }
+}
+
+// Expose methods for parent components if needed
+defineExpose({ goToPrev, goToNext, canGoPrev, canGoNext })
 </script>
 
 <style scoped>
-/* Swiper styles */
-.discountProduct :deep(.swiper-wrapper) {
-  overflow: visible !important;
-}
-
-.discountProduct :deep(.swiper-slide) {
-  overflow: visible !important;
-}
-
 /* Navigation buttons */
 .custom-swiper-button-prev-discount,
 .custom-swiper-button-next-discount {

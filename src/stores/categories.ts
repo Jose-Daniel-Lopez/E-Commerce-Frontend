@@ -1,18 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '@/lib/axios'
-
-export interface Product {
-  id: number
-  name: string
-  description: string
-  basePrice: number
-  totalStock: number
-  category?: {
-    id: number
-    name: string
-  }
-}
+import type { Product } from '@/types/Product'
 
 export interface Category {
   id: number

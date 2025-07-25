@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Product } from './categories'
+import type { Product } from '@/types/Product'
 import api from '@/lib/axios'
 
 interface PaginationInfo {
@@ -37,6 +37,7 @@ export const useProductsStore = defineStore('products', () => {
   const memories = ref<Memory[]>([])
   const loading = ref(false)
   const error = ref('')
+  const featuredProducts = ref<Product[]>([])
   const currentCategoryId = ref<number | null>(null)
   const stats = ref<ProductStats>({
     totalProducts: 0,
@@ -71,6 +72,20 @@ export const useProductsStore = defineStore('products', () => {
     const total = products.value.reduce((sum, product) => sum + product.basePrice, 0)
     return Math.round((total / products.value.length) * 100) / 100
   })
+
+  const fetchFeaturedProducts = async () => {
+    loading.value = true
+    error.value = ''
+    try {
+      const response = await api.get('/products/search/findByIsFeatured?isFeatured=true')
+      featuredProducts.value = response.data._embedded?.products || []
+    } catch (err) {
+      console.error('Error fetching featured products:', err)
+      error.value = 'Error al cargar los productos destacados'
+    } finally {
+      loading.value = false
+    }
+  }
 
   // Actions
   const fetchProducts = async (page = 0, size = 20) => {
@@ -321,6 +336,7 @@ export const useProductsStore = defineStore('products', () => {
   return {
     // State
     products,
+    featuredProducts,
     brands,
     memories,
     loading,
@@ -336,8 +352,7 @@ export const useProductsStore = defineStore('products', () => {
     averagePrice,
     // Actions
     fetchProducts,
-    fetchBrands,
-    fetchMemories,
+    fetchFeaturedProducts,
     fetchProductsByCategory,
     fetchProductById,
     fetchProductStats,

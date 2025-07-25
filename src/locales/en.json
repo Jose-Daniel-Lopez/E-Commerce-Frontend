@@ -280,5 +280,8 @@
         "changePasswordButton": "Change Password"
       }
     }
+  },
+  "discountProducts": {
+    "title": "Discount Products"
   }
 }
