@@ -17,7 +17,7 @@
           <aside class="self-start w-full mb-4 lg:w-1/4 lg:mb-0">
             <!-- Desktop Navigation -->
             <nav class="hidden p-6 bg-white border border-gray-200 rounded-lg shadow-lg lg:block">
-              <h2 class="mb-4 text-lg font-extrabold tracking-tight text-black uppercase font-srProDisplay">Navigation</h2>
+              <h2 class="mb-4 text-lg font-extrabold tracking-tight text-black uppercase font-srProDisplay">{{ $t('account.navigation') }}</h2>
               <ul class="space-y-1">
                 <li v-for="section in sections" :key="section.id">
                   <a
@@ -62,7 +62,7 @@
             >
               <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
-                  <h2 class="text-lg font-semibold text-black font-srProDisplay">Navigation</h2>
+                  <h2 class="text-lg font-semibold text-black font-srProDisplay">{{ $t('account.navigation') }}</h2>
                   <button @click="closeMobileNav" class="text-gray-500 transition-colors cursor-pointer hover:text-black">
                     <v-icon name="hi-x" scale="1.2" />
                   </button>
@@ -140,7 +140,7 @@
                   >
                     <v-icon name="hi-refresh" scale="0.9" class="mr-2" />
                     <!-- Asume que tienes un icono de refresh -->
-                    Refrescar
+                    {{ $t('account.profile.refreshButton') }}
                   </Button>
                 </div>
               </div>

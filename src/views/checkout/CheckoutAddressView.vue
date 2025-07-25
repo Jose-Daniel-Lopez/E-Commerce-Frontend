@@ -49,7 +49,7 @@
 
       <!-- Select Address -->
       <section class="max-w-5xl mx-auto">
-        <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">Select Address</h2>
+        <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">{{ $t('checkout.selectAddress') }}</h2>
 
         <!-- Loading State -->
         <div v-if="shippingAddressStore.loading" class="text-center py-8">

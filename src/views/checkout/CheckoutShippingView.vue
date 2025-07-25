@@ -49,7 +49,7 @@
 
       <!-- Select Shipping Method -->
       <section class="max-w-5xl mx-auto">
-        <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">Shipment Method</h2>
+        <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">{{ $t('checkout.shipmentMethod') }}</h2>
         <div class="space-y-6 overflow-visible">
           <div
             v-for="method in shippingMethods"

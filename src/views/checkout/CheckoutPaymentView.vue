@@ -52,7 +52,7 @@
         <div class="flex-1">
           <div class="border border-[#E5E5E5] rounded-[10px] p-8">
             <section>
-              <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">Summary</h2>
+              <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">{{ $t('checkout.summary') }}</h2>
 
               <!-- Products -->
               <div class="space-y-4 mb-8">
@@ -86,7 +86,7 @@
 
               <!-- Address -->
               <div class="mb-6">
-                <h3 class="font-srProDisplay text-base font-semibold text-black mb-2">Address</h3>
+                <h3 class="font-srProDisplay text-base font-semibold text-black mb-2">{{ $t('checkout.address') }}</h3>
                 <div v-if="selectedAddress" class="flex flex-col gap-1">
                   <span class="font-srProDisplay text-sm text-black">{{
                     selectedAddress.street
@@ -104,13 +104,13 @@
                     >{{ selectedAddress.addressType }}</span
                   >
                 </div>
-                <p v-else class="font-srProDisplay text-gray-400 text-sm">No address selected</p>
+                <p v-else class="font-srProDisplay text-gray-400 text-sm">{{ $t('checkout.noAddress') }}</p>
               </div>
 
               <!-- Shipment method -->
               <div class="mb-8">
                 <h3 class="font-srProDisplay text-base font-semibold text-black mb-2">
-                  Shipment method
+                  {{ $t('checkout.shipmentMethod') }}
                 </h3>
                 <div v-if="selectedShipping" class="space-y-1">
                   <p class="font-srProDisplay text-[#232340] text-sm">
@@ -124,34 +124,34 @@
                   </p>
                 </div>
                 <p v-else class="font-srProDisplay text-gray-400 text-sm">
-                  No shipping method selected
+                  {{ $t('checkout.noShipping') }}
                 </p>
               </div>
 
               <!-- Order Summary -->
               <div class="space-y-3 pt-4 border-t border-[#E5E5E5]">
                 <div class="flex justify-between">
-                  <span class="font-srProDisplay text-base font-semibold text-black">Subtotal</span>
+                  <span class="font-srProDisplay text-base font-semibold text-black">{{ $t('checkout.subtotal') }}</span>
                   <span class="font-srProDisplay text-base font-semibold text-black">{{
                     userCartStore.formatPrice(subtotal)
                   }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-srProDisplay text-base text-gray-700">Estimated Tax</span>
+                  <span class="font-srProDisplay text-base text-gray-700">{{ $t('checkout.estimatedTax') }}</span>
                   <span class="font-srProDisplay text-base text-gray-700">{{
                     userCartStore.formatPrice(estimatedTax)
                   }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-srProDisplay text-base text-gray-700"
-                    >Estimated shipping & Handling</span
-                  >
+                  <span class="font-srProDisplay text-base text-gray-700">
+                    {{ $t('checkout.estimatedShipping') }}
+                  </span>
                   <span class="font-srProDisplay text-base text-gray-700">{{
                     userCartStore.formatPrice(shippingCost)
                   }}</span>
                 </div>
                 <div class="flex justify-between pt-3 border-t border-[#E5E5E5]">
-                  <span class="font-srProDisplay text-lg font-bold text-black">Total</span>
+                  <span class="font-srProDisplay text-lg font-bold text-black">{{ $t('checkout.total') }}</span>
                   <span class="font-srProDisplay text-lg font-bold text-black">{{
                     userCartStore.formatPrice(total)
                   }}</span>
@@ -164,7 +164,7 @@
         <!-- Right Side - Payment -->
         <div class="flex-1">
           <section>
-            <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">Payment</h2>
+            <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">{{ $t('checkout.payment') }}</h2>
 
             <!-- Payment Method Tabs -->
             <div class="flex gap-4 mb-8">

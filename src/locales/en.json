@@ -1,4 +1,10 @@
 {
+  "cart": {
+    "title": "Shopping Cart",
+    "loading": "Loading cart...",
+    "error": "Error loading cart.",
+    "empty": "Your cart is empty."
+  },
   "productsSection": {
     "tabs": {
       "new": "New",
@@ -208,6 +214,7 @@
   },
   "account": {
     "title": "My Account",
+    "navigation": "Navigation",
     "profile": {
       "title": "Profile",
       "editButton": "Edit Profile",
@@ -215,6 +222,7 @@
       "memberSince": "Member since",
       "verified": "Verified",
       "unverified": "Unverified",
+      "refreshButton": "Refresh",
       "editModal": {
         "title": "Edit Profile",
         "nameLabel": "Full Name",

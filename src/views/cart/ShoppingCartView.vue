@@ -5,7 +5,7 @@
       <BreadcrumbNav :breadcrumbs="breadcrumbs" />
 
       <section class="max-w-7xl mx-auto py-6 mb-6">
-        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-black">Shopping Cart</h1>
+        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-black">{{ $t('cart.title') }}</h1>
       </section>
 
       <section class="max-w-7xl mx-auto mb-16">
@@ -13,13 +13,13 @@
           <!-- Left Panel - Cart Items -->
           <div class="bg-white rounded-lg p-6 h-full">
             <div v-if="userCartStore.loading" class="text-center text-[#666666]">
-              Loading cart...
+              {{ $t('cart.loading') }}
             </div>
             <div v-else-if="userCartStore.error" class="text-center text-red-600">
-              {{ userCartStore.error }}
+              {{ $t('cart.error') }}
             </div>
             <div v-else-if="!userCartStore.hasItems" class="text-center text-[#666666]">
-              Your cart is empty.
+              {{ $t('cart.empty') }}
             </div>
             <div v-else class="divide-y divide-[#EBEBEB]">
               <CartItem
@@ -52,6 +52,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
@@ -63,8 +64,9 @@ import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
 const userCartStore = useUserCartStore()
 const authStore = useAuthStore()
+const { t } = useI18n()
 
-const breadcrumbs = [{ label: 'Shopping Cart' }]
+const breadcrumbs = [{ label: t('cart.title') }]
 
 const discount = ref(0)
 

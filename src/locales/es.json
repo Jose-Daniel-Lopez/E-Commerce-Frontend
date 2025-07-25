@@ -1,4 +1,23 @@
 {
+  "checkout": {
+    "summary": "Resumen",
+    "address": "Dirección",
+    "noAddress": "No hay dirección seleccionada",
+    "shipmentMethod": "Método de envío",
+    "noShipping": "No hay método de envío seleccionado",
+    "subtotal": "Subtotal",
+    "estimatedTax": "Impuestos estimados",
+    "estimatedShipping": "Envío e impuestos estimados",
+    "total": "Total",
+    "payment": "Pago",
+    "selectAddress": "Seleccionar dirección"
+  },
+  "cart": {
+    "title": "Carrito de Compras",
+    "loading": "Cargando carrito...",
+    "error": "Error al cargar el carrito.",
+    "empty": "Tu carrito está vacío."
+  },
   "productsSection": {
     "tabs": {
       "new": "Nuevos",
@@ -207,10 +226,12 @@
     "buyNow": "Comprar Ahora"
   },
   "account": {
+    "navigation": "Navegación",
     "title": "Mi Cuenta",
     "profile": {
       "title": "Perfil",
       "editButton": "Editar Perfil",
+      "refreshButton": "Refrescar",
       "memberSince": "Miembro desde",
       "verified": "Verificado",
       "unverified": "No verificado",
