@@ -33,7 +33,7 @@
             class="relative flex cursor-pointer items-center justify-between p-3 hover:bg-blue-200 lg:gap-[2px] lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
           >
             <div @click.stop="toggleCategoriesDropdown" class="flex items-center w-full">
-              <span>Categories</span>
+              <span>{{ $t('nav.categories') }}</span>
               <svg
                 class="w-4 h-4 ml-1 transition-transform duration-200"
                 :class="{ 'rotate-180': showCategoriesDropdown }"
@@ -114,20 +114,22 @@ const lastScrollY = ref(0)
 const showCategoriesDropdown = ref(false)
 
 // Options for categories
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 const categories = [
-  { name: 'Todas las categorías', route: '/catalog' },
-  { name: 'Moviles', route: '/catalog/smartphones' },
-  { name: 'Relojes Inteligentes', route: '/catalog/smartwatches' },
-  { name: 'Camaras', route: '/catalog/cameras' },
-  { name: 'Auriculares', route: '/catalog/headphones' },
-  { name: 'Ordenadores', route: '/catalog/computers' },
-  { name: 'Teclados', route: '/catalog/keyboards' },
-  { name: 'Ratones', route: '/catalog/mice' },
-  { name: 'Gaming', route: '/catalog/gaming' },
-  { name: 'Tablets', route: '/catalog/tablets' },
-  { name: 'Hogar Inteligente', route: '/catalog/smart-home' },
-  { name: 'Audio', route: '/catalog/audio' },
-  { name: 'Accesorios', route: '/catalog/accessories' },
+  { name: t('shop.categories.all'), route: '/catalog' },
+  { name: t('shop.categories.smartphones'), route: '/catalog/smartphones' },
+  { name: t('shop.categories.smartwatches'), route: '/catalog/smartwatches' },
+  { name: t('shop.categories.cameras'), route: '/catalog/cameras' },
+  { name: t('shop.categories.headphones'), route: '/catalog/headphones' },
+  { name: t('shop.categories.computers'), route: '/catalog/computers' },
+  { name: t('shop.categories.keyboards'), route: '/catalog/keyboards' },
+  { name: t('shop.categories.mice'), route: '/catalog/mice' },
+  { name: t('shop.categories.gaming'), route: '/catalog/gaming' },
+  { name: t('shop.categories.tablets'), route: '/catalog/tablets' },
+  { name: t('shop.categories.smartHome'), route: '/catalog/smart-home' },
+  { name: t('shop.categories.music'), route: '/catalog/audio' },
+  { name: t('shop.categories.accessories'), route: '/catalog/accessories' },
 ]
 
 // Function to show/hide the categories dropdown
