@@ -112,7 +112,7 @@
                 <div
                   class="flex items-center justify-center font-srProDisplay text-xl font-semibold"
                 >
-                  No hay datos
+                  {{ $t('productsSection.noData') }}
                 </div>
               </div>
             </div>
@@ -144,7 +144,9 @@ import 'swiper/css/grid'
 // Reactive data
 import { onBeforeUnmount } from 'vue'
 const swiperInstance = ref(null)
-const value = ref('Nuevos')
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+const value = ref(t('productsSection.tabs.new'))
 const canGoPrev = ref(false)
 const canGoNext = ref(false)
 const prevBtnRef = ref(null)
@@ -155,7 +157,11 @@ const tabModules = []
 const productModules = [Navigation, Grid]
 
 // Tabs
-const tabs = ['Nuevos', 'Populares', 'Próximamente']
+const tabs = [
+  t('productsSection.tabs.new'),
+  t('productsSection.tabs.popular'),
+  t('productsSection.tabs.upcoming')
+]
 
 // Products data
 const products = [
@@ -319,9 +325,9 @@ const products = [
 const filteredProducts = computed(() => {
   // Map Spanish tabs to English featureType
   const featureTypeMap = {
-    Nuevos: 'New Arrival',
-    Populares: 'BestSeller',
-    Próximamente: 'Up Coming...',
+    [t('productsSection.tabs.new')]: 'New Arrival',
+    [t('productsSection.tabs.popular')]: 'BestSeller',
+    [t('productsSection.tabs.upcoming')]: 'Up Coming...'
   }
   const featureType = featureTypeMap[value.value] || value.value
   return products.filter((item) => item.featureType === featureType)

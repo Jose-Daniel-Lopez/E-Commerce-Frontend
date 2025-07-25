@@ -1,4 +1,12 @@
 {
+  "productsSection": {
+    "tabs": {
+      "new": "New",
+      "popular": "Popular",
+      "upcoming": "Upcoming"
+    },
+    "noData": "No data available"
+  },
   "nav": {
     "home": "Home",
     "categories": "Categories",
