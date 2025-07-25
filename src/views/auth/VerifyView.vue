@@ -8,10 +8,10 @@
             class="animate-spin h-12 w-12 border-4 border-black border-t-transparent rounded-full mx-auto"
           ></div>
           <h2 class="font-srProDisplay text-xl font-semibold text-black">
-            Verifying your account...
+            {{ $t('auth.verify.loading') }}
           </h2>
           <p class="font-srProDisplay text-[#666666] text-sm">
-            Please wait while we verify your email address.
+            {{ $t('auth.verify.loadingMessage') }}
           </p>
         </div>
 
@@ -20,15 +20,15 @@
           <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
             <v-icon name="hi-check" scale="2" class="text-green-600" />
           </div>
-          <h2 class="font-srProDisplay text-xl font-semibold text-black">Account Verified!</h2>
+          <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('auth.verify.success') }}</h2>
           <p class="font-srProDisplay text-[#666666] text-sm">
-            Your email address has been successfully verified. You can now log in to your account.
+            {{ $t('auth.verify.successMessage') }}
           </p>
           <button
             @click="goToLogin"
             class="w-full bg-black text-white font-srProDisplay font-medium py-3 rounded-md hover:bg-[#333333] transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg"
           >
-            Go to Login
+            {{ $t('auth.verify.goToLogin') }}
           </button>
         </div>
 
@@ -37,20 +37,20 @@
           <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
             <v-icon name="hi-x" scale="2" class="text-red-600" />
           </div>
-          <h2 class="font-srProDisplay text-xl font-semibold text-black">Verification Failed</h2>
+          <h2 class="font-srProDisplay text-xl font-semibold text-black">{{ $t('auth.verify.error') }}</h2>
           <p class="font-srProDisplay text-[#666666] text-sm">{{ errorMessage }}</p>
           <div class="space-y-2">
             <button
               @click="goToLogin"
               class="w-full bg-black text-white font-srProDisplay font-medium py-3 rounded-md hover:bg-[#333333] transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg"
             >
-              Go to Login
+              {{ $t('auth.verify.goToLogin') }}
             </button>
             <button
               @click="goToRegister"
               class="w-full border border-[#EBEBEB] text-black font-srProDisplay font-medium py-3 rounded-md hover:bg-gray-50 transition-all duration-300"
             >
-              Register Again
+              {{ $t('auth.verify.registerAgain') }}
             </button>
           </div>
         </div>
@@ -78,11 +78,7 @@ const verifyAccount = async (token: string) => {
   } catch (error: unknown) {
     console.error('Verification error:', error)
     const errorObj = error as { response?: { data?: { error?: string } } }
-    if (errorObj.response?.data?.error) {
-      errorMessage.value = errorObj.response.data.error
-    } else {
-      errorMessage.value = 'Something went wrong during verification. Please try again.'
-    }
+    errorMessage.value = errorObj.response?.data?.error || 'An unknown error occurred.'
   } finally {
     loading.value = false
   }
