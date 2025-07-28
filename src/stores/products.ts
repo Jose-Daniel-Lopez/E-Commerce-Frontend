@@ -3,6 +3,14 @@ import { ref, computed } from 'vue'
 import type { Product } from '@/types/Product'
 import api from '@/lib/axios'
 
+// =======================
+// 🔧 Interfaces
+// =======================
+
+/**
+ * Pagination metadata returned from the backend.
+ * Matches Spring Data REST's page structure.
+ */
 interface PaginationInfo {
   page: number
   size: number
@@ -13,6 +21,9 @@ interface PaginationInfo {
   numberOfElements: number
 }
 
+/**
+ * Aggregated statistics about products (e.g., totals, averages).
+ */
 interface ProductStats {
   totalProducts: number
   inStockProducts: number
@@ -20,16 +31,26 @@ interface ProductStats {
   averagePrice: number
 }
 
+/**
+ * Brand filter option with selection state.
+ */
 interface Brand {
   name: string
   checked: boolean
 }
 
+/**
+ * Memory filter option with selection state.
+ */
 interface Memory {
   value: string
   checked: boolean
 }
 
+/**
+ * Backend response structure for a single product.
+ * May be partial or inconsistent; transformation is required.
+ */
 interface BackendProductResponse {
   id?: number
   name?: string
@@ -43,8 +64,13 @@ interface BackendProductResponse {
   memory?: string
   camera?: string
   createdAt?: string
+  rating?: number | null
 }
 
+/**
+ * Simplified backend response for category-based product listing.
+ * Does not include all fields (e.g., rating may be missing).
+ */
 interface BackendCategoryProductResponse {
   id?: number
   name?: string
@@ -58,23 +84,81 @@ interface BackendCategoryProductResponse {
   memory?: string
   camera?: string
   createdAt?: string
+  rating?: number
 }
 
-export const useProductsStore = defineStore('products', () => {
-  // State
+// =======================
+// 🛒 Product Store Definition
+// =======================
+
+/**
+ * Centralized store for managing product state, including:
+ * - Product listings (all, featured, by category)
+ * - Filters (brands, memory, price, stock)
+ * - Pagination
+ * - Statistics
+ * - Utility functions
+ *
+ * This store uses Axios via `api` to interact with the backend.
+ */
+export const useProductStore = defineStore('product', () => {
+  // =======================
+  // 📦 State
+  // =======================
+
+  /**
+   * List of currently displayed products (e.g., all, filtered, or by category).
+   */
   const products = ref<Product[]>([])
+
+  /**
+   * Available brand filter options, fetched from backend.
+   * Each has a `checked` flag for UI selection.
+   */
   const brands = ref<Brand[]>([])
+
+  /**
+   * Available memory filter options (e.g., "64GB", "128GB").
+   * Each has a `checked` flag for UI selection.
+   */
   const memories = ref<Memory[]>([])
+
+  /**
+   * Loading state to control UI spinners or disable interactions.
+   */
   const loading = ref(false)
+
+  /**
+   * Error message to display to the user (e.g., network failure).
+   */
   const error = ref('')
+
+  /**
+   * List of featured products (highlighted on homepage).
+   */
   const featuredProducts = ref<Product[]>([])
+
+  /**
+   * Tracks the currently active category ID for context-aware operations.
+   * `null` means no category is selected (e.g., viewing all products).
+   */
   const currentCategoryId = ref<number | null>(null)
+
+  /**
+   * Aggregated product statistics (total, in stock, avg price).
+   * Fetched separately from product lists for performance.
+   */
   const stats = ref<ProductStats>({
     totalProducts: 0,
     inStockProducts: 0,
     outOfStockProducts: 0,
     averagePrice: 0,
   })
+
+  /**
+   * Pagination metadata for the current product list.
+   * Updated after each fetch to support navigation.
+   */
   const pagination = ref<PaginationInfo>({
     page: 0,
     size: 20,
@@ -85,87 +169,109 @@ export const useProductsStore = defineStore('products', () => {
     numberOfElements: 0,
   })
 
-  // Getters
+  // =======================
+  // 🔍 Getters (Computed State)
+  // =======================
+
+  /**
+   * Total number of currently loaded products.
+   */
   const productCount = computed(() => products.value.length)
+
+  /**
+   * Whether any products are currently loaded.
+   */
   const hasProducts = computed(() => products.value.length > 0)
 
+  /**
+   * Products that are in stock (totalStock > 0).
+   */
   const inStockProducts = computed(() => {
     return products.value.filter((product) => product.totalStock > 0)
   })
 
+  /**
+   * Products that are out of stock (totalStock === 0).
+   */
   const outOfStockProducts = computed(() => {
     return products.value.filter((product) => product.totalStock === 0)
   })
 
+  /**
+   * Average base price of all currently loaded products.
+   * Rounded to 2 decimal places.
+   */
   const averagePrice = computed(() => {
     if (products.value.length === 0) return 0
     const total = products.value.reduce((sum, product) => sum + product.basePrice, 0)
     return Math.round((total / products.value.length) * 100) / 100
   })
 
-  const fetchFeaturedProducts = async () => {
-    loading.value = true
-    error.value = ''
-    try {
-      const response = await api.get('/products/search/findByIsFeatured?isFeatured=true')
-      featuredProducts.value = response.data._embedded?.products || []
-    } catch (err) {
-      console.error('Error fetching featured products:', err)
-      error.value = 'Error al cargar los productos destacados'
-    } finally {
-      loading.value = false
-    }
-  }
+  // =======================
+  // ⚙️ Actions (Methods)
+  // =======================
 
-  const fetchNewProducts = async (): Promise<Product[]> => {
-    loading.value = true
-    error.value = ''
-    try {
-      const response = await api.get('/products/new')
-      const backendProducts: BackendProductResponse[] = response.data || []
-
-      // Transform partial backend data to the full Product interface
-      return backendProducts.map((product, index) => ({
-        id: product.id ?? index, // Use backend ID or fallback to index
-        name: product.name ?? 'Unknown Product',
-        description: product.description ?? '',
-        brand: product.brand ?? 'Unknown',
-        isFeatured: product.isFeatured ?? false,
-        imageUrl: product.imageUrl ?? 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
-        basePrice: product.basePrice ?? 0,
-        totalStock: product.totalStock ?? 10, // Default stock
-        cpu: product.cpu ?? '',
-        memory: product.memory ?? '',
-        camera: product.camera ?? '',
-        createdAt: product.createdAt ?? new Date().toISOString(),
-      }))
-    } catch (err) {
-      console.error('Error fetching new products:', err)
-      error.value = 'Error al cargar los productos nuevos'
-      return []
-    } finally {
-      loading.value = false
-    }
-  }
-
-  // Actions
+  /**
+   * Fetches a paginated list of all products from the backend.
+   * Transforms the response to ensure consistent `Product` structure.
+   * Handles both HAL (_embedded) and plain JSON formats.
+   *
+   * @param page - Page number (0-indexed)
+   * @param size - Number of items per page
+   */
   const fetchProducts = async (page = 0, size = 20) => {
     loading.value = true
     error.value = ''
-
     try {
       const response = await api.get('/products', {
-        params: {
-          page,
-          size,
-        },
+        params: { page, size },
+      })
+      const data = response.data
+      const rawProducts = data._embedded ? data._embedded.products : data.content
+
+      // 🔍 Debug: Inspect raw API response structure
+      console.log('🔍 [fetchProducts] Raw response structure:', {
+        hasEmbedded: !!data._embedded,
+        hasContent: !!data.content,
+        rawProductsLength: rawProducts?.length || 0,
+        firstProduct: rawProducts?.[0],
+        firstProductRating: rawProducts?.[0]?.rating,
+        ratingType: typeof rawProducts?.[0]?.rating,
       })
 
-      const data = response.data
-      products.value = data._embedded ? data._embedded.products : data.content
-      currentCategoryId.value = null
+      // Transform backend data into consistent frontend Product objects
+      const transformedProducts = (rawProducts || []).map((product: BackendProductResponse, index: number) => {
+        console.log(`🔍 [fetchProducts] Product ${index}:`, {
+          id: product.id,
+          name: product.name,
+          rating: product.rating,
+          ratingType: typeof product.rating,
+          fullProduct: product,
+        })
 
-      // Actualizar información de paginación
+        return {
+          id: product.id ?? index + 1,
+          name: product.name ?? 'Unknown Product',
+          description: product.description ?? '',
+          brand: product.brand ?? 'Unknown',
+          isFeatured: product.isFeatured ?? false,
+          imageUrl: product.imageUrl ?? 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+          basePrice: product.basePrice ?? 0,
+          totalStock: product.totalStock ?? 10,
+          cpu: product.cpu ?? '',
+          memory: product.memory ?? '',
+          camera: product.camera ?? '',
+          createdAt: product.createdAt ?? new Date().toISOString(),
+          rating: typeof product.rating === 'number' ? product.rating : 0,
+        }
+      })
+
+      console.log('🔍 [fetchProducts] Transformed products:', transformedProducts.map((p: Product) => ({ id: p.id, name: p.name, rating: p.rating })))
+
+      products.value = transformedProducts
+      currentCategoryId.value = null // Reset category context
+
+      // Update pagination state from response
       pagination.value = {
         page: data.page?.number || data.number || page,
         size: data.page?.size || data.size || size,
@@ -183,6 +289,79 @@ export const useProductsStore = defineStore('products', () => {
     }
   }
 
+  /**
+   * Fetches all featured products (isFeatured = true).
+   * Used on the homepage or promotional sections.
+   */
+  const fetchFeaturedProducts = async () => {
+    loading.value = true
+    error.value = ''
+    try {
+      const response = await api.get('/products/search/findByIsFeatured?isFeatured=true')
+      const rawProducts = response.data._embedded?.products || []
+
+      featuredProducts.value = rawProducts.map((product: BackendProductResponse, index: number) => ({
+        id: product.id ?? index + 1,
+        name: product.name ?? 'Unknown Product',
+        description: product.description ?? '',
+        brand: product.brand ?? 'Unknown',
+        isFeatured: product.isFeatured ?? false,
+        imageUrl: product.imageUrl ?? 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+        basePrice: product.basePrice ?? 0,
+        totalStock: product.totalStock ?? 10,
+        cpu: product.cpu ?? '',
+        memory: product.memory ?? '',
+        camera: product.camera ?? '',
+        createdAt: product.createdAt ?? new Date().toISOString(),
+        rating: typeof product.rating === 'number' ? product.rating : 0,
+      }))
+    } catch (err) {
+      console.error('Error fetching featured products:', err)
+      error.value = 'Error al cargar los productos destacados'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
+   * Fetches new products (endpoint-specific logic).
+   * Returns a promise with transformed products (does not update main list).
+   *
+   * @returns Promise<Product[]> - List of new products
+   */
+  const fetchNewProducts = async (): Promise<Product[]> => {
+    loading.value = true
+    error.value = ''
+    try {
+      const response = await api.get('/products/new')
+      const backendProducts: BackendProductResponse[] = response.data || []
+      return backendProducts.map((product, index) => ({
+        id: product.id ?? index,
+        name: product.name ?? 'Unknown Product',
+        description: product.description ?? '',
+        brand: product.brand ?? 'Unknown',
+        isFeatured: product.isFeatured ?? false,
+        imageUrl: product.imageUrl ?? 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+        basePrice: product.basePrice ?? 0,
+        totalStock: product.totalStock ?? 10,
+        cpu: product.cpu ?? '',
+        memory: product.memory ?? '',
+        camera: product.camera ?? '',
+        createdAt: product.createdAt ?? new Date().toISOString(),
+        rating: typeof product.rating === 'number' ? product.rating : 0,
+      }))
+    } catch (err) {
+      console.error('Error fetching new products:', err)
+      error.value = 'Error al cargar los productos nuevos'
+      return []
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
+   * Fetches unique brand names from the backend and initializes filter options.
+   */
   const fetchBrands = async () => {
     try {
       const response = await api.get<string[]>('/products/brands')
@@ -192,6 +371,9 @@ export const useProductsStore = defineStore('products', () => {
     }
   }
 
+  /**
+   * Fetches unique memory sizes from the backend and initializes filter options.
+   */
   const fetchMemories = async () => {
     try {
       const response = await api.get<string[]>('/products/memories')
@@ -201,23 +383,63 @@ export const useProductsStore = defineStore('products', () => {
     }
   }
 
+  /**
+   * Fetches products belonging to a specific category (by ID).
+   *
+   * @param categoryId - ID of the category
+   * @param page - Page number
+   * @param size - Page size
+   */
   const fetchProductsByCategory = async (categoryId: number, page = 0, size = 20) => {
     loading.value = true
     error.value = ''
     currentCategoryId.value = categoryId
-
     try {
       const response = await api.get(`/categories/${categoryId}/products`, {
-        params: {
-          page,
-          size,
-        },
+        params: { page, size },
+      })
+      const data = response.data
+      const rawProducts = data._embedded ? data._embedded.products : data.content
+
+      console.log('🔍 [fetchProductsByCategory] Raw response structure:', {
+        categoryId,
+        hasEmbedded: !!data._embedded,
+        hasContent: !!data.content,
+        rawProductsLength: rawProducts?.length || 0,
+        firstProduct: rawProducts?.[0],
+        firstProductRating: rawProducts?.[0]?.rating,
+        ratingType: typeof rawProducts?.[0]?.rating,
       })
 
-      const data = response.data
-      products.value = data._embedded ? data._embedded.products : data.content
+      const transformedProducts = (rawProducts || []).map((product: BackendProductResponse, index: number) => {
+        console.log(`🔍 [fetchProductsByCategory] Product ${index}:`, {
+          id: product.id,
+          name: product.name,
+          rating: product.rating,
+          ratingType: typeof product.rating,
+          fullProduct: product,
+        })
+        return {
+          id: product.id ?? index + 1,
+          name: product.name ?? 'Unknown Product',
+          description: product.description ?? '',
+          brand: product.brand ?? 'Unknown',
+          isFeatured: product.isFeatured ?? false,
+          imageUrl: product.imageUrl ?? 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+          basePrice: product.basePrice ?? 0,
+          totalStock: product.totalStock ?? 10,
+          cpu: product.cpu ?? '',
+          memory: product.memory ?? '',
+          camera: product.camera ?? '',
+          createdAt: product.createdAt ?? new Date().toISOString(),
+          rating: typeof product.rating === 'number' ? product.rating : 0,
+        }
+      })
 
-      // Actualizar información de paginación
+      console.log('🔍 [fetchProductsByCategory] Transformed products:', transformedProducts.map((p: Product) => ({ id: p.id, name: p.name, rating: p.rating })))
+
+      products.value = transformedProducts
+
       pagination.value = {
         page: data.page?.number || data.number || page,
         size: data.page?.size || data.size || size,
@@ -235,23 +457,45 @@ export const useProductsStore = defineStore('products', () => {
     }
   }
 
+  /**
+   * Fetches products by category name. Used in category landing pages.
+   * Some responses may lack ratings, so we fetch them individually.
+   *
+   * @param categoryName - Name of the category (e.g., "Smartphones")
+   * @param page - Page number
+   * @param size - Page size
+   */
   const fetchProductsByCategoryName = async (categoryName: string, page = 0, size = 9) => {
     loading.value = true
     error.value = ''
-
     try {
       const response = await api.get('/products/category', {
-        params: {
-          name: categoryName,
-          page,
-          size,
-        },
+        params: { name: categoryName, page, size },
       })
-
       const data = response.data
 
-      // Transform the response to match the Product interface
-      const transformedProducts = (data.content || data).map((product: BackendCategoryProductResponse, index: number) => ({
+      console.log('🔍 [fetchProductsByCategoryName] Raw response structure:', {
+        categoryName,
+        hasContent: !!data.content,
+        dataStructure: data,
+        rawProductsLength: (data.content || data)?.length || 0,
+        firstProduct: (data.content || data)?.[0],
+        firstProductRating: (data.content || data)?.[0]?.rating,
+        ratingType: typeof (data.content || data)?.[0]?.rating,
+      })
+
+      // Log full structure of first product for debugging API inconsistencies
+      if ((data.content || data)?.[0]) {
+        console.log('🔍 [fetchProductsByCategoryName] Full first product structure:',
+          JSON.stringify((data.content || data)[0], null, 2)
+        )
+        console.log('🔍 [fetchProductsByCategoryName] Available fields:',
+          Object.keys((data.content || data)[0])
+        )
+      }
+
+      // Step 1: Map basic product data (rating may be missing)
+      const initialProducts = (data.content || data).map((product: BackendCategoryProductResponse, index: number) => ({
         id: product.id || index + 1,
         name: product.name || 'Unknown Product',
         description: product.description || '',
@@ -259,24 +503,50 @@ export const useProductsStore = defineStore('products', () => {
         isFeatured: product.isFeatured || false,
         imageUrl: product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
         basePrice: product.basePrice || 0,
-        totalStock: product.totalStock || 10, // Default stock
+        totalStock: product.totalStock || 10,
         cpu: product.cpu || '',
         memory: product.memory || '',
         camera: product.camera || '',
         createdAt: product.createdAt || new Date().toISOString(),
+        rating: 0, // Will be updated later
       }))
 
-      products.value = transformedProducts
+      console.log('🔍 [fetchProductsByCategoryName] Initial products (before rating fetch):', initialProducts.length)
 
-      // Update pagination info (assuming your backend provides this)
+      // Step 2: Fetch individual ratings for each product (if ID exists)
+      const productsWithRatings = await Promise.all(
+        initialProducts.map(async (product: Product) => {
+          if (product.id && product.id > 0) {
+            try {
+              console.log(`🔍 [fetchProductsByCategoryName] Fetching rating for product ${product.id}...`)
+              const productDetail = await fetchProductById(product.id)
+              const rating = typeof productDetail.rating === 'number' ? productDetail.rating : 0
+              console.log(`🔍 [fetchProductsByCategoryName] Product ${product.id} rating: ${rating}`)
+              return { ...product, rating }
+            } catch (err) {
+              console.warn(`🔍 [fetchProductsByCategoryName] Failed to fetch rating for product ${product.id}:`, err)
+              return product
+            }
+          }
+          return product
+        })
+      )
+
+      console.log('🔍 [fetchProductsByCategoryName] Final products with ratings:',
+        productsWithRatings.map((p: Product) => ({ id: p.id, name: p.name, rating: p.rating }))
+      )
+
+      products.value = productsWithRatings
+
+      // Update pagination (fallback logic if backend doesn't return full metadata)
       pagination.value = {
         page: data.page?.number || data.number || page,
         size: data.page?.size || data.size || size,
-        totalElements: data.page?.totalElements || data.totalElements || transformedProducts.length,
-        totalPages: data.page?.totalPages || data.totalPages || Math.ceil(transformedProducts.length / size),
+        totalElements: data.page?.totalElements || data.totalElements || productsWithRatings.length,
+        totalPages: data.page?.totalPages || data.totalPages || Math.ceil(productsWithRatings.length / size),
         first: data.page?.first || data.first || page === 0,
-        last: data.page?.last || data.last || page >= Math.ceil(transformedProducts.length / size) - 1,
-        numberOfElements: data.page?.numberOfElements || data.numberOfElements || transformedProducts.length,
+        last: data.page?.last || data.last || page >= Math.ceil(productsWithRatings.length / size) - 1,
+        numberOfElements: data.page?.numberOfElements || data.numberOfElements || productsWithRatings.length,
       }
     } catch (err) {
       console.error(`Error fetching products for category "${categoryName}":`, err)
@@ -286,6 +556,13 @@ export const useProductsStore = defineStore('products', () => {
     }
   }
 
+  /**
+   * Fetches a single product by ID (full details).
+   *
+   * @param productId - ID of the product
+   * @returns Promise<Product> - The product data
+   * @throws Error if the request fails
+   */
   const fetchProductById = async (productId: number) => {
     try {
       const response = await api.get(`/products/${productId}`)
@@ -296,31 +573,45 @@ export const useProductsStore = defineStore('products', () => {
     }
   }
 
+  /**
+   * Adds a product to the local list (e.g., after creation).
+   */
   const addProduct = (product: Product) => {
     products.value.push(product)
   }
 
+  /**
+   * Removes a product from the local list by ID.
+   */
   const removeProduct = (productId: number) => {
-    const index = products.value.findIndex((product) => product.id === productId)
+    const index = products.value.findIndex((p) => p.id === productId)
     if (index > -1) {
       products.value.splice(index, 1)
     }
   }
 
+  /**
+   * Updates a product by merging new data.
+   */
   const updateProduct = (productId: number, updatedProduct: Partial<Product>) => {
-    const index = products.value.findIndex((product) => product.id === productId)
+    const index = products.value.findIndex((p) => p.id === productId)
     if (index > -1) {
       products.value[index] = { ...products.value[index], ...updatedProduct }
     }
   }
 
+  /**
+   * Finds a product by ID in the current list.
+   */
   const getProductById = (productId: number) => {
-    return products.value.find((product) => product.id === productId)
+    return products.value.find((p) => p.id === productId)
   }
 
+  /**
+   * Filters products by name or description (case-insensitive).
+   */
   const searchProducts = (searchTerm: string) => {
     if (!searchTerm.trim()) return products.value
-
     const term = searchTerm.toLowerCase()
     return products.value.filter(
       (product) =>
@@ -329,23 +620,35 @@ export const useProductsStore = defineStore('products', () => {
     )
   }
 
+  /**
+   * Filters products by price range.
+   */
   const filterProductsByPrice = (minPrice: number, maxPrice: number) => {
     return products.value.filter(
       (product) => product.basePrice >= minPrice && product.basePrice <= maxPrice,
     )
   }
 
+  /**
+   * Filters products by stock status.
+   */
   const filterProductsByStock = (inStock: boolean) => {
     return inStock ? inStockProducts.value : outOfStockProducts.value
   }
 
+  /**
+   * Clears all product-related state (useful for resets or logout).
+   */
   const clearProducts = () => {
     products.value = []
     error.value = ''
     currentCategoryId.value = null
   }
 
-  // Pagination methods
+  // =======================
+  // 📖 Pagination Actions
+  // =======================
+
   const goToPage = async (page: number) => {
     if (page >= 0 && page < pagination.value.totalPages) {
       if (currentCategoryId.value) {
@@ -358,28 +661,22 @@ export const useProductsStore = defineStore('products', () => {
 
   const goToNextPage = async () => {
     if (!pagination.value.last) {
+      const nextPage = pagination.value.page + 1
       if (currentCategoryId.value) {
-        await fetchProductsByCategory(
-          currentCategoryId.value,
-          pagination.value.page + 1,
-          pagination.value.size,
-        )
+        await fetchProductsByCategory(currentCategoryId.value, nextPage, pagination.value.size)
       } else {
-        await fetchProducts(pagination.value.page + 1, pagination.value.size)
+        await fetchProducts(nextPage, pagination.value.size)
       }
     }
   }
 
   const goToPreviousPage = async () => {
     if (!pagination.value.first) {
+      const prevPage = pagination.value.page - 1
       if (currentCategoryId.value) {
-        await fetchProductsByCategory(
-          currentCategoryId.value,
-          pagination.value.page - 1,
-          pagination.value.size,
-        )
+        await fetchProductsByCategory(currentCategoryId.value, prevPage, pagination.value.size)
       } else {
-        await fetchProducts(pagination.value.page - 1, pagination.value.size)
+        await fetchProducts(prevPage, pagination.value.size)
       }
     }
   }
@@ -396,14 +693,11 @@ export const useProductsStore = defineStore('products', () => {
 
   const goToLastPage = async () => {
     if (!pagination.value.last) {
+      const lastPage = pagination.value.totalPages - 1
       if (currentCategoryId.value) {
-        await fetchProductsByCategory(
-          currentCategoryId.value,
-          pagination.value.totalPages - 1,
-          pagination.value.size,
-        )
+        await fetchProductsByCategory(currentCategoryId.value, lastPage, pagination.value.size)
       } else {
-        await fetchProducts(pagination.value.totalPages - 1, pagination.value.size)
+        await fetchProducts(lastPage, pagination.value.size)
       }
     }
   }
@@ -416,34 +710,32 @@ export const useProductsStore = defineStore('products', () => {
     }
   }
 
-  const fetchProductStats = async () => {
-    try {
-      const response = await api.get('/products/stats')
-      stats.value = response.data
-    } catch (err) {
-      console.error('Error fetching product stats:', err)
-      // Fallback a estadísticas basadas en la información actual de paginación
-      stats.value = {
-        totalProducts: pagination.value.totalElements,
-        inStockProducts: 0,
-        outOfStockProducts: 0,
-        averagePrice: 0,
-      }
-    }
-  }
+  // =======================
+  // 🧮 Utility Functions
+  // =======================
 
+  /**
+   * Determines stock status and returns display-friendly info.
+   */
   const getStockStatus = (product: Product) => {
     if (product.totalStock === 0) return { status: 'out-of-stock', text: 'Sin stock', color: 'red' }
     if (product.totalStock <= 5) return { status: 'low-stock', text: 'Stock bajo', color: 'yellow' }
     return { status: 'in-stock', text: 'En stock', color: 'green' }
   }
 
+  /**
+   * Formats a number as a localized currency string (e.g., €129.99).
+   */
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR',
     }).format(price)
   }
+
+  // =======================
+  // 📤 Expose Everything
+  // =======================
 
   return {
     // State
@@ -456,12 +748,14 @@ export const useProductsStore = defineStore('products', () => {
     currentCategoryId,
     pagination,
     stats,
+
     // Getters
     productCount,
     hasProducts,
     inStockProducts,
     outOfStockProducts,
     averagePrice,
+
     // Actions
     fetchProducts,
     fetchFeaturedProducts,
@@ -471,7 +765,6 @@ export const useProductsStore = defineStore('products', () => {
     fetchProductsByCategory,
     fetchProductsByCategoryName,
     fetchProductById,
-    fetchProductStats,
     addProduct,
     removeProduct,
     updateProduct,
@@ -480,14 +773,16 @@ export const useProductsStore = defineStore('products', () => {
     filterProductsByPrice,
     filterProductsByStock,
     clearProducts,
-    // Pagination actions
+
+    // Pagination
     goToPage,
     goToNextPage,
     goToPreviousPage,
     goToFirstPage,
     goToLastPage,
     changePageSize,
-    // Utility functions
+
+    // Utilities
     getStockStatus,
     formatPrice,
   }
