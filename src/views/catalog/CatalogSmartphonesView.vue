@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue'
-import { useProductsStore } from '@/stores/products'
+import { useProductStore } from '@/stores/products'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
-const productsStore = useProductsStore()
+const productStore = useProductStore()
 
 // State
 const currentPage = ref(1)
@@ -55,9 +55,9 @@ const filteredBrands = computed(() => {
   const query = brandSearchQuery.value?.trim().toLowerCase()
 
   // Return all brands if query is empty or too short
-  if (!query || query.length < 2) return productsStore.brands
+  if (!query || query.length < 2) return productStore.brands
 
-  return productsStore.brands
+  return productStore.brands
     .map((brand) => {
       const brandName = brand.name.toLowerCase()
       let score = 0
@@ -84,9 +84,9 @@ const filteredMemoryOptions = computed(() => {
   const query = memorySearchQuery.value?.trim().toLowerCase()
 
   // Return all memories if query is empty or too short
-  if (!query || query.length < 2) return productsStore.memories
+  if (!query || query.length < 2) return productStore.memories
 
-  return productsStore.memories
+  return productStore.memories
     .map((memory) => {
       const memoryValue = memory.value.toLowerCase()
       let score = 0
@@ -181,9 +181,9 @@ const mockProducts = [
 onMounted(async () => {
   // Load products, brands and memories when component mounts
   await Promise.all([
-    productsStore.fetchProducts(),
-    productsStore.fetchBrands(),
-    productsStore.fetchMemories(),
+    productStore.fetchProducts(),
+    productStore.fetchBrands(),
+    productStore.fetchMemories(),
   ])
 })
 

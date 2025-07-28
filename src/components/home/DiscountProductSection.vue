@@ -79,15 +79,15 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useProductsStore } from '@/stores/products'
+import { useProductStore } from '@/stores/products'
 import Wrapper from '../shared/Wrapper.vue'
 import ProductCard from '../shared/ProductCard.vue'
 import ViewMoreCard from '../shared/ViewMoreCard.vue'
 
-const productsStore = useProductsStore()
+const productStore = useProductStore()
 
 onMounted(() => {
-  productsStore.fetchFeaturedProducts()
+  productStore.fetchFeaturedProducts()
   updateContainerWidth()
   window.addEventListener('resize', updateContainerWidth)
 })
@@ -103,7 +103,7 @@ const carouselContainer = ref<HTMLElement | null>(null)
 
 // Computed
 const formattedProducts = computed(() => {
-  return productsStore.featuredProducts.map((product) => ({
+  return productStore.featuredProducts.map((product) => ({
     id: product.id,
     name: product.name,
     originalPrice: product.basePrice,

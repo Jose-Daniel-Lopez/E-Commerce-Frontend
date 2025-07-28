@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { useProductsStore } from '@/stores/products'
+import { useProductStore } from '@/stores/products'
 import { computed } from 'vue'
 
-const productsStore = useProductsStore()
+const productStore = useProductStore()
 
 // Use global stats if available, otherwise use pagination info
 const totalProducts = computed(
-  () => productsStore.stats.totalProducts || productsStore.pagination.totalElements,
+  () => productStore.stats.totalProducts || productStore.pagination.totalElements,
 )
 
 const inStockProductsCount = computed(
-  () => productsStore.stats.inStockProducts || productsStore.inStockProducts.length,
+  () => productStore.stats.inStockProducts || productStore.inStockProducts.length,
 )
 
 const outOfStockProductsCount = computed(
-  () => productsStore.stats.outOfStockProducts || productsStore.outOfStockProducts.length,
+  () => productStore.stats.outOfStockProducts || productStore.outOfStockProducts.length,
 )
 
-const averagePrice = computed(() => productsStore.stats.averagePrice || productsStore.averagePrice)
+const averagePrice = computed(() => productStore.stats.averagePrice || productStore.averagePrice)
 </script>
 
 <template>

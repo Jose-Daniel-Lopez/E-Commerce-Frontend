@@ -19,7 +19,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const router = useRouter()
-const productsStore = useProductStore()
+const productStore = useProductStore()
 const categoriesStore = useCategoriesStore()
 
 // =======================
@@ -140,7 +140,7 @@ const itemsPerPage = 9
  * Then sorts them based on `sortBy`.
  */
 const filteredProducts = computed(() => {
-  let filtered = [...productsStore.products]
+  let filtered = [...productStore.products]
 
   // Price filter
   if (priceRange.value.min > 0 || priceRange.value.max < 5000) {
@@ -151,7 +151,7 @@ const filteredProducts = computed(() => {
   }
 
   // Brand filter
-  const selectedBrands = productsStore.brands
+  const selectedBrands = productStore.brands
     .filter((brand) => brand.checked)
     .map((brand) => brand.name)
   if (selectedBrands.length > 0) {
@@ -159,7 +159,7 @@ const filteredProducts = computed(() => {
   }
 
   // Memory filter
-  const selectedMemories = productsStore.memories
+  const selectedMemories = productStore.memories
     .filter((memory) => memory.checked)
     .map((memory) => memory.value)
   if (selectedMemories.length > 0) {
@@ -211,9 +211,9 @@ const totalPages = computed(() => Math.ceil(filteredProducts.value.length / item
  */
 const filteredBrands = computed(() => {
   const query = brandSearchQuery.value?.trim().toLowerCase()
-  if (!query || query.length < 2) return productsStore.brands
+  if (!query || query.length < 2) return productStore.brands
 
-  return productsStore.brands
+  return productStore.brands
     .map((brand) => {
       const brandName = brand.name.toLowerCase()
       let score = 0
@@ -234,9 +234,9 @@ const filteredBrands = computed(() => {
  */
 const filteredMemoryOptions = computed(() => {
   const query = memorySearchQuery.value?.trim().toLowerCase()
-  if (!query || query.length < 2) return productsStore.memories
+  if (!query || query.length < 2) return productStore.memories
 
-  return productsStore.memories
+  return productStore.memories
     .map((memory) => {
       const memoryValue = memory.value.toLowerCase()
       let score = 0
@@ -299,9 +299,9 @@ onMounted(async () => {
 
   // Load initial data: products, brands, memories
   await Promise.all([
-    productsStore.fetchProductsByCategoryName(actualCategoryName.value, currentPage.value - 1, itemsPerPage),
-    productsStore.fetchBrands(),
-    productsStore.fetchMemories(),
+    productStore.fetchProductsByCategoryName(actualCategoryName.value, currentPage.value - 1, itemsPerPage),
+    productStore.fetchBrands(),
+    productStore.fetchMemories(),
   ])
 })
 
@@ -313,7 +313,7 @@ watch(
       actualCategoryName.value = getCategoryNameFromUrl(newCategoryName)
       categoryDisplayName.value = actualCategoryName.value
       currentPage.value = 1
-      await productsStore.fetchProductsByCategoryName(actualCategoryName.value, 0, itemsPerPage)
+      await productStore.fetchProductsByCategoryName(actualCategoryName.value, 0, itemsPerPage)
     }
   }
 )
@@ -390,8 +390,8 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
  */
 const hasActiveFilters = () => {
   const priceFilterActive = priceRange.value.min > 0 || priceRange.value.max < 5000
-  const brandFilterActive = productsStore.brands.some((brand) => brand.checked)
-  const memoryFilterActive = productsStore.memories.some((memory) => memory.checked)
+  const brandFilterActive = productStore.brands.some((brand) => brand.checked)
+  const memoryFilterActive = productStore.memories.some((memory) => memory.checked)
   return priceFilterActive || brandFilterActive || memoryFilterActive
 }
 
@@ -400,8 +400,8 @@ const hasActiveFilters = () => {
  */
 const clearAllFilters = () => {
   priceRange.value = { min: 0, max: 5000 }
-  productsStore.brands.forEach((brand) => (brand.checked = false))
-  productsStore.memories.forEach((memory) => (memory.checked = false))
+  productStore.brands.forEach((brand) => (brand.checked = false))
+  productStore.memories.forEach((memory) => (memory.checked = false))
   currentPage.value = 1
 }
 
@@ -409,7 +409,7 @@ const clearAllFilters = () => {
  * Clears only brand filters.
  */
 const clearBrandFilters = () => {
-  productsStore.brands.forEach((brand) => (brand.checked = false))
+  productStore.brands.forEach((brand) => (brand.checked = false))
   currentPage.value = 1
 }
 
@@ -417,12 +417,12 @@ const clearBrandFilters = () => {
  * Clears only memory filters.
  */
 const clearMemoryFilters = () => {
-  productsStore.memories.forEach((memory) => (memory.checked = false))
+  productStore.memories.forEach((memory) => (memory.checked = false))
   currentPage.value = 1
 }
 
 // Reset to page 1 whenever filters or sort order change
-watch([priceRange, () => productsStore.brands, () => productsStore.memories, sortBy], () => {
+watch([priceRange, () => productStore.brands, () => productStore.memories, sortBy], () => {
   currentPage.value = 1
 }, { deep: true })
 </script>
@@ -529,7 +529,7 @@ watch([priceRange, () => productsStore.brands, () => productsStore.memories, sor
               <h3 class="font-srProDisplay text-lg font-semibold text-black">Brand</h3>
               <div class="flex items-center space-x-2">
                 <button
-                  v-if="productsStore.brands.some(brand => brand.checked)"
+                  v-if="productStore.brands.some(brand => brand.checked)"
                   @click="clearBrandFilters"
                   class="text-xs text-gray-500 hover:text-gray-700 transition-colors"
                   type="button"
@@ -592,7 +592,7 @@ watch([priceRange, () => productsStore.brands, () => productsStore.memories, sor
               <h3 class="font-srProDisplay text-lg font-semibold text-black">Built-in Memory</h3>
               <div class="flex items-center space-x-2">
                 <button
-                  v-if="productsStore.memories.some(memory => memory.checked)"
+                  v-if="productStore.memories.some(memory => memory.checked)"
                   @click="clearMemoryFilters"
                   class="text-xs text-gray-500 hover:text-gray-700 transition-colors"
                   type="button"
@@ -657,13 +657,13 @@ watch([priceRange, () => productsStore.brands, () => productsStore.memories, sor
                 <span class="text-gray-600">Price:</span>
                 <span class="font-medium">${{ priceRange.min }} - ${{ priceRange.max }}</span>
               </div>
-              <div v-if="productsStore.brands.some(brand => brand.checked)" class="flex items-center justify-between text-sm">
+              <div v-if="productStore.brands.some(brand => brand.checked)" class="flex items-center justify-between text-sm">
                 <span class="text-gray-600">Brands:</span>
-                <span class="font-medium">{{ productsStore.brands.filter(brand => brand.checked).map(brand => brand.name).join(', ') }}</span>
+                <span class="font-medium">{{ productStore.brands.filter(brand => brand.checked).map(brand => brand.name).join(', ') }}</span>
               </div>
-              <div v-if="productsStore.memories.some(memory => memory.checked)" class="flex items-center justify-between text-sm">
+              <div v-if="productStore.memories.some(memory => memory.checked)" class="flex items-center justify-between text-sm">
                 <span class="text-gray-600">Memory:</span>
-                <span class="font-medium">{{ productsStore.memories.filter(memory => memory.checked).map(memory => memory.value).join(', ') }}</span>
+                <span class="font-medium">{{ productStore.memories.filter(memory => memory.checked).map(memory => memory.value).join(', ') }}</span>
               </div>
             </div>
             <button
@@ -681,7 +681,7 @@ watch([priceRange, () => productsStore.brands, () => productsStore.memories, sor
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
                 <span class="text-gray-600">Total Products:</span>
-                <span class="font-medium">{{ productsStore.products.length }}</span>
+                <span class="font-medium">{{ productStore.products.length }}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-gray-600">Filtered Results:</span>
@@ -756,17 +756,17 @@ watch([priceRange, () => productsStore.brands, () => productsStore.memories, sor
           </div>
 
           <!-- Loading State -->
-          <div v-if="productsStore.loading" class="flex justify-center items-center py-12">
+          <div v-if="productStore.loading" class="flex justify-center items-center py-12">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
             <span class="ml-3 text-gray-600">Loading products...</span>
           </div>
 
           <!-- Error State -->
-          <div v-else-if="productsStore.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2 mb-8">
+          <div v-else-if="productStore.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2 mb-8">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
             </svg>
-            <span>{{ productsStore.error }}</span>
+            <span>{{ productStore.error }}</span>
           </div>
 
           <!-- Empty State -->

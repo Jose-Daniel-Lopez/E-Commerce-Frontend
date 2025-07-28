@@ -74,63 +74,61 @@
 
       <!-- Products Carousel with Grid -->
       <div class="relative">
-        <Swiper
-          :modules="productModules"
-          :slides-per-view="4"
-          :slides-per-group="1"
-          :space-between="16"
-          :speed="500"
-          :loop="false"
-          :initial-slide="0"
-          :navigation="{
-            prevEl: '.custom-swiper-button-prev-products-browse',
-            nextEl: '.custom-swiper-button-next-products-browse',
-          }"
-          :grid="gridSettings"
-          :breakpoints="productBreakpoints"
-          class="products flex !h-fit w-full items-center pt-3 md:h-[455px]"
-          @swiper="onSwiperInit"
-        >
-          <!-- Products -->
-          <template v-if="productsStore.loading">
-            <!-- Loading State -->
-            <SwiperSlide v-for="n in 8" :key="`loading-${n}`">
-              <div class="mb-4 w-[163.5px] xs:w-[190px] sm:w-[298px] md:w-[240px] xl:w-[268px]">
-                <div class="animate-pulse rounded-[9px] bg-gray-200 h-[355px] sm:h-[330px] md:h-[390px]"></div>
-              </div>
-            </SwiperSlide>
-          </template>
-          <template v-else-if="filteredProducts.length > 0">
+        <template v-if="!productStore.loading && filteredProducts.length > 0">
+          <Swiper
+            :modules="productModules"
+            :slides-per-view="4"
+            :slides-per-group="1"
+            :space-between="16"
+            :speed="500"
+            :loop="false"
+            :initial-slide="0"
+            :navigation="{
+              prevEl: '.custom-swiper-button-prev-products-browse',
+              nextEl: '.custom-swiper-button-next-products-browse',
+            }"
+            :grid="gridSettings"
+            :breakpoints="productBreakpoints"
+            class="products flex !h-fit w-full items-center pt-3 md:h-[455px]"
+            @swiper="onSwiperInit"
+          >
+            <!-- Products -->
             <SwiperSlide v-for="product in filteredProducts" :key="product.id">
               <ProductCard
                 :product="product"
                 class="mb-4 w-[163.5px] xs:w-[190px] sm:w-[298px] md:w-[240px] xl:w-[268px]"
               />
             </SwiperSlide>
-          </template>
-
-          <!-- No Data State -->
-          <SwiperSlide v-else>
-            <div
-              class="mb-4 ml-[2px] h-auto w-[163.5px] rounded-[9px] px-3 py-6 duration-500 hover:scale-[1.02] xs:w-[190px] sm:mb-0 sm:w-[298px] md:h-[435px] md:w-[240px] md:px-4 xl:w-[268px]"
-            >
-              <div
-                class="flex h-[355px] w-full flex-col items-center justify-center gap-4 sm:h-[330px] md:h-[390px]"
-              >
-                <div
-                  class="flex items-center justify-center font-srProDisplay text-xl font-semibold"
-                >
-                  {{ $t('productsSection.noData') }}
-                </div>
-              </div>
+            <!-- View More Card -->
+            <SwiperSlide v-if="filteredProducts.length >= 16">
+              <ViewMoreCard />
+            </SwiperSlide>
+          </Swiper>
+        </template>
+        <template v-else-if="productStore.loading">
+          <!-- Loading State -->
+          <SwiperSlide v-for="n in 8" :key="`loading-${n}`">
+            <div class="mb-4 w-[163.5px] xs:w-[190px] sm:w-[298px] md:w-[240px] xl:w-[268px]">
+              <div class="animate-pulse rounded-[9px] bg-gray-200 h-[355px] sm:h-[330px] md:h-[390px]"></div>
             </div>
           </SwiperSlide>
-
-          <!-- View More Card -->
-          <SwiperSlide v-if="filteredProducts.length >= 16">
-            <ViewMoreCard />
-          </SwiperSlide>
-        </Swiper>
+        </template>
+        <template v-else>
+          <!-- No Data State -->
+          <div
+            class="mb-4 ml-[2px] h-auto w-[163.5px] rounded-[9px] px-3 py-6 duration-500 hover:scale-[1.02] xs:w-[190px] sm:mb-0 sm:w-[298px] md:h-[435px] md:w-[240px] md:px-4 xl:w-[268px]"
+          >
+            <div
+              class="flex h-[355px] w-full flex-col items-center justify-center gap-4 sm:h-[330px] md:h-[390px]"
+            >
+              <div
+                class="flex items-center justify-center font-srProDisplay text-xl font-semibold"
+              >
+                {{ $t('productsSection.noData') }}
+              </div>
+            </div>
+          </div>
+        </template>
       </div>
     </Wrapper>
   </section>
@@ -143,7 +141,7 @@ import { Navigation, Grid } from 'swiper/modules'
 import Wrapper from '../shared/Wrapper.vue'
 import ProductCard from '../shared/ProductCard.vue'
 import ViewMoreCard from '../shared/ViewMoreCard.vue'
-import { useProductsStore } from '@/stores/products'
+import { useProductStore } from '@/stores/products'
 
 // Import Swiper styles
 import 'swiper/css'
@@ -165,7 +163,7 @@ const prevBtnRef = ref<HTMLButtonElement | null>(null)
 const nextBtnRef = ref<HTMLButtonElement | null>(null)
 
 // Store
-const productsStore = useProductsStore()
+const productStore = useProductStore()
 
 // Products data - now from backend
 const newProducts = ref<Product[]>([])
@@ -176,7 +174,7 @@ const upcomingProducts = ref<Product[]>([])
 const fetchProductsByType = async (type: string) => {
   switch (type) {
     case t('productsSection.tabs.new'):
-      newProducts.value = await productsStore.fetchNewProducts()
+      newProducts.value = await productStore.fetchNewProducts()
       break
     case t('productsSection.tabs.popular'):
       // Functionality for popular products is not implemented yet.
@@ -185,8 +183,8 @@ const fetchProductsByType = async (type: string) => {
     case t('productsSection.tabs.upcoming'):
       // For upcoming products, we'll filter products with no stock or future dates
       // This is a placeholder - you might want to add a specific backend endpoint
-      await productsStore.fetchProducts(0, 50)
-      upcomingProducts.value = productsStore.products.filter((product) => product.totalStock === 0)
+      await productStore.fetchProducts(0, 50)
+      upcomingProducts.value = productStore.products.filter((product) => product.totalStock === 0)
       break
   }
 }

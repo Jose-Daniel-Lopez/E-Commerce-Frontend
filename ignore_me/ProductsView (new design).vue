@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'  // Commented out until needed
-import { useProductsStore } from '@/stores/products'
+import { useProductStore } from '@/stores/products'
 
-const productsStore = useProductsStore()
+const productStore = useProductStore()
 const router = useRouter()  // Commented out until needed
 
 // Filter states
@@ -102,7 +102,7 @@ const mockProducts = [
 
 onMounted(async () => {
   // Load products when component mounts
-  await productsStore.fetchProducts()
+  await productStore.fetchProducts()
 })
 
 const formatPrice = (price: number) => {
