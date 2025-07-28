@@ -294,5 +294,12 @@
   },
   "discountProducts": {
     "title": "Discount Products"
+  },
+  "hero": {
+    "smallTitle": "Pro.Beyond",
+    "bigTitle": "iPhone 14",
+    "bigTitleBold": "Pro",
+    "description": "Created to change everything for the better. For everyone",
+    "buttonText": "Show More"
   }
 }

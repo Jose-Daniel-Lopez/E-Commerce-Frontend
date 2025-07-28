@@ -10,18 +10,18 @@
             class="font-figtree text-[25px] font-semibold"
             :style="{ color: data.left.smallTitleColor }"
           >
-            {{ data.left.smallTitle }}
+            {{ $t('hero.smallTitle') }}
           </p>
           <h1
             class="font-srProDisplay text-[75px] font-thin leading-[1.1] md:text-[60px] md:leading-[0.7] lg:text-[96px]"
             :style="{ color: data.left.bigTitleColor }"
           >
-            {{ data.left.bigTitle }}
+            {{ $t('hero.bigTitle') }}
             <span
               class="ml-2 font-srProDisplay font-semibold"
               :style="{ color: data.left.bigTitleBoldColor }"
             >
-              {{ data.left.bigTitleBold }}
+              {{ $t('hero.bigTitleBold') }}
             </span>
           </h1>
         </div>
@@ -29,7 +29,7 @@
           class="text-wrap text-center font-srProDisplay text-[19px] font-medium md:pr-3 md:text-left md:text-lg lg:pr-0"
           :style="{ color: data.left.descriptionColor }"
         >
-          {{ data.left.description }}
+          {{ $t('hero.description') }}
         </p>
         <div class="mt-4 flex w-full items-center justify-center md:justify-start">
           <Button
@@ -43,8 +43,9 @@
             :border-color="data.left.button.buttonBorderColor"
             :hover-bg-color="data.left.button.buttonHoverBgColor"
             :hover-text-color="data.left.button.buttonHoverTextColor"
+            @click="goToCatalog"
           >
-            Mostrar Más
+            {{ $t('hero.buttonText') }}
           </Button>
         </div>
       </div>
@@ -85,18 +86,18 @@ export default {
         gradientFrom: '#211c24',
         gradientTo: '#211c24',
         left: {
-          smallTitle: 'Pro.Beyond',
+          smallTitle: '', // i18n
           smallTitleColor: '#909090',
-          bigTitle: 'IPhone 14',
+          bigTitle: '', // i18n
           bigTitleColor: 'white',
-          bigTitleBold: 'Pro',
+          bigTitleBold: '', // i18n
           bigTitleBoldColor: 'white',
-          description: 'Created to change everything for the better. For everyone',
+          description: '', // i18n
           descriptionColor: '#909090',
           isButton: true,
           button: {
             buttonBgColor: '',
-            buttonText: 'Shop Now',
+            buttonText: '', // i18n
             buttonTextColor: 'white',
             buttonBorderWidth: '1px',
             buttonBorderColor: 'grey',
@@ -138,6 +139,9 @@ export default {
   methods: {
     bgGradient(data) {
       return `linear-gradient(${data.gradientPosition}, ${data.gradientFrom}, ${data.gradientTo})`
+    },
+    goToCatalog() {
+      this.$router.push({ name: 'catalog' })
     },
   },
 }
