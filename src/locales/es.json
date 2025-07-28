@@ -189,6 +189,8 @@
   },
   "catalog": {
     "title": "Catálogo de Categorías",
+    "searchCategories": "Buscar Categorías",
+    "searchPlaceholder": "Buscar",
     "categoriesFound": "{count} categorías encontradas",
     "noCategoriesFound": "No se encontraron categorías",
     "noCategoriesMatch": "No hay categorías que coincidan con tu búsqueda",

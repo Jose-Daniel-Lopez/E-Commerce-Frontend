@@ -208,25 +208,6 @@
       }
     }
   },
-  "catalog": {
-    "title": "Category Catalog",
-    "categoriesFound": "{count} categories found",
-    "noCategoriesFound": "No categories found",
-    "noCategoriesMatch": "No categories match your search",
-    "types": "Types",
-    "clearFilters": "Clear",
-    "stats": "Statistics",
-    "totalCategories": "Total Categories:",
-    "totalProducts": "Total Products:",
-    "filtered": "Filtered:",
-    "sort": {
-      "nameAZ": "Name A-Z",
-      "nameZA": "Name Z-A",
-      "mostProducts": "Most products",
-      "leastProducts": "Least products"
-    },
-    "viewProducts": "View Products"
-  },
   "home": {
     "title": "Home"
   },
