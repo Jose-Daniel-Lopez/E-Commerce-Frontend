@@ -30,6 +30,21 @@ interface Memory {
   checked: boolean
 }
 
+interface BackendProductResponse {
+  id?: number
+  name?: string
+  description?: string
+  brand?: string
+  isFeatured?: boolean
+  imageUrl?: string | null
+  basePrice?: number
+  totalStock?: number
+  cpu?: string
+  memory?: string
+  camera?: string
+  createdAt?: string
+}
+
 export const useProductsStore = defineStore('products', () => {
   // State
   const products = ref<Product[]>([])
@@ -82,6 +97,37 @@ export const useProductsStore = defineStore('products', () => {
     } catch (err) {
       console.error('Error fetching featured products:', err)
       error.value = 'Error al cargar los productos destacados'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const fetchNewProducts = async (): Promise<Product[]> => {
+    loading.value = true
+    error.value = ''
+    try {
+      const response = await api.get('/products/new')
+      const backendProducts: BackendProductResponse[] = response.data || []
+
+      // Transform partial backend data to the full Product interface
+      return backendProducts.map((product, index) => ({
+        id: product.id ?? index, // Use backend ID or fallback to index
+        name: product.name ?? 'Unknown Product',
+        description: product.description ?? '',
+        brand: product.brand ?? 'Unknown',
+        isFeatured: product.isFeatured ?? false,
+        imageUrl: product.imageUrl ?? 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+        basePrice: product.basePrice ?? 0,
+        totalStock: product.totalStock ?? 10, // Default stock
+        cpu: product.cpu ?? '',
+        memory: product.memory ?? '',
+        camera: product.camera ?? '',
+        createdAt: product.createdAt ?? new Date().toISOString(),
+      }))
+    } catch (err) {
+      console.error('Error fetching new products:', err)
+      error.value = 'Error al cargar los productos nuevos'
+      return []
     } finally {
       loading.value = false
     }
@@ -353,6 +399,9 @@ export const useProductsStore = defineStore('products', () => {
     // Actions
     fetchProducts,
     fetchFeaturedProducts,
+    fetchNewProducts,
+    fetchBrands,
+    fetchMemories,
     fetchProductsByCategory,
     fetchProductById,
     fetchProductStats,

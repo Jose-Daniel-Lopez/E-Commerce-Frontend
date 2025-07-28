@@ -92,7 +92,15 @@
           @swiper="onSwiperInit"
         >
           <!-- Products -->
-          <template v-if="filteredProducts.length > 0">
+          <template v-if="productsStore.loading">
+            <!-- Loading State -->
+            <SwiperSlide v-for="n in 8" :key="`loading-${n}`">
+              <div class="mb-4 w-[163.5px] xs:w-[190px] sm:w-[298px] md:w-[240px] xl:w-[268px]">
+                <div class="animate-pulse rounded-[9px] bg-gray-200 h-[355px] sm:h-[330px] md:h-[390px]"></div>
+              </div>
+            </SwiperSlide>
+          </template>
+          <template v-else-if="filteredProducts.length > 0">
             <SwiperSlide v-for="product in filteredProducts" :key="product.id">
               <ProductCard
                 :product="product"
@@ -128,13 +136,14 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Grid } from 'swiper/modules'
 import Wrapper from '../shared/Wrapper.vue'
 import ProductCard from '../shared/ProductCard.vue'
 import ViewMoreCard from '../shared/ViewMoreCard.vue'
+import { useProductsStore } from '@/stores/products'
 
 // Import Swiper styles
 import 'swiper/css'
@@ -143,17 +152,47 @@ import 'swiper/css/grid'
 
 // Reactive data
 import { onBeforeUnmount } from 'vue'
-const swiperInstance = ref(null)
+import type { Product } from '@/types/Product'
+import type { Swiper as SwiperType } from 'swiper'
+
+const swiperInstance = ref<SwiperType | null>(null)
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const value = ref(t('productsSection.tabs.new'))
 const canGoPrev = ref(false)
 const canGoNext = ref(false)
-const prevBtnRef = ref(null)
-const nextBtnRef = ref(null)
+const prevBtnRef = ref<HTMLButtonElement | null>(null)
+const nextBtnRef = ref<HTMLButtonElement | null>(null)
+
+// Store
+const productsStore = useProductsStore()
+
+// Products data - now from backend
+const newProducts = ref<Product[]>([])
+const popularProducts = ref<Product[]>([])
+const upcomingProducts = ref<Product[]>([])
+
+// Fetch products based on type
+const fetchProductsByType = async (type: string) => {
+  switch (type) {
+    case t('productsSection.tabs.new'):
+      newProducts.value = await productsStore.fetchNewProducts()
+      break
+    case t('productsSection.tabs.popular'):
+      // Functionality for popular products is not implemented yet.
+      popularProducts.value = []
+      break
+    case t('productsSection.tabs.upcoming'):
+      // For upcoming products, we'll filter products with no stock or future dates
+      // This is a placeholder - you might want to add a specific backend endpoint
+      await productsStore.fetchProducts(0, 50)
+      upcomingProducts.value = productsStore.products.filter((product) => product.totalStock === 0)
+      break
+  }
+}
 
 // Modules
-const tabModules = []
+const tabModules: never[] = []
 const productModules = [Navigation, Grid]
 
 // Tabs
@@ -163,174 +202,36 @@ const tabs = [
   t('productsSection.tabs.upcoming')
 ]
 
-// Products data
-const products = [
-  {
-    id: 1,
-    name: 'Apple iPhone 14 Pro Max 128GB Deep Purple(MQ9T3RX/A)',
-    featureType: 'New Arrival',
-    originalPrice: '900',
-    discountPrice: '',
-    image: {
-      url: '/images/Iphone-14-pro-purple.png',
-      altText: 'Iphone-14-pro-purple',
-    },
-  },
-  {
-    id: 2,
-    name: 'Blackmagic Pocket Cinema Camera 6k',
-    featureType: 'New Arrival',
-    originalPrice: '2535',
-    discountPrice: '',
-    image: {
-      url: '/images/Camera.png',
-      altText: 'Camera',
-    },
-  },
-  {
-    id: 3,
-    name: 'Apple Watch Series 9 GPS 41mm Starlight Aluminum Case',
-    featureType: 'New Arrival',
-    originalPrice: '399',
-    discountPrice: '',
-    image: {
-      url: '/images/Apple-Watch.png',
-      altText: 'Apple-Watch',
-    },
-  },
-  {
-    id: 4,
-    name: 'AirPods Max Silver',
-    featureType: 'New Arrival',
-    originalPrice: '549',
-    discountPrice: '',
-    image: {
-      url: '/images/Apple-airPods.png',
-      altText: 'Apple-airPods',
-    },
-  },
-  {
-    id: 5,
-    name: 'Samsung Galaxy Watch6',
-    featureType: 'New Arrival',
-    originalPrice: '369',
-    discountPrice: '',
-    image: {
-      url: '/images/Samsung-Watch.png',
-      altText: 'Samsung-Watch',
-    },
-  },
-  {
-    id: 6,
-    name: 'Galaxy Z Fold5 Unlocked | 256GB | Phantom Black',
-    featureType: 'New Arrival',
-    originalPrice: '1799',
-    discountPrice: '',
-    image: {
-      url: '/images/Galaxy-Z-Mobile.png',
-      altText: 'Galaxy-Z-Mobile',
-    },
-  },
-  {
-    id: 7,
-    name: 'Galaxy Buds FE Graphite',
-    featureType: 'New Arrival',
-    originalPrice: '99.99',
-    discountPrice: '',
-    image: {
-      url: '/images/Galaxy-buds-FE.png',
-      altText: 'Galaxy-buds-FE',
-    },
-  },
-  {
-    id: 8,
-    name: "Apple iPad 9 10.2'' 64GB Wi-Fi Silver (MK2L3) 2021",
-    featureType: 'New Arrival',
-    originalPrice: '398',
-    discountPrice: '',
-    image: {
-      url: '/images/Apple-iPad.png',
-      altText: 'Apple-iPad',
-    },
-  },
-  {
-    id: 9,
-    name: 'Apple iPhone 11 128GB White (MQ233)',
-    featureType: 'New Arrival',
-    originalPrice: '550',
-    discountPrice: '',
-    image: {
-      url: '/images/Iphone-14-pro-white.png',
-      altText: 'Iphone-14-pro-white',
-    },
-  },
-  {
-    id: 10,
-    name: 'Apple iPhone 13 mini 128GB Pink (MLK23)',
-    featureType: 'New Arrival',
-    originalPrice: '850',
-    discountPrice: '',
-    image: {
-      url: '/images/Iphone-14-pro-pink.png',
-      altText: 'Iphone-14-pro-pink',
-    },
-  },
-  {
-    id: 11,
-    name: 'Apple iPhone 14 Pro 256GB Space Black (MQ0T3)',
-    featureType: 'Up Coming...',
-    originalPrice: 'N/A',
-    discountPrice: '',
-    image: {
-      url: '/images/Iphone-14-pro-black.png',
-      altText: 'Iphone-14-pro-black',
-    },
-  },
-  {
-    id: 12,
-    name: 'Apple iPhone 14 Pro 256GB Silver (MQ103)',
-    featureType: 'Up Coming...',
-    originalPrice: '1399',
-    discountPrice: '',
-    image: {
-      url: '/images/Iphone-14-pro-silver.png',
-      altText: 'Iphone-14-pro-silver',
-    },
-  },
-  {
-    id: 13,
-    name: 'Apple iPhone 14 Pro 1TB Gold (MQ2V3)',
-    featureType: 'Up Coming...',
-    originalPrice: '1600',
-    discountPrice: '',
-    image: {
-      url: '/images/Iphone-14-pro-gold.png',
-      altText: 'Iphone-14-pro-gold',
-    },
-  },
-  {
-    id: 14,
-    name: 'Samsung Headphone Red',
-    featureType: 'Up Coming...',
-    originalPrice: '299',
-    discountPrice: '',
-    image: {
-      url: '/images/Headphones.png',
-      altText: 'samsung headphones',
-    },
-  },
-]
-
 // Computed properties
 const filteredProducts = computed(() => {
-  // Map Spanish tabs to English featureType
-  const featureTypeMap = {
-    [t('productsSection.tabs.new')]: 'New Arrival',
-    [t('productsSection.tabs.popular')]: 'BestSeller',
-    [t('productsSection.tabs.upcoming')]: 'Up Coming...'
+  let products: Product[] = []
+
+  switch (value.value) {
+    case t('productsSection.tabs.new'):
+      products = newProducts.value
+      break
+    case t('productsSection.tabs.popular'):
+      products = popularProducts.value
+      break
+    case t('productsSection.tabs.upcoming'):
+      products = upcomingProducts.value
+      break
+    default:
+      products = []
   }
-  const featureType = featureTypeMap[value.value] || value.value
-  return products.filter((item) => item.featureType === featureType)
+
+  // Transform backend Product type to match ProductCard component expectations
+  return products.map((product) => ({
+    id: product.id,
+    name: product.name,
+    originalPrice: product.basePrice,
+    discountPrice: '', // Set to empty for now, you can add discount logic later
+    featureType: value.value === t('productsSection.tabs.upcoming') ? 'Up Coming...' : 'New Arrival',
+    image: {
+      url: product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+      altText: product.name
+    }
+  }))
 })
 
 const productLength = computed(() => filteredProducts.value.length)
@@ -338,17 +239,17 @@ const productLength = computed(() => filteredProducts.value.length)
 // Grid settings (dinámico basado en cantidad de productos)
 const gridSettings = computed(() => ({
   rows: filteredProducts.value.length > 6 ? 2 : 1,
-  fill: 'row',
+  fill: 'row' as const,
 }))
 
 // Helper functions (exactas del original)
-const tabletRowSize = (productLength) => {
+const tabletRowSize = (productLength: number) => {
   if (productLength >= 8) return 3
   if (productLength > 4 && productLength <= 7) return 2
   return 1
 }
 
-const mobileRowSize = (productLength) => {
+const mobileRowSize = (productLength: number) => {
   if (productLength >= 8) return 4
   if (productLength > 5 && productLength <= 7) return 3
   if (productLength > 3 && productLength <= 5) return 2
@@ -381,7 +282,7 @@ const productBreakpoints = computed(() => ({
     spaceBetween: 16,
     grid: {
       rows: 4,
-      fill: 'row',
+      fill: 'row' as const,
     },
   },
   767: {
@@ -389,7 +290,7 @@ const productBreakpoints = computed(() => ({
     spaceBetween: 16,
     grid: {
       rows: mobileRowSize(productLength.value),
-      fill: 'row',
+      fill: 'row' as const,
     },
   },
   1024: {
@@ -397,7 +298,7 @@ const productBreakpoints = computed(() => ({
     spaceBetween: 16,
     grid: {
       rows: tabletRowSize(productLength.value),
-      fill: 'row',
+      fill: 'row' as const,
     },
   },
 }))
@@ -409,7 +310,7 @@ const updateNavState = () => {
   canGoNext.value = !swiperInstance.value.isEnd
 }
 
-const onSwiperInit = (swiper) => {
+const onSwiperInit = (swiper: SwiperType) => {
   swiperInstance.value = swiper
   // Actualizar estado inicial
   updateNavState()
@@ -419,9 +320,12 @@ const onSwiperInit = (swiper) => {
   swiper.on('reachEnd', updateNavState)
 }
 
-onMounted(() => {
+onMounted(async () => {
   // Si Swiper ya está montado, actualizar estado
   if (swiperInstance.value) updateNavState()
+
+  // Fetch initial data for the default tab (new products)
+  await fetchProductsByType(value.value)
 })
 
 onBeforeUnmount(() => {
@@ -432,40 +336,18 @@ onBeforeUnmount(() => {
   }
 })
 
-const handleTabClick = (tab) => {
+const handleTabClick = async (tab: string) => {
   value.value = tab
-
-  // Replicar el comportamiento de activeTab del original
-  const tabs = document.querySelectorAll('.productTag .tab')
-  tabs.forEach((item) => {
-    item.classList.remove('activeTab')
-  })
-  event.target.classList.add('activeTab')
+  await fetchProductsByType(tab)
 }
-
-// Lifecycle (replicar useEffect del original)
-onMounted(() => {
-  const slickSlide = document.querySelectorAll('.productTag .tab')
-  slickSlide.forEach((item) => {
-    item.addEventListener('click', () => {
-      // Remove active class if already exist
-      const activeTab = document.querySelector('.activeTab')
-      if (activeTab) {
-        activeTab.classList.remove('activeTab')
-      }
-      // Add active class on clicked nav item
-      item.classList.add('activeTab')
-    })
-  })
-})
 </script>
 
 <style scoped>
 /* Tab styles */
+
 .activeTab {
   color: #000000;
-  border-bottom: 2px solid #000000;
-  font-weight: 600;
+  font-weight: 900;
 }
 
 .tab {

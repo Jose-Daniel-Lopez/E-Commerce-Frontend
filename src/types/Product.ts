@@ -10,4 +10,5 @@ export interface Product {
   cpu: string
   memory: string
   camera: string
+  createdAt: string
 }

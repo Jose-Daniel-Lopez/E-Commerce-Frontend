@@ -120,10 +120,22 @@ export default {
         ? this.product.name
         : `${this.product.name.slice(0, 40)}...`
     },
+    hasDiscount() {
+      return this.product.discountPrice && this.product.discountPrice !== ''
+    },
+    isUpcoming() {
+      return this.product.featureType === 'Up Coming...' || this.product.originalPrice === 'N/A'
+    },
   },
   methods: {
     toggleFavorite() {
       this.isFavorite = !this.isFavorite
+    },
+    handleBuyNow() {
+      if (!this.isUpcoming) {
+        // Add to cart logic or navigate to product details
+        console.log('Buy now clicked for product:', this.product.id)
+      }
     },
   },
 }
