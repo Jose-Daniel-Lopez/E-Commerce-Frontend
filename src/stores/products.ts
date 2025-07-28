@@ -45,6 +45,21 @@ interface BackendProductResponse {
   createdAt?: string
 }
 
+interface BackendCategoryProductResponse {
+  id?: number
+  name?: string
+  basePrice?: number
+  imageUrl?: string | null
+  description?: string
+  brand?: string
+  isFeatured?: boolean
+  totalStock?: number
+  cpu?: string
+  memory?: string
+  camera?: string
+  createdAt?: string
+}
+
 export const useProductsStore = defineStore('products', () => {
   // State
   const products = ref<Product[]>([])
@@ -214,6 +229,57 @@ export const useProductsStore = defineStore('products', () => {
       }
     } catch (err) {
       console.error(`Error fetching products for category ${categoryId}:`, err)
+      error.value = 'Error al cargar los productos de la categoría'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const fetchProductsByCategoryName = async (categoryName: string, page = 0, size = 9) => {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const response = await api.get('/products/category', {
+        params: {
+          name: categoryName,
+          page,
+          size,
+        },
+      })
+
+      const data = response.data
+
+      // Transform the response to match the Product interface
+      const transformedProducts = (data.content || data).map((product: BackendCategoryProductResponse, index: number) => ({
+        id: product.id || index + 1,
+        name: product.name || 'Unknown Product',
+        description: product.description || '',
+        brand: product.brand || 'Unknown',
+        isFeatured: product.isFeatured || false,
+        imageUrl: product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+        basePrice: product.basePrice || 0,
+        totalStock: product.totalStock || 10, // Default stock
+        cpu: product.cpu || '',
+        memory: product.memory || '',
+        camera: product.camera || '',
+        createdAt: product.createdAt || new Date().toISOString(),
+      }))
+
+      products.value = transformedProducts
+
+      // Update pagination info (assuming your backend provides this)
+      pagination.value = {
+        page: data.page?.number || data.number || page,
+        size: data.page?.size || data.size || size,
+        totalElements: data.page?.totalElements || data.totalElements || transformedProducts.length,
+        totalPages: data.page?.totalPages || data.totalPages || Math.ceil(transformedProducts.length / size),
+        first: data.page?.first || data.first || page === 0,
+        last: data.page?.last || data.last || page >= Math.ceil(transformedProducts.length / size) - 1,
+        numberOfElements: data.page?.numberOfElements || data.numberOfElements || transformedProducts.length,
+      }
+    } catch (err) {
+      console.error(`Error fetching products for category "${categoryName}":`, err)
       error.value = 'Error al cargar los productos de la categoría'
     } finally {
       loading.value = false
@@ -403,6 +469,7 @@ export const useProductsStore = defineStore('products', () => {
     fetchBrands,
     fetchMemories,
     fetchProductsByCategory,
+    fetchProductsByCategoryName,
     fetchProductById,
     fetchProductStats,
     addProduct,
