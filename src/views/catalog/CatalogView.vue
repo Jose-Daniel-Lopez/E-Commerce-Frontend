@@ -338,7 +338,7 @@ watch(
           <!-- Search Filter -->
           <div class="mb-6">
             <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
-              <h3 class="font-srProDisplay text-lg font-semibold text-black">Buscar Categorías</h3>
+              <h3 class="font-srProDisplay text-lg font-semibold text-black">{{ t('catalog.searchCategories') }}</h3>
               <button
                 @click="toggleFilter('search')"
                 class="p-1 hover:bg-gray-100 rounded transition-colors"
@@ -368,7 +368,7 @@ watch(
                   v-model="searchQuery"
                   class="w-full bg-[#f5f5f5] p-0.5 font-srProDisplay text-sm font-medium text-black outline-none"
                   type="search"
-                  placeholder="Buscar"
+                  :placeholder="t('catalog.searchPlaceholder')"
                 />
               </div>
             </div>
@@ -377,16 +377,16 @@ watch(
           <!-- Category Types Filter -->
           <div class="mb-6">
             <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
-              <h3 class="font-srProDisplay text-lg font-semibold text-black">Tipos</h3>
+              <h3 class="font-srProDisplay text-lg font-semibold text-black">{{ t('catalog.types') }}</h3>
               <div class="flex items-center space-x-2">
                 <button
                   v-if="categoryTypes.some((type) => type.checked)"
                   @click="clearTypeFilters"
                   class="text-xs text-gray-500 hover:text-gray-700 transition-colors"
                   type="button"
-                  title="Limpiar filtros"
+                  title="{{ t('catalog.clearFilters') }}"
                 >
-                  Limpiar
+                  {{ t('catalog.clearFilters') }}
                 </button>
                 <button
                   @click="toggleFilter('productCount')"
@@ -436,18 +436,18 @@ watch(
 
           <!-- Quick Stats -->
           <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-            <h4 class="font-srProDisplay text-sm font-semibold text-gray-800 mb-2">Estadísticas</h4>
+            <h4 class="font-srProDisplay text-sm font-semibold text-gray-800 mb-2">{{ t('catalog.stats') }}</h4>
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
-                <span class="text-gray-600">Total Categorías:</span>
+                <span class="text-gray-600">{{ t('catalog.totalCategories') }}</span>
                 <span class="font-medium">{{ categoriesStore.categoryCount }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-600">Total Productos:</span>
+                <span class="text-gray-600">{{ t('catalog.totalProducts') }}</span>
                 <span class="font-medium">{{ categoriesStore.totalProducts }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-600">Filtradas:</span>
+                <span class="text-gray-600">{{ t('catalog.filtered') }}</span>
                 <span class="font-medium">{{ filteredCategories.length }}</span>
               </div>
             </div>
@@ -460,10 +460,10 @@ watch(
           <div class="flex items-center justify-between mb-6">
             <div>
               <h1 class="font-srProDisplay text-xl font-semibold text-black">
-                Catálogo de Categorías
+                {{ t('catalog.title') }}
               </h1>
               <p class="font-srProDisplay text-gray-600">
-                {{ filteredCategories.length }} categorías encontradas
+                {{ t('catalog.categoriesFound', { count: filteredCategories.length }) }}
               </p>
             </div>
             <div class="flex items-center">
@@ -471,10 +471,10 @@ watch(
                 v-model="sortBy"
                 class="font-srProDisplay border border-[#EBEBEB] rounded-md w-70 px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-gray-500"
               >
-                <option value="name">Nombre A-Z</option>
-                <option value="name-desc">Nombre Z-A</option>
-                <option value="products-high">Más productos</option>
-                <option value="products-low">Menos productos</option>
+                <option value="name">{{ t('catalog.sort.nameAZ') }}</option>
+                <option value="name-desc">{{ t('catalog.sort.nameZA') }}</option>
+                <option value="products-high">{{ t('catalog.sort.mostProducts') }}</option>
+                <option value="products-low">{{ t('catalog.sort.leastProducts') }}</option>
               </select>
             </div>
           </div>
@@ -482,7 +482,7 @@ watch(
           <!-- Loading State -->
           <div v-if="categoriesStore.loading" class="flex justify-center items-center py-12">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-            <span class="ml-3 text-gray-600">Cargando categorías...</span>
+            <span class="ml-3 text-gray-600">{{ t('shop.loadingCategories') }}</span>
           </div>
 
           <!-- Error State -->
@@ -519,8 +519,8 @@ watch(
                 </svg>
               </div>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">No se encontraron categorías</h3>
-            <p class="text-gray-600">No hay categorías que coincidan con tu búsqueda</p>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ t('catalog.noCategoriesFound') }}</h3>
+            <p class="text-gray-600">{{ t('catalog.noCategoriesMatch') }}</p>
           </div>
 
           <!-- Categories Grid -->
@@ -575,7 +575,7 @@ watch(
                     {{ category.name }}
                   </h3>
                   <p class="text-sm text-gray-600 text-center">
-                    {{ categoriesStore.getProductCount(category.id) }} productos
+                    {{ categoriesStore.getProductCount(category.id) }} {{ t('shop.product' + (categoriesStore.getProductCount(category.id) === 1 ? '' : 's')) }}
                   </p>
                 </div>
                 <!-- View Button -->
@@ -584,7 +584,7 @@ watch(
                     @click="viewCategoryProducts(category.id)"
                     class="w-full bg-black text-white py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:bg-gray-800 transition-colors"
                   >
-                    Ver Productos
+                    {{ t('catalog.viewProducts') }}
                   </button>
                 </div>
               </div>

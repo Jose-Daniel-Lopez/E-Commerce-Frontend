@@ -97,11 +97,13 @@
       "music": "Música",
       "accessories": "Accesorios"
     },
-    "product": {
-      "addToCart": "Añadir al carrito",
-      "addedToCart": "Añadido al carrito",
-      "outOfStock": "Sin stock"
-    },
+    "product": "producto",
+    "products": "productos",
+    "productAddToCart": "Añadir al carrito",
+    "productAddedToCart": "Añadido al carrito",
+    "productOutOfStock": "Sin stock",
+    "product": "producto",
+    "products": "productos",
     "empty": {
       "title": "No hay categorías disponibles",
       "description": "No se encontraron categorías para mostrar."
@@ -186,7 +188,23 @@
     }
   },
   "catalog": {
-    "title": "Catálogo"
+    "title": "Catálogo de Categorías",
+    "categoriesFound": "{count} categorías encontradas",
+    "noCategoriesFound": "No se encontraron categorías",
+    "noCategoriesMatch": "No hay categorías que coincidan con tu búsqueda",
+    "types": "Tipos",
+    "clearFilters": "Limpiar",
+    "stats": "Estadísticas",
+    "totalCategories": "Total Categorías:",
+    "totalProducts": "Total Productos:",
+    "filtered": "Filtradas:",
+    "sort": {
+      "nameAZ": "Nombre A-Z",
+      "nameZA": "Nombre Z-A",
+      "mostProducts": "Más productos",
+      "leastProducts": "Menos productos"
+    },
+    "viewProducts": "Ver Productos"
   },
   "home": {
     "title": "Inicio"

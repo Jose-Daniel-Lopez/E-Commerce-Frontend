@@ -1,4 +1,25 @@
 {
+  "catalog": {
+    "title": "Category Catalog",
+    "searchCategories": "Search Categories",
+    "searchPlaceholder": "Search",
+    "categoriesFound": "{count} categories found",
+    "noCategoriesFound": "No categories found",
+    "noCategoriesMatch": "No categories match your search",
+    "types": "Types",
+    "clearFilters": "Clear",
+    "stats": "Statistics",
+    "totalCategories": "Total Categories:",
+    "totalProducts": "Total Products:",
+    "filtered": "Filtered:",
+    "sort": {
+      "nameAZ": "Name A-Z",
+      "nameZA": "Name Z-A",
+      "mostProducts": "Most products",
+      "leastProducts": "Least products"
+    },
+    "viewProducts": "View Products"
+  },
   "checkout": {
     "summary": "Summary",
     "address": "Address",
@@ -97,11 +118,13 @@
       "music": "Music",
       "accessories": "Accessories"
     },
-    "product": {
-      "addToCart": "Add to Cart",
-      "addedToCart": "Added to cart",
-      "outOfStock": "Out of stock"
-    },
+    "product": "product",
+    "products": "products",
+    "productAddToCart": "Add to Cart",
+    "productAddedToCart": "Added to cart",
+    "productOutOfStock": "Out of stock",
+    "product": "product",
+    "products": "products",
     "empty": {
       "title": "No categories available",
       "description": "No categories found to display."
@@ -186,7 +209,23 @@
     }
   },
   "catalog": {
-    "title": "Catalog"
+    "title": "Category Catalog",
+    "categoriesFound": "{count} categories found",
+    "noCategoriesFound": "No categories found",
+    "noCategoriesMatch": "No categories match your search",
+    "types": "Types",
+    "clearFilters": "Clear",
+    "stats": "Statistics",
+    "totalCategories": "Total Categories:",
+    "totalProducts": "Total Products:",
+    "filtered": "Filtered:",
+    "sort": {
+      "nameAZ": "Name A-Z",
+      "nameZA": "Name Z-A",
+      "mostProducts": "Most products",
+      "leastProducts": "Least products"
+    },
+    "viewProducts": "View Products"
   },
   "home": {
     "title": "Home"
