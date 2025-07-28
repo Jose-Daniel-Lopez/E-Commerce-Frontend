@@ -1,4 +1,17 @@
 {
+  "checkout": {
+    "summary": "Summary",
+    "address": "Address",
+    "noAddress": "No address selected",
+    "shipmentMethod": "Shipping Method",
+    "noShipping": "No shipping method selected",
+    "subtotal": "Subtotal",
+    "estimatedTax": "Estimated Tax",
+    "estimatedShipping": "Estimated Shipping & Tax",
+    "total": "Total",
+    "payment": "Payment",
+    "selectAddress": "Select address"
+  },
   "cart": {
     "title": "Shopping Cart",
     "loading": "Loading cart...",
@@ -60,87 +73,17 @@
       }
     },
     "cta": {
-      "title": "Ready to Shop?",
+      "title": "Ready to shop?",
       "description": "Discover our complete collection of premium products and find the perfect device for you.",
       "shopNow": "Shop Now",
       "contact": "Contact Us"
     }
   },
-  "contact": {
-    "title": "Contact Us",
-    "information": {
-      "title": "Information",
-      "email": {
-        "title": "Email",
-        "info": "info{'@'}cyberstore.com",
-        "support": "support{'@'}cyberstore.com"
-      },
-      "phone": {
-        "title": "Phone",
-        "number": "+34 91 123 45 67",
-        "hours": "Mon - Fri: 9:00 - 18:00"
-      },
-      "location": {
-        "title": "Location",
-        "address": "Gran Vía Street, 123",
-        "city": "28013 Madrid, Spain"
-      },
-      "responseTime": {
-        "title": "Response Time",
-        "description": "We usually respond within 24 hours",
-        "businessHours": "During business hours: within 4 hours"
-      }
-    },
-    "form": {
-      "title": "Send message",
-      "fields": {
-        "fullName": {
-          "label": "Full Name",
-          "placeholder": "Enter your full name"
-        },
-        "email": {
-          "label": "Email",
-          "placeholder": "your{'@'}email.com"
-        },
-        "subject": {
-          "label": "Subject",
-          "placeholder": "How can we help you?"
-        },
-        "message": {
-          "label": "Message",
-          "placeholder": "Describe your query or message..."
-        },
-        "contactMethod": {
-          "label": "Preferred contact method",
-          "email": "Email",
-          "phone": "Phone"
-        }
-      },
-      "submit": "Send Message"
-    },
-    "faq": {
-      "title": "Frequently Asked Questions",
-      "questions": {
-        "delivery": {
-          "question": "What is the delivery time?",
-          "answer": "Standard delivery takes 2-3 business days for mainland and 3-5 days for Balearic and Canary Islands."
-        },
-        "payment": {
-          "question": "What payment methods do you accept?",
-          "answer": "We accept all major credit/debit cards (Visa, Mastercard, American Express), PayPal, Apple Pay and Google Pay."
-        },
-        "returns": {
-          "question": "Can I return a product?",
-          "answer": "Yes, you have 30 days to return any product in perfect condition. Return shipping costs are your responsibility."
-        }
-      }
-    }
-  },
   "shop": {
     "title": "Our Store",
-    "description": "Discover our selection of latest technology products. From mobile phones to accessories, find everything you need.",
+    "description": "Discover our selection of the latest technology products. From smartphones to accessories, find everything you need.",
     "categories": {
-      "all": "All Categories",
+      "all": "All",
       "smartphones": "Smartphones",
       "smartwatches": "Smart Watches",
       "cameras": "Cameras",
@@ -167,9 +110,79 @@
     "loadingCategories": "Loading categories...",
     "noCategories": "No categories available.",
     "cta": {
-      "title": "Can't Find What You're Looking For?",
+      "title": "Can't find what you're looking for?",
       "description": "Contact our team and we'll help you find the perfect product for you.",
       "contact": "Contact"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "information": {
+      "title": "Information",
+      "email": {
+        "title": "Email",
+        "info": "info@cyberstore.com",
+        "support": "support@cyberstore.com"
+      },
+      "phone": {
+        "title": "Phone",
+        "number": "+34 91 123 45 67",
+        "hours": "Mon - Fri: 9:00 - 18:00"
+      },
+      "location": {
+        "title": "Location",
+        "address": "Gran Vía Street, 123",
+        "city": "28013 Madrid, Spain"
+      },
+      "responseTime": {
+        "title": "Response Time",
+        "description": "We usually respond within 24 hours",
+        "businessHours": "During business hours: within 4 hours"
+      }
+    },
+    "form": {
+      "title": "Send Message",
+      "fields": {
+        "fullName": {
+          "label": "Full Name",
+          "placeholder": "Enter your full name"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "your@email.com"
+        },
+        "subject": {
+          "label": "Subject",
+          "placeholder": "How can we help you?"
+        },
+        "message": {
+          "label": "Message",
+          "placeholder": "Describe your query or message..."
+        },
+        "contactMethod": {
+          "label": "Preferred contact method",
+          "email": "Email",
+          "phone": "Phone"
+        }
+      },
+      "submit": "Send Message"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "questions": {
+        "delivery": {
+          "question": "What is the delivery time?",
+          "answer": "Standard delivery takes 2–3 business days for mainland Spain and 3–5 days for the Balearic and Canary Islands."
+        },
+        "payment": {
+          "question": "What payment methods do you accept?",
+          "answer": "We accept all major credit and debit cards (Visa, Mastercard, American Express), PayPal, Apple Pay, and Google Pay."
+        },
+        "returns": {
+          "question": "Can I return a product?",
+          "answer": "Yes, you have 30 days to return any product in perfect condition. Return shipping costs are your responsibility."
+        }
+      }
     }
   },
   "catalog": {
@@ -213,22 +226,21 @@
     "buyNow": "Buy Now"
   },
   "account": {
-    "title": "My Account",
     "navigation": "Navigation",
+    "title": "My Account",
     "profile": {
       "title": "Profile",
       "editButton": "Edit Profile",
-      "cancelButton": "Cancel",
+      "refreshButton": "Refresh",
       "memberSince": "Member since",
       "verified": "Verified",
       "unverified": "Unverified",
-      "refreshButton": "Refresh",
       "editModal": {
         "title": "Edit Profile",
         "nameLabel": "Full Name",
         "namePlaceholder": "Enter your full name",
         "emailLabel": "Email",
-        "emailPlaceholder": "your{'@'}email.com",
+        "emailPlaceholder": "your@email.com",
         "locationLabel": "Location",
         "locationPlaceholder": "Enter your location",
         "avatarTitle": "Profile Picture",
@@ -242,14 +254,14 @@
       "title": "My Orders",
       "viewAll": "View all orders",
       "order": "Order",
-      "viewDetails": "View Details",
+      "viewDetails": "View details",
       "empty": "You have no orders yet.",
       "emptyMessage": "You have not placed any orders yet."
     },
     "refunds": {
       "title": "Refunds and Returns",
       "refund": "Refund",
-      "viewDetails": "View Details",
+      "viewDetails": "View details",
       "empty": "No refunds or returns found."
     },
     "wishlist": {
@@ -296,10 +308,10 @@
     "title": "Discount Products"
   },
   "hero": {
-    "smallTitle": "Pro.Beyond",
+    "smallTitle": "Pro. Beyond.",
     "bigTitle": "iPhone 14",
     "bigTitleBold": "Pro",
-    "description": "Created to change everything for the better. For everyone",
+    "description": "Created to change everything for the better. For everyone.",
     "buttonText": "Show More"
   }
 }

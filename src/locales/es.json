@@ -4,7 +4,7 @@
     "address": "Dirección",
     "noAddress": "No hay dirección seleccionada",
     "shipmentMethod": "Método de envío",
-    "noShipping": "No hay método de envío seleccionado",
+    "noShipping": "No se ha seleccionado un método de envío",
     "subtotal": "Subtotal",
     "estimatedTax": "Impuestos estimados",
     "estimatedShipping": "Envío e impuestos estimados",
@@ -13,7 +13,7 @@
     "selectAddress": "Seleccionar dirección"
   },
   "cart": {
-    "title": "Carrito de Compras",
+    "title": "Carrito de compras",
     "loading": "Cargando carrito...",
     "error": "Error al cargar el carrito.",
     "empty": "Tu carrito está vacío."
@@ -24,7 +24,7 @@
       "popular": "Populares",
       "upcoming": "Próximamente"
     },
-    "noData": "No hay datos"
+    "noData": "No hay datos disponibles"
   },
   "nav": {
     "home": "Inicio",
@@ -38,10 +38,10 @@
   },
   "breadcrumbs": {
     "home": "Inicio",
-    "account": "Mi Cuenta"
+    "account": "Mi cuenta"
   },
   "about": {
-    "title": "Acerca de Nosotros",
+    "title": "Acerca de nosotros",
     "description": "Somos una tienda de comercio electrónico dedicada a ofrecer productos de alta calidad con un enfoque minimalista y elegante. Nuestra misión es proporcionar una experiencia de compra sencilla y agradable para todos nuestros clientes.",
     "values": {
       "quality": {
@@ -58,7 +58,7 @@
       }
     },
     "featuredProducts": {
-      "title": "Nuestros Productos Destacados",
+      "title": "Nuestros productos destacados",
       "iphone": {
         "title": "iPhone 14 Pro",
         "description": "Experiencia premium en móvil"
@@ -73,32 +73,32 @@
       }
     },
     "cta": {
-      "title": "¿Preparado para Comprar?",
+      "title": "¿Preparado para comprar?",
       "description": "Descubre nuestra colección completa de productos premium y encuentra el dispositivo perfecto para ti.",
-      "shopNow": "Comprar Ya",
+      "shopNow": "Comprar ahora",
       "contact": "Contáctanos"
     }
   },
   "shop": {
-    "title": "Nuestra Tienda",
-    "description": "Descubre nuestra selección de productos tecnológicos de última generación. Desde moviles hasta accesorios, encuentra todo lo que necesitas.",
+    "title": "Nuestra tienda",
+    "description": "Descubre nuestra selección de productos tecnológicos de última generación. Desde móviles hasta accesorios, encuentra todo lo que necesitas.",
     "categories": {
       "all": "Todos",
-      "smartphones": "Moviles",
-      "smartwatches": "Relojes Inteligentes",
-      "cameras": "Camaras",
+      "smartphones": "Móviles",
+      "smartwatches": "Relojes inteligentes",
+      "cameras": "Cámaras",
       "headphones": "Auriculares",
       "computers": "Ordenadores",
       "keyboards": "Teclados",
       "mice": "Ratones",
       "gaming": "Gaming",
       "tablets": "Tablets",
-      "smartHome": "Hogar Inteligente",
+      "smartHome": "Hogar inteligente",
       "music": "Música",
       "accessories": "Accesorios"
     },
     "product": {
-      "addToCart": "Añadir al Carrito",
+      "addToCart": "Añadir al carrito",
       "addedToCart": "Añadido al carrito",
       "outOfStock": "Sin stock"
     },
@@ -110,7 +110,7 @@
     "loadingCategories": "Cargando categorías...",
     "noCategories": "No hay categorías disponibles.",
     "cta": {
-      "title": "¿No Encuentras Lo Que Buscas?",
+      "title": "¿No encuentras lo que buscas?",
       "description": "Contacta con nuestro equipo y te ayudaremos a encontrar el producto perfecto para ti.",
       "contact": "Contactar"
     }
@@ -120,9 +120,9 @@
     "information": {
       "title": "Información",
       "email": {
-        "title": "Correo Electrónico",
-        "info": "info{'@'}cyberstore.com",
-        "support": "soporte{'@'}cyberstore.com"
+        "title": "Correo electrónico",
+        "info": "info@cyberstore.com",
+        "support": "soporte@cyberstore.com"
       },
       "phone": {
         "title": "Teléfono",
@@ -135,21 +135,21 @@
         "city": "28013 Madrid, España"
       },
       "responseTime": {
-        "title": "Tiempo de Respuesta",
+        "title": "Tiempo de respuesta",
         "description": "Normalmente respondemos en 24 horas",
         "businessHours": "En horario laboral: en 4 horas"
       }
     },
     "form": {
-      "title": "Enviar Mensaje",
+      "title": "Enviar mensaje",
       "fields": {
         "fullName": {
-          "label": "Nombre Completo",
+          "label": "Nombre completo",
           "placeholder": "Introduce tu nombre completo"
         },
         "email": {
-          "label": "Correo Electrónico",
-          "placeholder": "tu{'@'}email.com"
+          "label": "Correo electrónico",
+          "placeholder": "tu@email.com"
         },
         "subject": {
           "label": "Asunto",
@@ -161,18 +161,18 @@
         },
         "contactMethod": {
           "label": "Método de contacto preferido",
-          "email": "Correo Electrónico",
+          "email": "Correo electrónico",
           "phone": "Teléfono"
         }
       },
-      "submit": "Enviar Mensaje"
+      "submit": "Enviar mensaje"
     },
     "faq": {
-      "title": "Preguntas Frecuentes",
+      "title": "Preguntas frecuentes",
       "questions": {
         "delivery": {
           "question": "¿Cuál es el tiempo de entrega?",
-          "answer": "La entrega estándar tarda de 2-3 días laborables para península y de 3-5 días para Baleares y Canarias."
+          "answer": "La entrega estándar tarda entre 2 y 3 días laborables en la península y entre 3 y 5 días en Baleares y Canarias."
         },
         "payment": {
           "question": "¿Qué métodos de pago aceptáis?",
@@ -195,13 +195,13 @@
     "title": "Smartphones"
   },
   "wishlist": {
-    "title": "Lista de Deseados",
+    "title": "Lista de deseos",
     "loading": "Cargando...",
     "error": "Error al cargar la lista.",
     "removeError": "No se pudo eliminar el producto.",
-    "empty": "Tu lista de deseados está vacía.",
+    "empty": "Tu lista de deseos está vacía.",
     "emptyDescription": "Busca productos y añade tus favoritos aquí.",
-    "goToCatalog": "Ir al Catálogo",
+    "goToCatalog": "Ir al catálogo",
     "viewProduct": "Ver producto",
     "details": "Ver detalles",
     "remove": "Quitar"
@@ -222,64 +222,64 @@
     "category": "Categoría",
     "brand": "Marca",
     "stock": "Stock",
-    "addToCart": "Añadir al Carrito",
-    "buyNow": "Comprar Ahora"
+    "addToCart": "Añadir al carrito",
+    "buyNow": "Comprar ahora"
   },
   "account": {
     "navigation": "Navegación",
-    "title": "Mi Cuenta",
+    "title": "Mi cuenta",
     "profile": {
       "title": "Perfil",
-      "editButton": "Editar Perfil",
+      "editButton": "Editar perfil",
       "refreshButton": "Refrescar",
       "memberSince": "Miembro desde",
       "verified": "Verificado",
       "unverified": "No verificado",
       "editModal": {
-        "title": "Editar Perfil",
-        "nameLabel": "Nombre Completo",
+        "title": "Editar perfil",
+        "nameLabel": "Nombre completo",
         "namePlaceholder": "Introduce tu nombre completo",
-        "emailLabel": "Correo Electrónico",
-        "emailPlaceholder": "tu{'@'}email.com",
+        "emailLabel": "Correo electrónico",
+        "emailPlaceholder": "tu@email.com",
         "locationLabel": "Ubicación",
         "locationPlaceholder": "Introduce tu ubicación",
-        "avatarTitle": "Foto de Perfil",
+        "avatarTitle": "Foto de perfil",
         "avatarDescription": "Sube una nueva foto de perfil. Solo se permiten archivos JPG, PNG o GIF.",
-        "changeAvatarButton": "Cambiar Foto",
+        "changeAvatarButton": "Cambiar foto",
         "cancelButton": "Cancelar",
-        "saveButton": "Guardar Cambios"
+        "saveButton": "Guardar cambios"
       }
     },
     "orders": {
-      "title": "Mis Pedidos",
+      "title": "Mis pedidos",
       "viewAll": "Ver todos los pedidos",
       "order": "Pedido",
-      "viewDetails": "Ver Detalles",
+      "viewDetails": "Ver detalles",
       "empty": "Aún no tienes pedidos.",
       "emptyMessage": "Aún no has realizado ningún pedido."
     },
     "refunds": {
-      "title": "Reembolsos y Devoluciones",
+      "title": "Reembolsos y devoluciones",
       "refund": "Reembolso",
-      "viewDetails": "Ver Detalles",
+      "viewDetails": "Ver detalles",
       "empty": "No se encontraron reembolsos ni devoluciones."
     },
     "wishlist": {
-      "title": "Lista de Deseados",
+      "title": "Lista de deseos",
       "viewAll": "Ver todo",
-      "addToCart": "Añadir al Carrito",
+      "addToCart": "Añadir al carrito",
       "empty": {
-        "title": "Tu lista de deseados está vacía",
+        "title": "Tu lista de deseos está vacía",
         "description": "¡Comienza a navegar y agrega productos que te gusten!"
       },
-      "emptyMessage": "No tienes productos en tu lista de deseados."
+      "emptyMessage": "No tienes productos en tu lista de deseos."
     },
     "addresses": {
-      "title": "Mis Direcciones",
-      "addButton": "Añadir Nueva Dirección"
+      "title": "Mis direcciones",
+      "addButton": "Añadir nueva dirección"
     },
     "reviews": {
-      "title": "Mis Reseñas",
+      "title": "Mis reseñas",
       "reviews": "Reseñas",
       "empty": "Aún no has escrito ninguna reseña."
     },
@@ -290,7 +290,7 @@
         "description": "Elige tu idioma preferido"
       },
       "theme": {
-        "title": "Tema de la Aplicación",
+        "title": "Tema de la aplicación",
         "description": "Selecciona tu tema preferido"
       },
       "notifications": {
@@ -300,18 +300,18 @@
       "security": {
         "title": "Seguridad",
         "description": "Gestiona la seguridad de tu cuenta",
-        "changePasswordButton": "Cambiar Contraseña"
+        "changePasswordButton": "Cambiar contraseña"
       }
     }
   },
   "discountProducts": {
-    "title": "Productos en Descuento"
+    "title": "Productos en descuento"
   },
   "hero": {
-    "smallTitle": "Pro.Beyond",
+    "smallTitle": "Pro. Beyond.",
     "bigTitle": "iPhone 14",
     "bigTitleBold": "Pro",
-    "description": "Creado para cambiarlo todo para mejor. Para todos",
-    "buttonText": "Mostrar Más"
+    "description": "Creado para cambiarlo todo para mejor. Para todos.",
+    "buttonText": "Mostrar más"
   }
 }
