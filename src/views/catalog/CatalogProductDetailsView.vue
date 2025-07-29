@@ -1,28 +1,181 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
+import { useProductStore } from '@/stores/products'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
+// Complete backend product response interface matching your entity
+interface BackendProduct {
+  // Core fields
+  id: number
+  name: string
+  description: string
+  brand: string
+  createdAt: string
+  rating: number
+  isFeatured: boolean
+  imageUrl?: string
+  basePrice: number
+  totalStock: number
+
+  // Smartphones attributes
+  screenSize?: string
+  cpu?: string
+  memory?: string
+  numberOfCores?: number
+  camera?: string
+  frontCamera?: string
+  battery?: string
+
+  // Smartwatches attributes
+  displaySize?: string
+  batteryLife?: string
+  waterResistance?: string
+  connectivity?: string
+  healthSensors?: string
+  compatibility?: string
+
+  // Cameras attributes
+  resolution?: string
+  sensorType?: string
+  lensMount?: string
+  videoResolution?: string
+  isoRange?: string
+  opticalZoom?: string
+
+  // Headphones attributes
+  driverSize?: string
+  frequencyResponse?: string
+  impedance?: string
+  noiseCancel?: boolean
+  bluetoothVersion?: string
+
+  // Computers attributes
+  processorModel?: string
+  ramCapacity?: number
+  storageType?: string
+  storageCapacity?: number
+  graphicsCard?: string
+  operatingSystem?: string
+
+  // Keyboards attributes
+  keyType?: string
+  layout?: string
+  backlight?: string
+  keyProfile?: string
+  ergonomic?: boolean
+
+  // Mice attributes
+  dpi?: number
+  programmableButtons?: boolean
+
+  // Gaming attributes
+  platform?: string
+  gameGenre?: string
+  playerCount?: number
+  onlineMultiplayer?: boolean
+  systemRequirements?: string
+  ageRating?: string
+
+  // Smart home attributes
+  powerSource?: string
+  controlMethod?: string
+  automationFeatures?: string
+  securityFeatures?: string
+
+  // Audio attributes
+  powerOutput?: number
+  speakerConfiguration?: string
+
+  // Accessories attributes
+  material?: string
+  dimensions?: string
+  weight?: string
+  warranty?: string
+  color?: string
+
+  // Category relationship
+  category?: {
+    id: number
+    name: string
+  }
+
+  // HATEOAS links
+  _links?: {
+    self: { href: string }
+    product: { href: string }
+    category: { href: string }
+    productVariants: { href: string }
+  }
+}
+
+// Frontend product interface for this component
 interface Product {
   id: number
   name: string
   description: string
   basePrice: number
   totalStock: number
-  image?: string
   brand?: string
-  model?: string
+  rating?: number
+  image?: string
+  category?: string
+  createdAt?: string
   specifications?: {
+    // Core specs
     screenSize?: string
     processor?: string
-    ncores?: string
     camera?: string
     frontCamera?: string
     battery?: string
+    memory?: string
+
+    // Display/Screen
+    displaySize?: string
+    resolution?: string
+
+    // Performance
+    numberOfCores?: number
+    ramCapacity?: number
+    storageCapacity?: number
+
+    // Audio/Video
+    driverSize?: string
+    frequencyResponse?: string
+    powerOutput?: number
+
+    // Connectivity
+    connectivity?: string
+    bluetoothVersion?: string
+
+    // Special features
+    waterResistance?: string
+    noiseCancel?: boolean
+    programmableButtons?: boolean
+
+    // Gaming/Platform
+    platform?: string
+    gameGenre?: string
+
+    // Physical attributes
+    material?: string
+    dimensions?: string
+    weight?: string
+    color?: string
+
+    // Default UI fields (for missing data)
     storage?: string[]
     colors?: string[]
-    memory?: string
   }
 }
+
+// Props interface for route parameters
+interface Props {
+  categoryName: string
+  productId: string
+}
+
+const props = defineProps<Props>()
+const productStore = useProductStore()
 
 // State
 const product = ref<Product | null>(null)
@@ -43,11 +196,9 @@ const mockProduct: Product = {
   totalStock: 50,
   image: '/images/Iphone-14-pro-Gold.png',
   brand: 'Apple',
-  model: 'iPhone 14 Pro Max',
   specifications: {
     screenSize: '6.7"',
     processor: 'Apple A16 Bionic',
-    ncores: '6',
     camera: '48-12-12 MP',
     frontCamera: '12 MP',
     battery: '4323 mAh',
@@ -89,20 +240,136 @@ const discountPrice = computed(() => {
 })
 
 const currentImage = computed(() => {
-  return productImages[selectedImageIndex.value] || mockProduct.image
+  return productImages[selectedImageIndex.value] || product.value?.image || mockProduct.image
+})
+
+// Get the current product for display (prioritize fetched data over mock)
+const currentProduct = computed(() => product.value || mockProduct)
+
+// Dynamic specs availability checks
+const hasScreenSpecs = computed(() => {
+  const specs = currentProduct.value?.specifications
+  return specs?.screenSize || specs?.displaySize || specs?.resolution
+})
+
+const hasPerformanceSpecs = computed(() => {
+  const specs = currentProduct.value?.specifications
+  return specs?.processor || specs?.numberOfCores || specs?.memory ||
+         specs?.ramCapacity || specs?.storageCapacity
+})
+
+const hasCameraSpecs = computed(() => {
+  const specs = currentProduct.value?.specifications
+  return specs?.camera || specs?.frontCamera || specs?.resolution
+})
+
+const hasAudioSpecs = computed(() => {
+  const specs = currentProduct.value?.specifications
+  return specs?.driverSize || specs?.frequencyResponse ||
+         specs?.noiseCancel !== undefined || specs?.powerOutput
+})
+
+const hasConnectivitySpecs = computed(() => {
+  const specs = currentProduct.value?.specifications
+  return specs?.connectivity || specs?.bluetoothVersion
+})
+
+const hasGamingSpecs = computed(() => {
+  const specs = currentProduct.value?.specifications
+  return specs?.platform || specs?.gameGenre
+})
+
+const hasPhysicalSpecs = computed(() => {
+  const specs = currentProduct.value?.specifications
+  return specs?.material || specs?.dimensions || specs?.weight || specs?.color
 })
 
 onMounted(async () => {
   try {
-    // For now, use mock data. In production, fetch from API
-    product.value = mockProduct
-    selectedColor.value = mockProduct.specifications?.colors?.[0] || ''
-    selectedStorage.value = mockProduct.specifications?.storage?.[0] || ''
+    // Get productId from route params
+    const productId = parseInt(props.productId)
 
-    // Simulate API call delay
-    setTimeout(() => {
+    if (!productId || isNaN(productId)) {
+      error.value = 'Invalid product ID'
       loading.value = false
-    }, 500)
+      return
+    }
+
+    // Fetch product from backend
+    const backendProduct = await productStore.fetchProductById(productId) as BackendProduct
+
+    // Transform backend data to frontend format
+    product.value = {
+      id: backendProduct.id,
+      name: backendProduct.name,
+      description: backendProduct.description,
+      basePrice: backendProduct.basePrice,
+      totalStock: backendProduct.totalStock,
+      brand: backendProduct.brand,
+      rating: backendProduct.rating,
+      image: getProductImage(backendProduct.name),
+      category: backendProduct.category?.name,
+      createdAt: backendProduct.createdAt,
+      specifications: {
+        // Core specifications
+        screenSize: backendProduct.screenSize || backendProduct.displaySize,
+        processor: backendProduct.cpu || backendProduct.processorModel,
+        camera: backendProduct.camera,
+        frontCamera: backendProduct.frontCamera,
+        battery: backendProduct.battery ? `${backendProduct.battery}` : backendProduct.batteryLife,
+        memory: backendProduct.memory,
+
+        // Display/Screen
+        displaySize: backendProduct.displaySize,
+        resolution: backendProduct.resolution,
+
+        // Performance
+        numberOfCores: backendProduct.numberOfCores,
+        ramCapacity: backendProduct.ramCapacity,
+        storageCapacity: backendProduct.storageCapacity,
+
+        // Audio/Video
+        driverSize: backendProduct.driverSize,
+        frequencyResponse: backendProduct.frequencyResponse,
+        powerOutput: backendProduct.powerOutput,
+
+        // Connectivity
+        connectivity: backendProduct.connectivity,
+        bluetoothVersion: backendProduct.bluetoothVersion,
+
+        // Special features
+        waterResistance: backendProduct.waterResistance,
+        noiseCancel: backendProduct.noiseCancel,
+        programmableButtons: backendProduct.programmableButtons,
+
+        // Gaming/Platform
+        platform: backendProduct.platform,
+        gameGenre: backendProduct.gameGenre,
+
+        // Physical attributes
+        material: backendProduct.material,
+        dimensions: backendProduct.dimensions,
+        weight: backendProduct.weight,
+        color: backendProduct.color,
+
+        // Default values for missing fields (UI-specific)
+        storage: getStorageOptions(backendProduct.memory || backendProduct.storageCapacity?.toString()),
+        colors: getColorOptions(backendProduct.color),
+      },
+    }
+
+    // Set default selections
+    selectedColor.value = product.value.specifications?.colors?.[0] || ''
+    selectedStorage.value = product.value.specifications?.storage?.[0] || ''
+
+    // Update breadcrumb with actual product name
+    breadcrumbs.value = [
+      { label: 'Catálogo', to: '/catalog' },
+      { label: capitalizeFirstLetter(props.categoryName), to: `/catalog/${props.categoryName}` },
+      { label: product.value.name },
+    ]
+
+    loading.value = false
   } catch (err) {
     console.error('Error fetching product:', err)
     error.value = 'Error loading product details'
@@ -114,7 +381,7 @@ onMounted(async () => {
 const selectColor = (color: string) => {
   selectedColor.value = color
   // Update image based on color selection
-  const colorIndex = mockProduct.specifications?.colors?.indexOf(color) || 0
+  const colorIndex = (product.value?.specifications?.colors || mockProduct.specifications?.colors)?.indexOf(color) || 0
   selectedImageIndex.value = colorIndex
 }
 
@@ -155,15 +422,75 @@ const getColorClass = (color: string) => {
   return colorMap[color] || 'bg-gray-400'
 }
 
+// Helper function to get product image (fallback to default)
+const getProductImage = (productName: string): string => {
+  // Map product names to specific images
+  const productImageMap: { [key: string]: string } = {
+    'iphone': '/images/Iphone-14-pro-Gold.png',
+    'samsung': '/images/Galaxy-Z-Mobile.png',
+    'apple': '/images/Iphone-14-pro-Gold.png',
+    'realme': '/images/Iphone-14-pro-Gold.png', // fallback for now
+  }
+
+  const name = productName.toLowerCase()
+  for (const [key, imagePath] of Object.entries(productImageMap)) {
+    if (name.includes(key)) {
+      return imagePath
+    }
+  }
+
+  // Default fallback image
+  return '/images/Iphone-14-pro-Gold.png'
+}
+
+// Helper function to capitalize first letter
+const capitalizeFirstLetter = (string: string): string => {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
+// Helper function to generate storage options based on actual storage
+const getStorageOptions = (actualStorage?: string): string[] => {
+  if (!actualStorage) {
+    return ['128GB', '256GB', '512GB', '1TB'] // Default options
+  }
+
+  const storageValue = actualStorage.toLowerCase()
+  if (storageValue.includes('128')) return ['128GB', '256GB', '512GB']
+  if (storageValue.includes('256')) return ['128GB', '256GB', '512GB', '1TB']
+  if (storageValue.includes('512')) return ['256GB', '512GB', '1TB']
+  if (storageValue.includes('1tb') || storageValue.includes('1024')) return ['512GB', '1TB', '2TB']
+
+  return [actualStorage, '256GB', '512GB', '1TB']
+}
+
+// Helper function to generate color options based on actual color
+const getColorOptions = (actualColor?: string): string[] => {
+  if (!actualColor) {
+    return ['Black', 'White', 'Silver', 'Gold'] // Default options
+  }
+
+  const baseColors = ['Black', 'White', 'Silver', 'Gold', 'Blue', 'Red', 'Green', 'Purple']
+  const result = [actualColor]
+
+  // Add complementary colors
+  baseColors.forEach(color => {
+    if (color.toLowerCase() !== actualColor.toLowerCase() && !result.includes(color)) {
+      result.push(color)
+    }
+  })
+
+  return result.slice(0, 4) // Limit to 4 colors for UI
+}
+
 // Description expand/collapse
 import { computed as vComputed } from 'vue'
 const showFullDescription = ref(false)
 const descriptionLimit = 180
 const isDescriptionLong = vComputed(
-  () => (product.value?.description || mockProduct.description).length > descriptionLimit,
+  () => (currentProduct.value?.description || '').length > descriptionLimit,
 )
 const displayedDescription = vComputed(() => {
-  const desc = product.value?.description || mockProduct.description
+  const desc = currentProduct.value?.description || ''
   if (!showFullDescription.value && desc.length > descriptionLimit) {
     return desc.slice(0, descriptionLimit) + '...'
   }
@@ -302,7 +629,7 @@ const reviewStats = {
           <div class="bg-gray-50 rounded-lg p-8 flex items-center justify-center h-[500px]">
             <img
               :src="currentImage"
-              :alt="product?.name || mockProduct.name"
+              :alt="currentProduct.name"
               class="h-[500px] w-[400px] object-contain"
             />
           </div>
@@ -333,7 +660,7 @@ const reviewStats = {
           <!-- Product Title and Price -->
           <div>
             <h1 class="font-srProDisplay text-4xl font-bold text-black mb-4">
-              {{ product?.name || mockProduct.name }}
+              {{ currentProduct.name }}
             </h1>
 
             <div class="flex items-center space-x-3 mb-4">
@@ -351,7 +678,7 @@ const reviewStats = {
             <span class="font-srProDisplay text-sm font-medium text-gray-700">Select color:</span>
             <div class="flex space-x-3">
               <button
-                v-for="color in mockProduct.specifications?.colors"
+                v-for="color in currentProduct.specifications?.colors"
                 :key="color"
                 @click="selectColor(color)"
                 :class="[
@@ -368,7 +695,7 @@ const reviewStats = {
           <div class="space-y-3">
             <div class="flex space-x-3">
               <button
-                v-for="storage in mockProduct.specifications?.storage"
+                v-for="storage in currentProduct.specifications?.storage"
                 :key="storage"
                 @click="selectStorage(storage)"
                 :class="[
@@ -384,81 +711,129 @@ const reviewStats = {
           </div>
 
           <!-- Product Specifications -->
-          <div class="grid grid-cols-3 gap-3">
-            <!-- Screen Size -->
-            <div class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <!-- Screen Size / Display Size -->
+            <div v-if="currentProduct.specifications?.screenSize || currentProduct.specifications?.displaySize"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 flex items-center justify-center">
                 <v-icon name="io-resize" scale="1.2" class="text-gray-600" />
               </div>
               <div>
                 <p class="text-xs text-gray-500">Screen size</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ mockProduct.specifications?.screenSize }}
+                  {{ currentProduct.specifications?.screenSize || currentProduct.specifications?.displaySize }}
                 </p>
               </div>
             </div>
 
-            <!-- Processor -->
-            <div class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+            <!-- Processor / CPU -->
+            <div v-if="currentProduct.specifications?.processor"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                 <v-icon name="hi-solid-chip" scale="1.2" class="text-gray-600" />
               </div>
               <div>
                 <p class="text-xs text-gray-500">CPU</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ mockProduct.specifications?.processor }}
+                  {{ currentProduct.specifications?.processor }}
                 </p>
               </div>
             </div>
 
-            <!-- Number of cores -->
-            <div class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+            <!-- Memory / RAM -->
+            <div v-if="currentProduct.specifications?.memory || currentProduct.specifications?.ramCapacity"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                 <v-icon name="hi-chip" scale="1.2" class="text-gray-600" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Number of Cores</p>
+                <p class="text-xs text-gray-500">Memory</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ mockProduct.specifications?.ncores }}
+                  {{ currentProduct.specifications?.memory || (currentProduct.specifications?.ramCapacity ? `${currentProduct.specifications.ramCapacity}GB` : '') }}
                 </p>
               </div>
             </div>
 
             <!-- Camera -->
-            <div class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+            <div v-if="currentProduct.specifications?.camera"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                 <v-icon name="bi-camera" scale="1.2" class="text-gray-600" />
               </div>
               <div>
                 <p class="text-xs text-gray-500">Camera</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ mockProduct.specifications?.camera }}
+                  {{ currentProduct.specifications?.camera }}
                 </p>
               </div>
             </div>
 
             <!-- Front camera -->
-            <div class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+            <div v-if="currentProduct.specifications?.frontCamera"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                 <v-icon name="io-camera-reverse-outline" scale="1.2" class="text-gray-600" />
               </div>
               <div>
                 <p class="text-xs text-gray-500">Front-Camera</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ mockProduct.specifications?.frontCamera }}
+                  {{ currentProduct.specifications?.frontCamera }}
                 </p>
               </div>
             </div>
 
             <!-- Battery -->
-            <div class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+            <div v-if="currentProduct.specifications?.battery"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                 <v-icon name="gi-battery-75" scale="1.2" class="text-gray-600" />
               </div>
               <div>
                 <p class="text-xs text-gray-500">Battery</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ mockProduct.specifications?.battery }}
+                  {{ currentProduct.specifications?.battery }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Water Resistance (for smartwatches) -->
+            <div v-if="currentProduct.specifications?.waterResistance"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="io-water" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Water Resistance</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ currentProduct.specifications?.waterResistance }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Connectivity -->
+            <div v-if="currentProduct.specifications?.connectivity"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="io-wifi" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Connectivity</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ currentProduct.specifications?.connectivity }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Platform (for gaming) -->
+            <div v-if="currentProduct.specifications?.platform"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="io-game-controller" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Platform</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ currentProduct.specifications?.platform }}
                 </p>
               </div>
             </div>
@@ -584,108 +959,204 @@ const reviewStats = {
                       : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
                   "
                 >
-                  <!-- Screen Section -->
-                  <h3 class="text-xl font-semibold mb-4 mt-8">Screen</h3>
-                  <div class="border-t border-gray-200">
-                    <div class="flex items-center py-4 border-b border-gray-100">
-                      <div class="flex-1 text-gray-600">Screen diagonal</div>
-                      <div class="w-48 text-right font-medium">6.7"</div>
-                    </div>
-                    <div class="flex items-center py-4 border-b border-gray-100">
-                      <div class="flex-1 text-gray-600">The screen resolution</div>
-                      <div class="w-48 text-right font-medium">2796x1290</div>
-                    </div>
-                    <div class="flex items-center py-4 border-b border-gray-100">
-                      <div class="flex-1 text-gray-600">The screen refresh rate</div>
-                      <div class="w-48 text-right font-medium">120 Hz</div>
-                    </div>
-                    <div class="flex items-center py-4 border-b border-gray-100">
-                      <div class="flex-1 text-gray-600">The pixel density</div>
-                      <div class="w-48 text-right font-medium">460 ppi</div>
-                    </div>
-                    <div class="flex items-center py-4 border-b border-gray-100">
-                      <div class="flex-1 text-gray-600">Screen type</div>
-                      <div class="w-48 text-right font-medium">OLED</div>
-                    </div>
-                    <div class="flex items-center py-4">
-                      <div class="flex-1 text-gray-600">Additionally</div>
-                      <div class="w-48 text-right font-medium space-y-1">
-                        <div>Dynamic Island</div>
-                        <div>Always-On display</div>
-                        <div>HDR display</div>
-                        <div>True Tone</div>
-                        <div>Wide color (P3)</div>
+                  <!-- Screen/Display Section -->
+                  <div v-if="hasScreenSpecs">
+                    <h3 class="text-xl font-semibold mb-4 mt-8">Display</h3>
+                    <div class="border-t border-gray-200">
+                      <div v-if="currentProduct.specifications?.screenSize || currentProduct.specifications?.displaySize"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Screen diagonal</div>
+                        <div class="w-48 text-right font-medium">
+                          {{ currentProduct.specifications?.screenSize || currentProduct.specifications?.displaySize || 'N/A' }}
+                        </div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.resolution"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Resolution</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.resolution }}</div>
+                      </div>
+                      <div class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Screen refresh rate</div>
+                        <div class="w-48 text-right font-medium">120 Hz</div>
+                      </div>
+                      <div class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Pixel density</div>
+                        <div class="w-48 text-right font-medium">460 ppi</div>
+                      </div>
+                      <div class="flex items-center py-4">
+                        <div class="flex-1 text-gray-600">Screen type</div>
+                        <div class="w-48 text-right font-medium">OLED</div>
                       </div>
                     </div>
                   </div>
 
-                  <!-- CPU Section -->
-                  <h3 class="text-xl font-semibold mb-4 mt-12">CPU</h3>
-                  <div class="border-t border-gray-200">
-                    <div class="flex items-center py-4 border-b border-gray-100">
-                      <div class="flex-1 text-gray-600">CPU</div>
-                      <div class="w-48 text-right font-medium">Apple A16 Bionic</div>
-                    </div>
-                    <div class="flex items-center py-4 border-b border-gray-100">
-                      <div class="flex-1 text-gray-600">Number of cores</div>
-                      <div class="w-48 text-right font-medium">6</div>
-                    </div>
-                    <div class="flex items-center py-4">
-                      <div class="flex-1 text-gray-600">Memory</div>
-                      <div class="w-48 text-right font-medium">6GB</div>
+                  <!-- Performance Section -->
+                  <div v-if="hasPerformanceSpecs">
+                    <h3 class="text-xl font-semibold mb-4 mt-12">Performance</h3>
+                    <div class="border-t border-gray-200">
+                      <div v-if="currentProduct.specifications?.processor"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Processor</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.processor }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.numberOfCores"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Number of cores</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.numberOfCores }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.memory || currentProduct.specifications?.ramCapacity"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Memory</div>
+                        <div class="w-48 text-right font-medium">
+                          {{ currentProduct.specifications?.memory || (currentProduct.specifications?.ramCapacity ? `${currentProduct.specifications.ramCapacity}GB` : 'N/A') }}
+                        </div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.storageCapacity"
+                           class="flex items-center py-4">
+                        <div class="flex-1 text-gray-600">Storage</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.storageCapacity }}GB</div>
+                      </div>
                     </div>
                   </div>
 
                   <!-- Camera Section -->
-                  <h3 class="text-xl font-semibold mb-4 mt-12">Camera</h3>
-                  <div class="border-t border-gray-200">
-                    <div class="flex items-center py-4 border-b border-gray-100">
-                      <div class="flex-1 text-gray-600">Rear camera</div>
-                      <div class="w-48 text-right font-medium">48 MP + 12 MP + 12 MP</div>
+                  <div v-if="hasCameraSpecs">
+                    <h3 class="text-xl font-semibold mb-4 mt-12">Camera</h3>
+                    <div class="border-t border-gray-200">
+                      <div v-if="currentProduct.specifications?.camera"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Rear camera</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.camera }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.frontCamera"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Front camera</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.frontCamera }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.resolution"
+                           class="flex items-center py-4">
+                        <div class="flex-1 text-gray-600">Image resolution</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.resolution }}</div>
+                      </div>
                     </div>
-                    <div class="flex items-center py-4 border-b border-gray-100">
-                      <div class="flex-1 text-gray-600">Front camera</div>
-                      <div class="w-48 text-right font-medium">12 MP</div>
+                  </div>
+
+                  <!-- Audio Section -->
+                  <div v-if="hasAudioSpecs">
+                    <h3 class="text-xl font-semibold mb-4 mt-12">Audio</h3>
+                    <div class="border-t border-gray-200">
+                      <div v-if="currentProduct.specifications?.driverSize"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Driver size</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.driverSize }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.frequencyResponse"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Frequency response</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.frequencyResponse }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.noiseCancel !== undefined"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Noise cancellation</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.noiseCancel ? 'Yes' : 'No' }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.powerOutput"
+                           class="flex items-center py-4">
+                        <div class="flex-1 text-gray-600">Power output</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.powerOutput }}W</div>
+                      </div>
                     </div>
-                    <div class="flex items-center py-4">
-                      <div class="flex-1 text-gray-600">Camera features</div>
-                      <div class="w-48 text-right font-medium space-y-1">
-                        <div>Night mode</div>
-                        <div>Deep Fusion</div>
-                        <div>Smart HDR 4</div>
-                        <div>Photographic Styles</div>
-                        <div>ProRAW & ProRes</div>
+                  </div>
+
+                  <!-- Connectivity Section -->
+                  <div v-if="hasConnectivitySpecs">
+                    <h3 class="text-xl font-semibold mb-4 mt-12">Connectivity</h3>
+                    <div class="border-t border-gray-200">
+                      <div v-if="currentProduct.specifications?.connectivity"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Connectivity</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.connectivity }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.bluetoothVersion"
+                           class="flex items-center py-4">
+                        <div class="flex-1 text-gray-600">Bluetooth</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.bluetoothVersion }}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Gaming Section -->
+                  <div v-if="hasGamingSpecs">
+                    <h3 class="text-xl font-semibold mb-4 mt-12">Gaming</h3>
+                    <div class="border-t border-gray-200">
+                      <div v-if="currentProduct.specifications?.platform"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Platform</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.platform }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.gameGenre"
+                           class="flex items-center py-4">
+                        <div class="flex-1 text-gray-600">Genre</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.gameGenre }}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Physical Section -->
+                  <div v-if="hasPhysicalSpecs">
+                    <h3 class="text-xl font-semibold mb-4 mt-12">Physical</h3>
+                    <div class="border-t border-gray-200">
+                      <div v-if="currentProduct.specifications?.material"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Material</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.material }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.dimensions"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Dimensions</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.dimensions }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.weight"
+                           class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Weight</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.weight }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.color"
+                           class="flex items-center py-4">
+                        <div class="flex-1 text-gray-600">Color</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.color }}</div>
                       </div>
                     </div>
                   </div>
 
                   <!-- Battery Section -->
-                  <h3 class="text-xl font-semibold mb-4 mt-12">Battery</h3>
-                  <div class="border-t border-gray-200">
-                    <div class="flex items-center py-4 border-b border-gray-100">
-                      <div class="flex-1 text-gray-600">Capacity</div>
-                      <div class="w-48 text-right font-medium">4323 mAh</div>
-                    </div>
-                    <div class="flex items-center py-4 border-b border-gray-100">
-                      <div class="flex-1 text-gray-600">Charging</div>
-                      <div class="w-48 text-right font-medium">Fast charging, MagSafe wireless</div>
-                    </div>
-                    <div class="flex items-center py-4">
-                      <div class="flex-1 text-gray-600">Battery life</div>
-                      <div class="w-48 text-right font-medium">Up to 29 hours video playback</div>
+                  <div v-if="currentProduct.specifications?.battery">
+                    <h3 class="text-xl font-semibold mb-4 mt-12">Battery</h3>
+                    <div class="border-t border-gray-200">
+                      <div class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Capacity</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.battery }}</div>
+                      </div>
+                      <div class="flex items-center py-4 border-b border-gray-100">
+                        <div class="flex-1 text-gray-600">Charging</div>
+                        <div class="w-48 text-right font-medium">Fast charging</div>
+                      </div>
+                      <div class="flex items-center py-4">
+                        <div class="flex-1 text-gray-600">Battery life</div>
+                        <div class="w-48 text-right font-medium">All day usage</div>
+                      </div>
                     </div>
                   </div>
 
-                  <!-- Storage Section -->
-                  <h3 class="text-xl font-semibold mb-4 mt-12">Storage</h3>
-                  <div class="border-t border-gray-200">
-                    <div class="flex items-center py-4">
-                      <div class="flex-1 text-gray-600">Available options</div>
-                      <div class="w-48 text-right font-medium space-y-1">
-                        <div>128GB</div>
-                        <div>256GB</div>
-                        <div>512GB</div>
-                        <div>1TB</div>
+                  <!-- Available Options Section -->
+                  <div v-if="currentProduct.specifications?.storage?.length">
+                    <h3 class="text-xl font-semibold mb-4 mt-12">Available Options</h3>
+                    <div class="border-t border-gray-200">
+                      <div class="flex items-center py-4">
+                        <div class="flex-1 text-gray-600">Storage options</div>
+                        <div class="w-48 text-right font-medium space-y-1">
+                          <div v-for="storage in currentProduct.specifications?.storage" :key="storage">{{ storage }}</div>
+                        </div>
                       </div>
                     </div>
                   </div>
