@@ -3,6 +3,28 @@ import { ref, onMounted, computed } from 'vue'
 import { useProductStore } from '@/stores/products'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
+// Product variant interface from backend
+interface ProductVariant {
+  id: number
+  size: string  // Storage for mobile/compute, switch type for input/control
+  color: string
+  stock: number
+  sku: string
+  _links?: {
+    self: { href: string }
+    productVariant: { href: string }
+    product: { href: string }
+  }
+}
+
+// Product variants response from backend
+interface ProductVariantsResponse {
+  _embedded?: {
+    productVariants: ProductVariant[]
+  }
+  productVariants?: ProductVariant[]
+}
+
 // Complete backend product response interface matching your entity
 interface BackendProduct {
   // Core fields
@@ -108,6 +130,12 @@ const selectedStorage = ref('')
 const selectedImageIndex = ref(0)
 const showAllDetails = ref(false)
 
+// Product variants state
+const productVariants = ref<ProductVariant[]>([])
+const selectedVariant = ref<ProductVariant | null>(null)
+const variantsLoading = ref(false)
+const variantsError = ref('')
+
 // Mock product data based on the image
 const mockProduct: Product = {
   id: 1,
@@ -165,6 +193,48 @@ const currentImage = computed(() => {
 
 // Get the current product for display (prioritize fetched data over mock)
 const currentProduct = computed(() => product.value || mockProduct)
+
+// Product variants computed properties
+const availableColors = computed(() => {
+  const colors = [...new Set(productVariants.value.map(v => v.color))]
+  return colors.length > 0 ? colors : (currentProduct.value?.specifications?.colors || [])
+})
+
+const availableSizes = computed(() => {
+  const sizes = [...new Set(productVariants.value.map(v => v.size))]
+  return sizes.length > 0 ? sizes : []
+})
+
+// Filter variants based on selections
+const filteredVariantsByColor = computed(() => {
+  if (!selectedColor.value) return productVariants.value
+  return productVariants.value.filter(v => v.color === selectedColor.value)
+})
+
+const filteredVariantsBySize = computed(() => {
+  if (!selectedStorage.value) return filteredVariantsByColor.value
+  return filteredVariantsByColor.value.filter(v => v.size === selectedStorage.value)
+})
+
+// Get current variant based on selections
+const currentVariant = computed(() => {
+  if (selectedColor.value && selectedStorage.value) {
+    return productVariants.value.find(v =>
+      v.color === selectedColor.value && v.size === selectedStorage.value
+    ) || null
+  }
+  return selectedVariant.value
+})
+
+// Current stock for selected variant
+const currentStock = computed(() => {
+  return currentVariant.value?.stock || currentProduct.value?.totalStock || 0
+})
+
+// Check if current selection is in stock
+const isInStock = computed(() => {
+  return currentStock.value > 0
+})
 
 // Dynamic specs availability checks for Mobile & Compute template
 const hasMobileComputeSpecs = computed(() => {
@@ -278,6 +348,9 @@ onMounted(async () => {
       { label: product.value.name },
     ]
 
+    // Fetch product variants after product is loaded
+    await fetchProductVariants(productId)
+
     loading.value = false
   } catch (err) {
     console.error('Error fetching product:', err)
@@ -286,12 +359,80 @@ onMounted(async () => {
   }
 })
 
+// Fetch product variants
+const fetchProductVariants = async (productId: number) => {
+  variantsLoading.value = true
+  variantsError.value = ''
+
+  try {
+    console.log('🔍 [fetchProductVariants] Fetching variants for product:', productId)
+
+    // Fetch variants directly using axios
+    const variantsResponse = await fetch(`http://localhost:8080/api/products/${productId}/productVariants`)
+    const variantsData = await variantsResponse.json()
+
+    console.log('🔍 [fetchProductVariants] Raw variants response:', variantsData)
+
+    // Extract variants from response (handle both _embedded and direct array)
+    const variants = variantsData._embedded?.productVariants || variantsData.productVariants || []
+
+    console.log('🔍 [fetchProductVariants] Processed variants:', variants)
+
+    productVariants.value = variants
+
+    // Set default selections if variants exist
+    if (variants.length > 0) {
+      // Set default color to first available color
+      if (!selectedColor.value && availableColors.value.length > 0) {
+        selectedColor.value = availableColors.value[0]
+      }
+
+      // Set default size to first available size for current color
+      if (!selectedStorage.value && availableSizes.value.length > 0) {
+        selectedStorage.value = availableSizes.value[0]
+      }
+
+      // Find and set the selected variant
+      selectedVariant.value = variants.find((v: ProductVariant) =>
+        v.color === selectedColor.value && v.size === selectedStorage.value
+      ) || variants[0]
+    }
+
+  } catch (err) {
+    console.error('🔍 [fetchProductVariants] Error fetching variants:', err)
+    variantsError.value = 'Error loading product variants'
+  } finally {
+    variantsLoading.value = false
+  }
+}
+
 // Methods
 const selectColor = (color: string) => {
   selectedColor.value = color
+
   // Update image based on color selection
-  const colorIndex = (product.value?.specifications?.colors || mockProduct.specifications?.colors)?.indexOf(color) || 0
+  const colorIndex = availableColors.value.indexOf(color) || 0
   selectedImageIndex.value = colorIndex
+
+  // Update selected variant if size is also selected
+  if (selectedStorage.value) {
+    const variant = productVariants.value.find(v =>
+      v.color === selectedColor.value && v.size === selectedStorage.value
+    )
+    selectedVariant.value = variant || null
+  }
+}
+
+const selectStorage = (size: string) => {
+  selectedStorage.value = size
+
+  // Update selected variant if color is also selected
+  if (selectedColor.value) {
+    const variant = productVariants.value.find(v =>
+      v.color === selectedColor.value && v.size === selectedStorage.value
+    )
+    selectedVariant.value = variant || null
+  }
 }
 
 const selectImage = (index: number) => {
@@ -299,11 +440,25 @@ const selectImage = (index: number) => {
 }
 
 const addToCart = () => {
-  console.log('Adding to cart:', {
+  const cartItem = {
     product: product.value?.name,
+    productId: product.value?.id,
+    variant: currentVariant.value,
     color: selectedColor.value,
+    size: selectedStorage.value,
     price: finalPrice.value,
-  })
+    stock: currentStock.value,
+    sku: currentVariant.value?.sku
+  }
+
+  console.log('Adding to cart:', cartItem)
+
+  // Check if item is in stock
+  if (!isInStock.value) {
+    alert('This item is currently out of stock')
+    return
+  }
+
   // Implement add to cart functionality
 }
 
@@ -549,43 +704,86 @@ const reviewStats = {
           </div>
 
           <!-- Color Selection -->
-          <div class="flex items-center gap-4">
+          <div v-if="availableColors.length > 0" class="flex items-center gap-4">
             <span class="font-srProDisplay text-sm font-medium text-gray-700">Select color:</span>
             <div class="flex space-x-3">
               <button
-                v-for="color in currentProduct.specifications?.colors"
+                v-for="color in availableColors"
                 :key="color"
                 @click="selectColor(color)"
                 :class="[
-                  'w-8 h-8 rounded-full border-1 transition-all',
+                  'w-8 h-8 rounded-full border-2 transition-all',
                   selectedColor === color ? 'border-black ring-2 ring-gray-300' : 'border-gray-300',
                   getColorClass(color),
                 ]"
                 :title="color"
               ></button>
             </div>
+            <span v-if="selectedColor" class="text-sm text-gray-600">{{ selectedColor }}</span>
           </div>
 
-          <!-- Storage Display (for Mobile & Compute) -->
-          <div v-if="isMobileComputeCategory && currentProduct.specifications?.storage" class="space-y-3">
+          <!-- Size/Storage Selection -->
+          <div v-if="availableSizes.length > 0" class="space-y-3">
+            <span class="font-srProDisplay text-sm font-medium text-gray-700">
+              {{ isMobileComputeCategory ? 'Storage:' : 'Type:' }}
+            </span>
+            <div class="flex flex-wrap gap-3">
+              <button
+                v-for="size in availableSizes"
+                :key="size"
+                @click="selectStorage(size)"
+                :class="[
+                  'px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium transition-all',
+                  selectedStorage === size
+                    ? 'border-black bg-black text-white'
+                    : 'border-gray-300 text-gray-700 bg-gray-50 hover:bg-gray-100'
+                ]"
+              >
+                {{ size }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Storage Display (for Mobile & Compute) - fallback for when no variants -->
+          <div v-else-if="isMobileComputeCategory && currentProduct.specifications?.storage" class="space-y-3">
             <span class="font-srProDisplay text-sm font-medium text-gray-700">Storage:</span>
             <div class="px-6 py-3 border border-gray-300 rounded-[8px] font-srProDisplay text-sm font-medium text-gray-700 bg-gray-50">
               {{ currentProduct.specifications.storage }}
             </div>
           </div>
 
+          <!-- Stock Information -->
+          <div v-if="currentVariant || productVariants.length > 0" class="space-y-2">
+            <div class="flex items-center gap-2">
+              <span class="font-srProDisplay text-sm font-medium text-gray-700">Stock:</span>
+              <span :class="[
+                'font-srProDisplay text-sm font-semibold',
+                isInStock ? 'text-green-600' : 'text-red-600'
+              ]">
+                {{ isInStock ? `${currentStock} available` : 'Out of stock' }}
+              </span>
+            </div>
+            <div v-if="currentVariant" class="text-xs text-gray-500">
+              SKU: {{ currentVariant.sku }}
+            </div>
+          </div>
+
           <!-- DEBUG: Raw product data -->
           <div v-if="product" class="space-y-3 p-4 bg-yellow-50 border border-yellow-200 rounded">
-            <h3 class="font-bold text-sm">🔍 DEBUG: Raw Product Data</h3>
-            <div class="text-xs">
+            <h3 class="font-bold text-sm">🔍 DEBUG: Product & Variant Data</h3>
+            <div class="text-xs space-y-1">
               <p><strong>Category:</strong> {{ product.category }}</p>
               <p><strong>Is Mobile/Compute:</strong> {{ isMobileComputeCategory }}</p>
               <p><strong>Is Input/Control:</strong> {{ isInputControlCategory }}</p>
               <p><strong>Has Specifications:</strong> {{ !!product.specifications }}</p>
-              <p><strong>Screen Size:</strong> {{ product.specifications?.screenSize }}</p>
-              <p><strong>CPU:</strong> {{ product.specifications?.cpu }}</p>
-              <p><strong>RAM:</strong> {{ product.specifications?.ram }}</p>
-              <p><strong>Storage:</strong> {{ product.specifications?.storage }}</p>
+              <p><strong>Available Colors:</strong> {{ availableColors.join(', ') }}</p>
+              <p><strong>Available Sizes:</strong> {{ availableSizes.join(', ') }}</p>
+              <p><strong>Selected Color:</strong> {{ selectedColor }}</p>
+              <p><strong>Selected Storage:</strong> {{ selectedStorage }}</p>
+              <p><strong>Current Variant:</strong> {{ currentVariant?.sku || 'None' }}</p>
+              <p><strong>Current Stock:</strong> {{ currentStock }}</p>
+              <p><strong>Is In Stock:</strong> {{ isInStock }}</p>
+              <p><strong>Total Variants:</strong> {{ productVariants.length }}</p>
             </div>
           </div>
 
@@ -857,9 +1055,15 @@ const reviewStats = {
             </button>
             <button
               @click="addToCart"
-              class="flex-1 bg-black text-white py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium hover:bg-gray-800 transition-colors"
+              :disabled="!isInStock || (!selectedColor && availableColors.length > 0) || (!selectedStorage && availableSizes.length > 0)"
+              :class="[
+                'flex-1 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
+                isInStock && (availableColors.length === 0 || selectedColor) && (availableSizes.length === 0 || selectedStorage)
+                  ? 'bg-black text-white hover:bg-gray-800'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              ]"
             >
-              Add to Cart
+              {{ !isInStock ? 'Out of Stock' : 'Add to Cart' }}
             </button>
           </div>
 
