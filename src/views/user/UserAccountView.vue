@@ -1006,7 +1006,7 @@ const fetchUserReviews = async (userId: number) => {
     const reviewPromises = rawReviews.map(async (review: { id: number; rating: number; comment: string; createdAt: string; _links: { product: { href: string } } }) => {
       let productName = ''
       try {
-        const productRes = await axios.get(review._links.product.href.replace('http://localhost:8080', ''))
+        const productRes = await axios.get(review._links.product.href)
         productName = productRes.data.name
       } catch {
         productName = 'Unknown Product'
