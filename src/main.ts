@@ -33,7 +33,7 @@ import * as AllIcons from 'oh-vue-icons/icons'
  * - Navigation & UI
  * - E-commerce & Cart
  * - Authentication & User
- * - Product categories
+ * - Product categories (Mobile & Compute, Input & Control)
  * - Forms & Inputs
  * - Status & Feedback
  */
@@ -80,21 +80,17 @@ addIcons(
   AllIcons.HiShieldCheck,
 
   // ====== Product Categories ======
-  AllIcons.GiSmartphone,
-  AllIcons.HiPhone,
-  AllIcons.BiSmartwatch,
-  AllIcons.BiCamera,
-  AllIcons.IoCameraReverseOutline,
-  AllIcons.LaHeadphonesSolid,
-  AllIcons.BiLaptop,
-  AllIcons.CoTablet,
-  AllIcons.GiConsoleController,
-  AllIcons.BiKeyboard,
-  AllIcons.BiMouse,
-  AllIcons.RiHomeWifiLine,
+  // --- Mobile & Compute ---
+  AllIcons.GiSmartphone,     // Smartphones
+  AllIcons.HiPhone,          // Alternative phone icon
+  AllIcons.CoTablet,         // Tablets
+  AllIcons.BiLaptop,         // Laptops
+  AllIcons.BiNintendoSwitch,     // Handhelds (e.g., Steam Deck)
 
-  // ====== Media & Audio ======
-  AllIcons.HiMusicNote,
+  // --- Input & Control ---
+  AllIcons.BiKeyboard,       // Keyboards
+  AllIcons.BiMouse,          // Mice
+  AllIcons.GiConsoleController, // Controllers (gamepads)
 
   // ====== Form & Input Controls ======
   AllIcons.HiSearch,
@@ -122,17 +118,16 @@ addIcons(
   AllIcons.HiGlobe,
 
   // ====== Device & Hardware Details ======
-  AllIcons.HiChip,
-  AllIcons.HiSolidChip,
-  AllIcons.MdCable,
-  AllIcons.GiBattery75,
-  AllIcons.HiClock,
-  AllIcons.HiCalendar,
-  AllIcons.HiSun,
-  AllIcons.HiMoon,
+  AllIcons.HiChip,           // CPU
+  AllIcons.HiSolidChip,      // GPU / Chip
+  AllIcons.MdCable,          // Cables / Accessories
+  AllIcons.GiBattery75,      // Battery
+  AllIcons.HiClock,          // Battery life, refresh rate
+  AllIcons.HiSun,            // Backlighting
+  AllIcons.HiMoon,           // Dark mode / backlighting
 
   // ====== Miscellaneous ======
-  AllIcons.HiCube
+  AllIcons.HiCube           // Generic product placeholder
 )
 
 

@@ -105,21 +105,6 @@ export const useCategoriesStore = defineStore('categories', () => {
     error.value = ''
   }
 
-  const getCategoryIcon = (categoryName: string) => {
-    const name = categoryName.toLowerCase()
-    if (name.includes('electrónic') || name.includes('electronic')) return '🔌'
-    if (name.includes('ropa') || name.includes('cloth')) return '👕'
-    if (name.includes('ordenadores') || name.includes('computers')) return '💻'
-    if (name.includes('audio')) return '🔊'
-    if (name.includes('moviles') || name.includes('mobile devices')) return '📱'
-    if (name.includes('camara') || name.includes('camaras') || name.includes('camera')) return '📷'
-    if (name.includes('deporte') || name.includes('sport')) return '⚽'
-    if (name.includes('belleza') || name.includes('beauty')) return '💄'
-    if (name.includes('juguete') || name.includes('toy')) return '🧸'
-    if (name.includes('comida') || name.includes('food')) return '🍕'
-    return '📦'
-  }
-
   return {
     // State
     categories,
@@ -138,6 +123,5 @@ export const useCategoriesStore = defineStore('categories', () => {
     getCategoryById,
     getProductCount,
     clearCategories,
-    getCategoryIcon,
   }
 })
