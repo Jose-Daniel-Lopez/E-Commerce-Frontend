@@ -469,84 +469,82 @@ export const useProductStore = defineStore('product', () => {
     loading.value = true
     error.value = ''
     try {
-      const response = await api.get('/products/category', {
-        params: { name: categoryName, page, size },
+      // First, find the category by name to get its ID
+      const categoriesResponse = await api.get('/categories')
+      const categories = categoriesResponse.data._embedded?.categories || []
+      const category = categories.find((cat: { name: string; id: number }) => cat.name === categoryName)
+
+      if (!category) {
+        throw new Error(`Category "${categoryName}" not found`)
+      }
+
+      // Use the standard categories/{id}/products endpoint which includes full product data
+      const response = await api.get(`/categories/${category.id}/products`, {
+        params: { page, size },
       })
       const data = response.data
 
       console.log('🔍 [fetchProductsByCategoryName] Raw response structure:', {
         categoryName,
-        hasContent: !!data.content,
+        hasEmbedded: !!data._embedded,
         dataStructure: data,
-        rawProductsLength: (data.content || data)?.length || 0,
-        firstProduct: (data.content || data)?.[0],
-        firstProductRating: (data.content || data)?.[0]?.rating,
-        ratingType: typeof (data.content || data)?.[0]?.rating,
+        rawProductsLength: (data._embedded?.products || [])?.length || 0,
+        firstProduct: (data._embedded?.products || [])?.[0],
+        firstProductRating: (data._embedded?.products || [])?.[0]?.rating,
+        ratingType: typeof (data._embedded?.products || [])?.[0]?.rating,
       })
 
+      // Extract products from HAL response (_embedded.products)
+      const rawProducts = data._embedded?.products || []
+
       // Log full structure of first product for debugging API inconsistencies
-      if ((data.content || data)?.[0]) {
+      if (rawProducts[0]) {
         console.log('🔍 [fetchProductsByCategoryName] Full first product structure:',
-          JSON.stringify((data.content || data)[0], null, 2)
+          JSON.stringify(rawProducts[0], null, 2)
         )
         console.log('🔍 [fetchProductsByCategoryName] Available fields:',
-          Object.keys((data.content || data)[0])
+          Object.keys(rawProducts[0])
         )
       }
 
-      // Step 1: Map basic product data (rating may be missing)
-      const initialProducts = (data.content || data).map((product: BackendCategoryProductResponse, index: number) => ({
-        id: product.id || index + 1,
-        name: product.name || 'Unknown Product',
-        description: product.description || '',
-        brand: product.brand || 'Unknown',
-        isFeatured: product.isFeatured || false,
-        imageUrl: product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
-        basePrice: product.basePrice || 0,
-        totalStock: product.totalStock || 10,
-        cpu: product.cpu || '',
-        memory: product.memory || '',
-        camera: product.camera || '',
-        createdAt: product.createdAt || new Date().toISOString(),
-        rating: 0, // Will be updated later
-      }))
+      // Step 1: Map basic product data - DON'T use index fallback for ID!
+      const initialProducts = rawProducts.map((product: BackendCategoryProductResponse) => {
+        if (!product.id) {
+          console.warn('🔍 [fetchProductsByCategoryName] Product missing ID:', product)
+        }
+        return {
+          id: product.id!, // Use actual product ID (required)
+          name: product.name || 'Unknown Product',
+          description: product.description || '',
+          brand: product.brand || 'Unknown',
+          isFeatured: product.isFeatured || false,
+          imageUrl: product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+          basePrice: product.basePrice || 0,
+          totalStock: product.totalStock || 10,
+          cpu: product.cpu || '',
+          memory: product.memory || '',
+          camera: product.camera || '',
+          createdAt: product.createdAt || new Date().toISOString(),
+          rating: typeof product.rating === 'number' ? product.rating : 0, // Use existing rating if available
+        }
+      })
 
-      console.log('🔍 [fetchProductsByCategoryName] Initial products (before rating fetch):', initialProducts.length)
-
-      // Step 2: Fetch individual ratings for each product (if ID exists)
-      const productsWithRatings = await Promise.all(
-        initialProducts.map(async (product: Product) => {
-          if (product.id && product.id > 0) {
-            try {
-              console.log(`🔍 [fetchProductsByCategoryName] Fetching rating for product ${product.id}...`)
-              const productDetail = await fetchProductById(product.id)
-              const rating = typeof productDetail.rating === 'number' ? productDetail.rating : 0
-              console.log(`🔍 [fetchProductsByCategoryName] Product ${product.id} rating: ${rating}`)
-              return { ...product, rating }
-            } catch (err) {
-              console.warn(`🔍 [fetchProductsByCategoryName] Failed to fetch rating for product ${product.id}:`, err)
-              return product
-            }
-          }
-          return product
-        })
+      console.log('🔍 [fetchProductsByCategoryName] Products mapped:', initialProducts.length)
+      console.log('🔍 [fetchProductsByCategoryName] Final products:',
+        initialProducts.map((p: Product) => ({ id: p.id, name: p.name, rating: p.rating }))
       )
 
-      console.log('🔍 [fetchProductsByCategoryName] Final products with ratings:',
-        productsWithRatings.map((p: Product) => ({ id: p.id, name: p.name, rating: p.rating }))
-      )
-
-      products.value = productsWithRatings
+      products.value = initialProducts
 
       // Update pagination (fallback logic if backend doesn't return full metadata)
       pagination.value = {
         page: data.page?.number || data.number || page,
         size: data.page?.size || data.size || size,
-        totalElements: data.page?.totalElements || data.totalElements || productsWithRatings.length,
-        totalPages: data.page?.totalPages || data.totalPages || Math.ceil(productsWithRatings.length / size),
+        totalElements: data.page?.totalElements || data.totalElements || initialProducts.length,
+        totalPages: data.page?.totalPages || data.totalPages || Math.ceil(initialProducts.length / size),
         first: data.page?.first || data.first || page === 0,
-        last: data.page?.last || data.last || page >= Math.ceil(productsWithRatings.length / size) - 1,
-        numberOfElements: data.page?.numberOfElements || data.numberOfElements || productsWithRatings.length,
+        last: data.page?.last || data.last || page >= Math.ceil(initialProducts.length / size) - 1,
+        numberOfElements: data.page?.numberOfElements || data.numberOfElements || initialProducts.length,
       }
     } catch (err) {
       console.error(`Error fetching products for category "${categoryName}":`, err)

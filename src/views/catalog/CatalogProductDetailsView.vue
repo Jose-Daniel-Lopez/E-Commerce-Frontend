@@ -879,20 +879,6 @@ const reviewStats = {
               </div>
             </div>
 
-            <!-- Storage -->
-            <div v-if="currentProduct.specifications?.storage"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="hi-database" scale="1.2" class="text-gray-600" />
-              </div>
-              <div>
-                <p class="text-xs text-gray-500">Storage</p>
-                <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.storage }}
-                </p>
-              </div>
-            </div>
-
             <!-- Refresh Rate -->
             <div v-if="currentProduct.specifications?.refreshRate"
                  class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
