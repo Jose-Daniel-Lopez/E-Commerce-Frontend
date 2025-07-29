@@ -10,94 +10,36 @@ interface BackendProduct {
   name: string
   description: string
   brand: string
-  createdAt: string
+  createdAt?: string
   rating: number
   isFeatured: boolean
   imageUrl?: string
   basePrice: number
   totalStock: number
 
-  // Smartphones attributes
+  // Category name (updated to match new backend response)
+  categoryName: string
+
+  // Mobile & Compute attributes (Phones, Tablets, Laptops, Handhelds)
   screenSize?: string
   cpu?: string
-  memory?: string
-  numberOfCores?: number
+  gpu?: string
+  ram?: number
+  storage?: string
+  refreshRate?: number
   camera?: string
   frontCamera?: string
   battery?: string
+  os?: string
 
-  // Smartwatches attributes
-  displaySize?: string
-  batteryLife?: string
-  waterResistance?: string
-  connectivity?: string
-  healthSensors?: string
-  compatibility?: string
-
-  // Cameras attributes
-  resolution?: string
-  sensorType?: string
-  lensMount?: string
-  videoResolution?: string
-  isoRange?: string
-  opticalZoom?: string
-
-  // Headphones attributes
-  driverSize?: string
-  frequencyResponse?: string
-  impedance?: string
-  noiseCancel?: boolean
-  bluetoothVersion?: string
-
-  // Computers attributes
-  processorModel?: string
-  ramCapacity?: number
-  storageType?: string
-  storageCapacity?: number
-  graphicsCard?: string
-  operatingSystem?: string
-
-  // Keyboards attributes
-  keyType?: string
-  layout?: string
-  backlight?: string
-  keyProfile?: string
-  ergonomic?: boolean
-
-  // Mice attributes
+  // Input & Control attributes (Mice, Keyboards, Controllers)
   dpi?: number
+  pollingRate?: number
+  switchType?: string
+  backlighting?: string
   programmableButtons?: boolean
-
-  // Gaming attributes
-  platform?: string
-  gameGenre?: string
-  playerCount?: number
-  onlineMultiplayer?: boolean
-  systemRequirements?: string
-  ageRating?: string
-
-  // Smart home attributes
-  powerSource?: string
-  controlMethod?: string
-  automationFeatures?: string
-  securityFeatures?: string
-
-  // Audio attributes
-  powerOutput?: number
-  speakerConfiguration?: string
-
-  // Accessories attributes
-  material?: string
-  dimensions?: string
-  weight?: string
-  warranty?: string
-  color?: string
-
-  // Category relationship
-  category?: {
-    id: number
-    name: string
-  }
+  batteryLife?: string
+  ergonomic?: boolean
 
   // HATEOAS links
   _links?: {
@@ -105,6 +47,7 @@ interface BackendProduct {
     product: { href: string }
     category: { href: string }
     productVariants: { href: string }
+    wishlists?: { href: string }
   }
 }
 
@@ -121,49 +64,28 @@ interface Product {
   category?: string
   createdAt?: string
   specifications?: {
-    // Core specs
+    // Mobile & Compute specs
     screenSize?: string
-    processor?: string
+    cpu?: string
+    gpu?: string
+    ram?: number
+    storage?: string
+    refreshRate?: number
     camera?: string
     frontCamera?: string
     battery?: string
-    memory?: string
+    os?: string
 
-    // Display/Screen
-    displaySize?: string
-    resolution?: string
-
-    // Performance
-    numberOfCores?: number
-    ramCapacity?: number
-    storageCapacity?: number
-
-    // Audio/Video
-    driverSize?: string
-    frequencyResponse?: string
-    powerOutput?: number
-
-    // Connectivity
-    connectivity?: string
-    bluetoothVersion?: string
-
-    // Special features
-    waterResistance?: string
-    noiseCancel?: boolean
+    // Input & Control specs
+    dpi?: number
+    pollingRate?: number
+    switchType?: string
+    backlighting?: string
     programmableButtons?: boolean
-
-    // Gaming/Platform
-    platform?: string
-    gameGenre?: string
-
-    // Physical attributes
-    material?: string
-    dimensions?: string
-    weight?: string
-    color?: string
+    batteryLife?: string
+    ergonomic?: boolean
 
     // Default UI fields (for missing data)
-    storage?: string[]
     colors?: string[]
   }
 }
@@ -197,14 +119,18 @@ const mockProduct: Product = {
   image: '/images/Iphone-14-pro-Gold.png',
   brand: 'Apple',
   specifications: {
+    // Mobile & Compute specs for iPhone
     screenSize: '6.7"',
-    processor: 'Apple A16 Bionic',
-    camera: '48-12-12 MP',
-    frontCamera: '12 MP',
+    cpu: 'Apple A16 Bionic',
+    gpu: 'Apple GPU (5-core)',
+    ram: 6,
+    storage: '256GB',
+    refreshRate: 120,
+    camera: '48MP + 12MP + 12MP',
+    frontCamera: '12MP',
     battery: '4323 mAh',
-    storage: ['128GB', '256GB', '512GB', '1TB'],
+    os: 'iOS 17',
     colors: ['Deep Purple', 'Gold', 'Silver', 'Space Black'],
-    memory: '6GB',
   },
 }
 
@@ -225,14 +151,8 @@ const breadcrumbs = ref([
 
 // Computed properties
 const finalPrice = computed(() => {
-  let price = product.value?.basePrice || mockProduct.basePrice
-
-  // Add storage upgrade costs
-  if (selectedStorage.value === '256GB') price += 100
-  else if (selectedStorage.value === '512GB') price += 300
-  else if (selectedStorage.value === '1TB') price += 500
-
-  return price
+  // No additional pricing for storage since it's now a single fixed value
+  return product.value?.basePrice || mockProduct.basePrice
 })
 
 const discountPrice = computed(() => {
@@ -246,42 +166,37 @@ const currentImage = computed(() => {
 // Get the current product for display (prioritize fetched data over mock)
 const currentProduct = computed(() => product.value || mockProduct)
 
-// Dynamic specs availability checks
-const hasScreenSpecs = computed(() => {
+// Dynamic specs availability checks for Mobile & Compute template
+const hasMobileComputeSpecs = computed(() => {
   const specs = currentProduct.value?.specifications
-  return specs?.screenSize || specs?.displaySize || specs?.resolution
+  return specs?.screenSize || specs?.cpu || specs?.gpu || specs?.ram ||
+         specs?.storage || specs?.refreshRate || specs?.camera ||
+         specs?.frontCamera || specs?.battery || specs?.os
 })
 
-const hasPerformanceSpecs = computed(() => {
+// Dynamic specs availability checks for Input & Control template
+const hasInputControlSpecs = computed(() => {
   const specs = currentProduct.value?.specifications
-  return specs?.processor || specs?.numberOfCores || specs?.memory ||
-         specs?.ramCapacity || specs?.storageCapacity
+  return specs?.dpi || specs?.pollingRate || specs?.switchType ||
+         specs?.backlighting || specs?.programmableButtons !== undefined ||
+         specs?.batteryLife || specs?.ergonomic !== undefined
 })
 
-const hasCameraSpecs = computed(() => {
-  const specs = currentProduct.value?.specifications
-  return specs?.camera || specs?.frontCamera || specs?.resolution
+// Determine which template to use based on category
+const isMobileComputeCategory = computed(() => {
+  const categoryName = currentProduct.value?.category
+  console.log('🔍 [isMobileComputeCategory] Checking category:', categoryName)
+  const result = categoryName && ['Smartphones', 'Tablets', 'Laptops', 'Handhelds', 'Computers'].includes(categoryName)
+  console.log('🔍 [isMobileComputeCategory] Result:', result)
+  return result
 })
 
-const hasAudioSpecs = computed(() => {
-  const specs = currentProduct.value?.specifications
-  return specs?.driverSize || specs?.frequencyResponse ||
-         specs?.noiseCancel !== undefined || specs?.powerOutput
-})
-
-const hasConnectivitySpecs = computed(() => {
-  const specs = currentProduct.value?.specifications
-  return specs?.connectivity || specs?.bluetoothVersion
-})
-
-const hasGamingSpecs = computed(() => {
-  const specs = currentProduct.value?.specifications
-  return specs?.platform || specs?.gameGenre
-})
-
-const hasPhysicalSpecs = computed(() => {
-  const specs = currentProduct.value?.specifications
-  return specs?.material || specs?.dimensions || specs?.weight || specs?.color
+const isInputControlCategory = computed(() => {
+  const categoryName = currentProduct.value?.category
+  console.log('🔍 [isInputControlCategory] Checking category:', categoryName)
+  const result = categoryName && ['Mice', 'Keyboards', 'Controllers', 'Gaming'].includes(categoryName)
+  console.log('🔍 [isInputControlCategory] Result:', result)
+  return result
 })
 
 onMounted(async () => {
@@ -298,6 +213,21 @@ onMounted(async () => {
     // Fetch product from backend
     const backendProduct = await productStore.fetchProductById(productId) as BackendProduct
 
+    console.log('🔍 [CatalogProductDetailsView] Backend product response:', backendProduct)
+    console.log('🔍 [CatalogProductDetailsView] Category:', backendProduct.categoryName)
+    console.log('🔍 [CatalogProductDetailsView] Specifications:', {
+      screenSize: backendProduct.screenSize,
+      cpu: backendProduct.cpu,
+      gpu: backendProduct.gpu,
+      ram: backendProduct.ram,
+      storage: backendProduct.storage,
+      refreshRate: backendProduct.refreshRate,
+      camera: backendProduct.camera,
+      frontCamera: backendProduct.frontCamera,
+      battery: backendProduct.battery,
+      os: backendProduct.os
+    })
+
     // Transform backend data to frontend format
     product.value = {
       id: backendProduct.id,
@@ -308,59 +238,38 @@ onMounted(async () => {
       brand: backendProduct.brand,
       rating: backendProduct.rating,
       image: getProductImage(backendProduct.name),
-      category: backendProduct.category?.name,
+      category: backendProduct.categoryName,
       createdAt: backendProduct.createdAt,
       specifications: {
-        // Core specifications
-        screenSize: backendProduct.screenSize || backendProduct.displaySize,
-        processor: backendProduct.cpu || backendProduct.processorModel,
+        // Mobile & Compute specifications
+        screenSize: backendProduct.screenSize,
+        cpu: backendProduct.cpu,
+        gpu: backendProduct.gpu,
+        ram: backendProduct.ram,
+        storage: backendProduct.storage,
+        refreshRate: backendProduct.refreshRate,
         camera: backendProduct.camera,
         frontCamera: backendProduct.frontCamera,
-        battery: backendProduct.battery ? `${backendProduct.battery}` : backendProduct.batteryLife,
-        memory: backendProduct.memory,
+        battery: backendProduct.battery,
+        os: backendProduct.os,
 
-        // Display/Screen
-        displaySize: backendProduct.displaySize,
-        resolution: backendProduct.resolution,
-
-        // Performance
-        numberOfCores: backendProduct.numberOfCores,
-        ramCapacity: backendProduct.ramCapacity,
-        storageCapacity: backendProduct.storageCapacity,
-
-        // Audio/Video
-        driverSize: backendProduct.driverSize,
-        frequencyResponse: backendProduct.frequencyResponse,
-        powerOutput: backendProduct.powerOutput,
-
-        // Connectivity
-        connectivity: backendProduct.connectivity,
-        bluetoothVersion: backendProduct.bluetoothVersion,
-
-        // Special features
-        waterResistance: backendProduct.waterResistance,
-        noiseCancel: backendProduct.noiseCancel,
+        // Input & Control specifications
+        dpi: backendProduct.dpi,
+        pollingRate: backendProduct.pollingRate,
+        switchType: backendProduct.switchType,
+        backlighting: backendProduct.backlighting,
         programmableButtons: backendProduct.programmableButtons,
-
-        // Gaming/Platform
-        platform: backendProduct.platform,
-        gameGenre: backendProduct.gameGenre,
-
-        // Physical attributes
-        material: backendProduct.material,
-        dimensions: backendProduct.dimensions,
-        weight: backendProduct.weight,
-        color: backendProduct.color,
+        batteryLife: backendProduct.batteryLife,
+        ergonomic: backendProduct.ergonomic,
 
         // Default values for missing fields (UI-specific)
-        storage: getStorageOptions(backendProduct.memory || backendProduct.storageCapacity?.toString()),
-        colors: getColorOptions(backendProduct.color),
+        colors: getColorOptions(),
       },
     }
 
     // Set default selections
     selectedColor.value = product.value.specifications?.colors?.[0] || ''
-    selectedStorage.value = product.value.specifications?.storage?.[0] || ''
+    selectedStorage.value = ''
 
     // Update breadcrumb with actual product name
     breadcrumbs.value = [
@@ -385,10 +294,6 @@ const selectColor = (color: string) => {
   selectedImageIndex.value = colorIndex
 }
 
-const selectStorage = (storage: string) => {
-  selectedStorage.value = storage
-}
-
 const selectImage = (index: number) => {
   selectedImageIndex.value = index
 }
@@ -397,7 +302,6 @@ const addToCart = () => {
   console.log('Adding to cart:', {
     product: product.value?.name,
     color: selectedColor.value,
-    storage: selectedStorage.value,
     price: finalPrice.value,
   })
   // Implement add to cart functionality
@@ -448,38 +352,9 @@ const capitalizeFirstLetter = (string: string): string => {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-// Helper function to generate storage options based on actual storage
-const getStorageOptions = (actualStorage?: string): string[] => {
-  if (!actualStorage) {
-    return ['128GB', '256GB', '512GB', '1TB'] // Default options
-  }
-
-  const storageValue = actualStorage.toLowerCase()
-  if (storageValue.includes('128')) return ['128GB', '256GB', '512GB']
-  if (storageValue.includes('256')) return ['128GB', '256GB', '512GB', '1TB']
-  if (storageValue.includes('512')) return ['256GB', '512GB', '1TB']
-  if (storageValue.includes('1tb') || storageValue.includes('1024')) return ['512GB', '1TB', '2TB']
-
-  return [actualStorage, '256GB', '512GB', '1TB']
-}
-
-// Helper function to generate color options based on actual color
-const getColorOptions = (actualColor?: string): string[] => {
-  if (!actualColor) {
-    return ['Black', 'White', 'Silver', 'Gold'] // Default options
-  }
-
-  const baseColors = ['Black', 'White', 'Silver', 'Gold', 'Blue', 'Red', 'Green', 'Purple']
-  const result = [actualColor]
-
-  // Add complementary colors
-  baseColors.forEach(color => {
-    if (color.toLowerCase() !== actualColor.toLowerCase() && !result.includes(color)) {
-      result.push(color)
-    }
-  })
-
-  return result.slice(0, 4) // Limit to 4 colors for UI
+// Helper function to generate color options
+const getColorOptions = (): string[] => {
+  return ['Black', 'White', 'Silver', 'Gold'] // Default options
 }
 
 // Description expand/collapse
@@ -691,29 +566,33 @@ const reviewStats = {
             </div>
           </div>
 
-          <!-- Storage Selection -->
-          <div class="space-y-3">
-            <div class="flex space-x-3">
-              <button
-                v-for="storage in currentProduct.specifications?.storage"
-                :key="storage"
-                @click="selectStorage(storage)"
-                :class="[
-                  'px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium transition-colors',
-                  selectedStorage === storage
-                    ? 'border-black bg-black text-white'
-                    : 'border-gray-300 text-gray-700 hover:border-gray-400',
-                ]"
-              >
-                {{ storage }}
-              </button>
+          <!-- Storage Display (for Mobile & Compute) -->
+          <div v-if="isMobileComputeCategory && currentProduct.specifications?.storage" class="space-y-3">
+            <span class="font-srProDisplay text-sm font-medium text-gray-700">Storage:</span>
+            <div class="px-6 py-3 border border-gray-300 rounded-[8px] font-srProDisplay text-sm font-medium text-gray-700 bg-gray-50">
+              {{ currentProduct.specifications.storage }}
             </div>
           </div>
 
-          <!-- Product Specifications -->
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <!-- Screen Size / Display Size -->
-            <div v-if="currentProduct.specifications?.screenSize || currentProduct.specifications?.displaySize"
+          <!-- DEBUG: Raw product data -->
+          <div v-if="product" class="space-y-3 p-4 bg-yellow-50 border border-yellow-200 rounded">
+            <h3 class="font-bold text-sm">🔍 DEBUG: Raw Product Data</h3>
+            <div class="text-xs">
+              <p><strong>Category:</strong> {{ product.category }}</p>
+              <p><strong>Is Mobile/Compute:</strong> {{ isMobileComputeCategory }}</p>
+              <p><strong>Is Input/Control:</strong> {{ isInputControlCategory }}</p>
+              <p><strong>Has Specifications:</strong> {{ !!product.specifications }}</p>
+              <p><strong>Screen Size:</strong> {{ product.specifications?.screenSize }}</p>
+              <p><strong>CPU:</strong> {{ product.specifications?.cpu }}</p>
+              <p><strong>RAM:</strong> {{ product.specifications?.ram }}</p>
+              <p><strong>Storage:</strong> {{ product.specifications?.storage }}</p>
+            </div>
+          </div>
+
+          <!-- Product Specifications - Mobile & Compute Template -->
+          <div v-if="isMobileComputeCategory" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <!-- Screen Size -->
+            <div v-if="currentProduct.specifications?.screenSize"
                  class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 flex items-center justify-center">
                 <v-icon name="io-resize" scale="1.2" class="text-gray-600" />
@@ -721,13 +600,13 @@ const reviewStats = {
               <div>
                 <p class="text-xs text-gray-500">Screen size</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications?.screenSize || currentProduct.specifications?.displaySize }}
+                  {{ currentProduct.specifications.screenSize }}
                 </p>
               </div>
             </div>
 
-            <!-- Processor / CPU -->
-            <div v-if="currentProduct.specifications?.processor"
+            <!-- CPU -->
+            <div v-if="currentProduct.specifications?.cpu"
                  class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                 <v-icon name="hi-solid-chip" scale="1.2" class="text-gray-600" />
@@ -735,21 +614,63 @@ const reviewStats = {
               <div>
                 <p class="text-xs text-gray-500">CPU</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications?.processor }}
+                  {{ currentProduct.specifications.cpu }}
                 </p>
               </div>
             </div>
 
-            <!-- Memory / RAM -->
-            <div v-if="currentProduct.specifications?.memory || currentProduct.specifications?.ramCapacity"
+            <!-- GPU -->
+            <div v-if="currentProduct.specifications?.gpu"
                  class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                 <v-icon name="hi-chip" scale="1.2" class="text-gray-600" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Memory</p>
+                <p class="text-xs text-gray-500">GPU</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications?.memory || (currentProduct.specifications?.ramCapacity ? `${currentProduct.specifications.ramCapacity}GB` : '') }}
+                  {{ currentProduct.specifications.gpu }}
+                </p>
+              </div>
+            </div>
+
+            <!-- RAM -->
+            <div v-if="currentProduct.specifications?.ram"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="hi-cube" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">RAM</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ currentProduct.specifications.ram }}GB
+                </p>
+              </div>
+            </div>
+
+            <!-- Storage -->
+            <div v-if="currentProduct.specifications?.storage"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="hi-database" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Storage</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ currentProduct.specifications.storage }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Refresh Rate -->
+            <div v-if="currentProduct.specifications?.refreshRate"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="hi-refresh" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Refresh Rate</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ currentProduct.specifications.refreshRate }}Hz
                 </p>
               </div>
             </div>
@@ -763,21 +684,21 @@ const reviewStats = {
               <div>
                 <p class="text-xs text-gray-500">Camera</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications?.camera }}
+                  {{ currentProduct.specifications.camera }}
                 </p>
               </div>
             </div>
 
-            <!-- Front camera -->
+            <!-- Front Camera -->
             <div v-if="currentProduct.specifications?.frontCamera"
                  class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
                 <v-icon name="io-camera-reverse-outline" scale="1.2" class="text-gray-600" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Front-Camera</p>
+                <p class="text-xs text-gray-500">Front Camera</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications?.frontCamera }}
+                  {{ currentProduct.specifications.frontCamera }}
                 </p>
               </div>
             </div>
@@ -791,49 +712,122 @@ const reviewStats = {
               <div>
                 <p class="text-xs text-gray-500">Battery</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications?.battery }}
+                  {{ currentProduct.specifications.battery }}
                 </p>
               </div>
             </div>
 
-            <!-- Water Resistance (for smartwatches) -->
-            <div v-if="currentProduct.specifications?.waterResistance"
+            <!-- Operating System -->
+            <div v-if="currentProduct.specifications?.os"
                  class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="io-water" scale="1.2" class="text-gray-600" />
+                <v-icon name="io-settings" scale="1.2" class="text-gray-600" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Water Resistance</p>
+                <p class="text-xs text-gray-500">OS</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications?.waterResistance }}
+                  {{ currentProduct.specifications.os }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Specifications - Input & Control Template -->
+          <div v-else-if="isInputControlCategory" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <!-- DPI -->
+            <div v-if="currentProduct.specifications?.dpi"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="io-locate" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">DPI</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ currentProduct.specifications.dpi }}
                 </p>
               </div>
             </div>
 
-            <!-- Connectivity -->
-            <div v-if="currentProduct.specifications?.connectivity"
+            <!-- Polling Rate -->
+            <div v-if="currentProduct.specifications?.pollingRate"
                  class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="io-wifi" scale="1.2" class="text-gray-600" />
+                <v-icon name="hi-lightning-bolt" scale="1.2" class="text-gray-600" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Connectivity</p>
+                <p class="text-xs text-gray-500">Polling Rate</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications?.connectivity }}
+                  {{ currentProduct.specifications.pollingRate }}Hz
                 </p>
               </div>
             </div>
 
-            <!-- Platform (for gaming) -->
-            <div v-if="currentProduct.specifications?.platform"
+            <!-- Switch Type -->
+            <div v-if="currentProduct.specifications?.switchType"
                  class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
               <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="io-game-controller" scale="1.2" class="text-gray-600" />
+                <v-icon name="io-keypad" scale="1.2" class="text-gray-600" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Platform</p>
+                <p class="text-xs text-gray-500">Switch Type</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications?.platform }}
+                  {{ currentProduct.specifications.switchType }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Backlighting -->
+            <div v-if="currentProduct.specifications?.backlighting"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="io-bulb" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Backlighting</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ currentProduct.specifications.backlighting }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Programmable Buttons -->
+            <div v-if="currentProduct.specifications?.programmableButtons !== undefined"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="io-options" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Programmable</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ currentProduct.specifications.programmableButtons ? 'Yes' : 'No' }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Battery Life -->
+            <div v-if="currentProduct.specifications?.batteryLife"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="gi-battery-75" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Battery Life</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ currentProduct.specifications.batteryLife }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Ergonomic -->
+            <div v-if="currentProduct.specifications?.ergonomic !== undefined"
+                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
+              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                <v-icon name="io-hand-left" scale="1.2" class="text-gray-600" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500">Ergonomic</p>
+                <p class="font-srProDisplay text-sm font-semibold">
+                  {{ currentProduct.specifications.ergonomic ? 'Yes' : 'No' }}
                 </p>
               </div>
             </div>
@@ -959,208 +953,141 @@ const reviewStats = {
                       : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
                   "
                 >
-                  <!-- Screen/Display Section -->
-                  <div v-if="hasScreenSpecs">
-                    <h3 class="text-xl font-semibold mb-4 mt-8">Display</h3>
+                  <!-- Mobile & Compute Template Details -->
+                  <template v-if="isMobileComputeCategory && hasMobileComputeSpecs">
+                  <!-- Display Section -->
+                  <div>
+                    <h3 class="text-xl font-semibold mb-4 mt-8">Display & Screen</h3>
                     <div class="border-t border-gray-200">
-                      <div v-if="currentProduct.specifications?.screenSize || currentProduct.specifications?.displaySize"
+                      <div v-if="currentProduct.specifications?.screenSize"
                            class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Screen diagonal</div>
+                        <div class="flex-1 text-gray-600">Screen size</div>
                         <div class="w-48 text-right font-medium">
-                          {{ currentProduct.specifications?.screenSize || currentProduct.specifications?.displaySize || 'N/A' }}
+                          {{ currentProduct.specifications.screenSize }}
                         </div>
                       </div>
-                      <div v-if="currentProduct.specifications?.resolution"
+                      <div v-if="currentProduct.specifications?.refreshRate"
                            class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Resolution</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.resolution }}</div>
-                      </div>
-                      <div class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Screen refresh rate</div>
-                        <div class="w-48 text-right font-medium">120 Hz</div>
-                      </div>
-                      <div class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Pixel density</div>
-                        <div class="w-48 text-right font-medium">460 ppi</div>
-                      </div>
-                      <div class="flex items-center py-4">
-                        <div class="flex-1 text-gray-600">Screen type</div>
-                        <div class="w-48 text-right font-medium">OLED</div>
+                        <div class="flex-1 text-gray-600">Refresh rate</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.refreshRate }}Hz</div>
                       </div>
                     </div>
                   </div>
-
                   <!-- Performance Section -->
-                  <div v-if="hasPerformanceSpecs">
+                  <div>
                     <h3 class="text-xl font-semibold mb-4 mt-12">Performance</h3>
                     <div class="border-t border-gray-200">
-                      <div v-if="currentProduct.specifications?.processor"
+                      <div v-if="currentProduct.specifications?.cpu"
                            class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Processor</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.processor }}</div>
+                        <div class="flex-1 text-gray-600">CPU</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.cpu }}</div>
                       </div>
-                      <div v-if="currentProduct.specifications?.numberOfCores"
+                      <div v-if="currentProduct.specifications?.gpu"
                            class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Number of cores</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.numberOfCores }}</div>
+                        <div class="flex-1 text-gray-600">GPU</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.gpu }}</div>
                       </div>
-                      <div v-if="currentProduct.specifications?.memory || currentProduct.specifications?.ramCapacity"
+                      <div v-if="currentProduct.specifications?.ram"
                            class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Memory</div>
-                        <div class="w-48 text-right font-medium">
-                          {{ currentProduct.specifications?.memory || (currentProduct.specifications?.ramCapacity ? `${currentProduct.specifications.ramCapacity}GB` : 'N/A') }}
-                        </div>
+                        <div class="flex-1 text-gray-600">RAM</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.ram }}GB</div>
                       </div>
-                      <div v-if="currentProduct.specifications?.storageCapacity"
-                           class="flex items-center py-4">
+                      <div v-if="currentProduct.specifications?.storage"
+                           class="flex items-center py-4 border-b border-gray-100">
                         <div class="flex-1 text-gray-600">Storage</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.storageCapacity }}GB</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.storage }}</div>
+                      </div>
+                      <div v-if="currentProduct.specifications?.os"
+                           class="flex items-center py-4">
+                        <div class="flex-1 text-gray-600">Operating System</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.os }}</div>
                       </div>
                     </div>
                   </div>
-
                   <!-- Camera Section -->
-                  <div v-if="hasCameraSpecs">
+                  <div v-if="currentProduct.specifications?.camera || currentProduct.specifications?.frontCamera">
                     <h3 class="text-xl font-semibold mb-4 mt-12">Camera</h3>
                     <div class="border-t border-gray-200">
                       <div v-if="currentProduct.specifications?.camera"
                            class="flex items-center py-4 border-b border-gray-100">
                         <div class="flex-1 text-gray-600">Rear camera</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.camera }}</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.camera }}</div>
                       </div>
                       <div v-if="currentProduct.specifications?.frontCamera"
-                           class="flex items-center py-4 border-b border-gray-100">
+                           class="flex items-center py-4">
                         <div class="flex-1 text-gray-600">Front camera</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.frontCamera }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.resolution"
-                           class="flex items-center py-4">
-                        <div class="flex-1 text-gray-600">Image resolution</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.resolution }}</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.frontCamera }}</div>
                       </div>
                     </div>
                   </div>
-
-                  <!-- Audio Section -->
-                  <div v-if="hasAudioSpecs">
-                    <h3 class="text-xl font-semibold mb-4 mt-12">Audio</h3>
-                    <div class="border-t border-gray-200">
-                      <div v-if="currentProduct.specifications?.driverSize"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Driver size</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.driverSize }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.frequencyResponse"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Frequency response</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.frequencyResponse }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.noiseCancel !== undefined"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Noise cancellation</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.noiseCancel ? 'Yes' : 'No' }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.powerOutput"
-                           class="flex items-center py-4">
-                        <div class="flex-1 text-gray-600">Power output</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.powerOutput }}W</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Connectivity Section -->
-                  <div v-if="hasConnectivitySpecs">
-                    <h3 class="text-xl font-semibold mb-4 mt-12">Connectivity</h3>
-                    <div class="border-t border-gray-200">
-                      <div v-if="currentProduct.specifications?.connectivity"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Connectivity</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.connectivity }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.bluetoothVersion"
-                           class="flex items-center py-4">
-                        <div class="flex-1 text-gray-600">Bluetooth</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.bluetoothVersion }}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Gaming Section -->
-                  <div v-if="hasGamingSpecs">
-                    <h3 class="text-xl font-semibold mb-4 mt-12">Gaming</h3>
-                    <div class="border-t border-gray-200">
-                      <div v-if="currentProduct.specifications?.platform"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Platform</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.platform }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.gameGenre"
-                           class="flex items-center py-4">
-                        <div class="flex-1 text-gray-600">Genre</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.gameGenre }}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Physical Section -->
-                  <div v-if="hasPhysicalSpecs">
-                    <h3 class="text-xl font-semibold mb-4 mt-12">Physical</h3>
-                    <div class="border-t border-gray-200">
-                      <div v-if="currentProduct.specifications?.material"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Material</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.material }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.dimensions"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Dimensions</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.dimensions }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.weight"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Weight</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.weight }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.color"
-                           class="flex items-center py-4">
-                        <div class="flex-1 text-gray-600">Color</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.color }}</div>
-                      </div>
-                    </div>
-                  </div>
-
                   <!-- Battery Section -->
                   <div v-if="currentProduct.specifications?.battery">
                     <h3 class="text-xl font-semibold mb-4 mt-12">Battery</h3>
                     <div class="border-t border-gray-200">
-                      <div class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Capacity</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications?.battery }}</div>
-                      </div>
-                      <div class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Charging</div>
-                        <div class="w-48 text-right font-medium">Fast charging</div>
-                      </div>
                       <div class="flex items-center py-4">
-                        <div class="flex-1 text-gray-600">Battery life</div>
-                        <div class="w-48 text-right font-medium">All day usage</div>
+                        <div class="flex-1 text-gray-600">Battery capacity</div>
+                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.battery }}</div>
                       </div>
                     </div>
                   </div>
-
-                  <!-- Available Options Section -->
-                  <div v-if="currentProduct.specifications?.storage?.length">
-                    <h3 class="text-xl font-semibold mb-4 mt-12">Available Options</h3>
-                    <div class="border-t border-gray-200">
-                      <div class="flex items-center py-4">
-                        <div class="flex-1 text-gray-600">Storage options</div>
-                        <div class="w-48 text-right font-medium space-y-1">
-                          <div v-for="storage in currentProduct.specifications?.storage" :key="storage">{{ storage }}</div>
+                  </template>
+                  <!-- Input & Control Template Details -->
+                  <template v-else-if="isInputControlCategory && hasInputControlSpecs">
+                    <!-- Performance Section -->
+                    <div>
+                      <h3 class="text-xl font-semibold mb-4 mt-8">Performance</h3>
+                      <div class="border-t border-gray-200">
+                        <div v-if="currentProduct.specifications?.dpi"
+                             class="flex items-center py-4 border-b border-gray-100">
+                          <div class="flex-1 text-gray-600">DPI</div>
+                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.dpi }}</div>
+                        </div>
+                        <div v-if="currentProduct.specifications?.pollingRate"
+                             class="flex items-center py-4">
+                          <div class="flex-1 text-gray-600">Polling rate</div>
+                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.pollingRate }}Hz</div>
                         </div>
                       </div>
                     </div>
+                    <!-- Input Features Section -->
+                    <div>
+                      <h3 class="text-xl font-semibold mb-4 mt-12">Input Features</h3>
+                      <div class="border-t border-gray-200">
+                        <div v-if="currentProduct.specifications?.switchType"
+                             class="flex items-center py-4 border-b border-gray-100">
+                          <div class="flex-1 text-gray-600">Switch type</div>
+                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.switchType }}</div>
+                        </div>
+                        <div v-if="currentProduct.specifications?.backlighting"
+                             class="flex items-center py-4 border-b border-gray-100">
+                          <div class="flex-1 text-gray-600">Backlighting</div>
+                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.backlighting }}</div>
+                        </div>
+                        <div v-if="currentProduct.specifications?.programmableButtons !== undefined"
+                             class="flex items-center py-4 border-b border-gray-100">
+                          <div class="flex-1 text-gray-600">Programmable buttons</div>
+                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.programmableButtons ? 'Yes' : 'No' }}</div>
+                        </div>
+                        <div v-if="currentProduct.specifications?.ergonomic !== undefined"
+                             class="flex items-center py-4">
+                          <div class="flex-1 text-gray-600">Ergonomic design</div>
+                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.ergonomic ? 'Yes' : 'No' }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Power Section -->
+                    <div v-if="currentProduct.specifications?.batteryLife">
+                      <h3 class="text-xl font-semibold mb-4 mt-12">Power</h3>
+                      <div class="border-t border-gray-200">
+                        <div class="flex items-center py-4">
+                          <div class="flex-1 text-gray-600">Battery life</div>
+                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.batteryLife }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+
                   </div>
-                </div>
 
                 <!-- Fade overlay when not showing all details -->
                 <div
