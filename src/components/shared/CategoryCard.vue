@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="`/categories/${category.id}/products`">
+  <router-link :to="`/catalog/${category.slug}`">
     <div
       class="mb-3 !flex !h-[128px] !w-[160px] flex-col items-center justify-center gap-3 rounded-[15px] bg-[#ededed] py-4 text-white hover:bg-gray-300 transition-colors duration-200"
     >
