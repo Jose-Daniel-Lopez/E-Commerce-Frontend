@@ -1,6 +1,6 @@
 {
   "catalog": {
-    "title": "Category Catalog",
+    "title": "Catalog",
     "searchCategories": "Search Categories",
     "searchPlaceholder": "Search",
     "categoriesFound": "{count} categories found",

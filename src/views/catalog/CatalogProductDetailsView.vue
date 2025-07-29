@@ -170,11 +170,15 @@ const productImages = [
   '/images/placeholder-phone-blue.webp',
 ]
 
-// Breadcrumb config
+// i18n
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
+// Breadcrumb config (dynamic, translated)
 const breadcrumbs = ref([
-  { label: 'Catálogo', to: '/catalog' },
-  { label: 'Smartphones', to: '/catalog/smartphones' },
-  { label: 'iPhone 14 Pro Max' },
+  { label: t('catalog.title'), to: '/catalog' },
+  { label: '', to: '' }, // Will be set dynamically
+  { label: '' } // Will be set dynamically
 ])
 
 // Computed properties
@@ -283,20 +287,7 @@ onMounted(async () => {
     // Fetch product from backend
     const backendProduct = await productStore.fetchProductById(productId) as BackendProduct
 
-    console.log('🔍 [CatalogProductDetailsView] Backend product response:', backendProduct)
-    console.log('🔍 [CatalogProductDetailsView] Category:', backendProduct.categoryName)
-    console.log('🔍 [CatalogProductDetailsView] Specifications:', {
-      screenSize: backendProduct.screenSize,
-      cpu: backendProduct.cpu,
-      gpu: backendProduct.gpu,
-      ram: backendProduct.ram,
-      storage: backendProduct.storage,
-      refreshRate: backendProduct.refreshRate,
-      camera: backendProduct.camera,
-      frontCamera: backendProduct.frontCamera,
-      battery: backendProduct.battery,
-      os: backendProduct.os
-    })
+    // ...existing code...
 
     // Transform backend data to frontend format
     product.value = {
@@ -311,28 +302,7 @@ onMounted(async () => {
       category: backendProduct.categoryName,
       createdAt: backendProduct.createdAt,
       specifications: {
-        // Mobile & Compute specifications
-        screenSize: backendProduct.screenSize,
-        cpu: backendProduct.cpu,
-        gpu: backendProduct.gpu,
-        ram: backendProduct.ram,
-        storage: backendProduct.storage,
-        refreshRate: backendProduct.refreshRate,
-        camera: backendProduct.camera,
-        frontCamera: backendProduct.frontCamera,
-        battery: backendProduct.battery,
-        os: backendProduct.os,
-
-        // Input & Control specifications
-        dpi: backendProduct.dpi,
-        pollingRate: backendProduct.pollingRate,
-        switchType: backendProduct.switchType,
-        backlighting: backendProduct.backlighting,
-        programmableButtons: backendProduct.programmableButtons,
-        batteryLife: backendProduct.batteryLife,
-        ergonomic: backendProduct.ergonomic,
-
-        // Default values for missing fields (UI-specific)
+        // ...existing code...
         colors: getColorOptions(),
       },
     }
@@ -341,10 +311,12 @@ onMounted(async () => {
     selectedColor.value = product.value.specifications?.colors?.[0] || ''
     selectedStorage.value = ''
 
-    // Update breadcrumb with actual product name
+    // Update breadcrumb with translated and dynamic values
+    const categoryKey = `shop.categories.${props.categoryName}`
+    const categoryLabel = t(categoryKey) !== categoryKey ? t(categoryKey) : capitalizeFirstLetter(props.categoryName)
     breadcrumbs.value = [
-      { label: 'Catálogo', to: '/catalog' },
-      { label: capitalizeFirstLetter(props.categoryName), to: `/catalog/${props.categoryName}` },
+      { label: t('catalog.title'), to: '/catalog' },
+      { label: categoryLabel, to: `/catalog/${props.categoryName}` },
       { label: product.value.name },
     ]
 
@@ -758,9 +730,6 @@ const reviewStats = {
 
           <!-- Size/Storage Selection -->
           <div v-if="availableSizes.length > 0" class="space-y-3">
-            <span class="font-srProDisplay text-sm font-medium text-gray-700">
-              {{ isMobileComputeCategory ? 'Storage:' : 'Type:' }}
-            </span>
             <div class="flex flex-wrap gap-3">
               <button
                 v-for="size in availableSizes"
