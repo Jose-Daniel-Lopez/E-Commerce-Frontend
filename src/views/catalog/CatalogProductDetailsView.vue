@@ -2,11 +2,12 @@
 import { ref, onMounted, computed } from 'vue'
 import { useProductStore } from '@/stores/products'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+import { useI18n } from 'vue-i18n'
 
-// Product variant interface from backend
+// === Interfaces ===
 interface ProductVariant {
   id: number
-  size: string  // Storage for mobile/compute, switch type for input/control
+  size: string
   color: string
   stock: number
   sku: string
@@ -17,17 +18,12 @@ interface ProductVariant {
   }
 }
 
-// Product variants response from backend
 interface ProductVariantsResponse {
-  _embedded?: {
-    productVariants: ProductVariant[]
-  }
+  _embedded?: { productVariants: ProductVariant[] }
   productVariants?: ProductVariant[]
 }
 
-// Complete backend product response interface matching your entity
 interface BackendProduct {
-  // Core fields
   id: number
   name: string
   description: string
@@ -38,11 +34,8 @@ interface BackendProduct {
   imageUrl?: string
   basePrice: number
   totalStock: number
-
-  // Category name (updated to match new backend response)
   categoryName: string
-
-  // Mobile & Compute attributes (Phones, Tablets, Laptops, Handhelds)
+  // Mobile & Compute
   screenSize?: string
   cpu?: string
   gpu?: string
@@ -53,8 +46,7 @@ interface BackendProduct {
   frontCamera?: string
   battery?: string
   os?: string
-
-  // Input & Control attributes (Mice, Keyboards, Controllers)
+  // Input & Control
   dpi?: number
   pollingRate?: number
   switchType?: string
@@ -62,8 +54,6 @@ interface BackendProduct {
   programmableButtons?: boolean
   batteryLife?: string
   ergonomic?: boolean
-
-  // HATEOAS links
   _links?: {
     self: { href: string }
     product: { href: string }
@@ -73,7 +63,6 @@ interface BackendProduct {
   }
 }
 
-// Frontend product interface for this component
 interface Product {
   id: number
   name: string
@@ -86,7 +75,6 @@ interface Product {
   category?: string
   createdAt?: string
   specifications?: {
-    // Mobile & Compute specs
     screenSize?: string
     cpu?: string
     gpu?: string
@@ -97,8 +85,6 @@ interface Product {
     frontCamera?: string
     battery?: string
     os?: string
-
-    // Input & Control specs
     dpi?: number
     pollingRate?: number
     switchType?: string
@@ -106,22 +92,21 @@ interface Product {
     programmableButtons?: boolean
     batteryLife?: string
     ergonomic?: boolean
-
-    // Default UI fields (for missing data)
     colors?: string[]
   }
 }
 
-// Props interface for route parameters
 interface Props {
   categoryName: string
   productId: string
 }
-
 const props = defineProps<Props>()
-const productStore = useProductStore()
 
-// State
+// === Stores & i18n ===
+const productStore = useProductStore()
+const { t } = useI18n()
+
+// === State ===
 const product = ref<Product | null>(null)
 const loading = ref(true)
 const error = ref('')
@@ -129,14 +114,15 @@ const selectedColor = ref('')
 const selectedStorage = ref('')
 const selectedImageIndex = ref(0)
 const showAllDetails = ref(false)
+const showFullDescription = ref(false)
 
-// Product variants state
+// Variants
 const productVariants = ref<ProductVariant[]>([])
 const selectedVariant = ref<ProductVariant | null>(null)
 const variantsLoading = ref(false)
 const variantsError = ref('')
 
-// Mock product data based on the image
+// === Mock Data ===
 const mockProduct: Product = {
   id: 1,
   name: 'Apple iPhone 14 Pro Max',
@@ -146,8 +132,8 @@ const mockProduct: Product = {
   totalStock: 50,
   image: '/images/placeholder-phone-red.webp',
   brand: 'Apple',
+  category: 'Smartphones',
   specifications: {
-    // Mobile & Compute specs for iPhone
     screenSize: '6.7"',
     cpu: 'Apple A16 Bionic',
     gpu: 'Apple GPU (5-core)',
@@ -162,134 +148,224 @@ const mockProduct: Product = {
   },
 }
 
-// Product images for different colors/angles
-const productImages = [
-  '/images/placeholder-phone-red.webp',
-  '/images/placeholder-phone-white.webp',
-  '/images/placeholder-phone-black.webp',
-  '/images/placeholder-phone-blue.webp',
-]
+// === Image Mapping ===
+const imageMap: Record<string, string[]> = {
+  smartphones: [
+    '/images/placeholder-phone-red.webp',
+    '/images/placeholder-phone-white.webp',
+    '/images/placeholder-phone-black.webp',
+    '/images/placeholder-phone-blue.webp',
+  ],
+  tablets: [
+    '/images/placeholder-tablet-red.png',
+    '/images/placeholder-tablet-white.png',
+    '/images/placeholder-tablet-black.png',
+    '/images/placeholder-tablet-blue.png',
+  ],
+}
 
-// i18n
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+const defaultImages = ['/images/placeholder-phone-red.webp']
 
-// Breadcrumb config (dynamic, translated)
-const breadcrumbs = ref([
-  { label: t('catalog.title'), to: '/catalog' },
-  { label: '', to: '' }, // Will be set dynamically
-  { label: '' } // Will be set dynamically
-])
-
-// Computed properties
-const finalPrice = computed(() => {
-  // No additional pricing for storage since it's now a single fixed value
-  return product.value?.basePrice || mockProduct.basePrice
+const productImages = computed(() => {
+  const category = currentProduct.value?.category?.toLowerCase() || ''
+  return imageMap[category] || imageMap[category.replace(/s$/, '')] || defaultImages
 })
 
-const discountPrice = computed(() => {
-  return finalPrice.value + 100 // Show original higher price
-})
-
-const currentImage = computed(() => {
-  return productImages[selectedImageIndex.value] || product.value?.image || mockProduct.image
-})
-
-// Get the current product for display (prioritize fetched data over mock)
+// === Computed ===
 const currentProduct = computed(() => product.value || mockProduct)
 
-// Product variants computed properties
+const finalPrice = computed(() => currentProduct.value?.basePrice || mockProduct.basePrice)
+const discountPrice = computed(() => finalPrice.value + 100)
+
+const currentImage = computed(() => {
+  return productImages.value[selectedImageIndex.value] || currentProduct.value?.image || mockProduct.image
+})
+
 const availableColors = computed(() => {
   const colors = [...new Set(productVariants.value.map(v => v.color))]
   return colors.length > 0 ? colors : (currentProduct.value?.specifications?.colors || [])
 })
 
 const availableSizes = computed(() => {
-  const sizes = [...new Set(productVariants.value.map(v => v.size))]
-  return sizes.length > 0 ? sizes : []
+  return [...new Set(productVariants.value.map(v => v.size))]
 })
 
-// Filter variants based on selections
-const filteredVariantsByColor = computed(() => {
-  if (!selectedColor.value) return productVariants.value
-  return productVariants.value.filter(v => v.color === selectedColor.value)
-})
-
-const filteredVariantsBySize = computed(() => {
-  if (!selectedStorage.value) return filteredVariantsByColor.value
-  return filteredVariantsByColor.value.filter(v => v.size === selectedStorage.value)
-})
-
-// Get current variant based on selections
 const currentVariant = computed(() => {
   if (selectedColor.value && selectedStorage.value) {
-    return productVariants.value.find(v =>
-      v.color === selectedColor.value && v.size === selectedStorage.value
-    ) || null
+    return productVariants.value.find(v => v.color === selectedColor.value && v.size === selectedStorage.value) || null
   }
   return selectedVariant.value
 })
 
-// Current stock for selected variant
 const currentStock = computed(() => {
   return currentVariant.value?.stock || currentProduct.value?.totalStock || 0
 })
 
-// Check if current selection is in stock
-const isInStock = computed(() => {
-  return currentStock.value > 0
-})
+const isInStock = computed(() => currentStock.value > 0)
 
-// Dynamic specs availability checks for Mobile & Compute template
 const hasMobileComputeSpecs = computed(() => {
   const specs = currentProduct.value?.specifications
-  return specs?.screenSize || specs?.cpu || specs?.gpu || specs?.ram ||
-         specs?.storage || specs?.refreshRate || specs?.camera ||
-         specs?.frontCamera || specs?.battery || specs?.os
+  return !!(specs?.screenSize || specs?.cpu || specs?.ram || specs?.storage || specs?.camera || specs?.battery || specs?.os)
 })
 
-// Dynamic specs availability checks for Input & Control template
 const hasInputControlSpecs = computed(() => {
   const specs = currentProduct.value?.specifications
-  return specs?.dpi || specs?.pollingRate || specs?.switchType ||
-         specs?.backlighting || specs?.programmableButtons !== undefined ||
-         specs?.batteryLife || specs?.ergonomic !== undefined
+  return !!(specs?.dpi || specs?.pollingRate || specs?.switchType || specs?.programmableButtons !== undefined || specs?.ergonomic !== undefined)
 })
 
-// Determine which template to use based on category
 const isMobileComputeCategory = computed(() => {
-  const categoryName = currentProduct.value?.category
-  console.log('🔍 [isMobileComputeCategory] Checking category:', categoryName)
-  const result = categoryName && ['Smartphones', 'Tablets', 'Laptops', 'Handhelds', 'Computers'].includes(categoryName)
-  console.log('🔍 [isMobileComputeCategory] Result:', result)
-  return result
+  const cat = currentProduct.value?.category?.toLowerCase()
+  return cat ? ['smartphones', 'tablets', 'laptops', 'handhelds', 'computers', 'phones'].includes(cat) : false
 })
 
 const isInputControlCategory = computed(() => {
-  const categoryName = currentProduct.value?.category
-  console.log('🔍 [isInputControlCategory] Checking category:', categoryName)
-  const result = categoryName && ['Mice', 'Keyboards', 'Controllers', 'Gaming'].includes(categoryName)
-  console.log('🔍 [isInputControlCategory] Result:', result)
-  return result
+  const cat = currentProduct.value?.category?.toLowerCase()
+  return cat ? ['mice', 'keyboards', 'controllers', 'gaming'].includes(cat) : false
 })
 
+// === Breadcrumbs ===
+const breadcrumbs = computed(() => {
+  const categoryKey = `shop.categories.${props.categoryName}`
+  const categoryLabel = t(categoryKey) !== categoryKey ? t(categoryKey) : capitalizeFirstLetter(props.categoryName)
+  return [
+    { label: t('catalog.title'), to: '/catalog' },
+    { label: categoryLabel, to: `/catalog/${props.categoryName}` },
+    { label: currentProduct.value?.name },
+  ]
+})
+
+// === Methods ===
+const formatPrice = (price: number) => `$${price.toLocaleString()}`
+
+const getColorClass = (color: string) => {
+  const colorMap: Record<string, string> = {
+    Red: 'bg-red-500', White: 'bg-gray-100', Black: 'bg-gray-900', Blue: 'bg-blue-500',
+    'Deep Purple': 'bg-purple-600', Gold: 'bg-yellow-400', Silver: 'bg-gray-300', 'Space Black': 'bg-gray-900'
+  }
+  return colorMap[color] || 'bg-gray-400'
+}
+
+const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+
+const getProductImage = (productName: string, category?: string): string => {
+  const cat = category?.toLowerCase() || currentProduct.value?.category?.toLowerCase()
+  if (cat === 'smartphones' || cat === 'phones') return '/images/placeholder-phone-red.webp'
+  if (cat === 'tablets') return '/images/placeholder-tablet-red.webp'
+
+  const productImageMap: Record<string, string> = {
+    iphone: '/images/Iphone-14-pro-Gold.png',
+    samsung: '/images/Galaxy-Z-Mobile.png',
+    apple: '/images/Iphone-14-pro-Gold.png',
+    realme: '/images/placeholder-phone-red.webp',
+  }
+
+  const lowerName = productName.toLowerCase()
+  for (const [key, path] of Object.entries(productImageMap)) {
+    if (lowerName.includes(key)) return path
+  }
+  return '/images/placeholder-phone-red.webp'
+}
+
+const getColorOptions = (): string[] => {
+  return currentProduct.value?.category === 'Smartphones'
+    ? ['Red', 'White', 'Black', 'Blue']
+    : ['Black', 'White', 'Silver', 'Gold']
+}
+
+// === Description Logic ===
+const descriptionLimit = 180
+const isDescriptionLong = computed(() => (currentProduct.value?.description?.length || 0) > descriptionLimit)
+const displayedDescription = computed(() => {
+  const desc = currentProduct.value?.description || ''
+  if (!showFullDescription.value && desc.length > descriptionLimit) {
+    return desc.slice(0, descriptionLimit) + '...'
+  }
+  return desc
+})
+const toggleDescription = () => (showFullDescription.value = !showFullDescription.value)
+
+// === Section Collapsing ===
+const detailsCollapsed = ref(false)
+const reviewsCollapsed = ref(false)
+const relatedCollapsed = ref(false)
+const toggleDetails = () => (detailsCollapsed.value = !detailsCollapsed.value)
+const toggleReviews = () => (reviewsCollapsed.value = !reviewsCollapsed.value)
+const toggleRelated = () => (relatedCollapsed.value = !relatedCollapsed.value)
+
+// === Reviews ===
+const reviews = [
+  { id: 1, name: 'Grace Carey', rating: 4, date: '24 January 2023', comment: "...", avatar: '/images/user-1.jpg' },
+  { id: 2, name: 'Ronald Richards', rating: 5, date: '24 January 2023', comment: "...", avatar: '/images/user-2.jpg' },
+  { id: 3, name: 'Michael Smith', rating: 2, date: '12 September 2021', comment: "...", avatar: '/images/user-2.jpg' },
+  { id: 4, name: 'Samantha Johnson', rating: 4, date: '09 April 2023', comment: "...", avatar: '/images/user-4.jpg' },
+  { id: 5, name: 'Jonathan Doe', rating: 5, date: '17 October 2024', comment: "...", avatar: '/images/user-5.jpg' },
+  { id: 6, name: 'Veronica Taylor', rating: 1, date: '01 May 2025', comment: "...", avatar: '/images/user-6.jpg' },
+]
+
+const reviewsToShow = ref(3)
+const showAllReviews = ref(false)
+const displayedReviews = computed(() => showAllReviews.value ? reviews : reviews.slice(0, reviewsToShow.value))
+const hasMoreReviews = computed(() => reviews.length > reviewsToShow.value)
+const toggleShowAllReviews = () => (showAllReviews.value = !showAllReviews.value)
+
+const reviewStats = {
+  averageRating: 4.8,
+  totalReviews: 125,
+  excellent: 100, good: 11, average: 3, belowAverage: 8, poor: 1
+}
+
+// === Image & Variant Selection ===
+const selectImage = (index: number) => {
+  selectedImageIndex.value = index
+}
+
+const selectColor = (color: string) => {
+  selectedColor.value = color
+  const imageIndex = productImages.value.findIndex(img => img.includes(color.toLowerCase()))
+  if (imageIndex !== -1) selectedImageIndex.value = imageIndex
+
+  if (selectedStorage.value) {
+    selectedVariant.value = productVariants.value.find(v => v.color === color && v.size === selectedStorage.value) || null
+  }
+}
+
+const selectStorage = (size: string) => {
+  selectedStorage.value = size
+  if (selectedColor.value) {
+    selectedVariant.value = productVariants.value.find(v => v.color === selectedColor.value && v.size === size) || null
+  }
+}
+
+// === Cart & Wishlist ===
+const addToCart = () => {
+  if (!isInStock.value) {
+    alert('This item is currently out of stock')
+    return
+  }
+  console.log('Adding to cart:', {
+    product: currentProduct.value?.name,
+    productId: currentProduct.value?.id,
+    variant: currentVariant.value,
+    color: selectedColor.value,
+    size: selectedStorage.value,
+    price: finalPrice.value,
+    stock: currentStock.value,
+    sku: currentVariant.value?.sku
+  })
+}
+
+const addToWishlist = () => {
+  console.log('Adding to wishlist:', currentProduct.value?.name)
+}
+
+// === Fetch Data ===
 onMounted(async () => {
   try {
-    // Get productId from route params
     const productId = parseInt(props.productId)
+    if (!productId || isNaN(productId)) throw new Error('Invalid product ID')
 
-    if (!productId || isNaN(productId)) {
-      error.value = 'Invalid product ID'
-      loading.value = false
-      return
-    }
-
-    // Fetch product from backend
     const backendProduct = await productStore.fetchProductById(productId) as BackendProduct
 
-    // ...existing code...
-
-    // Transform backend data to frontend format
     product.value = {
       id: backendProduct.id,
       name: backendProduct.name,
@@ -298,339 +374,66 @@ onMounted(async () => {
       totalStock: backendProduct.totalStock,
       brand: backendProduct.brand,
       rating: backendProduct.rating,
-      image: getProductImage(backendProduct.name),
+      image: getProductImage(backendProduct.name, backendProduct.categoryName),
       category: backendProduct.categoryName,
       createdAt: backendProduct.createdAt,
       specifications: {
-        // ...existing code...
+        screenSize: backendProduct.screenSize,
+        cpu: backendProduct.cpu,
+        gpu: backendProduct.gpu,
+        ram: backendProduct.ram,
+        storage: backendProduct.storage,
+        refreshRate: backendProduct.refreshRate,
+        camera: backendProduct.camera,
+        frontCamera: backendProduct.frontCamera,
+        battery: backendProduct.battery,
+        os: backendProduct.os,
+        dpi: backendProduct.dpi,
+        pollingRate: backendProduct.pollingRate,
+        switchType: backendProduct.switchType,
+        backlighting: backendProduct.backlighting,
+        programmableButtons: backendProduct.programmableButtons,
+        batteryLife: backendProduct.batteryLife,
+        ergonomic: backendProduct.ergonomic,
         colors: getColorOptions(),
       },
     }
 
-    // Set default selections
-    selectedColor.value = product.value.specifications?.colors?.[0] || ''
+    selectedColor.value = availableColors.value[0] || ''
     selectedStorage.value = ''
 
-    // Update breadcrumb with translated and dynamic values
-    const categoryKey = `shop.categories.${props.categoryName}`
-    const categoryLabel = t(categoryKey) !== categoryKey ? t(categoryKey) : capitalizeFirstLetter(props.categoryName)
-    breadcrumbs.value = [
-      { label: t('catalog.title'), to: '/catalog' },
-      { label: categoryLabel, to: `/catalog/${props.categoryName}` },
-      { label: product.value.name },
-    ]
-
-    // Fetch product variants after product is loaded
     await fetchProductVariants(productId)
-
-    loading.value = false
   } catch (err) {
     console.error('Error fetching product:', err)
     error.value = 'Error loading product details'
+  } finally {
     loading.value = false
   }
 })
 
-// Fetch product variants
 const fetchProductVariants = async (productId: number) => {
   variantsLoading.value = true
   variantsError.value = ''
-
   try {
-    console.log('🔍 [fetchProductVariants] Fetching variants for product:', productId)
+    const res = await fetch(`http://localhost:8080/api/products/${productId}/productVariants`)
+    if (!res.ok) throw new Error('Failed to fetch variants')
 
-    // Fetch variants directly using axios
-    const variantsResponse = await fetch(`http://localhost:8080/api/products/${productId}/productVariants`)
-    const variantsData = await variantsResponse.json()
-
-    console.log('🔍 [fetchProductVariants] Raw variants response:', variantsData)
-
-    // Extract variants from response (handle both _embedded and direct array)
-    const variants = variantsData._embedded?.productVariants || variantsData.productVariants || []
-
-    console.log('🔍 [fetchProductVariants] Processed variants:', variants)
+    const data: ProductVariantsResponse = await res.json()
+    const variants = data._embedded?.productVariants || data.productVariants || []
 
     productVariants.value = variants
 
-    // Set default selections if variants exist
     if (variants.length > 0) {
-      // Set default color to first available color
-      if (!selectedColor.value && availableColors.value.length > 0) {
-        selectedColor.value = availableColors.value[0]
-      }
-
-      // Set default size to first available size for current color
-      if (!selectedStorage.value && availableSizes.value.length > 0) {
-        selectedStorage.value = availableSizes.value[0]
-      }
-
-      // Find and set the selected variant
-      selectedVariant.value = variants.find((v: ProductVariant) =>
-        v.color === selectedColor.value && v.size === selectedStorage.value
-      ) || variants[0]
+      if (!selectedColor.value) selectedColor.value = variants[0].color
+      if (!selectedStorage.value) selectedStorage.value = variants[0].size
+      selectedVariant.value = variants.find(v => v.color === selectedColor.value && v.size === selectedStorage.value) || variants[0]
     }
-
   } catch (err) {
-    console.error('🔍 [fetchProductVariants] Error fetching variants:', err)
+    console.error('Error fetching variants:', err)
     variantsError.value = 'Error loading product variants'
   } finally {
     variantsLoading.value = false
   }
-}
-
-// Methods
-const selectColor = (color: string) => {
-  selectedColor.value = color
-
-  // Update image based on color selection for smartphones
-  if (currentProduct.value?.category === 'Smartphones') {
-    const colorImageMap: { [key: string]: string } = {
-      'Red': '/images/placeholder-phone-red.webp',
-      'White': '/images/placeholder-phone-white.webp',
-      'Black': '/images/placeholder-phone-black.webp',
-      'Blue': '/images/placeholder-phone-blue.webp',
-    }
-
-    // Find the matching image for the selected color
-    const matchingImage = colorImageMap[color]
-    if (matchingImage) {
-      const imageIndex = productImages.findIndex(img => img === matchingImage)
-      if (imageIndex !== -1) {
-        selectedImageIndex.value = imageIndex
-      }
-    }
-  } else {
-    // For other categories, use the original logic
-    const colorIndex = availableColors.value.indexOf(color) || 0
-    selectedImageIndex.value = colorIndex
-  }
-
-  // Update selected variant if size is also selected
-  if (selectedStorage.value) {
-    const variant = productVariants.value.find(v =>
-      v.color === selectedColor.value && v.size === selectedStorage.value
-    )
-    selectedVariant.value = variant || null
-  }
-}
-
-const selectStorage = (size: string) => {
-  selectedStorage.value = size
-
-  // Update selected variant if color is also selected
-  if (selectedColor.value) {
-    const variant = productVariants.value.find(v =>
-      v.color === selectedColor.value && v.size === selectedStorage.value
-    )
-    selectedVariant.value = variant || null
-  }
-}
-
-const selectImage = (index: number) => {
-  selectedImageIndex.value = index
-}
-
-const addToCart = () => {
-  const cartItem = {
-    product: product.value?.name,
-    productId: product.value?.id,
-    variant: currentVariant.value,
-    color: selectedColor.value,
-    size: selectedStorage.value,
-    price: finalPrice.value,
-    stock: currentStock.value,
-    sku: currentVariant.value?.sku
-  }
-
-  console.log('Adding to cart:', cartItem)
-
-  // Check if item is in stock
-  if (!isInStock.value) {
-    alert('This item is currently out of stock')
-    return
-  }
-
-  // Implement add to cart functionality
-}
-
-const addToWishlist = () => {
-  console.log('Adding to wishlist:', product.value?.name)
-  // Implement add to wishlist functionality
-}
-
-const formatPrice = (price: number) => {
-  return `$${price.toLocaleString()}`
-}
-
-const getColorClass = (color: string) => {
-  const colorMap: { [key: string]: string } = {
-    // Smartphone placeholder colors
-    'Red': 'bg-red-500',
-    'White': 'bg-gray-100',
-    'Black': 'bg-gray-900',
-    'Blue': 'bg-blue-500',
-    // Legacy iPhone colors
-    'Deep Purple': 'bg-purple-600',
-    'Gold': 'bg-yellow-400',
-    'Silver': 'bg-gray-300',
-    'Space Black': 'bg-gray-900',
-  }
-  return colorMap[color] || 'bg-gray-400'
-}
-
-// Helper function to get product image (fallback to default)
-const getProductImage = (productName: string): string => {
-  // For smartphones, use placeholder images as default
-  if (currentProduct.value?.category === 'Smartphones') {
-    return '/images/placeholder-phone-red.webp' // Default red phone
-  }
-
-  // Map product names to specific images
-  const productImageMap: { [key: string]: string } = {
-    'iphone': '/images/Iphone-14-pro-Gold.png',
-    'samsung': '/images/Galaxy-Z-Mobile.png',
-    'apple': '/images/Iphone-14-pro-Gold.png',
-    'realme': '/images/placeholder-phone-red.webp', // Use placeholder for other phones
-  }
-
-  const name = productName.toLowerCase()
-  for (const [key, imagePath] of Object.entries(productImageMap)) {
-    if (name.includes(key)) {
-      return imagePath
-    }
-  }
-
-  // Default fallback image
-  return '/images/placeholder-phone-red.webp'
-}
-
-// Helper function to capitalize first letter
-const capitalizeFirstLetter = (string: string): string => {
-  return string.charAt(0).toUpperCase() + string.slice(1)
-}
-
-// Helper function to generate color options
-const getColorOptions = (): string[] => {
-  // For smartphones, use placeholder colors
-  if (currentProduct.value?.category === 'Smartphones') {
-    return ['Red', 'White', 'Black', 'Blue'] // Placeholder phone colors
-  }
-  return ['Black', 'White', 'Silver', 'Gold'] // Default options for other categories
-}
-
-// Description expand/collapse
-import { computed as vComputed } from 'vue'
-const showFullDescription = ref(false)
-const descriptionLimit = 180
-const isDescriptionLong = vComputed(
-  () => (currentProduct.value?.description || '').length > descriptionLimit,
-)
-const displayedDescription = vComputed(() => {
-  const desc = currentProduct.value?.description || ''
-  if (!showFullDescription.value && desc.length > descriptionLimit) {
-    return desc.slice(0, descriptionLimit) + '...'
-  }
-  return desc
-})
-const toggleDescription = () => {
-  showFullDescription.value = !showFullDescription.value
-}
-
-// Details section collapse toggle
-const detailsCollapsed = ref(false)
-const toggleDetails = () => {
-  detailsCollapsed.value = !detailsCollapsed.value
-}
-
-// Reviews section collapse toggle
-const reviewsCollapsed = ref(false)
-const toggleReviews = () => {
-  reviewsCollapsed.value = !reviewsCollapsed.value
-}
-
-// Related Products section collapse toggle
-const relatedCollapsed = ref(false)
-const toggleRelated = () => {
-  relatedCollapsed.value = !relatedCollapsed.value
-}
-
-// Mock reviews data
-const reviews = [
-  {
-    id: 1,
-    name: 'Grace Carey',
-    rating: 4,
-    date: '24 January 2023',
-    comment:
-      "I was a bit nervous to be buying a secondhand phone from Amazon, but I couldn't be happier with my purchase!! I have a pre-paid data plan so I was worried that this phone wouldn't connect with my data plan, since the new phones don't have the physical Sim tray anymore, but couldn't have been easier! I bought an Unlocked black iPhone 14 Pro Max in excellent condition and everything is PERFECT! It was super easy to set up and the phone works and looks great. It truly was in excellent condition. Highly recommend!!🖤",
-    avatar: '/images/user-1.jpg',
-  },
-  {
-    id: 2,
-    name: 'Ronald Richards',
-    rating: 5,
-    date: '24 January 2023',
-    comment:
-      'Perfect phone in perfect condition. Great value for money and fast shipping. Highly recommended!',
-    avatar: '/images/user-2.jpg',
-  },
-  {
-    id: 3,
-    name: 'Michael Smith',
-    rating: 2,
-    date: '12 September 2021',
-    comment:
-      'The phone arrived with a few scratches and the battery life is not as good as expected. Disappointed with the quality.',
-    avatar: '/images/user-2.jpg',
-  },
-  {
-    id: 4,
-    name: 'Samantha Johnson',
-    rating: 4,
-    date: '09 April 2023',
-    comment:
-      'Great phone overall, but the camera quality is not as good as I hoped. Still a solid purchase for the price.',
-    avatar: '/images/user-4.jpg',
-  },
-  {
-    id: 5,
-    name: 'Jonathan Doe',
-    rating: 5,
-    date: '17 October 2024',
-    comment:
-      'Absolutely love this phone! The performance is top-notch and the design is sleek. Highly recommend it to anyone looking for a premium smartphone experience.',
-    avatar: '/images/user-5.jpg',
-  },
-  {
-    id: 6,
-    name: 'Veronica Taylor',
-    rating: 1,
-    date: '01 May 2025',
-    comment:
-      'I had high expectations, but the phone has been underwhelming. The battery drains quickly and the software is buggy. Not worth the price.',
-    avatar: '/images/user-6.jpg',
-  },
-]
-
-// Reviews show more/less logic
-const reviewsToShow = ref(3)
-const showAllReviews = ref(false)
-const displayedReviews = computed(() => {
-  return showAllReviews.value ? reviews : reviews.slice(0, reviewsToShow.value)
-})
-const hasMoreReviews = computed(() => reviews.length > reviewsToShow.value)
-const toggleShowAllReviews = () => {
-  showAllReviews.value = !showAllReviews.value
-}
-
-const reviewStats = {
-  averageRating: 4.8,
-  totalReviews: 125,
-  excellent: 100,
-  good: 11,
-  average: 3,
-  belowAverage: 8,
-  poor: 1,
 }
 </script>
 
@@ -773,7 +576,7 @@ const reviewStats = {
 
           <!-- DEBUG: Raw product data -->
           <div v-if="product" class="space-y-3 p-4 bg-yellow-50 border border-yellow-200 rounded">
-            <h3 class="font-bold text-sm">🔍 DEBUG: Product & Variant Data</h3>
+            <h3 class="font-bold text-sm">🔍 DEBUG: Product & Variant Data (REMOVE LATER)</h3>
             <div class="text-xs space-y-1">
               <p><strong>Category:</strong> {{ product.category }}</p>
               <p><strong>Is Mobile/Compute:</strong> {{ isMobileComputeCategory }}</p>
