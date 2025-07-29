@@ -144,7 +144,7 @@ const mockProduct: Product = {
     'Enhanced capabilities thanks to an enlarged display of 6.7 inches and work without recharging throughout the day. Incredible photos as in weak, yes and in bright light using the new system with two cameras.',
   basePrice: 1399,
   totalStock: 50,
-  image: '/images/Iphone-14-pro-Gold.png',
+  image: '/images/placeholder-phone-red.webp',
   brand: 'Apple',
   specifications: {
     // Mobile & Compute specs for iPhone
@@ -158,16 +158,16 @@ const mockProduct: Product = {
     frontCamera: '12MP',
     battery: '4323 mAh',
     os: 'iOS 17',
-    colors: ['Deep Purple', 'Gold', 'Silver', 'Space Black'],
+    colors: ['Red', 'White', 'Black', 'Blue'],
   },
 }
 
 // Product images for different colors/angles
 const productImages = [
-  '/images/Iphone-14-pro-Gold.png',
-  '/images/Iphone-14-pro-purple.png',
-  '/images/Iphone-14-pro-silver.png',
-  '/images/Iphone-14-pro-black.png',
+  '/images/placeholder-phone-red.webp',
+  '/images/placeholder-phone-white.webp',
+  '/images/placeholder-phone-black.webp',
+  '/images/placeholder-phone-blue.webp',
 ]
 
 // Breadcrumb config
@@ -410,9 +410,28 @@ const fetchProductVariants = async (productId: number) => {
 const selectColor = (color: string) => {
   selectedColor.value = color
 
-  // Update image based on color selection
-  const colorIndex = availableColors.value.indexOf(color) || 0
-  selectedImageIndex.value = colorIndex
+  // Update image based on color selection for smartphones
+  if (currentProduct.value?.category === 'Smartphones') {
+    const colorImageMap: { [key: string]: string } = {
+      'Red': '/images/placeholder-phone-red.webp',
+      'White': '/images/placeholder-phone-white.webp',
+      'Black': '/images/placeholder-phone-black.webp',
+      'Blue': '/images/placeholder-phone-blue.webp',
+    }
+
+    // Find the matching image for the selected color
+    const matchingImage = colorImageMap[color]
+    if (matchingImage) {
+      const imageIndex = productImages.findIndex(img => img === matchingImage)
+      if (imageIndex !== -1) {
+        selectedImageIndex.value = imageIndex
+      }
+    }
+  } else {
+    // For other categories, use the original logic
+    const colorIndex = availableColors.value.indexOf(color) || 0
+    selectedImageIndex.value = colorIndex
+  }
 
   // Update selected variant if size is also selected
   if (selectedStorage.value) {
@@ -473,9 +492,15 @@ const formatPrice = (price: number) => {
 
 const getColorClass = (color: string) => {
   const colorMap: { [key: string]: string } = {
+    // Smartphone placeholder colors
+    'Red': 'bg-red-500',
+    'White': 'bg-gray-100',
+    'Black': 'bg-gray-900',
+    'Blue': 'bg-blue-500',
+    // Legacy iPhone colors
     'Deep Purple': 'bg-purple-600',
-    Gold: 'bg-yellow-400',
-    Silver: 'bg-gray-300',
+    'Gold': 'bg-yellow-400',
+    'Silver': 'bg-gray-300',
     'Space Black': 'bg-gray-900',
   }
   return colorMap[color] || 'bg-gray-400'
@@ -483,12 +508,17 @@ const getColorClass = (color: string) => {
 
 // Helper function to get product image (fallback to default)
 const getProductImage = (productName: string): string => {
+  // For smartphones, use placeholder images as default
+  if (currentProduct.value?.category === 'Smartphones') {
+    return '/images/placeholder-phone-red.webp' // Default red phone
+  }
+
   // Map product names to specific images
   const productImageMap: { [key: string]: string } = {
     'iphone': '/images/Iphone-14-pro-Gold.png',
     'samsung': '/images/Galaxy-Z-Mobile.png',
     'apple': '/images/Iphone-14-pro-Gold.png',
-    'realme': '/images/Iphone-14-pro-Gold.png', // fallback for now
+    'realme': '/images/placeholder-phone-red.webp', // Use placeholder for other phones
   }
 
   const name = productName.toLowerCase()
@@ -499,7 +529,7 @@ const getProductImage = (productName: string): string => {
   }
 
   // Default fallback image
-  return '/images/Iphone-14-pro-Gold.png'
+  return '/images/placeholder-phone-red.webp'
 }
 
 // Helper function to capitalize first letter
@@ -509,7 +539,11 @@ const capitalizeFirstLetter = (string: string): string => {
 
 // Helper function to generate color options
 const getColorOptions = (): string[] => {
-  return ['Black', 'White', 'Silver', 'Gold'] // Default options
+  // For smartphones, use placeholder colors
+  if (currentProduct.value?.category === 'Smartphones') {
+    return ['Red', 'White', 'Black', 'Blue'] // Placeholder phone colors
+  }
+  return ['Black', 'White', 'Silver', 'Gold'] // Default options for other categories
 }
 
 // Description expand/collapse
