@@ -60,16 +60,6 @@ const router = createRouter({
     },
 
     // ========================
-    // Test/Debug Routes (Remove in production)
-    // ========================
-    {
-      path: '/test-api',
-      name: 'testAPI',
-      component: () => import('../views/TestProductAPI.vue'),
-      meta: { title: 'API Test' }
-    },
-
-    // ========================
     // Shopping Cart & Wishlist
     // ========================
     {
