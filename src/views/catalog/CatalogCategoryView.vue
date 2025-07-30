@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// Debug panel state
+const showDebug = ref(false)
 import { onMounted, ref, computed, watch } from 'vue'
 import { useProductStore } from '@/stores/products'
 import { useCategoriesStore } from '@/stores/categories'
@@ -503,6 +505,35 @@ watch([priceRange, () => productStore.brands, () => productStore.memories, sortB
       </div>
     </div>
 
+    <!-- Debug Panel -->
+    <div class="fixed bottom-4 right-4 z-50 max-w-[420px] w-full">
+      <div class="bg-yellow-50 border border-yellow-300 rounded-lg shadow-lg p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-bold text-yellow-800 text-sm">🛠️ Debug Panel</span>
+          <button @click="showDebug = !showDebug" class="text-xs text-yellow-700 underline focus:outline-none">
+            {{ showDebug ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        <transition name="fade-debug">
+          <div v-show="showDebug" class="text-xs text-yellow-900 space-y-2">
+            <div><b>User:</b> {{ user }}</div>
+            <div><b>Wishlist ID:</b> {{ wishlistStore.wishlistId }}</div>
+            <div><b>Wishlist Count:</b> {{ wishlistProducts.length }}</div>
+            <div><b>Wishlist Product IDs:</b> {{ wishlistProducts.map(p => p.id).join(', ') }}</div>
+            <div><b>Current Page:</b> {{ currentPage }} / {{ totalPages }}</div>
+            <div><b>Items Per Page:</b> {{ itemsPerPage }}</div>
+            <div><b>Filtered Products:</b> {{ filteredProducts.length }}</div>
+            <div><b>Brands (checked):</b> {{ productStore.brands.filter(b => b.checked).map(b => b.name).join(', ') }}</div>
+            <div><b>Memories (checked):</b> {{ productStore.memories.filter(m => m.checked).map(m => m.value).join(', ') }}</div>
+            <div><b>Price Range:</b> ${{ priceRange.min }} - ${{ priceRange.max }}</div>
+            <div><b>Sort By:</b> {{ sortBy }}</div>
+            <div><b>Category:</b> {{ actualCategoryName }}</div>
+            <div><b>Category Display:</b> {{ categoryDisplayName }}</div>
+          </div>
+        </transition>
+      </div>
+    </div>
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="flex gap-8">
         <!-- Sidebar Filters -->
@@ -990,6 +1021,14 @@ watch([priceRange, () => productStore.brands, () => productStore.memories, sortB
   -webkit-line-clamp: 2;
   line-clamp: 2;
   overflow: hidden;
+}
+
+/* Debug panel fade */
+.fade-debug-enter-active, .fade-debug-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-debug-enter-from, .fade-debug-leave-to {
+  opacity: 0;
 }
 
 /* Remove default button focus styles */
