@@ -241,6 +241,11 @@ export const useProductStore = defineStore('product', () => {
 
       // Transform backend data into consistent frontend Product objects
       const transformedProducts = (rawProducts || []).map((product: BackendProductResponse, index: number) => {
+        // Log if product is missing ID to help debug data issues
+        if (!product.id) {
+          console.warn(`🔍 [fetchProducts] Product at index ${index} missing ID:`, product.name)
+        }
+
         console.log(`🔍 [fetchProducts] Product ${index}:`, {
           id: product.id,
           name: product.name,
@@ -250,7 +255,7 @@ export const useProductStore = defineStore('product', () => {
         })
 
         return {
-          id: product.id ?? index + 1,
+          id: product.id ?? index + 1, // Keep fallback for general products list
           name: product.name ?? 'Unknown Product',
           description: product.description ?? '',
           brand: product.brand ?? 'Unknown',
@@ -335,21 +340,32 @@ export const useProductStore = defineStore('product', () => {
     try {
       const response = await api.get('/products/new')
       const backendProducts: BackendProductResponse[] = response.data || []
-      return backendProducts.map((product, index) => ({
-        id: product.id ?? index,
-        name: product.name ?? 'Unknown Product',
-        description: product.description ?? '',
-        brand: product.brand ?? 'Unknown',
-        isFeatured: product.isFeatured ?? false,
-        imageUrl: product.imageUrl ?? 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
-        basePrice: product.basePrice ?? 0,
-        totalStock: product.totalStock ?? 10,
-        cpu: product.cpu ?? '',
-        memory: product.memory ?? '',
-        camera: product.camera ?? '',
-        createdAt: product.createdAt ?? new Date().toISOString(),
-        rating: typeof product.rating === 'number' ? product.rating : 0,
-      }))
+
+      console.log(`🔍 [fetchNewProducts] Received ${backendProducts.length} products from backend`)
+
+      return backendProducts.map((product, index) => {
+        console.log(`🔍 [fetchNewProducts] Processing product ${index}:`, {
+          id: product.id,
+          name: product.name,
+          basePrice: product.basePrice
+        })
+
+        return {
+          id: product.id ?? index, // Keep fallback just in case
+          name: product.name ?? 'Unknown Product',
+          description: product.description ?? '',
+          brand: product.brand ?? 'Unknown',
+          isFeatured: product.isFeatured ?? false,
+          imageUrl: product.imageUrl ?? 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+          basePrice: product.basePrice ?? 0,
+          totalStock: product.totalStock ?? 10,
+          cpu: product.cpu ?? '',
+          memory: product.memory ?? '',
+          camera: product.camera ?? '',
+          createdAt: product.createdAt ?? new Date().toISOString(),
+          rating: typeof product.rating === 'number' ? product.rating : 0,
+        }
+      })
     } catch (err) {
       console.error('Error fetching new products:', err)
       error.value = 'Error al cargar los productos nuevos'
@@ -357,9 +373,7 @@ export const useProductStore = defineStore('product', () => {
     } finally {
       loading.value = false
     }
-  }
-
-  /**
+  }  /**
    * Fetches unique brand names from the backend and initializes filter options.
    */
   const fetchBrands = async () => {

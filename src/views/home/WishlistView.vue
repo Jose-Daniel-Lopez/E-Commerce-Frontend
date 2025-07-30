@@ -15,7 +15,6 @@ import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import LoadingState from '@/components/shared/LoadingState.vue'
 import ErrorAlert from '@/components/shared/ErrorAlert.vue'
 import EmptyWishlistState from '@/components/wishlist/EmptyWishlistState.vue'
-import WishlistProductCard from '@/components/wishlist/WishlistProductCard.vue'
 
 import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
@@ -25,8 +24,8 @@ const authStore = useAuthStore()
 const wishlistStore = useWishlistStore()
 const { wishlistProducts, wishlistLoading, wishlistError } = storeToRefs(wishlistStore)
 
-const removeFromWishlist = (productId: number) => {
-  wishlistProducts.value = wishlistProducts.value.filter((item: import('@/stores/wishlistStore').WishlistProduct) => item.id !== productId)
+const removeFromWishlist = async (productId: number) => {
+  await wishlistStore.removeProductFromWishlist(productId)
 }
 
 function goToProduct(productId: number) {

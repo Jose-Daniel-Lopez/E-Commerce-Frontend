@@ -2,8 +2,11 @@
 import { onMounted, ref, computed, watch } from 'vue'
 import { useProductStore } from '@/stores/products'
 import { useCategoriesStore } from '@/stores/categories'
+import { useWishlistStore } from '@/stores/wishlistStore'
+import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+import { storeToRefs } from 'pinia'
 
 // =======================
 // 🧩 Props
@@ -21,6 +24,10 @@ const props = defineProps<Props>()
 const router = useRouter()
 const productStore = useProductStore()
 const categoriesStore = useCategoriesStore()
+const authStore = useAuthStore()
+const wishlistStore = useWishlistStore()
+const { user } = storeToRefs(authStore)
+const { wishlistProducts, wishlistLoading } = storeToRefs(wishlistStore)
 
 // =======================
 // 📦 State
@@ -43,11 +50,6 @@ const priceRange = ref({ min: 0, max: 5000 })
  * Options: name, name-desc, price-low, price-high, rating.
  */
 const sortBy = ref('name')
-
-/**
- * Tracks which products are favorited by the user (client-side only).
- */
-const favoriteProducts = ref(new Map<number, boolean>())
 
 /**
  * Display name of the current category (e.g., "Smartphones").
@@ -297,12 +299,22 @@ onMounted(async () => {
   actualCategoryName.value = getCategoryNameFromUrl(props.categoryName)
   categoryDisplayName.value = actualCategoryName.value
 
-  // Load initial data: products, brands, memories
+  // Load initial data: products, brands, memories, and wishlist
   await Promise.all([
     productStore.fetchProductsByCategoryName(actualCategoryName.value, currentPage.value - 1, itemsPerPage),
     productStore.fetchBrands(),
     productStore.fetchMemories(),
   ])
+
+  // Load user wishlist if authenticated
+  if (authStore.user?.id) {
+    try {
+      await wishlistStore.fetchUserWishlist(authStore.user.id)
+      console.log('🟢 [CATALOG] Wishlist loaded successfully')
+    } catch (error) {
+      console.error('🔴 [CATALOG] Error loading wishlist:', error)
+    }
+  }
 })
 
 // Watch for route changes (e.g., navigating between categories)
@@ -331,11 +343,66 @@ const formatPrice = (price: number) => {
 }
 
 /**
- * Toggles the favorite status of a product.
+ * Toggles product favorite status using the wishlist API.
+ * Handles authentication, adds/removes from wishlist, and shows feedback.
  */
-const toggleFavorite = (productId: number) => {
-  const isFavorite = favoriteProducts.value.get(productId) || false
-  favoriteProducts.value.set(productId, !isFavorite)
+const toggleFavorite = async (productId: number) => {
+  console.log('🔵 [CATALOG] toggleFavorite called for product:', productId)
+
+  // Check if user is authenticated
+  if (!user.value || !user.value.id) {
+    console.error('🔴 [CATALOG] User not authenticated')
+    alert('Please log in to add products to your wishlist')
+    return
+  }
+
+  // Find the product to get its data
+  const product = productStore.products.find(p => p.id === productId)
+  if (!product) {
+    console.error('🔴 [CATALOG] Product not found:', productId)
+    alert('Product not found')
+    return
+  }
+
+  try {
+    // Ensure wishlist is loaded
+    if (!wishlistStore.wishlistId) {
+      console.log('🟡 [CATALOG] Loading user wishlist...')
+      await wishlistStore.fetchUserWishlist(user.value.id)
+    }
+
+    const isCurrentlyInWishlist = wishlistStore.isProductInWishlist(productId)
+    console.log('🟡 [CATALOG] Product in wishlist before action:', isCurrentlyInWishlist)
+
+    if (!isCurrentlyInWishlist) {
+      console.log('🟡 [CATALOG] Adding product to wishlist...')
+
+      const productData = {
+        name: product.name,
+        description: product.description || product.name,
+        brand: product.brand || 'Unknown',
+        isFeatured: product.isFeatured,
+        basePrice: product.basePrice,
+        totalStock: product.totalStock,
+        imageUrl: product.imageUrl || undefined,
+      }
+
+      await wishlistStore.addProductToWishlist(productId, productData)
+      console.log('✅ [CATALOG] Product added to wishlist')
+    } else {
+      console.log('🟡 [CATALOG] Removing product from wishlist...')
+      await wishlistStore.removeProductFromWishlist(productId)
+      console.log('✅ [CATALOG] Product removed from wishlist')
+    }
+
+    // Verify the state change
+    const isInWishlistAfter = wishlistStore.isProductInWishlist(productId)
+    console.log('🟡 [CATALOG] Product in wishlist after action:', isInWishlistAfter)
+
+  } catch (error) {
+    console.error('🔴 [CATALOG] Error toggling favorite:', error)
+    alert('Error updating wishlist: ' + (error instanceof Error ? error.message : 'Unknown error'))
+  }
 }
 
 /**
@@ -799,11 +866,28 @@ watch([priceRange, () => productStore.brands, () => productStore.memories, sortB
               class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4"
             >
               <div class="absolute top-4 right-4 z-10">
-                <button @click="toggleFavorite(product.id)" class="w-6 h-6 text-gray-600 hover:text-red-600 transition-colors" type="button" aria-label="Toggle favorite">
-                  <svg v-if="!favoriteProducts.get(product.id)" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6">
+                <button
+                  @click="toggleFavorite(product.id)"
+                  :disabled="wishlistLoading"
+                  class="w-6 h-6 text-gray-600 hover:text-red-600 transition-colors disabled:opacity-50"
+                  type="button"
+                  aria-label="Toggle favorite"
+                >
+                  <svg
+                    v-if="!wishlistStore.isProductInWishlist(product.id)"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    class="w-6 h-6"
+                  >
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
-                  <svg v-else fill="currentColor" viewBox="0 0 24 24" class="w-6 h-6 text-red-600">
+                  <svg
+                    v-else
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    class="w-6 h-6 text-red-600"
+                  >
                     <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 </button>
