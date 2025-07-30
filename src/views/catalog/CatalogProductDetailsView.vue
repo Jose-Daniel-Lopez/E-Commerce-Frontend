@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useProductStore } from '@/stores/products'
+import { useWishlistStore } from '@/stores/wishlistStore'
+import { useAuthStore } from '@/stores/auth'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import { useI18n } from 'vue-i18n'
+import { storeToRefs } from 'pinia'
 
 // === Interfaces ===
 interface ProductVariant {
@@ -104,7 +107,12 @@ const props = defineProps<Props>()
 
 // === Stores & i18n ===
 const productStore = useProductStore()
+const wishlistStore = useWishlistStore()
+const authStore = useAuthStore()
 const { t } = useI18n()
+
+// === Reactive refs ===
+const { isAuthenticated, user } = storeToRefs(authStore)
 
 // === State ===
 const product = ref<Product | null>(null)
@@ -354,8 +362,57 @@ const addToCart = () => {
   })
 }
 
-const addToWishlist = () => {
-  console.log('Adding to wishlist:', currentProduct.value?.name)
+const wishlistLoading = ref(false)
+
+const addToWishlist = async () => {
+  console.log('🟡 [CATALOG PRODUCT DETAILS] Add to Wishlist clicked for product:', currentProduct.value?.id)
+
+  if (!isAuthenticated.value) {
+    console.log('🔴 [CATALOG PRODUCT DETAILS] User not authenticated')
+    alert('Please log in to add products to your wishlist')
+    return
+  }
+
+  if (!currentProduct.value?.id) {
+    console.log('🔴 [CATALOG PRODUCT DETAILS] No product ID found')
+    return
+  }
+
+  wishlistLoading.value = true
+
+  try {
+    const productId = currentProduct.value.id
+    const isCurrentlyInWishlist = wishlistStore.isProductInWishlist(productId)
+
+    if (isCurrentlyInWishlist) {
+      alert('This product is already in your wishlist!')
+      return
+    }
+
+    console.log('🟡 [CATALOG PRODUCT DETAILS] Adding to wishlist...')
+    const productData = {
+      name: currentProduct.value.name,
+      description: currentProduct.value.description,
+      brand: currentProduct.value.brand || '',
+      isFeatured: false,
+      basePrice: currentProduct.value.basePrice,
+      totalStock: currentProduct.value.totalStock,
+      screenSize: currentProduct.value.specifications?.screenSize,
+      ramCapacity: currentProduct.value.specifications?.ram,
+      storageCapacity: currentProduct.value.specifications?.storage ? parseInt(currentProduct.value.specifications.storage.replace(/\D/g, '')) : undefined,
+      operatingSystem: currentProduct.value.specifications?.os,
+      imageUrl: currentProduct.value.image || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+    }
+    await wishlistStore.addProductToWishlist(productId, productData)
+
+    console.log('🟢 [CATALOG PRODUCT DETAILS] Product added to wishlist successfully')
+    alert('Product added to your wishlist!')
+  } catch (error) {
+    console.error('🔴 [CATALOG PRODUCT DETAILS] Error adding to wishlist:', error)
+    alert('Failed to add product to wishlist. Please try again.')
+  } finally {
+    wishlistLoading.value = false
+  }
 }
 
 // === Fetch Data ===
@@ -403,6 +460,12 @@ onMounted(async () => {
     selectedStorage.value = ''
 
     await fetchProductVariants(productId)
+
+    // Initialize wishlist if user is authenticated
+    if (isAuthenticated.value && user.value?.id) {
+      console.log('🟣 [CATALOG PRODUCT DETAILS] Initializing wishlist for user:', user.value.id)
+      await wishlistStore.fetchUserWishlist(user.value.id)
+    }
   } catch (err) {
     console.error('Error fetching product:', err)
     error.value = 'Error loading product details'
@@ -841,9 +904,27 @@ const fetchProductVariants = async (productId: number) => {
           <div class="flex gap-3">
             <button
               @click="addToWishlist"
-              class="flex-1 border border-gray-300 text-gray-700 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium hover:bg-gray-50 transition-colors"
+              :disabled="wishlistLoading || !isAuthenticated || (!!currentProduct?.id && wishlistStore.isProductInWishlist(currentProduct.id))"
+              :class="[
+                'flex-1 border border-gray-300 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
+                wishlistLoading || !isAuthenticated || (!!currentProduct?.id && wishlistStore.isProductInWishlist(currentProduct.id))
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'text-gray-700 hover:bg-gray-50'
+              ]"
             >
-              Add to Wishlist
+              <span v-if="wishlistLoading" class="flex items-center justify-center">
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 mr-2"></div>
+                Adding...
+              </span>
+              <span v-else-if="!isAuthenticated">
+                Login to Add to Wishlist
+              </span>
+              <span v-else-if="currentProduct?.id && wishlistStore.isProductInWishlist(currentProduct.id)">
+                Already in Wishlist
+              </span>
+              <span v-else>
+                Add to Wishlist
+              </span>
             </button>
             <button
               @click="addToCart"
