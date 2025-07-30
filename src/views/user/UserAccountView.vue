@@ -1,5 +1,29 @@
 <template>
   <div class="pt-[85px] lg:pt-0 bg-white text-black animate-fadeInUp">
+    <!-- Debug Panel -->
+    <div class="fixed bottom-4 right-4 z-50 max-w-[420px] w-full">
+      <div class="bg-yellow-50 border border-yellow-300 rounded-lg shadow-lg p-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-bold text-yellow-800 text-sm">🛠️ Debug Panel</span>
+          <button @click="showDebug = !showDebug" class="text-xs text-yellow-700 underline focus:outline-none">
+            {{ showDebug ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+        <transition name="fade-debug">
+          <div v-show="showDebug" class="text-xs text-yellow-900 space-y-2">
+            <div><b>User:</b> {{ user }}</div>
+            <div><b>Theme:</b> {{ theme }}</div>
+            <div><b>Wishlist Count:</b> {{ wishlistProducts.length }}</div>
+            <div><b>Wishlist Product IDs:</b> {{ wishlistProducts.map(p => p.id).join(', ') }}</div>
+            <div><b>Orders Count:</b> {{ orders.length }}</div>
+            <div><b>Refunds Count:</b> {{ refunds.length }}</div>
+            <div><b>Addresses Count:</b> {{ addresses.length }}</div>
+            <div><b>Reviews Count:</b> {{ reviews.length }}</div>
+            <div><b>Sections:</b> {{ sections.map(s => s.id).join(', ') }}</div>
+          </div>
+        </transition>
+      </div>
+    </div>
     <Wrapper class="py-8">
       <!-- Breadcrumb Navigation -->
       <BreadcrumbNav :breadcrumbs="breadcrumbs" />
@@ -841,6 +865,7 @@
 </template>
 
 <script setup lang="ts">
+const showDebug = ref(false)
 import '@/assets/base.css'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
@@ -1423,4 +1448,11 @@ const refreshAddresses = async () => {
 </script>
 
 <style scoped>
+/* Debug panel fade */
+.fade-debug-enter-active, .fade-debug-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-debug-enter-from, .fade-debug-leave-to {
+  opacity: 0;
+}
 </style>
