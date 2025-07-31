@@ -175,7 +175,7 @@ export const useUserCartStore = defineStore('userCart', () => {
 
       // Make API call to add product to cart
       const response = await api.post(`/cart/${cart.value.id}/products/${productVariantId}`)
-      
+
       console.log('🟢 [CART STORE] Product added successfully:', response.data)
 
       // Update cart data with the response
@@ -192,7 +192,7 @@ export const useUserCartStore = defineStore('userCart', () => {
     } catch (e) {
       console.error('🔴 [CART STORE] Failed to add product to cart:', e)
       let errorMessage = 'Failed to add product to cart'
-      
+
       if (e instanceof Error) {
         errorMessage = `Error adding to cart: ${e.message}`
       } else if (e && typeof e === 'object' && 'response' in e) {
@@ -205,7 +205,7 @@ export const useUserCartStore = defineStore('userCart', () => {
           errorMessage = axiosError.response.data.message
         }
       }
-      
+
       error.value = errorMessage
       return { success: false, error: errorMessage }
     } finally {

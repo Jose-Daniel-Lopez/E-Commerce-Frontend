@@ -551,7 +551,7 @@ onMounted(async () => {
     if (isAuthenticated.value && user.value?.id) {
       console.log('🟣 [CATALOG PRODUCT DETAILS] Initializing wishlist for user:', user.value.id)
       await wishlistStore.fetchUserWishlist(user.value.id)
-      
+
       // Also initialize cart for authenticated user
       console.log('🟣 [CATALOG PRODUCT DETAILS] Initializing cart for user:', user.value.id)
       await userCartStore.fetchUserCart(user.value.id)
