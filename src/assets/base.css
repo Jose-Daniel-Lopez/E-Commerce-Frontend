@@ -562,4 +562,16 @@ section {
       transform: none;
     }
   }
+
+  /* Theme transitions */
+  * {
+    transition: background-color 0.2s ease-in-out,
+                border-color 0.2s ease-in-out,
+                color 0.2s ease-in-out;
+  }
+
+  /* Dark mode specific improvements */
+  .dark {
+    color-scheme: dark;
+  }
 }
