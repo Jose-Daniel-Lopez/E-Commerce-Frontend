@@ -684,6 +684,7 @@ const fetchProductVariants = async (productId: number) => {
             </div>
           </div>
 
+
           <!-- Product Specifications - Mobile & Compute Template -->
           <div v-if="isMobileComputeCategory" class="grid grid-cols-2 md:grid-cols-3 gap-3">
             <!-- Screen Size -->
