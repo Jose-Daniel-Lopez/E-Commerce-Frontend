@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useProductStore } from '@/stores/products'
 import { useWishlistStore } from '@/stores/wishlistStore'
 import { useAuthStore } from '@/stores/auth'
+import { useReviewsStore } from '@/stores/reviews'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
@@ -109,6 +110,7 @@ const props = defineProps<Props>()
 const productStore = useProductStore()
 const wishlistStore = useWishlistStore()
 const authStore = useAuthStore()
+const reviewsStore = useReviewsStore()
 const { t } = useI18n()
 
 // === Reactive refs ===
@@ -301,26 +303,49 @@ const toggleReviews = () => (reviewsCollapsed.value = !reviewsCollapsed.value)
 const toggleRelated = () => (relatedCollapsed.value = !relatedCollapsed.value)
 
 // === Reviews ===
-const reviews = [
-  { id: 1, name: 'Grace Carey', rating: 4, date: '24 January 2023', comment: "...", avatar: '/images/user-1.jpg' },
-  { id: 2, name: 'Ronald Richards', rating: 5, date: '24 January 2023', comment: "...", avatar: '/images/user-2.jpg' },
-  { id: 3, name: 'Michael Smith', rating: 2, date: '12 September 2021', comment: "...", avatar: '/images/user-2.jpg' },
-  { id: 4, name: 'Samantha Johnson', rating: 4, date: '09 April 2023', comment: "...", avatar: '/images/user-4.jpg' },
-  { id: 5, name: 'Jonathan Doe', rating: 5, date: '17 October 2024', comment: "...", avatar: '/images/user-5.jpg' },
-  { id: 6, name: 'Veronica Taylor', rating: 1, date: '01 May 2025', comment: "...", avatar: '/images/user-6.jpg' },
-]
+const { productReviews, productReviewsLoading, productReviewsError, fetchProductReviews } = reviewsStore
 
 const reviewsToShow = ref(3)
 const showAllReviews = ref(false)
-const displayedReviews = computed(() => showAllReviews.value ? reviews : reviews.slice(0, reviewsToShow.value))
-const hasMoreReviews = computed(() => reviews.length > reviewsToShow.value)
+const displayedReviews = computed(() =>
+  showAllReviews.value ? productReviews.value : productReviews.value.slice(0, reviewsToShow.value)
+)
+const hasMoreReviews = computed(() => productReviews.value.length > reviewsToShow.value)
 const toggleShowAllReviews = () => (showAllReviews.value = !showAllReviews.value)
 
-const reviewStats = {
-  averageRating: 4.8,
-  totalReviews: 125,
-  excellent: 100, good: 11, average: 3, belowAverage: 8, poor: 1
-}
+const reviewStats = computed(() => {
+  const reviews = productReviews.value
+  const totalReviews = reviews.length
+
+  if (totalReviews === 0) {
+    return {
+      averageRating: 0,
+      totalReviews: 0,
+      excellent: 0,
+      good: 0,
+      average: 0,
+      belowAverage: 0,
+      poor: 0
+    }
+  }
+
+  const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
+  const excellent = reviews.filter(r => r.rating === 5).length
+  const good = reviews.filter(r => r.rating === 4).length
+  const averageCount = reviews.filter(r => r.rating === 3).length
+  const belowAverage = reviews.filter(r => r.rating === 2).length
+  const poor = reviews.filter(r => r.rating === 1).length
+
+  return {
+    averageRating: Math.round(averageRating * 10) / 10,
+    totalReviews,
+    excellent,
+    good,
+    average: averageCount,
+    belowAverage,
+    poor
+  }
+})
 
 // === Image & Variant Selection ===
 const selectImage = (index: number) => {
@@ -460,6 +485,9 @@ onMounted(async () => {
     selectedStorage.value = ''
 
     await fetchProductVariants(productId)
+
+    // Fetch product reviews
+    await fetchProductReviews(productId)
 
     // Initialize wishlist if user is authenticated
     if (isAuthenticated.value && user.value?.id) {
@@ -1249,7 +1277,7 @@ const fetchProductVariants = async (productId: number) => {
         <transition name="fade-reviews">
           <div v-show="!reviewsCollapsed">
             <!-- Reviews Stats -->
-            <div class="flex items-start gap-12 mb-8">
+            <div v-if="!productReviewsLoading && productReviews.length > 0" class="flex items-start gap-12 mb-8">
               <!-- Overall Rating -->
               <div class="text-center space-x-3 bg-[#F4F4F4] rounded-[25px] w-auto h-auto p-8">
                 <div class="text-6xl font-bold mb-2">{{ reviewStats.averageRating }}</div>
@@ -1351,8 +1379,25 @@ const fetchProductVariants = async (productId: number) => {
               />
             </div>
 
+            <!-- Loading State for Reviews -->
+            <div v-if="productReviewsLoading" class="flex justify-center items-center py-8">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              <span class="ml-3 text-gray-600">Loading reviews...</span>
+            </div>
+
+            <!-- Error State for Reviews -->
+            <div v-else-if="productReviewsError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              {{ productReviewsError }}
+            </div>
+
+            <!-- No Reviews State -->
+            <div v-else-if="productReviews.length === 0" class="text-center py-8">
+              <div class="text-gray-500 text-lg">No reviews yet</div>
+              <div class="text-gray-400 text-sm mt-2">Be the first to leave a review!</div>
+            </div>
+
             <!-- Individual Reviews with View More/Less and Fade -->
-            <div class="space-y-6 relative">
+            <div v-else class="space-y-6 relative">
               <div
                 :class="[
                   'transition-all duration-300 overflow-hidden',
@@ -1376,14 +1421,14 @@ const fetchProductVariants = async (productId: number) => {
                         class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0"
                       >
                         <span class="text-gray-600 text-sm font-medium">{{
-                          review.name.charAt(0)
+                          (review.userName || 'A').charAt(0)
                         }}</span>
                       </div>
 
                       <!-- Review Content -->
                       <div class="flex-1">
                         <div class="flex items-center justify-between mb-1">
-                          <h4 class="font-medium text-gray-900">{{ review.name }}</h4>
+                          <h4 class="font-medium text-gray-900">{{ review.userName || 'Anonymous' }}</h4>
                           <span class="text-sm text-gray-500">{{ review.date }}</span>
                         </div>
 
