@@ -747,42 +747,66 @@
                       <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
                         {{ $t('account.settings.theme.description') }}
                       </p>
+                      <!-- Current theme indicator -->
+                      <p class="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">
+                        Current: {{ themeStore.selectedTheme === 'system' ? `System (${themeStore.effectiveTheme})` : themeStore.selectedTheme }}
+                      </p>
                     </div>
                   </div>
                   <div class="flex items-center gap-2">
-                    <button
-                      @click="setTheme('light')"
-                      :class="[
-                        themeButtonBaseClasses,
-                        themeStore.selectedTheme === 'light' ? themeButtonActiveClasses : themeButtonInactiveClasses
-                      ]"
-                      aria-label="Tema claro"
-                      tabindex="0"
-                    >
-                      <v-icon name="hi-sun" class="w-4 h-4" />
-                    </button>
-                    <button
-                      @click="setTheme('dark')"
-                      :class="[
-                        themeButtonBaseClasses,
-                        themeStore.selectedTheme === 'dark' ? themeButtonActiveClasses : themeButtonInactiveClasses
-                      ]"
-                      aria-label="Tema oscuro"
-                      tabindex="0"
-                    >
-                      <v-icon name="hi-moon" class="w-4 h-4" />
-                    </button>
-                    <button
-                      @click="setTheme('system')"
-                      :class="[
-                        themeButtonBaseClasses,
-                        themeStore.selectedTheme === 'system' ? themeButtonActiveClasses : themeButtonInactiveClasses
-                      ]"
-                      aria-label="Tema del sistema"
-                      tabindex="0"
-                    >
-                      <v-icon name="hi-desktop-computer" class="w-4 h-4" />
-                    </button>
+                    <div class="relative group">
+                      <button
+                        @click="setTheme('light')"
+                        :class="[
+                          themeButtonBaseClasses,
+                          themeStore.selectedTheme === 'light' ? themeButtonActiveClasses : themeButtonInactiveClasses
+                        ]"
+                        aria-label="Tema claro"
+                        tabindex="0"
+                      >
+                        <v-icon name="hi-sun" class="w-4 h-4" />
+                      </button>
+                      <!-- Tooltip -->
+                      <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
+                        Light theme
+                      </div>
+                    </div>
+
+                    <div class="relative group">
+                      <button
+                        @click="setTheme('dark')"
+                        :class="[
+                          themeButtonBaseClasses,
+                          themeStore.selectedTheme === 'dark' ? themeButtonActiveClasses : themeButtonInactiveClasses
+                        ]"
+                        aria-label="Tema oscuro"
+                        tabindex="0"
+                      >
+                        <v-icon name="hi-moon" class="w-4 h-4" />
+                      </button>
+                      <!-- Tooltip -->
+                      <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
+                        Dark theme
+                      </div>
+                    </div>
+
+                    <div class="relative group">
+                      <button
+                        @click="setTheme('system')"
+                        :class="[
+                          themeButtonBaseClasses,
+                          themeStore.selectedTheme === 'system' ? themeButtonActiveClasses : themeButtonInactiveClasses
+                        ]"
+                        aria-label="Tema del sistema"
+                        tabindex="0"
+                      >
+                        <v-icon name="hi-desktop-computer" class="w-4 h-4" />
+                      </button>
+                      <!-- Tooltip -->
+                      <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
+                        Follow system preference
+                      </div>
+                    </div>
                   </div>
                 </div>
 

@@ -25,6 +25,9 @@ export const useThemeStore = defineStore('theme', () => {
   const applyTheme = (theme: 'light' | 'dark') => {
     const root = document.documentElement
 
+    // Add smooth transition class before changing theme
+    root.style.transition = 'background-color 0.3s ease, color 0.3s ease'
+
     if (theme === 'dark') {
       root.classList.add('dark')
       root.setAttribute('data-theme', 'dark')
@@ -34,6 +37,11 @@ export const useThemeStore = defineStore('theme', () => {
     }
 
     currentTheme.value = theme
+
+    // Remove transition after a short delay to avoid affecting other animations
+    setTimeout(() => {
+      root.style.transition = ''
+    }, 300)
   }
 
   // Function to change theme
@@ -47,6 +55,9 @@ export const useThemeStore = defineStore('theme', () => {
 
   // Function to initialize theme
   const initializeTheme = () => {
+    // Add no-transition class to prevent flash during initialization
+    document.documentElement.classList.add('no-transition')
+
     // Load theme from localStorage or use 'system' by default
     const savedTheme = localStorage.getItem('theme') as Theme
     if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
@@ -55,6 +66,11 @@ export const useThemeStore = defineStore('theme', () => {
 
     // Apply initial theme
     applyTheme(effectiveTheme.value)
+
+    // Remove no-transition class after a short delay
+    setTimeout(() => {
+      document.documentElement.classList.remove('no-transition')
+    }, 100)
 
     // Listen to system preference changes
     mediaQuery.addEventListener('change', (e) => {

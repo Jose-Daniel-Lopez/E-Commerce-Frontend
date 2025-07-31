@@ -52,12 +52,12 @@ export const useThemeClasses = () => {
 
   // Classes for contrast backgrounds (like debug panel)
   const contrastBgClasses = computed(() =>
-    'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700'
+    'bg-yellow-50 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-600/50'
   )
 
   // Classes for overlays/modals
   const overlayClasses = computed(() =>
-    'bg-black/50 dark:bg-black/70'
+    'bg-black/50 dark:bg-black/80 backdrop-blur-sm'
   )
 
   // Classes for outline buttons (secondary with border)
@@ -77,17 +77,17 @@ export const useThemeClasses = () => {
 
   // Classes for theme toggle buttons (inactive state)
   const themeButtonInactiveClasses = computed(() =>
-    'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-400'
+    'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-400 hover:scale-105'
   )
 
   // Classes for theme toggle buttons (active state)
   const themeButtonActiveClasses = computed(() =>
-    'bg-blue-600 dark:bg-blue-500 text-white border-blue-600 dark:border-blue-500 shadow-md'
+    'bg-blue-600 dark:bg-blue-500 text-white border-blue-600 dark:border-blue-500 shadow-lg scale-110 ring-2 ring-blue-200 dark:ring-blue-800'
   )
 
   // Classes for theme toggle buttons (base)
   const themeButtonBaseClasses = computed(() =>
-    'p-3 rounded-lg border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400'
+    'p-3 rounded-lg border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transform'
   )
 
   return {
