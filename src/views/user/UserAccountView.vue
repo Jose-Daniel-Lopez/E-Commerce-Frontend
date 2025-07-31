@@ -740,7 +740,7 @@
                   </div>
                   <select
                     :value="currentLocale.code"
-                    @change="changeLanguage(($event.target as HTMLSelectElement).value)"
+                    @change="handleLanguageChange(($event.target as HTMLSelectElement).value)"
                     class="px-3 py-2 text-sm placeholder-gray-400 transition-all duration-200 border border-gray-300 rounded-lg cursor-pointer font-srProDisplay focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:shadow-lg"
                   >
                     <option v-for="locale in availableLocales" :key="locale.code" :value="locale.code">
@@ -873,6 +873,7 @@ import { useUsersStore } from '@/stores/users'
 import type { User } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import { useLanguage } from '@/composables/useLanguage'
+import { useToast } from '@/composables/useToast'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import Button from '@/components/shared/Button.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
@@ -883,6 +884,9 @@ import axios from '@/lib/axios'
 
 // Language composable for global language sync
 const { currentLocale, availableLocales, changeLanguage } = useLanguage()
+
+// Toast notifications
+const toast = useToast()
 
 const { t } = useI18n()
 const authStore = useAuthStore()
@@ -1047,6 +1051,10 @@ const fetchUserReviews = async (userId: number) => {
     reviews.value = await Promise.all(reviewPromises)
   } catch (err: unknown) {
     reviewsError.value = (err as Error)?.message || 'Failed to load reviews.'
+    toast.error('Failed to load your reviews', {
+      title: 'Loading Error',
+      duration: 4000
+    })
   } finally {
     reviewsLoading.value = false
   }
@@ -1092,16 +1100,35 @@ const cancelEdit = () => {
 }
 
 const saveProfile = async () => {
-  // Save changes using the store
-  if (authStore.user) {
-    await authStore.updateUserProfile({
-      username: editableUser.value.name,
-      avatar: editableUser.value.avatar,
-      location: editableUser.value.location,
+  try {
+    // Save changes using the store
+    if (authStore.user) {
+      const result = await authStore.updateUserProfile({
+        username: editableUser.value.name,
+        avatar: editableUser.value.avatar,
+        location: editableUser.value.location,
+      })
+
+      if (result.success) {
+        toast.success('Profile updated successfully!', {
+          title: 'Profile Saved',
+          duration: 3000
+        })
+        isEditProfileOpen.value = false
+      } else {
+        toast.error(result.error || 'Failed to update profile', {
+          title: 'Update Failed',
+          duration: 4000
+        })
+      }
+    }
+  } catch (error) {
+    console.error('Error updating profile:', error)
+    toast.error('An unexpected error occurred while updating your profile', {
+      title: 'Update Error',
+      duration: 4000
     })
   }
-  isEditProfileOpen.value = false
-  // ...
 }
 
 // State for user settings
@@ -1173,6 +1200,11 @@ const setTheme = (newTheme: string) => {
   } else {
     document.documentElement.classList.remove('dark')
   }
+}
+
+// Language change wrapper with toast
+const handleLanguageChange = (newLocale: string) => {
+  changeLanguage(newLocale)
 }
 
 // Helper functions to determine status colors.
@@ -1318,7 +1350,10 @@ const closeChangePasswordModal = () => {
 }
 
 const onPasswordChangeSuccess = () => {
-  // You can add any additional logic here if needed
+  toast.success('Password changed successfully!', {
+    title: 'Security Update',
+    duration: 3000
+  })
   console.log('Password changed successfully!')
 }
 
@@ -1352,18 +1387,25 @@ const saveAvatar = async (avatarUrl: string) => {
         // Close the modal
         closeAvatarSelector()
 
-        // Show success message (optional)
-        console.log('Avatar updated successfully')
+        // Show success toast
+        toast.success('Profile picture updated successfully!', {
+          title: 'Avatar Saved',
+          duration: 3000
+        })
       } else {
         console.error('Failed to update avatar:', result.error)
-        // You might want to show an error message to the user here
-        alert(`Failed to update avatar: ${result.error}`)
+        toast.error(result.error || 'Failed to update profile picture', {
+          title: 'Update Failed',
+          duration: 4000
+        })
       }
     }
   } catch (error) {
     console.error('Error saving avatar:', error)
-    // You might want to show an error message to the user here
-    alert('Error saving avatar. Please try again.')
+    toast.error('An unexpected error occurred while updating your profile picture', {
+      title: 'Update Error',
+      duration: 4000
+    })
   }
 }
 
@@ -1379,21 +1421,27 @@ onMounted(async () => {
 
   // Fetch user data from backend using auth store
   if (authStore.isAuthenticated && authStore.user?.id) {
-    await authStore.fetchCurrentUser()
-    await usersStore.fetchUserById(authStore.user.id)
+    try {
+      await authStore.fetchCurrentUser()
+      await usersStore.fetchUserById(authStore.user.id)
 
-    if (usersStore.selectedUser) {
-      await usersStore.fetchUserAddresses(usersStore.selectedUser)
+      if (usersStore.selectedUser) {
+        await usersStore.fetchUserAddresses(usersStore.selectedUser)
+      }
+
+      // ✅ Fetch user's orders using orders store
+      await ordersStore.fetchOrdersByUser(authStore.user.id)
+      // ✅ Fetch user's wishlist using wishlist store
+      await fetchUserWishlist(authStore.user.id)
+      await fetchUserReviews(authStore.user.id)
+    } catch (error) {
+      console.error('Error loading account data:', error)
+      toast.error('Some account data could not be loaded', {
+        title: 'Loading Error',
+        duration: 4000
+      })
     }
-
-    // ✅ Fetch user's orders using orders store
-    await ordersStore.fetchOrdersByUser(authStore.user.id)
-    // ✅ Fetch user's wishlist using wishlist store
-    await fetchUserWishlist(authStore.user.id)
-    await fetchUserReviews(authStore.user.id)
-  }
-
-  // Set up an observer to highlight the active navigation link based on the currently visible section.
+  }  // Set up an observer to highlight the active navigation link based on the currently visible section.
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -1428,8 +1476,16 @@ const refreshProfile = async () => {
         await usersStore.fetchUserAddresses(usersStore.selectedUser)
       }
     }
+
+    toast.success('Profile data refreshed!', {
+      duration: 2500
+    })
   } catch (error) {
     console.error('Error al refrescar perfil:', error)
+    toast.error('Failed to refresh profile data', {
+      title: 'Refresh Failed',
+      duration: 4000
+    })
   }
 }
 
@@ -1441,8 +1497,16 @@ const refreshAddresses = async () => {
         await usersStore.fetchUserAddresses(usersStore.selectedUser)
       }
     }
+
+    toast.success('Addresses refreshed!', {
+      duration: 2500
+    })
   } catch (error) {
     console.error('Error al refrescar direcciones:', error)
+    toast.error('Failed to refresh addresses', {
+      title: 'Refresh Failed',
+      duration: 4000
+    })
   }
 }
 </script>
