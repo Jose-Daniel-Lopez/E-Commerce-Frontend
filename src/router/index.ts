@@ -161,6 +161,16 @@ const router = createRouter({
       name: 'verify',
       component: () => import('../views/auth/VerifyView.vue'),
       meta: { title: 'Verify Email' }
+    },
+
+    // ========================
+    // Test and Demo Routes
+    // ========================
+    {
+      path: '/toast-demo',
+      name: 'toastDemo',
+      component: () => import('../views/testing/ToastDemo.vue'),
+      meta: { title: 'Toast Demo' }
     }
   ]
 })
@@ -208,7 +218,7 @@ router.afterEach((to, from) => {
   const scrollToTop = () => {
     // Method 1: Standard scroll
     window.scrollTo({ top: 0, behavior: 'smooth' })
-    
+
     // Method 2: Fallback for browsers that don't support smooth behavior
     setTimeout(() => {
       if (window.pageYOffset > 0) {
