@@ -251,6 +251,7 @@
     "profile": {
       "title": "Perfil",
       "editButton": "Editar perfil",
+      "cancelButton": "Cancelar",
       "refreshButton": "Refrescar",
       "memberSince": "Miembro desde",
       "verified": "Verificado",
