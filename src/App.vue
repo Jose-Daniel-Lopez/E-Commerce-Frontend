@@ -3,6 +3,7 @@ import { RouterView } from 'vue-router'
 import MainHeader from '@/components/shared/MainHeader.vue'
 import SubnavBar from '@/components/shared/Subnav.vue'
 import Footer from '@/components/shared/Footer.vue'
+import ToastContainer from '@/components/shared/ToastContainer.vue'
 import { useCategoriesStore } from '@/stores/categories'
 import { computed, onMounted } from 'vue'
 
@@ -49,5 +50,8 @@ onMounted(() => {
 
     <!-- Footer Component -->
     <Footer />
+
+    <!-- Toast Notifications -->
+    <ToastContainer />
   </div>
 </template>
