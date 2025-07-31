@@ -1013,20 +1013,12 @@ const fetchProductVariants = async (productId: number) => {
             type="button"
             aria-label="Toggle details section"
           >
-            <svg
+            <v-icon
+              name="hi-chevron-down"
               class="w-5 h-5 text-gray-600 transition-transform duration-200"
               :class="{ 'rotate-180': detailsCollapsed }"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+              scale="1.2"
+            />
           </button>
         </div>
         <transition name="fade-details">
@@ -1208,36 +1200,8 @@ const fetchProductVariants = async (productId: number) => {
                   class="flex items-center justify-center gap-2 px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
                   <span>{{ showAllDetails ? 'View Less' : 'View More' }}</span>
-                  <svg
-                    v-if="!showAllDetails"
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                  <svg
-                    v-else
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 15l7-7 7 7"
-                    />
-                  </svg>
+                  <v-icon v-if="!showAllDetails" name="hi-chevron-down" class="h-5 w-5" scale="1.2" />
+                  <v-icon v-else name="hi-chevron-up" class="h-5 w-5" scale="1.2" />
                 </button>
               </div>
             </div>
@@ -1257,20 +1221,12 @@ const fetchProductVariants = async (productId: number) => {
             type="button"
             aria-label="Toggle reviews section"
           >
-            <svg
+            <v-icon
+              name="hi-chevron-down"
               class="w-5 h-5 text-gray-600 transition-transform duration-200"
               :class="{ 'rotate-180': reviewsCollapsed }"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+              scale="1.2"
+            />
           </button>
         </div>
 
@@ -1462,36 +1418,8 @@ const fetchProductVariants = async (productId: number) => {
                   class="flex items-center justify-center gap-2 px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
                   <span>{{ showAllReviews ? 'View Less' : 'View More' }}</span>
-                  <svg
-                    v-if="!showAllReviews"
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                  <svg
-                    v-else
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 15l7-7 7 7"
-                    />
-                  </svg>
+                  <v-icon v-if="!showAllReviews" name="hi-chevron-down" class="h-5 w-5" scale="1.2" />
+                  <v-icon v-else name="hi-chevron-up" class="h-5 w-5" scale="1.2" />
                 </button>
               </div>
             </div>
@@ -1511,20 +1439,12 @@ const fetchProductVariants = async (productId: number) => {
             type="button"
             aria-label="Toggle related products section"
           >
-            <svg
+            <v-icon
+              name="hi-chevron-down"
               class="w-5 h-5 text-gray-600 transition-transform duration-200"
               :class="{ 'rotate-180': relatedCollapsed }"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+              scale="1.2"
+            />
           </button>
         </div>
         <transition name="fade-details">
