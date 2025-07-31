@@ -424,8 +424,7 @@ const goToProductDetails = (productId: number) => {
       },
     })
     .then(() => {
-      console.log('🟢 [CATALOG] Navigation successful, triggering scroll to top')
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      console.log('🟢 [CATALOG] Navigation successful')
     })
     .catch((error) => {
       console.error('🔴 [CATALOG] Navigation error:', error)
@@ -446,7 +445,6 @@ const buyNow = (productId: number) => {
 const goToPage = async (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 }
 
