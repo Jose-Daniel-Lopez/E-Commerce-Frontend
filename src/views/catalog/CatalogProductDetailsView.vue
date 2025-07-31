@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useProductStore } from '@/stores/products'
 import { useWishlistStore } from '@/stores/wishlistStore'
 import { useAuthStore } from '@/stores/auth'
+import { useUserCartStore } from '@/stores/userCart'
 import { useReviewsStore } from '@/stores/reviews'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import { useI18n } from 'vue-i18n'
@@ -110,6 +111,7 @@ const props = defineProps<Props>()
 const productStore = useProductStore()
 const wishlistStore = useWishlistStore()
 const authStore = useAuthStore()
+const userCartStore = useUserCartStore()
 const reviewsStore = useReviewsStore()
 const { t } = useI18n()
 
@@ -370,24 +372,80 @@ const selectStorage = (size: string) => {
 }
 
 // === Cart & Wishlist ===
-const addToCart = () => {
+const addToCart = async () => {
+  console.log('🟡 [CATALOG PRODUCT DETAILS] Add to Cart clicked')
+
+  // Check if user is authenticated
+  if (!isAuthenticated.value) {
+    console.log('🔴 [CATALOG PRODUCT DETAILS] User not authenticated')
+    alert('Please log in to add products to your cart')
+    return
+  }
+
+  // Check if product is in stock
   if (!isInStock.value) {
+    console.log('🔴 [CATALOG PRODUCT DETAILS] Product out of stock')
     alert('This item is currently out of stock')
     return
   }
-  console.log('Adding to cart:', {
-    product: currentProduct.value?.name,
-    productId: currentProduct.value?.id,
-    variant: currentVariant.value,
-    color: selectedColor.value,
-    size: selectedStorage.value,
-    price: finalPrice.value,
-    stock: currentStock.value,
-    sku: currentVariant.value?.sku
-  })
+
+  // Check if variant is selected (for products with variants)
+  if (availableColors.value.length > 0 && !selectedColor.value) {
+    console.log('🔴 [CATALOG PRODUCT DETAILS] No color selected')
+    alert('Please select a color')
+    return
+  }
+
+  if (availableSizes.value.length > 0 && !selectedStorage.value) {
+    console.log('🔴 [CATALOG PRODUCT DETAILS] No storage/size selected')
+    alert('Please select a storage option')
+    return
+  }
+
+  // Get the product variant ID
+  const productVariantId = currentVariant.value?.id
+  if (!productVariantId) {
+    console.log('🔴 [CATALOG PRODUCT DETAILS] No product variant selected')
+    alert('Please select a product variant')
+    return
+  }
+
+  cartLoading.value = true
+
+  try {
+    console.log('🟡 [CATALOG PRODUCT DETAILS] Adding to cart:', {
+      productVariantId,
+      color: selectedColor.value,
+      size: selectedStorage.value,
+      sku: currentVariant.value?.sku
+    })
+
+    // Ensure cart is loaded
+    if (!userCartStore.cart && user.value?.id) {
+      console.log('🟡 [CATALOG PRODUCT DETAILS] Loading user cart first...')
+      await userCartStore.fetchUserCart(user.value.id)
+    }
+
+    // Add product to cart
+    const result = await userCartStore.addProductToCart(productVariantId)
+
+    if (result.success) {
+      console.log('🟢 [CATALOG PRODUCT DETAILS] Product added to cart successfully')
+      alert('Product added to your cart!')
+    } else {
+      console.error('🔴 [CATALOG PRODUCT DETAILS] Failed to add to cart:', result.error)
+      alert(`Failed to add to cart: ${result.error}`)
+    }
+  } catch (error) {
+    console.error('🔴 [CATALOG PRODUCT DETAILS] Error adding to cart:', error)
+    alert('Failed to add product to cart. Please try again.')
+  } finally {
+    cartLoading.value = false
+  }
 }
 
 const wishlistLoading = ref(false)
+const cartLoading = ref(false)
 
 const addToWishlist = async () => {
   console.log('🟡 [CATALOG PRODUCT DETAILS] Add to Wishlist clicked for product:', currentProduct.value?.id)
@@ -493,6 +551,10 @@ onMounted(async () => {
     if (isAuthenticated.value && user.value?.id) {
       console.log('🟣 [CATALOG PRODUCT DETAILS] Initializing wishlist for user:', user.value.id)
       await wishlistStore.fetchUserWishlist(user.value.id)
+      
+      // Also initialize cart for authenticated user
+      console.log('🟣 [CATALOG PRODUCT DETAILS] Initializing cart for user:', user.value.id)
+      await userCartStore.fetchUserCart(user.value.id)
     }
   } catch (err) {
     console.error('Error fetching product:', err)
@@ -957,15 +1019,33 @@ const fetchProductVariants = async (productId: number) => {
             </button>
             <button
               @click="addToCart"
-              :disabled="!isInStock || (!selectedColor && availableColors.length > 0) || (!selectedStorage && availableSizes.length > 0)"
+              :disabled="cartLoading || !isInStock || (!selectedColor && availableColors.length > 0) || (!selectedStorage && availableSizes.length > 0)"
               :class="[
                 'flex-1 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
-                isInStock && (availableColors.length === 0 || selectedColor) && (availableSizes.length === 0 || selectedStorage)
+                !cartLoading && isInStock && (availableColors.length === 0 || selectedColor) && (availableSizes.length === 0 || selectedStorage)
                   ? 'bg-black text-white hover:bg-gray-800'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               ]"
             >
-              {{ !isInStock ? 'Out of Stock' : 'Add to Cart' }}
+              <span v-if="cartLoading" class="flex items-center justify-center">
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Adding...
+              </span>
+              <span v-else-if="!isAuthenticated">
+                Login to Add to Cart
+              </span>
+              <span v-else-if="!isInStock">
+                Out of Stock
+              </span>
+              <span v-else-if="availableColors.length > 0 && !selectedColor">
+                Select Color
+              </span>
+              <span v-else-if="availableSizes.length > 0 && !selectedStorage">
+                Select {{ availableSizes.length > 0 && availableSizes[0].includes('GB') ? 'Storage' : 'Size' }}
+              </span>
+              <span v-else>
+                Add to Cart
+              </span>
             </button>
           </div>
 
