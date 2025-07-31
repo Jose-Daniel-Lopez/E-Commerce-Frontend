@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useToast } from '@/composables/useToast'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import FloatingInput from '@/components/shared/FloatingInput.vue'
 import PasswordInput from '@/components/shared/PasswordInput.vue'
@@ -16,6 +17,7 @@ interface LoginForm {
 
 const router = useRouter()
 const authStore = useAuthStore()
+const toast = useToast()
 
 const form = ref<LoginForm>({
   email: '',
@@ -74,7 +76,7 @@ const handlePasswordChange = (value: string) => {
  * - Form validation
  * - Loading state management
  * - API call to authentication store
- * - Success/error handling and user feedback
+ * - Success/error handling and user feedback with toast notifications
  * - Navigation after successful login
  */
 const handleSubmit = async (): Promise<void> => {
@@ -83,6 +85,7 @@ const handleSubmit = async (): Promise<void> => {
   if (!isValid) return
 
   loading.value = true
+  clearGlobalError() // Clear any previous errors
 
   try {
     const result = await authStore.login({
@@ -91,14 +94,32 @@ const handleSubmit = async (): Promise<void> => {
     })
 
     if (result?.success) {
-      // Redirect to account page instead of users
-      await router.push({ name: 'userAccount' })
+      // Show success toast notification
+      toast.success('Welcome back! You have been successfully logged in.', {
+        title: 'Login Successful',
+        duration: 4000,
+      })
+
+      // Small delay to show the toast before navigation
+      setTimeout(async () => {
+        await router.push({ name: 'userAccount' })
+      }, 500)
     } else {
       setGlobalError(result?.error || 'Login failed. Please try again.')
+      // Also show error toast for better UX
+      toast.error(result?.error || 'Login failed. Please try again.', {
+        title: 'Login Failed',
+        duration: 6000,
+      })
     }
   } catch (err) {
     console.error('Login error:', err)
-    setGlobalError('An unexpected error occurred. Please try again.')
+    const errorMessage = 'An unexpected error occurred. Please try again.'
+    setGlobalError(errorMessage)
+    toast.error(errorMessage, {
+      title: 'Login Error',
+      duration: 6000,
+    })
   } finally {
     loading.value = false
   }
