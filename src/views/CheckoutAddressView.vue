@@ -582,9 +582,7 @@ const removeAddress = async (addressId: number) => {
  * Navigation methods
  */
 const goBack = () => {
-  router.push({ name: 'shoppingCart' }).then(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }).catch(console.error)
+  router.push({ name: 'shoppingCart' }).catch(console.error)
 }
 
 const goNext = () => {
@@ -593,9 +591,7 @@ const goNext = () => {
     return
   }
 
-  router.push({ name: 'checkoutShipping' }).then(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }).catch(console.error)
+  router.push({ name: 'checkoutShipping' }).catch(console.error)
 }
 </script>
 

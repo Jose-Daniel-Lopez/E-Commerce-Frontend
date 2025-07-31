@@ -166,10 +166,6 @@ watch(selectedShippingId, (newValue) => {
 function goBack() {
   router
     .push({ name: 'checkoutAddress' })
-    .then(() => {
-      // Scroll to top after navigation with a smooth animation
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    })
     .catch((err) => {
       console.error('Navigation error:', err)
     })
@@ -193,10 +189,6 @@ function goNext() {
   }
   router
     .push({ name: 'checkoutPayment' })
-    .then(() => {
-      // Scroll to top after navigation with a smooth animation
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    })
     .catch((err) => {
       console.error('Navigation error:', err)
     })

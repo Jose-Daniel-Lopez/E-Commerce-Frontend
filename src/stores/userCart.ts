@@ -158,6 +158,61 @@ export const useUserCartStore = defineStore('userCart', () => {
     }
   }
 
+  // Add a product variant to the cart
+  async function addProductToCart(productVariantId: number) {
+    if (!cart.value) {
+      throw new Error('Cart not initialized. Please load user cart first.')
+    }
+
+    try {
+      loading.value = true
+      error.value = null
+
+      console.log('🟡 [CART STORE] Adding product variant to cart:', {
+        cartId: cart.value.id,
+        productVariantId
+      })
+
+      // Make API call to add product to cart
+      const response = await api.post(`/cart/${cart.value.id}/products/${productVariantId}`)
+
+      console.log('🟢 [CART STORE] Product added successfully:', response.data)
+
+      // Update cart data with the response
+      cart.value = response.data
+
+      // Refresh cart items to get the updated list
+      if (cart.value && cart.value.cartItems) {
+        cartItems.value = cart.value.cartItems
+      } else if (cart.value) {
+        await fetchCartItems(cart.value.id)
+      }
+
+      return { success: true, data: response.data }
+    } catch (e) {
+      console.error('🔴 [CART STORE] Failed to add product to cart:', e)
+      let errorMessage = 'Failed to add product to cart'
+
+      if (e instanceof Error) {
+        errorMessage = `Error adding to cart: ${e.message}`
+      } else if (e && typeof e === 'object' && 'response' in e) {
+        const axiosError = e as { response?: { status?: number; data?: { message?: string } } }
+        if (axiosError.response?.status === 401) {
+          errorMessage = 'Authentication required. Please log in again.'
+        } else if (axiosError.response?.status === 404) {
+          errorMessage = 'Cart or product variant not found.'
+        } else if (axiosError.response?.data?.message) {
+          errorMessage = axiosError.response.data.message
+        }
+      }
+
+      error.value = errorMessage
+      return { success: false, error: errorMessage }
+    } finally {
+      loading.value = false
+    }
+  }
+
   // Remove an item from the cart by its ID
   async function removeItem(cartItemId: number) {
     try {
@@ -213,6 +268,7 @@ export const useUserCartStore = defineStore('userCart', () => {
     // Actions
     fetchUserCart,
     fetchCartItems,
+    addProductToCart,
     updateItemQuantity,
     removeItem,
     clearCart,

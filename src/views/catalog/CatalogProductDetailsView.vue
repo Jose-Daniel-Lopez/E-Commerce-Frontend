@@ -3,6 +3,8 @@ import { ref, onMounted, computed } from 'vue'
 import { useProductStore } from '@/stores/products'
 import { useWishlistStore } from '@/stores/wishlistStore'
 import { useAuthStore } from '@/stores/auth'
+import { useUserCartStore } from '@/stores/userCart'
+import { useReviewsStore } from '@/stores/reviews'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
@@ -109,6 +111,8 @@ const props = defineProps<Props>()
 const productStore = useProductStore()
 const wishlistStore = useWishlistStore()
 const authStore = useAuthStore()
+const userCartStore = useUserCartStore()
+const reviewsStore = useReviewsStore()
 const { t } = useI18n()
 
 // === Reactive refs ===
@@ -301,26 +305,49 @@ const toggleReviews = () => (reviewsCollapsed.value = !reviewsCollapsed.value)
 const toggleRelated = () => (relatedCollapsed.value = !relatedCollapsed.value)
 
 // === Reviews ===
-const reviews = [
-  { id: 1, name: 'Grace Carey', rating: 4, date: '24 January 2023', comment: "...", avatar: '/images/user-1.jpg' },
-  { id: 2, name: 'Ronald Richards', rating: 5, date: '24 January 2023', comment: "...", avatar: '/images/user-2.jpg' },
-  { id: 3, name: 'Michael Smith', rating: 2, date: '12 September 2021', comment: "...", avatar: '/images/user-2.jpg' },
-  { id: 4, name: 'Samantha Johnson', rating: 4, date: '09 April 2023', comment: "...", avatar: '/images/user-4.jpg' },
-  { id: 5, name: 'Jonathan Doe', rating: 5, date: '17 October 2024', comment: "...", avatar: '/images/user-5.jpg' },
-  { id: 6, name: 'Veronica Taylor', rating: 1, date: '01 May 2025', comment: "...", avatar: '/images/user-6.jpg' },
-]
+const { productReviews, productReviewsLoading, productReviewsError, fetchProductReviews } = reviewsStore
 
 const reviewsToShow = ref(3)
 const showAllReviews = ref(false)
-const displayedReviews = computed(() => showAllReviews.value ? reviews : reviews.slice(0, reviewsToShow.value))
-const hasMoreReviews = computed(() => reviews.length > reviewsToShow.value)
+const displayedReviews = computed(() =>
+  showAllReviews.value ? productReviews.value : productReviews.value.slice(0, reviewsToShow.value)
+)
+const hasMoreReviews = computed(() => productReviews.value.length > reviewsToShow.value)
 const toggleShowAllReviews = () => (showAllReviews.value = !showAllReviews.value)
 
-const reviewStats = {
-  averageRating: 4.8,
-  totalReviews: 125,
-  excellent: 100, good: 11, average: 3, belowAverage: 8, poor: 1
-}
+const reviewStats = computed(() => {
+  const reviews = productReviews.value
+  const totalReviews = reviews.length
+
+  if (totalReviews === 0) {
+    return {
+      averageRating: 0,
+      totalReviews: 0,
+      excellent: 0,
+      good: 0,
+      average: 0,
+      belowAverage: 0,
+      poor: 0
+    }
+  }
+
+  const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
+  const excellent = reviews.filter(r => r.rating === 5).length
+  const good = reviews.filter(r => r.rating === 4).length
+  const averageCount = reviews.filter(r => r.rating === 3).length
+  const belowAverage = reviews.filter(r => r.rating === 2).length
+  const poor = reviews.filter(r => r.rating === 1).length
+
+  return {
+    averageRating: Math.round(averageRating * 10) / 10,
+    totalReviews,
+    excellent,
+    good,
+    average: averageCount,
+    belowAverage,
+    poor
+  }
+})
 
 // === Image & Variant Selection ===
 const selectImage = (index: number) => {
@@ -345,24 +372,80 @@ const selectStorage = (size: string) => {
 }
 
 // === Cart & Wishlist ===
-const addToCart = () => {
+const addToCart = async () => {
+  console.log('🟡 [CATALOG PRODUCT DETAILS] Add to Cart clicked')
+
+  // Check if user is authenticated
+  if (!isAuthenticated.value) {
+    console.log('🔴 [CATALOG PRODUCT DETAILS] User not authenticated')
+    alert('Please log in to add products to your cart')
+    return
+  }
+
+  // Check if product is in stock
   if (!isInStock.value) {
+    console.log('🔴 [CATALOG PRODUCT DETAILS] Product out of stock')
     alert('This item is currently out of stock')
     return
   }
-  console.log('Adding to cart:', {
-    product: currentProduct.value?.name,
-    productId: currentProduct.value?.id,
-    variant: currentVariant.value,
-    color: selectedColor.value,
-    size: selectedStorage.value,
-    price: finalPrice.value,
-    stock: currentStock.value,
-    sku: currentVariant.value?.sku
-  })
+
+  // Check if variant is selected (for products with variants)
+  if (availableColors.value.length > 0 && !selectedColor.value) {
+    console.log('🔴 [CATALOG PRODUCT DETAILS] No color selected')
+    alert('Please select a color')
+    return
+  }
+
+  if (availableSizes.value.length > 0 && !selectedStorage.value) {
+    console.log('🔴 [CATALOG PRODUCT DETAILS] No storage/size selected')
+    alert('Please select a storage option')
+    return
+  }
+
+  // Get the product variant ID
+  const productVariantId = currentVariant.value?.id
+  if (!productVariantId) {
+    console.log('🔴 [CATALOG PRODUCT DETAILS] No product variant selected')
+    alert('Please select a product variant')
+    return
+  }
+
+  cartLoading.value = true
+
+  try {
+    console.log('🟡 [CATALOG PRODUCT DETAILS] Adding to cart:', {
+      productVariantId,
+      color: selectedColor.value,
+      size: selectedStorage.value,
+      sku: currentVariant.value?.sku
+    })
+
+    // Ensure cart is loaded
+    if (!userCartStore.cart && user.value?.id) {
+      console.log('🟡 [CATALOG PRODUCT DETAILS] Loading user cart first...')
+      await userCartStore.fetchUserCart(user.value.id)
+    }
+
+    // Add product to cart
+    const result = await userCartStore.addProductToCart(productVariantId)
+
+    if (result.success) {
+      console.log('🟢 [CATALOG PRODUCT DETAILS] Product added to cart successfully')
+      alert('Product added to your cart!')
+    } else {
+      console.error('🔴 [CATALOG PRODUCT DETAILS] Failed to add to cart:', result.error)
+      alert(`Failed to add to cart: ${result.error}`)
+    }
+  } catch (error) {
+    console.error('🔴 [CATALOG PRODUCT DETAILS] Error adding to cart:', error)
+    alert('Failed to add product to cart. Please try again.')
+  } finally {
+    cartLoading.value = false
+  }
 }
 
 const wishlistLoading = ref(false)
+const cartLoading = ref(false)
 
 const addToWishlist = async () => {
   console.log('🟡 [CATALOG PRODUCT DETAILS] Add to Wishlist clicked for product:', currentProduct.value?.id)
@@ -461,10 +544,17 @@ onMounted(async () => {
 
     await fetchProductVariants(productId)
 
+    // Fetch product reviews
+    await fetchProductReviews(productId)
+
     // Initialize wishlist if user is authenticated
     if (isAuthenticated.value && user.value?.id) {
       console.log('🟣 [CATALOG PRODUCT DETAILS] Initializing wishlist for user:', user.value.id)
       await wishlistStore.fetchUserWishlist(user.value.id)
+
+      // Also initialize cart for authenticated user
+      console.log('🟣 [CATALOG PRODUCT DETAILS] Initializing cart for user:', user.value.id)
+      await userCartStore.fetchUserCart(user.value.id)
     }
   } catch (err) {
     console.error('Error fetching product:', err)
@@ -655,6 +745,7 @@ const fetchProductVariants = async (productId: number) => {
               <p><strong>Total Variants:</strong> {{ productVariants.length }}</p>
             </div>
           </div>
+
 
           <!-- Product Specifications - Mobile & Compute Template -->
           <div v-if="isMobileComputeCategory" class="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -928,15 +1019,33 @@ const fetchProductVariants = async (productId: number) => {
             </button>
             <button
               @click="addToCart"
-              :disabled="!isInStock || (!selectedColor && availableColors.length > 0) || (!selectedStorage && availableSizes.length > 0)"
+              :disabled="cartLoading || !isInStock || (!selectedColor && availableColors.length > 0) || (!selectedStorage && availableSizes.length > 0)"
               :class="[
                 'flex-1 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
-                isInStock && (availableColors.length === 0 || selectedColor) && (availableSizes.length === 0 || selectedStorage)
+                !cartLoading && isInStock && (availableColors.length === 0 || selectedColor) && (availableSizes.length === 0 || selectedStorage)
                   ? 'bg-black text-white hover:bg-gray-800'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               ]"
             >
-              {{ !isInStock ? 'Out of Stock' : 'Add to Cart' }}
+              <span v-if="cartLoading" class="flex items-center justify-center">
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Adding...
+              </span>
+              <span v-else-if="!isAuthenticated">
+                Login to Add to Cart
+              </span>
+              <span v-else-if="!isInStock">
+                Out of Stock
+              </span>
+              <span v-else-if="availableColors.length > 0 && !selectedColor">
+                Select Color
+              </span>
+              <span v-else-if="availableSizes.length > 0 && !selectedStorage">
+                Select {{ availableSizes.length > 0 && availableSizes[0].includes('GB') ? 'Storage' : 'Size' }}
+              </span>
+              <span v-else>
+                Add to Cart
+              </span>
             </button>
           </div>
 
@@ -985,20 +1094,12 @@ const fetchProductVariants = async (productId: number) => {
             type="button"
             aria-label="Toggle details section"
           >
-            <svg
+            <v-icon
+              name="hi-chevron-down"
               class="w-5 h-5 text-gray-600 transition-transform duration-200"
               :class="{ 'rotate-180': detailsCollapsed }"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+              scale="1.2"
+            />
           </button>
         </div>
         <transition name="fade-details">
@@ -1180,36 +1281,8 @@ const fetchProductVariants = async (productId: number) => {
                   class="flex items-center justify-center gap-2 px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
                   <span>{{ showAllDetails ? 'View Less' : 'View More' }}</span>
-                  <svg
-                    v-if="!showAllDetails"
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                  <svg
-                    v-else
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 15l7-7 7 7"
-                    />
-                  </svg>
+                  <v-icon v-if="!showAllDetails" name="hi-chevron-down" class="h-5 w-5" scale="1.2" />
+                  <v-icon v-else name="hi-chevron-up" class="h-5 w-5" scale="1.2" />
                 </button>
               </div>
             </div>
@@ -1229,27 +1302,19 @@ const fetchProductVariants = async (productId: number) => {
             type="button"
             aria-label="Toggle reviews section"
           >
-            <svg
+            <v-icon
+              name="hi-chevron-down"
               class="w-5 h-5 text-gray-600 transition-transform duration-200"
               :class="{ 'rotate-180': reviewsCollapsed }"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+              scale="1.2"
+            />
           </button>
         </div>
 
         <transition name="fade-reviews">
           <div v-show="!reviewsCollapsed">
             <!-- Reviews Stats -->
-            <div class="flex items-start gap-12 mb-8">
+            <div v-if="!productReviewsLoading && productReviews.length > 0" class="flex items-start gap-12 mb-8">
               <!-- Overall Rating -->
               <div class="text-center space-x-3 bg-[#F4F4F4] rounded-[25px] w-auto h-auto p-8">
                 <div class="text-6xl font-bold mb-2">{{ reviewStats.averageRating }}</div>
@@ -1351,8 +1416,25 @@ const fetchProductVariants = async (productId: number) => {
               />
             </div>
 
+            <!-- Loading State for Reviews -->
+            <div v-if="productReviewsLoading" class="flex justify-center items-center py-8">
+              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              <span class="ml-3 text-gray-600">Loading reviews...</span>
+            </div>
+
+            <!-- Error State for Reviews -->
+            <div v-else-if="productReviewsError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              {{ productReviewsError }}
+            </div>
+
+            <!-- No Reviews State -->
+            <div v-else-if="productReviews.length === 0" class="text-center py-8">
+              <div class="text-gray-500 text-lg">No reviews yet</div>
+              <div class="text-gray-400 text-sm mt-2">Be the first to leave a review!</div>
+            </div>
+
             <!-- Individual Reviews with View More/Less and Fade -->
-            <div class="space-y-6 relative">
+            <div v-else class="space-y-6 relative">
               <div
                 :class="[
                   'transition-all duration-300 overflow-hidden',
@@ -1376,14 +1458,14 @@ const fetchProductVariants = async (productId: number) => {
                         class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0"
                       >
                         <span class="text-gray-600 text-sm font-medium">{{
-                          review.name.charAt(0)
+                          (review.userName || 'A').charAt(0)
                         }}</span>
                       </div>
 
                       <!-- Review Content -->
                       <div class="flex-1">
                         <div class="flex items-center justify-between mb-1">
-                          <h4 class="font-medium text-gray-900">{{ review.name }}</h4>
+                          <h4 class="font-medium text-gray-900">{{ review.userName || 'Anonymous' }}</h4>
                           <span class="text-sm text-gray-500">{{ review.date }}</span>
                         </div>
 
@@ -1417,36 +1499,8 @@ const fetchProductVariants = async (productId: number) => {
                   class="flex items-center justify-center gap-2 px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
                   <span>{{ showAllReviews ? 'View Less' : 'View More' }}</span>
-                  <svg
-                    v-if="!showAllReviews"
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                  <svg
-                    v-else
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 15l7-7 7 7"
-                    />
-                  </svg>
+                  <v-icon v-if="!showAllReviews" name="hi-chevron-down" class="h-5 w-5" scale="1.2" />
+                  <v-icon v-else name="hi-chevron-up" class="h-5 w-5" scale="1.2" />
                 </button>
               </div>
             </div>
@@ -1466,20 +1520,12 @@ const fetchProductVariants = async (productId: number) => {
             type="button"
             aria-label="Toggle related products section"
           >
-            <svg
+            <v-icon
+              name="hi-chevron-down"
               class="w-5 h-5 text-gray-600 transition-transform duration-200"
               :class="{ 'rotate-180': relatedCollapsed }"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+              scale="1.2"
+            />
           </button>
         </div>
         <transition name="fade-details">

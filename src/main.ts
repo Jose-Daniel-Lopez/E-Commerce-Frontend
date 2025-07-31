@@ -58,6 +58,10 @@ addIcons(
   AllIcons.HiBadgeCheck,
   AllIcons.HiMenu,
 
+  // ====== Review Stars ======
+  AllIcons.BiStarFill,
+  AllIcons.BiStar,
+
   // ====== E-commerce & Shopping ======
   AllIcons.BiShop,
   AllIcons.HiShoppingBag,

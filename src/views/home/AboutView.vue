@@ -171,17 +171,11 @@ const breadcrumbs = [{ label: 'about.title' }]
 
 const goToProducts = () => {
   // Navigate to home page
-  router.push({ name: 'home' }).then(() => {
-    // Scroll to top after navigation with a smooth animation
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  })
+  router.push({ name: 'home' })
 }
 
 const contactUs = () => {
   // Navigate to contact page
-  router.push({ name: 'contact' }).then(() => {
-    // Scroll to top after navigation with a smooth animation
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  })
+  router.push({ name: 'contact' })
 }
 </script>

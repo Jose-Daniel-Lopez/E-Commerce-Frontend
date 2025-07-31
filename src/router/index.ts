@@ -12,6 +12,22 @@ const router = createRouter({
   // Uses HTML5 history mode; base URL is set from environment variable
   history: createWebHistory(import.meta.env.BASE_URL),
 
+  /**
+   * Handles scroll position for all navigations.
+   * @param to - The target route.
+   * @param from - The route being left.
+   * @param savedPosition - The saved scroll position (if any) from browser back/forward.
+   * @returns The desired scroll position.
+   */
+  scrollBehavior(to, from, savedPosition) {
+    // If a saved position exists (from back/forward buttons), use it.
+    if (savedPosition) {
+      return savedPosition
+    }
+    // Otherwise, scroll to the top of the page.
+    return { top: 0, behavior: 'smooth' }
+  },
+
   routes: [
     // ========================
     // Main Static Pages
@@ -176,6 +192,41 @@ router.beforeEach((to, from, next) => {
 
   // 4. Allow navigation to proceed
   next()
+})
+
+// ========================
+// Robust Scroll to Top Handler
+// ========================
+// Ensures scroll to top works reliably with all types of navigation
+router.afterEach((to, from) => {
+  // Skip if navigating to the same route
+  if (to.path === from.path) {
+    return
+  }
+
+  // Use multiple fallbacks to ensure scroll works
+  const scrollToTop = () => {
+    // Method 1: Standard scroll
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    
+    // Method 2: Fallback for browsers that don't support smooth behavior
+    setTimeout(() => {
+      if (window.pageYOffset > 0) {
+        window.scrollTo(0, 0)
+      }
+    }, 100)
+  }
+
+  // Execute immediately
+  scrollToTop()
+
+  // Also execute after a short delay to handle slow-loading components
+  setTimeout(scrollToTop, 150)
+
+  // Final fallback using requestAnimationFrame
+  requestAnimationFrame(() => {
+    setTimeout(scrollToTop, 50)
+  })
 })
 
 /**

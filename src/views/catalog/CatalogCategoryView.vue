@@ -412,6 +412,9 @@ const toggleFavorite = async (productId: number) => {
  * Scrolls to top after navigation.
  */
 const goToProductDetails = (productId: number) => {
+  console.log('🟢 [CATALOG] goToProductDetails called with productId:', productId)
+  console.log('🟢 [CATALOG] Current route params:', props.categoryName)
+
   router
     .push({
       name: 'productDetails',
@@ -421,10 +424,10 @@ const goToProductDetails = (productId: number) => {
       },
     })
     .then(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      console.log('🟢 [CATALOG] Navigation successful')
     })
     .catch((error) => {
-      console.error('Navigation error:', error)
+      console.error('🔴 [CATALOG] Navigation error:', error)
     })
 }
 
@@ -442,7 +445,6 @@ const buyNow = (productId: number) => {
 const goToPage = async (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page
-    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 }
 
@@ -529,6 +531,12 @@ watch([priceRange, () => productStore.brands, () => productStore.memories, sortB
             <div><b>Sort By:</b> {{ sortBy }}</div>
             <div><b>Category:</b> {{ actualCategoryName }}</div>
             <div><b>Category Display:</b> {{ categoryDisplayName }}</div>
+            <button
+              @click="console.log('🧪 [TEST] Debug button clicked!'); goToProductDetails(76)"
+              class="mt-2 px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
+            >
+              Test Navigation (ID: 76)
+            </button>
           </div>
         </transition>
       </div>
@@ -937,7 +945,7 @@ watch([priceRange, () => productStore.brands, () => productStore.memories, sortB
                 <div class="flex flex-col flex-1 gap-6">
                   <div class="flex flex-col gap-4">
                     <div class="h-[75px] sm:h-[50px]">
-                      <a href="#" @click.prevent="goToProductDetails(product.id)" class="block cursor-pointer">
+                      <a href="#" @click.prevent="console.log('🔵 [CATALOG] Product name clicked:', product.id); goToProductDetails(product.id)" class="block cursor-pointer">
                         <h3 class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2">
                           {{ product.name }}
                         </h3>
@@ -964,7 +972,7 @@ watch([priceRange, () => productStore.brands, () => productStore.memories, sortB
                   </div>
                   <div class="flex items-center justify-center mt-auto">
                     <button
-                      @click="buyNow(product.id)"
+                      @click="console.log('🔵 [CATALOG] Buy Now clicked:', product.id); buyNow(product.id)"
                       class="w-[183px] h-[48px] bg-black text-white text-sm font-medium rounded hover:bg-[#1a1a1a] transition-colors"
                     >
                       Buy Now
