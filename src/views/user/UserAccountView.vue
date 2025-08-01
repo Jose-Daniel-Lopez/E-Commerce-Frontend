@@ -943,94 +943,114 @@ const productVariantsStore = useProductVariantsStore()
 const orders = computed(() =>
   ordersStore.orders
     .filter(order => order.status !== 'RETURNED' && order.status !== 'REFUNDED')
-    .map(order => ({
-    id: order.id.toString(),
-    date: new Date(order.orderDate).toISOString().split('T')[0],
-    status: order.status === 'CANCELED' ? 'Cancelled' : order.status,
-    expectedDelivery: 'N/A', // You can enhance this later if available
-    items: order.orderItems?.map(item => ({
-      id: item.id,
-      name: item.product.name,
-      description: item.product.description,
-      image: '/images/default-product.png', // Placeholder; improve later
-      price: item.unitPrice,
-      quantity: item.quantity,
-    })) || [],
-    subtotal: order.orderItems?.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0) || 0,
-    shipping: 0, // Add if available
-    tax: 0, // Add if available
-    discount: order.hasDiscount ? 10 : 0, // Mock or fetch from discountCode
-    total: order.totalAmount,
-    shippingAddress: {
-      name: user.value?.username || '',
-      street: 'N/A',
-      city: 'N/A',
-      state: 'N/A',
-      zipCode: 'N/A',
-      country: 'N/A'
-    },
-    billingAddress: {
-      name: user.value?.username || '',
-      street: 'N/A',
-      city: 'N/A',
-      state: 'N/A',
-      zipCode: 'N/A',
-      country: 'N/A'
-    },
-    paymentMethod: {
-      type: order.payment?.paymentMethod || 'N/A',
-      lastFour: '4242' // Mock for now
-    },
-    paymentStatus: order.payment?.paymentStatus || 'Pending',
-    trackingNumber: 'TN' + order.id,
-    carrier: 'UPS'
-  }))
+    .map(order => {
+      // Format the status for display
+      const displayStatus = order.status === 'CREATED' ? 'Created' :
+                           order.status === 'PAID' ? 'Paid' :
+                           order.status === 'SHIPPED' ? 'Shipped' :
+                           order.status === 'DELIVERED' ? 'Delivered' :
+                           order.status === 'CANCELED' ? 'Cancelled' :
+                           order.status
+
+      // Calculate expected delivery (7 days from order date)
+      const orderDate = new Date(order.orderDate)
+      const expectedDelivery = new Date(orderDate.getTime() + (7 * 24 * 60 * 60 * 1000))
+
+      return {
+        id: order.id.toString(),
+        date: new Date(order.orderDate).toISOString().split('T')[0],
+        status: displayStatus,
+        expectedDelivery: expectedDelivery.toISOString().split('T')[0],
+        items: order.orderItems?.map(item => ({
+          id: item.id,
+          name: item.product?.name || 'Product',
+          description: item.product?.description || '',
+          image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp', // Placeholder; will be loaded in detail view
+          price: item.unitPrice,
+          quantity: item.quantity,
+        })) || [],
+        subtotal: order.orderItems?.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0) || order.totalAmount,
+        shipping: 0, // Will be calculated in detail view if needed
+        tax: 0, // Will be calculated in detail view if needed
+        discount: order.hasDiscount ? (order.totalAmount * 0.1) : 0, // Assuming 10% if hasDiscount is true
+        total: order.totalAmount,
+        shippingAddress: {
+          name: user.value?.username || 'N/A',
+          street: 'Will be loaded...',
+          city: 'N/A',
+          state: 'N/A',
+          zipCode: 'N/A',
+          country: 'N/A'
+        },
+        billingAddress: {
+          name: user.value?.username || 'N/A',
+          street: 'Will be loaded...',
+          city: 'N/A',
+          state: 'N/A',
+          zipCode: 'N/A',
+          country: 'N/A'
+        },
+        paymentMethod: {
+          type: order.payment?.paymentMethod || 'Credit Card',
+          lastFour: '****'
+        },
+        paymentStatus: order.payment?.paymentStatus || (order.status === 'PAID' || order.status === 'SHIPPED' || order.status === 'DELIVERED' ? 'Paid' : 'Pending'),
+        trackingNumber: `TN${order.id}`,
+        carrier: 'Standard Shipping'
+      }
+    })
 )
 
 // Refunds state - computed from orders with RETURNED and REFUNDED status
 const refunds = computed(() =>
-  ordersStore.returnsAndRefunds.map(order => ({
+  ordersStore.returnsAndRefunds.map(order => {
+    // Calculate expected delivery (7 days from order date)
+    const orderDate = new Date(order.orderDate)
+    const expectedDelivery = new Date(orderDate.getTime() + (7 * 24 * 60 * 60 * 1000))
+
+    return {
       id: order.id.toString(),
       date: new Date(order.orderDate).toISOString().split('T')[0],
       status: order.status === 'RETURNED' ? 'Returned' : 'Refunded',
-      expectedDelivery: 'N/A',
+      expectedDelivery: expectedDelivery.toISOString().split('T')[0],
       items: order.orderItems?.map(item => ({
         id: item.id,
-        name: item.product.name,
-        description: item.product.description,
-        image: '/images/default-product.png', // Placeholder; improve later
+        name: item.product?.name || 'Product',
+        description: item.product?.description || '',
+        image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
         price: item.unitPrice,
         quantity: item.quantity,
       })) || [],
-      subtotal: order.orderItems?.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0) || 0,
-      shipping: 0, // Add if available
-      tax: 0, // Add if available
-      discount: order.hasDiscount ? 10 : 0, // Mock or fetch from discountCode
+      subtotal: order.orderItems?.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0) || order.totalAmount,
+      shipping: 0,
+      tax: 0,
+      discount: order.hasDiscount ? (order.totalAmount * 0.1) : 0,
       total: order.totalAmount,
       shippingAddress: {
-        name: user.value?.username || '',
-        street: 'N/A',
+        name: user.value?.username || 'N/A',
+        street: 'Will be loaded...',
         city: 'N/A',
         state: 'N/A',
         zipCode: 'N/A',
         country: 'N/A'
       },
       billingAddress: {
-        name: user.value?.username || '',
-        street: 'N/A',
+        name: user.value?.username || 'N/A',
+        street: 'Will be loaded...',
         city: 'N/A',
         state: 'N/A',
         zipCode: 'N/A',
         country: 'N/A'
       },
       paymentMethod: {
-        type: order.payment?.paymentMethod || 'N/A',
-        lastFour: '4242' // Mock for now
+        type: order.payment?.paymentMethod || 'Credit Card',
+        lastFour: '****'
       },
-      paymentStatus: order.payment?.paymentStatus || 'Pending',
-      trackingNumber: 'TN' + order.id,
-      carrier: 'UPS'
-    }))
+      paymentStatus: order.payment?.paymentStatus || 'Refunded',
+      trackingNumber: `TN${order.id}`,
+      carrier: 'Standard Shipping'
+    }
+  })
 )
 
 const addresses = computed(() => usersStore.userAddresses)
@@ -1301,11 +1321,57 @@ interface OrderType {
   carrier?: string
 }
 
-const openOrderDetailsModal = (order: OrderType) => {
-  selectedOrder.value = order
-  isOrderDetailsModalOpen.value = true
-  // Prevent body scrolling when modal is open
-  document.body.style.overflow = 'hidden'
+// Backend API interfaces
+interface BackendOrderItem {
+  id: number
+  quantity: number
+  unitPrice: number
+  _links: {
+    self: { href: string }
+    orderItem: { href: string }
+    order: { href: string }
+    productVariant: { href: string }
+  }
+}
+
+const openOrderDetailsModal = async (order: OrderType) => {
+  try {
+    // Show loading state while fetching detailed order data
+    const loadingOrder: OrderType = {
+      ...order,
+      items: [],
+      shippingAddress: {
+        name: 'Loading...',
+        street: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        country: '',
+      },
+      billingAddress: {
+        name: 'Loading...',
+        street: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        country: '',
+      }
+    }
+    selectedOrder.value = loadingOrder
+    isOrderDetailsModalOpen.value = true
+    document.body.style.overflow = 'hidden'
+
+    // Fetch detailed order information
+    const detailedOrder = await fetchDetailedOrderInfo(parseInt(order.id))
+    selectedOrder.value = detailedOrder
+  } catch (error) {
+    console.error('Error fetching order details:', error)
+    toast.error('Failed to load order details', {
+      title: 'Loading Error',
+      duration: 4000
+    })
+    closeOrderDetailsModal()
+  }
 }
 
 const closeOrderDetailsModal = () => {
@@ -1428,6 +1494,116 @@ const saveAvatar = async (avatarUrl: string) => {
       title: 'Update Error',
       duration: 4000
     })
+  }
+}
+
+// Fetch detailed order information from backend
+const fetchDetailedOrderInfo = async (orderId: number): Promise<OrderType> => {
+  try {
+    // 1. Fetch basic order info
+    const orderResponse = await axios.get(`/orders/${orderId}`)
+    const orderData = orderResponse.data
+
+    // 2. Fetch order items
+    const orderItemsResponse = await axios.get(`/orders/${orderId}/orderItems`)
+    const orderItems = orderItemsResponse.data._embedded?.orderItems || []
+
+    // 3. Fetch shipping address
+    const shippingAddressResponse = await axios.get(`/orders/${orderId}/shippingAddress`)
+    const shippingAddressData = shippingAddressResponse.data
+
+    // 4. Fetch detailed product information for each order item
+    const detailedItems: OrderItem[] = await Promise.all(
+      orderItems.map(async (item: BackendOrderItem) => {
+        try {
+          // Fetch product variant details
+          const variantResponse = await axios.get(item._links.productVariant.href)
+          const variantData = variantResponse.data
+
+          // Fetch product details
+          const productResponse = await axios.get(variantData._links.product.href)
+          const productData = productResponse.data
+
+          return {
+            id: item.id,
+            name: productData.name,
+            description: productData.description || '',
+            image: productData.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+            price: item.unitPrice,
+            quantity: item.quantity,
+          }
+        } catch (error) {
+          console.error(`Error fetching product details for item ${item.id}:`, error)
+          return {
+            id: item.id,
+            name: 'Unknown Product',
+            description: '',
+            image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+            price: item.unitPrice,
+            quantity: item.quantity,
+          }
+        }
+      })
+    )
+
+    // 5. Calculate totals
+    const subtotal = detailedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+    const shipping = 0 // You can enhance this if shipping cost is available
+    const tax = 0 // You can enhance this if tax is available
+    const discount = orderData.hasDiscount ? (subtotal * 0.1) : 0 // Assuming 10% discount if hasDiscount is true
+    const total = orderData.totalAmount
+
+    // 6. Determine expected delivery date
+    const orderDate = new Date(orderData.orderDate)
+    const expectedDelivery = new Date(orderDate.getTime() + (7 * 24 * 60 * 60 * 1000)) // 7 days from order date
+
+    // 7. Build the complete order object
+    const detailedOrder: OrderType = {
+      id: orderId.toString(),
+      date: new Date(orderData.orderDate).toISOString().split('T')[0],
+      status: orderData.status === 'CREATED' ? 'Created' :
+              orderData.status === 'PAID' ? 'Paid' :
+              orderData.status === 'SHIPPED' ? 'Shipped' :
+              orderData.status === 'DELIVERED' ? 'Delivered' :
+              orderData.status === 'CANCELED' ? 'Cancelled' :
+              orderData.status,
+      expectedDelivery: expectedDelivery.toISOString().split('T')[0],
+      items: detailedItems,
+      subtotal,
+      shipping,
+      tax,
+      discount,
+      total,
+      shippingAddress: {
+        name: shippingAddressData.user?.displayName || shippingAddressData.user?.username || 'N/A',
+        street: shippingAddressData.street || 'N/A',
+        city: shippingAddressData.city || 'N/A',
+        state: shippingAddressData.state || 'N/A',
+        zipCode: shippingAddressData.zipCode || 'N/A',
+        country: shippingAddressData.country || 'N/A'
+      },
+      billingAddress: {
+        // Using shipping address as billing address for now
+        name: shippingAddressData.user?.displayName || shippingAddressData.user?.username || 'N/A',
+        street: shippingAddressData.street || 'N/A',
+        city: shippingAddressData.city || 'N/A',
+        state: shippingAddressData.state || 'N/A',
+        zipCode: shippingAddressData.zipCode || 'N/A',
+        country: shippingAddressData.country || 'N/A'
+      },
+      paymentMethod: {
+        type: 'Credit Card', // Default for now, you can enhance this
+        lastFour: '****' // You can enhance this when payment details are available
+      },
+      paymentStatus: orderData.status === 'PAID' || orderData.status === 'SHIPPED' || orderData.status === 'DELIVERED' ? 'Paid' : 'Pending',
+      trackingNumber: `TN${orderId}`,
+      carrier: 'Standard Shipping'
+    }
+
+    return detailedOrder
+  } catch (error) {
+    console.error('Error fetching detailed order info:', error)
+    throw new Error('Failed to fetch order details')
   }
 }
 
