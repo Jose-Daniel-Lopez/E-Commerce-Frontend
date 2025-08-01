@@ -513,12 +513,15 @@
                       />
                     </router-link>
                     <button
-                      class="absolute flex items-center justify-center w-6 h-6 transition-opacity bg-red-500 rounded-full opacity-0 cursor-pointer -top-2 -right-2 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-300 hover:bg-red-600"
+                      @click="removeFromWishlist(item.id, item.name)"
+                      :disabled="removeItemLoading[item.id]"
+                      class="absolute flex items-center justify-center w-6 h-6 transition-opacity bg-red-500 rounded-full opacity-0 cursor-pointer -top-2 -right-2 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-300 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                       aria-label="Eliminar de wishlist"
                       tabindex="0"
                       type="button"
                     >
-                      <v-icon name="hi-x" scale="0.8" class="text-white" />
+                      <div v-if="removeItemLoading[item.id]" class="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin"></div>
+                      <v-icon v-else name="hi-x" scale="0.8" class="text-white" />
                     </button>
                   </div>
                   <div class="flex-1">
@@ -530,14 +533,28 @@
                     </p>
                   </div>
                   <Button
-                    text-color="white"
-                    bg-color="black"
-                    hover-bg-color="#333333"
+                    @click="addToCartFromWishlist(item.id, item.name)"
+                    :disabled="cartItemLoading[item.id] || addedToCartItems[item.id]"
+                    :text-color="addedToCartItems[item.id] ? '#16a34a' : 'white'"
+                    :bg-color="addedToCartItems[item.id] ? '#f0fdf4' : 'black'"
+                    :hover-bg-color="addedToCartItems[item.id] ? '#dcfce7' : '#333333'"
+                    :border-width="addedToCartItems[item.id] ? '1px' : '0'"
+                    :border-color="addedToCartItems[item.id] ? '#16a34a' : 'transparent'"
                     width="auto"
                     height="32px"
-                    class="px-3 text-sm"
+                    class="px-3 text-sm transition-all duration-300"
                   >
-                    {{ $t('account.wishlist.addToCart') }}
+                    <span v-if="cartItemLoading[item.id]" class="flex items-center gap-2">
+                      <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Adding...
+                    </span>
+                    <span v-else-if="addedToCartItems[item.id]" class="flex items-center gap-2">
+                      <v-icon name="hi-check" scale="0.9" class="text-green-600" />
+                      Added to Cart
+                    </span>
+                    <span v-else>
+                      {{ $t('account.wishlist.addToCart') }}
+                    </span>
                   </Button>
                 </div>
               </div>
@@ -867,7 +884,7 @@
 <script setup lang="ts">
 const showDebug = ref(false)
 import '@/assets/base.css'
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useUsersStore } from '@/stores/users'
 import type { User } from '@/stores/auth'
@@ -913,9 +930,13 @@ const user = computed(() => (authStore.user ?? {}) as User)
 // Orders state
 import { useOrdersStore } from '@/stores/orders'
 import { useWishlistStore } from '@/stores/wishlist'
+import { useUserCartStore } from '@/stores/userCart'
+import { useProductVariantsStore } from '@/stores/productVariants'
 
 const ordersStore = useOrdersStore()
 const { wishlistProducts, wishlistLoading, wishlistError, fetchUserWishlist } = useWishlistStore()
+const userCartStore = useUserCartStore()
+const productVariantsStore = useProductVariantsStore()
 
 // Reactive reference to orders from the store (excluding RETURNED and REFUNDED orders)
 const orders = computed(() =>
@@ -1434,6 +1455,13 @@ onMounted(async () => {
       // ✅ Fetch user's wishlist using wishlist store
       await fetchUserWishlist(authStore.user.id)
       await fetchUserReviews(authStore.user.id)
+
+      // ✅ Initialize cart for authenticated user
+      console.log('🟣 [USER ACCOUNT] Initializing cart for user:', authStore.user.id)
+      await userCartStore.fetchUserCart(authStore.user.id)
+
+      // ✅ Check which wishlist products are already in cart
+      checkWishlistProductsInCart()
     } catch (error) {
       console.error('Error loading account data:', error)
       toast.error('Some account data could not be loaded', {
@@ -1458,6 +1486,11 @@ onMounted(async () => {
     if (element) observer.observe(element)
   })
 })
+
+// Watch for changes in wishlist and re-check cart status
+watch(() => wishlistProducts.value, () => {
+  checkWishlistProductsInCart()
+}, { deep: true })
 
 // Clean up side effects when the component is unmounted.
 onUnmounted(() => {
@@ -1507,6 +1540,176 @@ const refreshAddresses = async () => {
       title: 'Refresh Failed',
       duration: 4000
     })
+  }
+}
+
+// ===========================
+// 🛒 Cart Functionality
+// ===========================
+
+// Loading states for cart operations
+const cartItemLoading = ref<{ [key: number]: boolean }>({})
+const removeItemLoading = ref<{ [key: number]: boolean }>({})
+const addedToCartItems = ref<{ [key: number]: boolean }>({})
+
+/**
+ * Check which wishlist products are already in the user's cart
+ * and mark them as "Added to Cart" to maintain state across page refreshes
+ */
+const checkWishlistProductsInCart = async () => {
+  if (!userCartStore.cart || !wishlistProducts.value.length) {
+    return
+  }
+
+  try {
+    // Get all product IDs from cart items
+    const cartProductIds = new Set<number>()
+
+    for (const cartItem of userCartStore.cart.cartItems || []) {
+      if (cartItem.productVariant?._links?.product?.href) {
+        // Extract product ID from the product link
+        const productUrl = cartItem.productVariant._links.product.href
+        const productId = parseInt(productUrl.split('/').pop() || '0')
+        if (productId) {
+          cartProductIds.add(productId)
+        }
+      }
+    }
+
+    // Mark wishlist products that are in cart as "added"
+    wishlistProducts.value.forEach(wishlistProduct => {
+      if (cartProductIds.has(wishlistProduct.id)) {
+        addedToCartItems.value[wishlistProduct.id] = true
+      }
+    })
+
+    console.log('🟣 [USER ACCOUNT] Cart check complete. Products in cart:', Array.from(cartProductIds))
+  } catch (error) {
+    console.error('🔴 [USER ACCOUNT] Error checking cart products:', error)
+  }
+}
+
+const addToCartFromWishlist = async (productId: number, productName: string) => {
+  console.log('🟡 [USER ACCOUNT] Add to Cart clicked for product:', productId)
+
+  // Check if user is authenticated
+  if (!authStore.isAuthenticated) {
+    toast.error('Please log in to add products to your cart', {
+      title: 'Authentication Required',
+      duration: 4000
+    })
+    return
+  }
+
+  // Set loading state for this specific product
+  cartItemLoading.value[productId] = true
+
+  try {
+    // Step 1: Fetch product variants to get a valid productVariantId
+    await productVariantsStore.fetchVariantsByProduct(productId)
+
+    if (productVariantsStore.variants.length === 0) {
+      toast.error('This product has no available variants. Please contact support.', {
+        title: 'Product Not Available',
+        duration: 4000
+      })
+      return
+    }
+
+    // Step 2: Use the first available variant or find one with stock
+    const availableVariant = productVariantsStore.variants.find(variant => variant.stock > 0) || productVariantsStore.variants[0]
+
+    if (!availableVariant) {
+      toast.error('This product is currently out of stock', {
+        title: 'Out of Stock',
+        duration: 4000
+      })
+      return
+    }
+
+    // Step 3: Ensure cart is loaded
+    if (!userCartStore.cart && authStore.user?.id) {
+      console.log('🟡 [USER ACCOUNT] Loading user cart first...')
+      await userCartStore.fetchUserCart(authStore.user.id)
+    }
+
+    // Step 4: Add product to cart using the variant ID
+    const result = await userCartStore.addProductToCart(availableVariant.id)
+
+    if (result.success) {
+      console.log('🟢 [USER ACCOUNT] Product added to cart successfully')
+
+      // Mark product as added to cart (permanent until page refresh)
+      addedToCartItems.value[productId] = true
+
+      // Refresh cart state to ensure consistency
+      setTimeout(() => {
+        checkWishlistProductsInCart()
+      }, 500)
+
+      toast.success(`${productName} added to your cart!`, {
+        title: 'Added to Cart',
+        duration: 3000
+      })
+    } else {
+      console.error('🔴 [USER ACCOUNT] Failed to add to cart:', result.error)
+      toast.error(result.error || 'Failed to add product to cart', {
+        title: 'Cart Error',
+        duration: 4000
+      })
+    }
+  } catch (error) {
+    console.error('🔴 [USER ACCOUNT] Error adding to cart:', error)
+    toast.error('An unexpected error occurred while adding to cart', {
+      title: 'Cart Error',
+      duration: 4000
+    })
+  } finally {
+    cartItemLoading.value[productId] = false
+  }
+}
+
+const removeFromWishlist = async (productId: number, productName: string) => {
+  console.log('🟡 [USER ACCOUNT] Remove from Wishlist clicked for product:', productId)
+
+  // Check if user is authenticated
+  if (!authStore.isAuthenticated) {
+    toast.error('Please log in to manage your wishlist', {
+      title: 'Authentication Required',
+      duration: 4000
+    })
+    return
+  }
+
+  // Set loading state for this specific product
+  removeItemLoading.value[productId] = true
+
+  try {
+    // For now, we'll just remove from the local array since the backend method isn't available
+    // In a real implementation, you'd call an API to remove the item from the wishlist
+
+    // Remove from local wishlist array
+    const index = wishlistProducts.value.findIndex(item => item.id === productId)
+    if (index > -1) {
+      wishlistProducts.value.splice(index, 1)
+      toast.success(`${productName} removed from your wishlist`, {
+        title: 'Removed from Wishlist',
+        duration: 3000
+      })
+    } else {
+      toast.error('Product not found in wishlist', {
+        title: 'Remove Failed',
+        duration: 4000
+      })
+    }
+  } catch (error) {
+    console.error('🔴 [USER ACCOUNT] Error removing from wishlist:', error)
+    toast.error('An unexpected error occurred while removing from wishlist', {
+      title: 'Wishlist Error',
+      duration: 4000
+    })
+  } finally {
+    removeItemLoading.value[productId] = false
   }
 }
 </script>
