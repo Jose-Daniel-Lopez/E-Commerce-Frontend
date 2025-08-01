@@ -40,14 +40,6 @@ interface Brand {
 }
 
 /**
- * Memory filter option with selection state.
- */
-interface Memory {
-  value: string
-  checked: boolean
-}
-
-/**
  * Backend response structure for a single product.
  * May be partial or inconsistent; transformation is required.
  */
@@ -116,12 +108,6 @@ export const useProductStore = defineStore('product', () => {
    * Each has a `checked` flag for UI selection.
    */
   const brands = ref<Brand[]>([])
-
-  /**
-   * Available memory filter options (e.g., "64GB", "128GB").
-   * Each has a `checked` flag for UI selection.
-   */
-  const memories = ref<Memory[]>([])
 
   /**
    * Loading state to control UI spinners or disable interactions.
@@ -382,18 +368,6 @@ export const useProductStore = defineStore('product', () => {
       brands.value = response.data.map((name) => ({ name, checked: false }))
     } catch (err) {
       console.error('Error fetching brands:', err)
-    }
-  }
-
-  /**
-   * Fetches unique memory sizes from the backend and initializes filter options.
-   */
-  const fetchMemories = async () => {
-    try {
-      const response = await api.get<string[]>('/products/memories')
-      memories.value = response.data.map((value) => ({ value, checked: false }))
-    } catch (err) {
-      console.error('Error fetching memories:', err)
     }
   }
 
@@ -754,7 +728,6 @@ export const useProductStore = defineStore('product', () => {
     products,
     featuredProducts,
     brands,
-    memories,
     loading,
     error,
     currentCategoryId,
@@ -773,7 +746,6 @@ export const useProductStore = defineStore('product', () => {
     fetchFeaturedProducts,
     fetchNewProducts,
     fetchBrands,
-    fetchMemories,
     fetchProductsByCategory,
     fetchProductsByCategoryName,
     fetchProductById,
