@@ -711,22 +711,23 @@
                   <v-icon name="hi-annotation" scale="2" class="mb-4 text-gray-300 opacity-80" />
                   <p class="text-base text-gray-500 font-srProDisplay">{{ $t('account.reviews.empty') }}</p>
                 </div>
-                <div
-                  v-else
-                  v-for="review in reviews"
-                  :key="review.id"
-                  class="p-4 transition-all duration-200 border border-gray-200 rounded-xl bg-gray-50 hover:shadow-lg hover:bg-white hover:border-gray-300"
-                >
-                  <div class="flex items-start justify-between mb-3">
-                    <div>
-                      <span class="font-semibold text-black">{{ review.product }}</span>
-                      <span class="ml-2 text-yellow-500">{{ '★'.repeat(review.rating) }}</span>
+                <div v-else class="max-h-[400px] overflow-y-auto custom-scrollbar pr-2 space-y-4">
+                  <div
+                    v-for="review in reviews"
+                    :key="review.id"
+                    class="p-4 transition-all duration-200 border border-gray-200 rounded-xl bg-gray-50 hover:shadow-lg hover:bg-white hover:border-gray-300"
+                  >
+                    <div class="flex items-start justify-between mb-3">
+                      <div>
+                        <span class="font-semibold text-black">{{ review.product }}</span>
+                        <span class="ml-2 text-yellow-500">{{ '★'.repeat(review.rating) }}</span>
+                      </div>
+                      <span class="text-xs text-gray-500">{{ review.date }}</span>
                     </div>
-                    <span class="text-xs text-gray-500">{{ review.date }}</span>
+                    <p class="text-sm leading-relaxed text-gray-700 font-srProDisplay">
+                      {{ review.comment }}
+                    </p>
                   </div>
-                  <p class="text-sm leading-relaxed text-gray-700 font-srProDisplay">
-                    {{ review.comment }}
-                  </p>
                 </div>
               </div>
             </section>
@@ -1721,5 +1722,29 @@ const removeFromWishlist = async (productId: number, productName: string) => {
 }
 .fade-debug-enter-from, .fade-debug-leave-to {
   opacity: 0;
+}
+/* Debug panel fade */
+.fade-debug-enter-active, .fade-debug-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-debug-enter-from, .fade-debug-leave-to {
+  opacity: 0;
+}
+
+/* Custom scrollbar for reviews section */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 6px;
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
 }
 </style>
