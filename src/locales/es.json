@@ -16,7 +16,9 @@
     "title": "Carrito de compras",
     "loading": "Cargando carrito...",
     "error": "Error al cargar el carrito.",
-    "empty": "Tu carrito está vacío."
+    "empty": "Tu carrito está vacío.",
+    "addToCart": "Añadir al carrito",
+    "addedToCart": "Añadido al carrito"
   },
   "productsSection": {
     "tabs": {
@@ -251,6 +253,7 @@
     "profile": {
       "title": "Perfil",
       "editButton": "Editar perfil",
+      "cancelButton": "Cancelar",
       "refreshButton": "Refrescar",
       "memberSince": "Miembro desde",
       "verified": "Verificado",

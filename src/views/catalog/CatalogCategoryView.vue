@@ -75,12 +75,6 @@ const actualCategoryName = ref('')
  */
 const brandSearchQuery = ref('')
 
-/**
- * Search query for filtering memory options in the sidebar.
- * Triggers fuzzy search when ≥2 characters.
- */
-const memorySearchQuery = ref('')
-
 // =======================
 // 🧱 Filter Collapse States
 // =======================
@@ -92,11 +86,6 @@ const memorySearchQuery = ref('')
 const collapsedFilters = ref({
   price: false,
   brand: false,
-  memory: false,
-  protectionClass: false,
-  screenDiagonal: false,
-  screenType: false,
-  batteryCapacity: false,
 })
 
 // =======================
@@ -140,7 +129,6 @@ const itemsPerPage = 9
  * Returns products filtered by:
  * - Price range
  * - Selected brands
- * - Selected memory options
  * Then sorts them based on `sortBy`.
  */
 const filteredProducts = computed(() => {
@@ -160,14 +148,6 @@ const filteredProducts = computed(() => {
     .map((brand) => brand.name)
   if (selectedBrands.length > 0) {
     filtered = filtered.filter((product) => selectedBrands.includes(product.brand))
-  }
-
-  // Memory filter
-  const selectedMemories = productStore.memories
-    .filter((memory) => memory.checked)
-    .map((memory) => memory.value)
-  if (selectedMemories.length > 0) {
-    filtered = filtered.filter((product) => selectedMemories.includes(product.memory))
   }
 
   // Sort products
@@ -233,28 +213,6 @@ const filteredBrands = computed(() => {
 })
 
 /**
- * Filters memory list based on search query with fuzzy matching.
- * Scores matches by relevance.
- */
-const filteredMemoryOptions = computed(() => {
-  const query = memorySearchQuery.value?.trim().toLowerCase()
-  if (!query || query.length < 2) return productStore.memories
-
-  return productStore.memories
-    .map((memory) => {
-      const memoryValue = memory.value.toLowerCase()
-      let score = 0
-      if (memoryValue === query) score = 1000
-      else if (memoryValue.startsWith(query)) score = 500 + (100 - query.length)
-      else if (memoryValue.includes(query)) score = 100 + (100 - memoryValue.indexOf(query))
-      return { memory, score }
-    })
-    .filter(({ score }) => score > 0)
-    .sort((a, b) => b.score - a.score)
-    .map(({ memory }) => memory)
-})
-
-/**
  * Breadcrumb navigation path.
  * Dynamically updates based on current category.
  */
@@ -301,11 +259,10 @@ onMounted(async () => {
   actualCategoryName.value = getCategoryNameFromUrl(props.categoryName)
   categoryDisplayName.value = actualCategoryName.value
 
-  // Load initial data: products, brands, memories, and wishlist
+  // Load initial data: products, brands, and wishlist
   await Promise.all([
     productStore.fetchProductsByCategoryName(actualCategoryName.value, currentPage.value - 1, itemsPerPage),
     productStore.fetchBrands(),
-    productStore.fetchMemories(),
   ])
 
   // Load user wishlist if authenticated
@@ -462,8 +419,7 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
 const hasActiveFilters = () => {
   const priceFilterActive = priceRange.value.min > 0 || priceRange.value.max < 5000
   const brandFilterActive = productStore.brands.some((brand) => brand.checked)
-  const memoryFilterActive = productStore.memories.some((memory) => memory.checked)
-  return priceFilterActive || brandFilterActive || memoryFilterActive
+  return priceFilterActive || brandFilterActive
 }
 
 /**
@@ -472,7 +428,6 @@ const hasActiveFilters = () => {
 const clearAllFilters = () => {
   priceRange.value = { min: 0, max: 5000 }
   productStore.brands.forEach((brand) => (brand.checked = false))
-  productStore.memories.forEach((memory) => (memory.checked = false))
   currentPage.value = 1
 }
 
@@ -484,16 +439,8 @@ const clearBrandFilters = () => {
   currentPage.value = 1
 }
 
-/**
- * Clears only memory filters.
- */
-const clearMemoryFilters = () => {
-  productStore.memories.forEach((memory) => (memory.checked = false))
-  currentPage.value = 1
-}
-
 // Reset to page 1 whenever filters or sort order change
-watch([priceRange, () => productStore.brands, () => productStore.memories, sortBy], () => {
+watch([priceRange, () => productStore.brands, sortBy], () => {
   currentPage.value = 1
 }, { deep: true })
 </script>
@@ -526,7 +473,6 @@ watch([priceRange, () => productStore.brands, () => productStore.memories, sortB
             <div><b>Items Per Page:</b> {{ itemsPerPage }}</div>
             <div><b>Filtered Products:</b> {{ filteredProducts.length }}</div>
             <div><b>Brands (checked):</b> {{ productStore.brands.filter(b => b.checked).map(b => b.name).join(', ') }}</div>
-            <div><b>Memories (checked):</b> {{ productStore.memories.filter(m => m.checked).map(m => m.value).join(', ') }}</div>
             <div><b>Price Range:</b> ${{ priceRange.min }} - ${{ priceRange.max }}</div>
             <div><b>Sort By:</b> {{ sortBy }}</div>
             <div><b>Category:</b> {{ actualCategoryName }}</div>
@@ -692,69 +638,6 @@ watch([priceRange, () => productStore.brands, () => productStore.memories, sortB
             </div>
           </div>
 
-          <!-- Built-in Memory Filter -->
-          <div class="mb-6">
-            <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
-              <h3 class="font-srProDisplay text-lg font-semibold text-black">Built-in Memory</h3>
-              <div class="flex items-center space-x-2">
-                <button
-                  v-if="productStore.memories.some(memory => memory.checked)"
-                  @click="clearMemoryFilters"
-                  class="text-xs text-gray-500 hover:text-gray-700 transition-colors"
-                  type="button"
-                  title="Clear memory filters"
-                >
-                  Clear
-                </button>
-                <button
-                  @click="toggleFilter('memory')"
-                  class="p-1 hover:bg-gray-100 rounded transition-colors"
-                  type="button"
-                  aria-label="Toggle memory filter"
-                >
-                  <svg
-                    class="w-4 h-4 text-gray-600 transition-transform duration-200"
-                    :class="{ 'rotate-180': collapsedFilters.memory }"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 9l-7 7-7-7"
-                    ></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div v-show="!collapsedFilters.memory" class="transition-all duration-200">
-              <div class="flex items-center justify-start gap-2 bg-[#f5f5f5] p-3 rounded-lg mb-4">
-                <v-icon name="fa-search" scale="1.2" class="text-gray-400" />
-                <input
-                  v-model="memorySearchQuery"
-                  class="w-full bg-[#f5f5f5] p-0.5 font-srProDisplay text-sm font-medium text-black outline-none"
-                  type="search"
-                  placeholder="Search"
-                />
-              </div>
-              <div class="space-y-3 max-h-48 overflow-y-auto">
-                <div v-for="memory in filteredMemoryOptions" :key="memory.value" class="flex items-center">
-                  <input
-                    :id="'memory-' + memory.value"
-                    type="checkbox"
-                    v-model="memory.checked"
-                    class="custom-checkbox focus:ring-1 focus:ring-gray-400"
-                  />
-                  <label :for="'memory-' + memory.value" class="ml-3 flex-1 flex items-center justify-between">
-                    <span class="text-sm font-srProDisplay text-gray-1000">{{ memory.value }}</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <!-- Active Filters Summary -->
           <div v-if="hasActiveFilters()" class="mb-6 p-4 bg-gray-50 rounded-lg">
             <h4 class="font-srProDisplay text-sm font-semibold text-gray-800 mb-3">Active Filters</h4>
@@ -766,10 +649,6 @@ watch([priceRange, () => productStore.brands, () => productStore.memories, sortB
               <div v-if="productStore.brands.some(brand => brand.checked)" class="flex items-center justify-between text-sm">
                 <span class="text-gray-600">Brands:</span>
                 <span class="font-medium">{{ productStore.brands.filter(brand => brand.checked).map(brand => brand.name).join(', ') }}</span>
-              </div>
-              <div v-if="productStore.memories.some(memory => memory.checked)" class="flex items-center justify-between text-sm">
-                <span class="text-gray-600">Memory:</span>
-                <span class="font-medium">{{ productStore.memories.filter(memory => memory.checked).map(memory => memory.value).join(', ') }}</span>
               </div>
             </div>
             <button
@@ -797,39 +676,6 @@ watch([priceRange, () => productStore.brands, () => productStore.memories, sortB
                 <span class="text-gray-600">Current Page:</span>
                 <span class="font-medium">{{ currentPage }} of {{ totalPages }}</span>
               </div>
-            </div>
-          </div>
-
-          <!-- Placeholder Filters -->
-          <div v-for="filter in ['protectionClass', 'screenDiagonal', 'screenType', 'batteryCapacity']" :key="filter" class="mb-6">
-            <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
-              <h3 class="font-srProDisplay text-lg font-semibold text-black">
-                {{ filter.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()) }}
-              </h3>
-              <button
-                @click="toggleFilter(filter as any)"
-                class="p-1 hover:bg-gray-100 rounded transition-colors"
-                type="button"
-                aria-label="Toggle filter"
-              >
-                <svg
-                  class="w-4 h-4 text-gray-600 transition-transform duration-200"
-                  :class="{ 'rotate-180': collapsedFilters[filter as keyof typeof collapsedFilters] }"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
-              </button>
-            </div>
-            <div v-show="!collapsedFilters[filter as keyof typeof collapsedFilters]" class="transition-all duration-200">
-              <div class="text-sm font-srProDisplay text-gray-500">No options available</div>
             </div>
           </div>
         </div>

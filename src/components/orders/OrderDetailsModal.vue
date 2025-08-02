@@ -33,6 +33,14 @@
 
           <!-- Modal Content -->
           <div class="p-6 space-y-8">
+            <!-- Loading State -->
+            <div v-if="order.shippingAddress.name === 'Loading...'" class="text-center py-8">
+              <v-icon name="hi-refresh" scale="2" class="text-blue-600 animate-spin mb-4" />
+              <p class="font-srProDisplay text-gray-600">Loading order details...</p>
+            </div>
+
+            <!-- Order Content (when loaded) -->
+            <template v-else>
             <!-- Order Status and Progress -->
             <section>
               <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">
@@ -54,35 +62,39 @@
                 </div>
 
                 <!-- Order Progress -->
-                <div class="relative">
-                  <div class="flex items-center justify-between">
+                <div class="relative px-4">
+                  <div class="flex items-center justify-between relative">
                     <div
-                      v-for="(step, index) in orderSteps"
+                      v-for="step in orderSteps"
                       :key="step.id"
                       class="flex flex-col items-center"
-                      :class="{ 'flex-1': index < orderSteps.length - 1 }"
                     >
                       <div
                         :class="[
-                          'w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300',
+                          'w-12 h-12 rounded-full flex items-center justify-center border-3 transition-all duration-500 shadow-lg',
                           step.completed
-                            ? 'bg-green-500 border-green-500 text-white'
+                            ? 'bg-green-500 border-green-500 text-white shadow-green-200'
                             : step.current
-                            ? 'bg-blue-500 border-blue-500 text-white'
-                            : 'bg-gray-200 border-gray-300 text-gray-500'
+                            ? 'bg-blue-500 border-blue-500 text-white shadow-blue-200 pulse'
+                            : 'bg-white border-gray-300 text-gray-500 shadow-gray-100'
                         ]"
                       >
                         <v-icon
                           v-if="step.completed"
                           name="hi-check"
-                          scale="1.2"
+                          scale="1.4"
                           class="text-white"
                         />
-                        <v-icon v-else :name="step.icon" scale="1.2" />
+                        <v-icon
+                          v-else
+                          :name="step.icon"
+                          scale="1.4"
+                          :class="step.current ? 'text-white' : 'text-gray-500'"
+                        />
                       </div>
                       <span
                         :class="[
-                          'font-srProDisplay text-xs mt-2 text-center',
+                          'font-srProDisplay text-sm mt-3 text-center font-medium',
                           step.completed || step.current ? 'text-black' : 'text-gray-500'
                         ]"
                       >
@@ -92,17 +104,11 @@
                         v-if="step.date"
                         class="font-srProDisplay text-xs text-gray-500 mt-1"
                       >
-                        {{ step.date }}
+                        {{ formatDate(step.date) }}
                       </span>
                     </div>
                   </div>
-                  <!-- Progress Line -->
-                  <div class="absolute top-5 left-5 right-5 h-0.5 bg-gray-300 -z-10">
-                    <div
-                      class="h-full bg-green-500 transition-all duration-500"
-                      :style="{ width: progressWidth + '%' }"
-                    ></div>
-                  </div>
+                  <!-- Progress line and connection dots removed as requested -->
                 </div>
               </div>
             </section>
@@ -277,6 +283,7 @@
                 </div>
               </div>
             </section>
+            </template>
           </div>
 
           <!-- Modal Footer -->
@@ -405,10 +412,7 @@ const orderSteps = computed(() => {
   return steps
 })
 
-const progressWidth = computed(() => {
-  const completedSteps = orderSteps.value.filter((step) => step.completed).length
-  return ((completedSteps - 1) / (orderSteps.value.length - 1)) * 100
-})
+
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('en-US', {
@@ -480,6 +484,40 @@ const closeModal = () => {
   .backdrop-blur-md {
     background: rgba(0, 0, 0, 0.4);
   }
+}
+
+/* Progress Step Enhancements */
+.pulse {
+  animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+}
+
+/* Enhanced border width */
+.border-3 {
+  border-width: 3px;
+}
+
+/* Enhanced shadow effects for steps */
+.shadow-green-200 {
+  box-shadow: 0 4px 14px 0 rgba(34, 197, 94, 0.25);
+}
+
+.shadow-blue-200 {
+  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.25);
+}
+
+.shadow-gray-100 {
+  box-shadow: 0 2px 8px 0 rgba(107, 114, 128, 0.15);
 }
 
 /* Modal Transitions */

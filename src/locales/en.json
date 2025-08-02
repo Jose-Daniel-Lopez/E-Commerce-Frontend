@@ -37,7 +37,9 @@
     "title": "Shopping Cart",
     "loading": "Loading cart...",
     "error": "Error loading cart.",
-    "empty": "Your cart is empty."
+    "empty": "Your cart is empty.",
+    "addToCart": "Add to Cart",
+    "addedToCart": "Added to Cart"
   },
   "productsSection": {
     "tabs": {
@@ -251,6 +253,7 @@
     "profile": {
       "title": "Profile",
       "editButton": "Edit Profile",
+      "cancelButton": "Cancel",
       "refreshButton": "Refresh",
       "memberSince": "Member since",
       "verified": "Verified",

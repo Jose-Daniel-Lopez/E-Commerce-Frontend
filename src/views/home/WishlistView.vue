@@ -6,7 +6,7 @@ function openProductUrl(url?: string) {
 }
 import { useWishlistStore } from '@/stores/wishlistStore'
 import '@/assets/base.css'
-import { onMounted } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLanguage } from '@/composables/useLanguage'
 import { storeToRefs } from 'pinia'
@@ -17,15 +17,115 @@ import ErrorAlert from '@/components/shared/ErrorAlert.vue'
 import EmptyWishlistState from '@/components/wishlist/EmptyWishlistState.vue'
 
 import { useAuthStore } from '@/stores/auth'
+import { useUserCartStore } from '@/stores/userCart'
+import { useProductVariantsStore } from '@/stores/productVariants'
+import { useToast } from '@/composables/useToast'
 const router = useRouter()
 const { t } = useLanguage()
+const toast = useToast()
 
 const authStore = useAuthStore()
 const wishlistStore = useWishlistStore()
+const userCartStore = useUserCartStore()
+const productVariantsStore = useProductVariantsStore()
 const { wishlistProducts, wishlistLoading, wishlistError } = storeToRefs(wishlistStore)
+
+// Cart functionality state
+const loadingItems = ref<Set<number>>(new Set())
+const addedToCartItems = ref<Set<number>>(new Set())
 
 const removeFromWishlist = async (productId: number) => {
   await wishlistStore.removeProductFromWishlist(productId)
+}
+
+// Add to cart functionality
+const addToCartFromWishlist = async (productId: number) => {
+  try {
+    loadingItems.value.add(productId)
+
+    // Fetch available variants for the product
+    await productVariantsStore.fetchVariantsByProduct(productId)
+    const variants = productVariantsStore.variants
+
+    if (!variants || variants.length === 0) {
+      toast.error('No variants available for this product', {
+        title: 'Cart Error',
+        duration: 4000
+      })
+      return
+    }
+
+    // Use the first available variant with stock
+    const availableVariant = variants.find(variant => variant.stock > 0)
+
+    if (!availableVariant) {
+      toast.error('Product is out of stock', {
+        title: 'Cart Error',
+        duration: 4000
+      })
+      return
+    }
+
+    // Add to cart
+    const result = await userCartStore.addProductToCart(availableVariant.id)
+
+    if (result.success) {
+      addedToCartItems.value.add(productId)
+      toast.success('Product added to cart successfully!', {
+        title: 'Added to Cart',
+        duration: 3000
+      })
+
+      // Refresh cart after successful addition
+      setTimeout(() => {
+        if (authStore.user?.id) {
+          userCartStore.fetchUserCart(authStore.user.id)
+        }
+      }, 500)
+    } else {
+      toast.error(result.error || 'Failed to add product to cart', {
+        title: 'Cart Error',
+        duration: 4000
+      })
+    }
+  } catch (error) {
+    console.error('Error adding to cart:', error)
+    toast.error('An unexpected error occurred', {
+      title: 'Error',
+      duration: 4000
+    })
+  } finally {
+    loadingItems.value.delete(productId)
+  }
+}
+
+// Check which wishlist products are already in cart
+const checkWishlistProductsInCart = () => {
+  if (!userCartStore.cart?.cartItems) return
+
+  // Extract product IDs from cart items
+  const cartProductIds = new Set<number>()
+
+  userCartStore.cart.cartItems.forEach(cartItem => {
+    if (cartItem.product?.id) {
+      cartProductIds.add(cartItem.product.id)
+    } else if (cartItem._links?.productVariant?.href) {
+      // Extract product ID from productVariant link if needed
+      const productLink = cartItem._links.productVariant.href
+      const productIdMatch = productLink.match(/\/products\/(\d+)/)
+      if (productIdMatch) {
+        cartProductIds.add(parseInt(productIdMatch[1]))
+      }
+    }
+  })
+
+  // Mark wishlist products that are in cart as "added"
+  addedToCartItems.value.clear()
+  wishlistProducts.value.forEach(product => {
+    if (cartProductIds.has(product.id)) {
+      addedToCartItems.value.add(product.id)
+    }
+  })
 }
 
 function goToProduct(productId: number) {
@@ -35,8 +135,17 @@ function goToProduct(productId: number) {
 onMounted(() => {
   if (authStore.user?.id) {
     wishlistStore.fetchUserWishlist(authStore.user.id)
+    // Initialize cart and check which products are already in cart
+    userCartStore.fetchUserCart(authStore.user.id).then(() => {
+      checkWishlistProductsInCart()
+    })
   }
 })
+
+// Watch for changes in wishlist and re-check cart status
+watch(() => wishlistProducts.value, () => {
+  checkWishlistProductsInCart()
+}, { deep: true })
 </script>
 
 <template>
@@ -106,9 +215,24 @@ onMounted(() => {
                   <span v-if="item.operatingSystem" class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">{{ item.operatingSystem }}</span>
                   <span v-if="item.totalStock !== undefined" class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Stock: {{ item.totalStock }}</span>
                 </div>
-                <div class="flex flex-col items-center mt-auto">
+                <div class="flex flex-col items-center mt-auto space-y-2">
                   <button
-                    class="w-full bg-black text-white py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:bg-gray-800 transition-colors"
+                    v-if="!addedToCartItems.has(item.id)"
+                    :disabled="loadingItems.has(item.id)"
+                    class="w-full bg-black text-white py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    @click.stop="addToCartFromWishlist(item.id)"
+                  >
+                    <span v-if="loadingItems.has(item.id)">Adding...</span>
+                    <span v-else>{{ t('cart.addToCart') || 'Add to Cart' }}</span>
+                  </button>
+                  <button
+                    v-else
+                    disabled
+                    class="w-full bg-green-600 text-white py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium cursor-not-allowed"
+                    @click.stop
+                  >{{ t('cart.addedToCart') || 'Added to Cart' }}</button>
+                  <button
+                    class="w-full bg-gray-100 text-black py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:bg-gray-200 transition-colors"
                     @click.stop="goToProduct(item.id)"
                   >{{ t('wishlist.details') || 'View details' }}</button>
                 </div>

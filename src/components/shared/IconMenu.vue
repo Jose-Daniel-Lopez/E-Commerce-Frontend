@@ -73,16 +73,14 @@
         class="relative flex h-[66px] cursor-pointer flex-col items-center justify-center group hover:bg-blue-50 sm:hover:bg-transparent"
         @click.stop="toggleUserDropdown"
       >
-        <v-icon
-          name="hi-user-circle"
-          scale="1.7"
-          class="text-gray-600 transition-all duration-200 group-hover:text-blue-600 group-hover:scale-110 group-hover:drop-shadow-md"
-          aria-label="User"
+        <UserAvatar
+          :show-status="true"
+          :icon-scale="1.7"
         />
         <span
           class="text-sm font-medium transition-colors duration-200 font-srProDisplay sm:hidden group-hover:text-blue-600"
         >
-          User
+          {{ isAuthenticated ? 'Account' : 'User' }}
         </span>
         <!-- User Dropdown -->
         <div
@@ -156,16 +154,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useUserDropdown } from '@/composables/useUserDropdown'
 import { storeToRefs } from 'pinia'
 import { useUserCartStore } from '@/stores/userCart'
 import { useWishlistStore } from '@/stores/wishlistStore'
+import { useAuthStore } from '@/stores/auth'
+import UserAvatar from './UserAvatar.vue'
 
 const emit = defineEmits(['update-mobile-menu', 'update-search-bar'])
 
 const showMenu = ref(false)
 const showSearchBar = ref(false)
+
+// Auth store for authentication status
+const authStore = useAuthStore()
+const isAuthenticated = computed(() => authStore.isAuthenticated)
 
 const toggleMenu = () => {
   showMenu.value = !showMenu.value

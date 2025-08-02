@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '@/lib/axios'
+import { useToast } from '@/composables/useToast'
 
 // --- Interfaces ---
 export interface User {
@@ -169,9 +170,21 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const logout = () => {
+    // Initialize toast for logout notification
+    const toast = useToast()
+
     clearAuth()
-    // Redirect to login page
-    window.location.href = '/login'
+
+    // Show success toast notification
+    toast.success('You have been successfully logged out', {
+      title: 'Logout Successful',
+      duration: 3000
+    })
+
+    // Small delay to allow toast to be seen before redirect
+    setTimeout(() => {
+      window.location.href = '/login'
+    }, 100)
   }
 
   const requestPasswordReset = async (email: string) => {
