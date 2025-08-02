@@ -52,7 +52,7 @@
           <!-- Sidebar Navigation -->
           <aside class="self-start w-full mb-4 lg:w-1/4 lg:mb-0" role="navigation" aria-label="Account sections">
             <!-- Desktop Navigation -->
-            <nav :class="['hidden p-6 rounded-lg shadow-lg lg:block" aria-label="Desktop account navigation', navClasses]">
+            <nav :class="['hidden p-6 rounded-lg shadow-lg lg:block', navClasses]" aria-label="Desktop account navigation">
               <h2 :class="['mb-4 text-lg font-extrabold tracking-tight uppercase font-srProDisplay', textClasses]">{{ $t('account.navigation') }}</h2>
               <ul class="space-y-1" role="list">
                 <li v-for="section in sections" :key="section.id" role="listitem">
@@ -79,7 +79,7 @@
             <!-- Mobile Navigation Toggle -->
             <button
               @click="toggleMobileNav"
-              :class="['fixed z-50 p-3 transition-all duration-200 rounded-lg shadow-lg lg:hidden top-28 left-4 hover:shadow-xl', navClasses] focus:outline-none focus:ring-2 focus:ring-blue-500"
+              :class="['fixed z-50 p-3 transition-all duration-200 rounded-lg shadow-lg lg:hidden top-28 left-4 hover:shadow-xl', navClasses, 'focus:outline-none focus:ring-2 focus:ring-blue-500']"
               aria-label="Open mobile navigation menu"
               :aria-expanded="isMobileNavOpen"
               aria-controls="mobile-nav"
@@ -111,7 +111,7 @@
                   <h2 :class="['text-lg font-semibold font-srProDisplay', textClasses]">{{ $t('account.navigation') }}</h2>
                   <button
                     @click="closeMobileNav"
-                    :class="['transition-colors cursor-pointer', linkClasses] focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                    :class="['transition-colors cursor-pointer', linkClasses, 'focus:outline-none focus:ring-2 focus:ring-blue-500 rounded']"
                     aria-label="Close mobile navigation menu"
                   >
                     <v-icon name="hi-x" scale="1.2" aria-hidden="true" />
@@ -502,7 +502,7 @@
                 </h2>
                 <router-link
                   to="/wishlist"
-                  :class="['text-sm font-medium transition-colors', linkClasses] focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1"
+                  :class="['text-sm font-medium transition-colors', linkClasses, 'focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1']"
                   :aria-label="`View all ${wishlistProducts.length} wishlist items`"
                 >
                   {{ $t('account.wishlist.viewAll') }}
