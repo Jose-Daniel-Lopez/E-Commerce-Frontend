@@ -113,6 +113,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useToast } from '@/composables/useToast'
 import { storeToRefs } from 'pinia'
 import Button from './Button.vue'
 import { useWishlistStore } from '@/stores/wishlistStore'
@@ -167,6 +168,7 @@ const isFavorite = computed(() => {
   return wishlistProducts.value.some(item => item.id === props.product.id)
 })
 
+const toast = useToast()
 const toggleFavorite = async () => {
   console.log('🔵 [PRODUCT CARD] toggleFavorite called for product:', props.product.id)
   console.log('🔵 [PRODUCT CARD] Full product object:', props.product)
@@ -181,13 +183,13 @@ const toggleFavorite = async () => {
   // Validate product ID first
   if (!props.product.id || props.product.id <= 0) {
     console.error('🔴 [PRODUCT CARD] Invalid product ID:', props.product.id)
-    alert('❌ Error: Invalid product ID (' + props.product.id + '). Cannot add to wishlist.')
+    toast.error('❌ Error: Invalid product ID (' + props.product.id + '). Cannot add to wishlist.')
     return
   }
 
   if (!user.value || !user.value.id) {
     console.error('🔴 [PRODUCT CARD] User not authenticated')
-    alert('User not authenticated - please log in')
+    toast.error('User not authenticated - please log in')
     return
   }
 
@@ -238,16 +240,16 @@ const toggleFavorite = async () => {
 
     // Show success feedback
     if (!favoriteStateBefore && favoriteStateAfter) {
-      alert('✅ Product added to wishlist!')
+      toast.success('Product added to wishlist')
     } else if (favoriteStateBefore && !favoriteStateAfter) {
-      alert('✅ Product removed from wishlist!')
+      toast.success('Product removed from wishlist')
     } else {
-      alert('⚠️ State didn\'t change as expected - check console for details')
+      toast.warning('⚠️ State didn\'t change as expected - check console for details')
     }
 
   } catch (error) {
     console.error('🔴 [PRODUCT CARD] Error toggling favorite:', error)
-    alert('❌ Error: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    toast.error('❌ Error: ' + (error instanceof Error ? error.message : 'Unknown error'))
   } finally {
     isToggling.value = false
     console.log('🟡 [PRODUCT CARD] Setting isToggling to false')
