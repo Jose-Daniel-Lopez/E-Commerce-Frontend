@@ -147,12 +147,12 @@
             <!-- Profile Section -->
             <section
               :id="sections[0].id"
-              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
+              :class="['transition-colors duration-200', sectionContainerClasses]"
               aria-labelledby="profile-title"
             >
               <div class="flex items-center justify-between mb-6">
                 <h2 id="profile-title" :class="['text-xl font-semibold font-srProDisplay', textClasses]">
-                  <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.profile.title') }}</span>
+                  <span :class="sectionHeaderClasses">{{ $t('account.profile.title') }}</span>
                 </h2>
                 <div class="flex gap-2" role="group" aria-label="Profile actions">
                   <Button
@@ -222,7 +222,7 @@
                     ></div>
                   </div>
                   <div class="flex-1">
-                    <h3 class="mb-1 text-xl font-semibold text-black font-srProDisplay">
+                    <h3 class="mb-1 text-xl font-semibold text-black dark:text-white font-srProDisplay">
                       {{ user?.username || 'Guest User' }}
                     </h3>
                     <p class="mb-2 text-gray-600 font-srProDisplay">{{ user.email }}</p>
@@ -376,11 +376,11 @@
             <!-- Orders Section -->
             <section
               :id="sections[1].id"
-              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
+              :class="['transition-colors duration-200', sectionContainerClasses]"
             >
               <div class="flex items-center justify-between mb-6">
                 <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
-                <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.orders.title') }}</span>
+                <span :class="sectionHeaderClasses">{{ $t('account.orders.title') }}</span>
                 </h2>
                 <router-link
                   to="/orders"
@@ -398,7 +398,7 @@
                   <div
                     v-for="order in orders.slice(0, 5)"
                     :key="order.id"
-                    class="flex items-center justify-between p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-800 hover:shadow-lg hover:bg-white dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500"
+                    :class="listItemClasses"
                     role="listitem"
                   >
                     <div class="flex items-center gap-4">
@@ -414,8 +414,7 @@
                     </div>
                     <div class="flex items-center gap-4">
                       <span
-                        :class="getStatusColor(order.status)"
-                        class="px-3 py-1 text-sm font-medium rounded-full"
+                        :class="[getStatusColor(order.status), statusBadgeClasses]"
                       >
                         {{ order.status }}
                       </span>
@@ -424,7 +423,7 @@
                         bg-color="transparent"
                         width="auto"
                         height="auto"
-                        class="px-4 text-[10px] font-light text-gray-500 cursor-pointer hover:text-black transition-colors"
+                        :class="['px-4', actionButtonClasses]"
                       >
                         {{ $t('account.orders.viewDetails') }}
                       </Button>
@@ -438,11 +437,11 @@
             <!-- Refunds and Returns Section -->
             <section
               :id="sections[2].id"
-              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
+              :class="['transition-colors duration-200', sectionContainerClasses]"
             >
               <div class="flex items-center justify-between mb-6">
                 <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
-                <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.refunds.title') }}</span>
+                <span :class="sectionHeaderClasses">{{ $t('account.refunds.title') }}</span>
                 </h2>
               </div>
               <div v-if="refunds.length === 0" class="py-8 text-center">
@@ -453,7 +452,7 @@
                 <div
                   v-for="refund in refunds.slice(0, 5)"
                   :key="refund.id"
-                  class="flex items-center justify-between p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-800 hover:shadow-lg hover:bg-white dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500"
+                  :class="listItemClasses"
                   role="listitem"
                 >
                   <div class="flex items-center gap-4">
@@ -471,8 +470,7 @@
                   </div>
                   <div class="flex items-center gap-4">
                     <span
-                      :class="getRefundStatusColor(refund.status)"
-                      class="px-3 py-1 text-sm font-medium rounded-full"
+                      :class="[getRefundStatusColor(refund.status), statusBadgeClasses]"
                     >
                       {{ refund.status }}
                     </span>
@@ -481,7 +479,7 @@
                       bg-color="transparent"
                       width="auto"
                       height="auto"
-                      class="px-4 text-[10px] font-light text-gray-500 cursor-pointer hover:text-black transition-colors"
+                      :class="['px-4', actionButtonClasses]"
                     >
                       {{ $t('account.refunds.viewDetails') }}
                     </Button>
@@ -493,12 +491,12 @@
             <!-- Wishlist Section -->
             <section
               :id="sections[3].id"
-              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
+              :class="['transition-colors duration-200', sectionContainerClasses]"
               aria-labelledby="wishlist-title"
             >
               <div class="flex items-center justify-between mb-6">
                 <h2 id="wishlist-title" :class="['text-xl font-semibold font-srProDisplay', textClasses]">
-                  <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.wishlist.title') }}</span>
+                  <span :class="sectionHeaderClasses">{{ $t('account.wishlist.title') }}</span>
                 </h2>
                 <router-link
                   to="/wishlist"
@@ -536,7 +534,7 @@
                 <div
                   v-for="item in wishlistProducts.slice(0, 6)"
                   :key="item.id"
-                  :class="['flex items-center gap-4 p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 rounded-xl group bg-gray-50 dark:bg-gray-800', hoverClasses]"
+                  :class="['flex items-center gap-4 transition-all duration-200 group', listItemClasses]"
                   role="listitem"
                 >
                   <div class="relative">
@@ -607,11 +605,11 @@
             <!-- Addresses Section -->
             <section
               :id="sections[4].id"
-              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
+              :class="['transition-colors duration-200', sectionContainerClasses]"
             >
               <div class="flex items-center justify-between mb-6">
                 <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
-                <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.addresses.title') }}</span>
+                <span :class="sectionHeaderClasses">{{ $t('account.addresses.title') }}</span>
                 </h2>
                 <div class="flex gap-2">
                   <Button
@@ -686,7 +684,7 @@
                 <div
                   v-for="address in addresses"
                   :key="address.id"
-                  :class="['p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 rounded-xl group bg-gray-50 dark:bg-gray-800', hoverClasses]"
+                  :class="['transition-all duration-200 group', listItemClasses]"
                 >
                   <div class="flex items-start justify-between mb-3">
                     <div class="flex items-center gap-2">
@@ -727,11 +725,11 @@
             <!-- Reviews Section -->
             <section
               :id="sections[5].id"
-              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
+              :class="['transition-colors duration-200', sectionContainerClasses]"
             >
               <div class="flex items-center justify-between mb-6">
                 <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
-                <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.reviews.title') }}</span>
+                <span :class="sectionHeaderClasses">{{ $t('account.reviews.title') }}</span>
                 </h2>
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-300"
                   >{{ reviews.length }} {{ $t('account.reviews.reviews') }}</span
@@ -752,16 +750,16 @@
                   <div
                     v-for="review in reviews"
                     :key="review.id"
-                    :class="['p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-800', hoverClasses]"
+                    :class="reviewCardClasses"
                   >
                     <div class="flex items-start justify-between mb-3">
                       <div>
-                        <span :class="['font-semibold', textClasses]">{{ review.product }}</span>
+                        <span :class="reviewHeaderClasses">{{ review.product }}</span>
                         <span class="ml-2 text-yellow-500 dark:text-yellow-400">{{ '★'.repeat(review.rating) }}</span>
                       </div>
-                      <span class="text-xs text-gray-500 dark:text-gray-400">{{ review.date }}</span>
+                      <span :class="reviewMetaClasses">{{ review.date }}</span>
                     </div>
-                    <p class="text-sm leading-relaxed text-gray-700 dark:text-gray-300 font-srProDisplay">
+                    <p :class="['text-sm font-srProDisplay', reviewBodyClasses]">
                       {{ review.comment }}
                     </p>
                   </div>
@@ -772,140 +770,146 @@
             <!-- Settings Section -->
             <section
               :id="sections[6].id"
-              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
+              :class="['transition-colors duration-200', sectionContainerClasses]"
             >
               <h2 :class="['mb-6 text-xl font-semibold font-srProDisplay', textClasses]">
-                <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.settings.title') }}</span>
+                <span :class="sectionHeaderClasses">{{ $t('account.settings.title') }}</span>
               </h2>
               <div class="space-y-6">
                 <!-- Language Setting -->
-                <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
-                  <div class="flex items-center gap-3">
-                    <div class="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-lg">
-                      <v-icon name="hi-globe" scale="1.2" class="text-white" />
+                <div :class="reviewContentClasses">
+                  <div class="flex items-center justify-between p-4">
+                    <div class="flex items-center gap-3">
+                      <div class="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-lg">
+                        <v-icon name="hi-globe" scale="1.2" class="text-white" />
+                      </div>
+                      <div>
+                        <h4 :class="['font-medium font-srProDisplay', textClasses]">
+                          {{ $t('account.settings.language.title') }}
+                        </h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
+                          {{ $t('account.settings.language.description') }}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 :class="['font-medium font-srProDisplay', textClasses]">
-                        {{ $t('account.settings.language.title') }}
-                      </h4>
-                      <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
-                        {{ $t('account.settings.language.description') }}
-                      </p>
-                    </div>
+                    <select
+                      :value="currentLocale.code"
+                      @change="handleLanguageChange(($event.target as HTMLSelectElement).value)"
+                      class="px-3 py-2 text-sm text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg cursor-pointer dark:placeholder-gray-500 dark:border-gray-600 font-srProDisplay dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-blue-600 dark:focus:border-blue-400 focus:shadow-lg"
+                    >
+                      <option v-for="locale in availableLocales" :key="locale.code" :value="locale.code">
+                        {{ locale.name }}
+                      </option>
+                    </select>
                   </div>
-                  <select
-                    :value="currentLocale.code"
-                    @change="handleLanguageChange(($event.target as HTMLSelectElement).value)"
-                    class="px-3 py-2 text-sm text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg cursor-pointer dark:placeholder-gray-500 dark:border-gray-600 font-srProDisplay dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-blue-600 dark:focus:border-blue-400 focus:shadow-lg"
-                  >
-                    <option v-for="locale in availableLocales" :key="locale.code" :value="locale.code">
-                      {{ locale.name }}
-                    </option>
-                  </select>
                 </div>
 
                 <!-- App Theme Setting -->
-                <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
-                  <div class="flex items-center gap-3">
-                    <div class="flex items-center justify-center w-10 h-10 bg-gray-800 rounded-lg dark:bg-gray-600">
-                      <v-icon name="hi-color-swatch" scale="1.2" class="text-white" />
-                    </div>
-                    <div>
-                      <h4 :class="['font-medium font-srProDisplay', textClasses]">
-                        {{ $t('account.settings.theme.title') }}
-                      </h4>
-                      <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
-                        {{ $t('account.settings.theme.description') }}
-                      </p>
-                      <!-- Current theme indicator -->
-                      <p class="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">
-                        Current: {{ themeStore.selectedTheme === 'system' ? `System (${themeStore.effectiveTheme})` : themeStore.selectedTheme }}
-                      </p>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <div class="relative group">
-                      <button
-                        @click="setTheme('light')"
-                        :class="[
-                          themeButtonBaseClasses,
-                          themeStore.selectedTheme === 'light' ? themeButtonActiveClasses : themeButtonInactiveClasses
-                        ]"
-                        aria-label="Tema claro"
-                        tabindex="0"
-                      >
-                        <v-icon name="hi-sun" class="w-4 h-4" />
-                      </button>
-                      <!-- Tooltip -->
-                      <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
-                        Light theme
+                <div :class="reviewContentClasses">
+                  <div class="flex items-center justify-between p-4">
+                    <div class="flex items-center gap-3">
+                      <div class="flex items-center justify-center w-10 h-10 bg-gray-800 rounded-lg dark:bg-gray-600">
+                        <v-icon name="hi-color-swatch" scale="1.2" class="text-white" />
+                      </div>
+                      <div>
+                        <h4 :class="['font-medium font-srProDisplay', textClasses]">
+                          {{ $t('account.settings.theme.title') }}
+                        </h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
+                          {{ $t('account.settings.theme.description') }}
+                        </p>
+                        <!-- Current theme indicator -->
+                        <p class="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">
+                          Current: {{ themeStore.selectedTheme === 'system' ? `System (${themeStore.effectiveTheme})` : themeStore.selectedTheme }}
+                        </p>
                       </div>
                     </div>
-
-                    <div class="relative group">
-                      <button
-                        @click="setTheme('dark')"
-                        :class="[
-                          themeButtonBaseClasses,
-                          themeStore.selectedTheme === 'dark' ? themeButtonActiveClasses : themeButtonInactiveClasses
-                        ]"
-                        aria-label="Tema oscuro"
-                        tabindex="0"
-                      >
-                        <v-icon name="hi-moon" class="w-4 h-4" />
-                      </button>
-                      <!-- Tooltip -->
-                      <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
-                        Dark theme
+                    <div class="flex items-center gap-2">
+                      <div class="relative group">
+                        <button
+                          @click="setTheme('light')"
+                          :class="[
+                            themeButtonBaseClasses,
+                            themeStore.selectedTheme === 'light' ? themeButtonActiveClasses : themeButtonInactiveClasses
+                          ]"
+                          aria-label="Tema claro"
+                          tabindex="0"
+                        >
+                          <v-icon name="hi-sun" class="w-4 h-4" />
+                        </button>
+                        <!-- Tooltip -->
+                        <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
+                          Light theme
+                        </div>
                       </div>
-                    </div>
 
-                    <div class="relative group">
-                      <button
-                        @click="setTheme('system')"
-                        :class="[
-                          themeButtonBaseClasses,
-                          themeStore.selectedTheme === 'system' ? themeButtonActiveClasses : themeButtonInactiveClasses
-                        ]"
-                        aria-label="Tema del sistema"
-                        tabindex="0"
-                      >
-                        <v-icon name="hi-desktop-computer" class="w-4 h-4" />
-                      </button>
-                      <!-- Tooltip -->
-                      <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
-                        Follow system preference
+                      <div class="relative group">
+                        <button
+                          @click="setTheme('dark')"
+                          :class="[
+                            themeButtonBaseClasses,
+                            themeStore.selectedTheme === 'dark' ? themeButtonActiveClasses : themeButtonInactiveClasses
+                          ]"
+                          aria-label="Tema oscuro"
+                          tabindex="0"
+                        >
+                          <v-icon name="hi-moon" class="w-4 h-4" />
+                        </button>
+                        <!-- Tooltip -->
+                        <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
+                          Dark theme
+                        </div>
+                      </div>
+
+                      <div class="relative group">
+                        <button
+                          @click="setTheme('system')"
+                          :class="[
+                            themeButtonBaseClasses,
+                            themeStore.selectedTheme === 'system' ? themeButtonActiveClasses : themeButtonInactiveClasses
+                          ]"
+                          aria-label="Tema del sistema"
+                          tabindex="0"
+                        >
+                          <v-icon name="hi-desktop-computer" class="w-4 h-4" />
+                        </button>
+                        <!-- Tooltip -->
+                        <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
+                          Follow system preference
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <!-- Security Setting -->
-                <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
-                  <div class="flex items-center gap-3">
-                    <div class="flex items-center justify-center w-10 h-10 bg-red-500 rounded-lg">
-                      <v-icon name="hi-key" scale="1.2" class="text-white" />
+                <div :class="reviewContentClasses">
+                  <div class="flex items-center justify-between p-4">
+                    <div class="flex items-center gap-3">
+                      <div class="flex items-center justify-center w-10 h-10 bg-red-500 rounded-lg">
+                        <v-icon name="hi-key" scale="1.2" class="text-white" />
+                      </div>
+                      <div>
+                        <h4 :class="['font-medium font-srProDisplay', textClasses]">
+                          {{ $t('account.settings.security.title') }}
+                        </h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
+                          {{ $t('account.settings.security.description') }}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 :class="['font-medium font-srProDisplay', textClasses]">
-                        {{ $t('account.settings.security.title') }}
-                      </h4>
-                      <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
-                        {{ $t('account.settings.security.description') }}
-                      </p>
-                    </div>
+                    <Button
+                      :class="['px-4 text-sm transition-all duration-200', buttonOutlineClasses]"
+                      text-color="currentColor"
+                      bg-color="transparent"
+                      border-width="1px"
+                      width="auto"
+                      height="36px"
+                      @click="openChangePasswordModal"
+                    >
+                      <span :class="buttonTextClasses">{{ $t('account.settings.security.changePasswordButton') }}</span>
+                    </Button>
                   </div>
-                  <Button
-                    :class="['px-4 text-sm transition-all duration-200', buttonOutlineClasses]"
-                    text-color="currentColor"
-                    bg-color="transparent"
-                    border-width="1px"
-                    width="auto"
-                    height="36px"
-                    @click="openChangePasswordModal"
-                  >
-                    <span :class="buttonTextClasses">{{ $t('account.settings.security.changePasswordButton') }}</span>
-                  </Button>
                 </div>
               </div>
             </section>
@@ -974,7 +978,26 @@ const { currentLocale, availableLocales, changeLanguage } = useLanguage()
 const toast = useToast()
 
 // Theme classes composable for consistent styling
-const { cardClasses, textClasses, navClasses, buttonOutlineClasses, buttonTextClasses, linkClasses, hoverClasses, themeButtonBaseClasses, themeButtonActiveClasses, themeButtonInactiveClasses } = useThemeClasses()
+const {
+  textClasses,
+  navClasses,
+  buttonOutlineClasses,
+  buttonTextClasses,
+  linkClasses,
+  themeButtonBaseClasses,
+  themeButtonActiveClasses,
+  themeButtonInactiveClasses,
+  reviewCardClasses,
+  reviewContentClasses,
+  reviewHeaderClasses,
+  reviewBodyClasses,
+  reviewMetaClasses,
+  sectionContainerClasses,
+  sectionHeaderClasses,
+  listItemClasses,
+  statusBadgeClasses,
+  actionButtonClasses
+} = useThemeClasses()
 
 const { t } = useI18n()
 const authStore = useAuthStore()

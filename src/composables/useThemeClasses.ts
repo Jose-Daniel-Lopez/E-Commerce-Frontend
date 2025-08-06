@@ -90,6 +90,56 @@ export const useThemeClasses = () => {
     'p-3 rounded-lg border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transform'
   )
 
+  // Classes for review cards (dark theme consistent)
+  const reviewCardClasses = computed(() =>
+    'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 transition-all duration-200 hover:shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700'
+  )
+
+  // Classes for review content sections
+  const reviewContentClasses = computed(() =>
+    'bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl'
+  )
+
+  // Classes for review header text
+  const reviewHeaderClasses = computed(() =>
+    'text-gray-700 dark:text-gray-200 font-medium'
+  )
+
+  // Classes for review body text
+  const reviewBodyClasses = computed(() =>
+    'text-gray-600 dark:text-gray-300 leading-relaxed'
+  )
+
+  // Classes for review metadata (dates, ratings)
+  const reviewMetaClasses = computed(() =>
+    'text-gray-500 dark:text-gray-400 text-sm'
+  )
+
+  // Classes for section containers with consistent dark theme
+  const sectionContainerClasses = computed(() =>
+    'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-md rounded-2xl p-6 transition-colors duration-200'
+  )
+
+  // Classes for section headers with consistent styling
+  const sectionHeaderClasses = computed(() =>
+    'text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300'
+  )
+
+  // Classes for list items with hover effects
+  const listItemClasses = computed(() =>
+    'flex items-center justify-between p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-800 hover:shadow-lg hover:bg-white dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500'
+  )
+
+  // Classes for status badges/pills
+  const statusBadgeClasses = computed(() =>
+    'px-3 py-1 text-sm font-medium rounded-full'
+  )
+
+  // Classes for action buttons in list items
+  const actionButtonClasses = computed(() =>
+    'text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors duration-200 cursor-pointer text-xs font-light'
+  )
+
   return {
     cardClasses,
     textClasses,
@@ -107,6 +157,16 @@ export const useThemeClasses = () => {
     linkClasses,
     themeButtonInactiveClasses,
     themeButtonActiveClasses,
-    themeButtonBaseClasses
+    themeButtonBaseClasses,
+    reviewCardClasses,
+    reviewContentClasses,
+    reviewHeaderClasses,
+    reviewBodyClasses,
+    reviewMetaClasses,
+    sectionContainerClasses,
+    sectionHeaderClasses,
+    listItemClasses,
+    statusBadgeClasses,
+    actionButtonClasses
   }
 }
