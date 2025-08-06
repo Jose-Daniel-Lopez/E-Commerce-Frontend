@@ -1,5 +1,12 @@
 <script setup lang="ts">
-function openProductUrl(url?: string) {
+function openProductUrl(url?: string, productId?: number) {
+  // If we have a productId, navigate to our catalog view instead of external URL
+  if (productId) {
+    goToProduct(productId)
+    return
+  }
+
+  // Fallback to external URL if provided
   if (url) {
     window.open(url, '_blank')
   }
@@ -128,8 +135,64 @@ const checkWishlistProductsInCart = () => {
   })
 }
 
+function inferCategoryFromProduct(product: typeof wishlistProducts.value[0]): string {
+  // Try to infer category from product characteristics if categoryName is not available
+  if (product.categoryName) {
+    return product.categoryName.toLowerCase()
+  }
+
+  // Infer from product name or characteristics
+  const name = product.name.toLowerCase()
+  const description = product.description.toLowerCase()
+
+  // Check for specific product types
+  if (name.includes('iphone') || name.includes('samsung') || name.includes('phone') ||
+      description.includes('phone') || description.includes('mobile')) {
+    return 'smartphones'
+  }
+
+  if (name.includes('ipad') || name.includes('tablet') || description.includes('tablet')) {
+    return 'tablets'
+  }
+
+  if (name.includes('macbook') || name.includes('laptop') || description.includes('laptop')) {
+    return 'computers'
+  }
+
+  if (name.includes('watch') || description.includes('watch')) {
+    return 'smartwatches'
+  }
+
+  if (name.includes('headphone') || name.includes('airpods') || name.includes('buds') ||
+      description.includes('headphone') || description.includes('audio')) {
+    return 'headphones'
+  }
+
+  if (name.includes('mouse') || name.includes('keyboard') || description.includes('gaming')) {
+    return 'gaming'
+  }
+
+  // Default fallback
+  return 'smartphones'
+}
+
 function goToProduct(productId: number) {
-  router.push({ name: 'productDetails', params: { productId } })
+  // Find the product in the wishlist to get its category
+  const product = wishlistProducts.value.find(p => p.id === productId)
+  if (!product) {
+    console.error('Product not found in wishlist:', productId)
+    return
+  }
+
+  const categoryName = inferCategoryFromProduct(product)
+
+  router.push({
+    name: 'productDetails',
+    params: {
+      categoryName,
+      productId: productId.toString()
+    }
+  })
 }
 
 onMounted(() => {
@@ -190,7 +253,7 @@ watch(() => wishlistProducts.value, () => {
               v-for="item in wishlistProducts"
               :key="item.id"
               class="relative flex flex-col overflow-hidden transition bg-white border border-gray-100 shadow-lg cursor-pointer rounded-xl hover:shadow-xl group"
-              @click="openProductUrl(item.productUrl)"
+              @click="openProductUrl(item.productUrl, item.id)"
             >
               <!-- Remove 'x' button -->
               <button

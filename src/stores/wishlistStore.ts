@@ -16,6 +16,7 @@ export interface WishlistProduct {
   operatingSystem?: string
   imageUrl?: string
   productUrl?: string
+  categoryName?: string
 }
 
 export const useWishlistStore = defineStore('wishlist', () => {
@@ -71,7 +72,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
 
       wishlistProducts.value = rawProducts.map((item, index) => {
         console.log(`🟣 [WISHLIST STORE] Processing initial product ${index}:`, item)
-        const prod = item as WishlistProduct & { _links?: { self?: { href?: string } } }
+        const prod = item as WishlistProduct & { _links?: { self?: { href?: string } }; categoryName?: string }
         const mappedProduct = {
           id: prod.id,
           name: prod.name,
@@ -86,6 +87,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
           operatingSystem: prod.operatingSystem,
           imageUrl: prod.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
           productUrl: prod._links?.self?.href || '',
+          categoryName: inferCategoryFromProduct(prod), // use inference function
         }
         console.log(`🟣 [WISHLIST STORE] Mapped initial product ${index}:`, mappedProduct)
         return mappedProduct
@@ -101,6 +103,46 @@ export const useWishlistStore = defineStore('wishlist', () => {
     } finally {
       wishlistLoading.value = false
     }
+  }
+
+  // Helper function to infer category from product data
+  function inferCategoryFromProduct(product: { name?: string; description?: string; categoryName?: string }): string {
+    if (product.categoryName) {
+      return product.categoryName.toLowerCase()
+    }
+
+    const name = (product.name || '').toLowerCase()
+    const description = (product.description || '').toLowerCase()
+
+    // Check for specific product types
+    if (name.includes('iphone') || name.includes('samsung') || name.includes('phone') ||
+        description.includes('phone') || description.includes('mobile')) {
+      return 'smartphones'
+    }
+
+    if (name.includes('ipad') || name.includes('tablet') || description.includes('tablet')) {
+      return 'tablets'
+    }
+
+    if (name.includes('macbook') || name.includes('laptop') || description.includes('laptop')) {
+      return 'computers'
+    }
+
+    if (name.includes('watch') || description.includes('watch')) {
+      return 'smartwatches'
+    }
+
+    if (name.includes('headphone') || name.includes('airpods') || name.includes('buds') ||
+        description.includes('headphone') || description.includes('audio')) {
+      return 'headphones'
+    }
+
+    if (name.includes('mouse') || name.includes('keyboard') || description.includes('gaming')) {
+      return 'gaming'
+    }
+
+    // Default fallback
+    return 'smartphones'
   }
 
   // Helper function to create wishlist product from minimal data
@@ -119,6 +161,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
       operatingSystem: productData?.operatingSystem,
       imageUrl: productData?.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
       productUrl: productData?.productUrl || '',
+      categoryName: inferCategoryFromProduct(productData || {}),
     }
   }
 
@@ -155,7 +198,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
 
       wishlistProducts.value = rawProducts.map((item, index) => {
         console.log(`🟡 [WISHLIST STORE] Processing product ${index}:`, item)
-        const prod = item as WishlistProduct & { _links?: { self?: { href?: string } } }
+        const prod = item as WishlistProduct & { _links?: { self?: { href?: string } }; categoryName?: string }
         const mappedProduct = {
           id: prod.id,
           name: prod.name,
@@ -170,6 +213,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
           operatingSystem: prod.operatingSystem,
           imageUrl: prod.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
           productUrl: prod._links?.self?.href || '',
+          categoryName: inferCategoryFromProduct(prod), // use inference function
         }
         console.log(`🟡 [WISHLIST STORE] Mapped product ${index}:`, mappedProduct)
         return mappedProduct

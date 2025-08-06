@@ -16,6 +16,7 @@ export interface WishlistProduct {
   operatingSystem?: string
   imageUrl?: string // Optional, fallback if not present
   productUrl?: string // Optional, fallback if not present
+  categoryName?: string // Optional, fallback if not present
 }
 
 
@@ -47,7 +48,7 @@ export function useWishlistStore() {
       // Step 3: Fetch products from the products link
       const productsRes = await axios.get(productsLink)
       const rawProducts = productsRes.data._embedded?.products || []
-      wishlistProducts.value = rawProducts.map((item: any) => ({
+      wishlistProducts.value = rawProducts.map((item: WishlistProduct & { _links?: { self?: { href?: string } } }) => ({
         id: item.id,
         name: item.name,
         description: item.description,
@@ -61,9 +62,10 @@ export function useWishlistStore() {
         operatingSystem: item.operatingSystem,
         imageUrl: item.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
         productUrl: item._links?.self?.href || '',
+        categoryName: item.categoryName || 'smartphones',
       }))
-    } catch (err: any) {
-      wishlistError.value = err?.message || 'Failed to load wishlist.'
+    } catch (err: unknown) {
+      wishlistError.value = err instanceof Error ? err.message : 'Failed to load wishlist.'
     } finally {
       wishlistLoading.value = false
     }
