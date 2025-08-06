@@ -140,6 +140,46 @@ export const useThemeClasses = () => {
     'text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors duration-200 cursor-pointer text-xs font-light'
   )
 
+  // Classes for icon containers (like in order items)
+  const iconContainerClasses = computed(() =>
+    'flex items-center justify-center w-10 h-10 rounded-lg bg-black dark:bg-white'
+  )
+
+  // Classes for icon colors inside containers
+  const iconInContainerClasses = computed(() =>
+    'text-white dark:text-black'
+  )
+
+  // Classes for empty state text
+  const emptyStateTextClasses = computed(() =>
+    'text-gray-500 dark:text-gray-400'
+  )
+
+  // Classes for empty state icons
+  const emptyStateIconClasses = computed(() =>
+    'text-gray-300 dark:text-gray-600 opacity-80'
+  )
+
+  // Classes for loading text
+  const loadingTextClasses = computed(() =>
+    'text-gray-600 dark:text-gray-300'
+  )
+
+  // Classes for icon colors (generic)
+  const iconColorClasses = computed(() =>
+    'text-gray-500 dark:text-gray-400'
+  )
+
+  // Classes for interactive icons (buttons)
+  const interactiveIconClasses = computed(() =>
+    'text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors duration-200'
+  )
+
+  // Classes for price text
+  const priceTextClasses = computed(() =>
+    'text-black dark:text-white font-semibold'
+  )
+
   return {
     cardClasses,
     textClasses,
@@ -167,6 +207,14 @@ export const useThemeClasses = () => {
     sectionHeaderClasses,
     listItemClasses,
     statusBadgeClasses,
-    actionButtonClasses
+    actionButtonClasses,
+    iconContainerClasses,
+    iconInContainerClasses,
+    emptyStateTextClasses,
+    emptyStateIconClasses,
+    loadingTextClasses,
+    iconColorClasses,
+    interactiveIconClasses,
+    priceTextClasses
   }
 }
