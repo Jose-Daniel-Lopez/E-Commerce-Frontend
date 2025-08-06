@@ -60,6 +60,9 @@
               :section-header-classes="sectionHeaderClasses"
               :button-outline-classes="buttonOutlineClasses"
               :button-text-classes="buttonTextClasses"
+              :button-primary-classes="buttonPrimaryClasses"
+              :text-secondary-classes="textSecondaryClasses"
+              :input-classes="inputClasses"
               @toggle-edit="toggleEditProfile"
               @refresh-profile="refreshProfile"
               @save-profile="saveProfile"
@@ -86,8 +89,8 @@
               </div>
               <div class="space-y-4">
                 <div v-if="orders.length === 0" class="py-8 text-center">
-                  <v-icon name="hi-clipboard-list" scale="2" class="mb-4 text-gray-300 opacity-80" aria-hidden="true" />
-                  <p class="text-base text-gray-500 font-srProDisplay">{{ $t('account.orders.emptyMessage') }}</p>
+                  <v-icon name="hi-clipboard-list" scale="2" :class="['mb-4 opacity-80', emptyStateIconClasses]" aria-hidden="true" />
+                  <p :class="['text-base font-srProDisplay', emptyStateTextClasses]">{{ $t('account.orders.emptyMessage') }}</p>
                 </div>
                 <div v-else>
                   <div
@@ -97,14 +100,14 @@
                     role="listitem"
                   >
                     <div class="flex items-center gap-4">
-                      <div class="flex items-center justify-center w-10 h-10 bg-black rounded-lg">
-                        <v-icon name="hi-clipboard-list" scale="1.2" class="text-white" />
+                      <div :class="iconContainerClasses">
+                        <v-icon name="hi-clipboard-list" scale="1.2" :class="iconInContainerClasses" />
                       </div>
                       <div>
-                        <p class="font-medium text-black font-srProDisplay">
+                        <p :class="['font-medium font-srProDisplay', textClasses]">
                           {{ $t('account.orders.order') }} #{{ order.id }}
                         </p>
-                        <p class="text-sm text-gray-600 font-srProDisplay">{{ order.date }}</p>
+                        <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">{{ order.date }}</p>
                       </div>
                     </div>
                     <div class="flex items-center gap-4">
@@ -140,8 +143,8 @@
                 </h2>
               </div>
               <div v-if="refunds.length === 0" class="py-8 text-center">
-                <v-icon name="hi-arrow-left" scale="2" class="mb-4 text-gray-300 dark:text-gray-600 opacity-80" />
-                <p class="text-base text-gray-500 dark:text-gray-400 font-srProDisplay">{{ $t('account.refunds.empty') }}</p>
+                <v-icon name="hi-arrow-left" scale="2" :class="['mb-4 opacity-80', emptyStateIconClasses]" />
+                <p :class="['text-base font-srProDisplay', emptyStateTextClasses]">{{ $t('account.refunds.empty') }}</p>
               </div>
               <div v-else class="space-y-4">
                 <div
@@ -151,16 +154,14 @@
                   role="listitem"
                 >
                   <div class="flex items-center gap-4">
-                    <div
-                      class="flex items-center justify-center w-10 h-10 bg-orange-500 rounded-lg"
-                    >
-                      <v-icon name="hi-arrow-left" scale="1.2" class="text-white" />
+                    <div :class="['flex items-center justify-center w-10 h-10 rounded-lg', iconContainerClasses]">
+                      <v-icon name="hi-arrow-left" scale="1.2" :class="iconInContainerClasses" />
                     </div>
                     <div>
-                      <p class="font-medium text-black font-srProDisplay">
+                      <p :class="['font-medium font-srProDisplay', textClasses]">
                         {{ refund.status === 'Returned' ? 'Return' : 'Refund' }} #{{ refund.id }}
                       </p>
-                      <p class="text-sm text-gray-600 font-srProDisplay">{{ refund.date }}</p>
+                      <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">{{ refund.date }}</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-4">
@@ -215,8 +216,8 @@
 
               <!-- Empty state when no wishlist items are available -->
               <div v-else-if="wishlistProducts.length === 0" class="py-8 text-center">
-                <v-icon name="hi-heart" scale="2" class="mb-4 text-gray-300 dark:text-gray-600 opacity-80" aria-hidden="true" />
-                <p class="text-base text-gray-500 dark:text-gray-400 font-srProDisplay">{{ $t('account.wishlist.emptyMessage') }}</p>
+                <v-icon name="hi-heart" scale="2" :class="['mb-4 opacity-80', emptyStateIconClasses]" aria-hidden="true" />
+                <p :class="['text-base font-srProDisplay', emptyStateTextClasses]">{{ $t('account.wishlist.emptyMessage') }}</p>
               </div>
 
               <!-- Display grid of wishlist items -->
@@ -260,10 +261,10 @@
                     </button>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <h4 class="mb-1 text-sm font-medium text-black font-srProDisplay line-clamp-2">
+                    <h4 :class="['mb-1 text-sm font-medium font-srProDisplay line-clamp-2', textClasses]">
                       {{ item.name }}
                     </h4>
-                    <p class="text-lg font-semibold text-black font-srProDisplay">
+                    <p :class="['text-lg font-semibold font-srProDisplay', priceTextClasses]">
                       ${{ item.basePrice.toFixed(2) }}
                     </p>
                   </div>
@@ -336,7 +337,7 @@
               <!-- Loading state for addresses -->
               <div v-if="addressesLoading" class="flex items-center justify-center py-8">
                 <div class="w-8 h-8 border-b-2 border-black rounded-full dark:border-white animate-spin opacity-70"></div>
-                <span class="ml-3 font-medium text-gray-600 dark:text-gray-300">Loading addresses...</span>
+                <span :class="['ml-3 font-medium', loadingTextClasses]">Loading addresses...</span>
               </div>
 
               <!-- Error state for addresses -->
@@ -360,10 +361,10 @@
 
               <!-- Empty state when no addresses are available -->
               <div v-else-if="addresses.length === 0" class="py-8 text-center">
-                <v-icon name="hi-location-marker" scale="2" class="mb-3 text-gray-400 dark:text-gray-600 opacity-80" />
-                <p class="mb-4 text-base text-gray-600 dark:text-gray-300 font-srProDisplay">You have no saved addresses</p>
+                <v-icon name="hi-location-marker" scale="2" :class="['mb-3 opacity-80', emptyStateIconClasses]" />
+                <p :class="['mb-4 text-base font-srProDisplay', emptyStateTextClasses]">You have no saved addresses</p>
                 <Button
-                  class="px-4 font-semibold text-white transition-colors duration-200 bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
+                  :class="['px-4 font-semibold transition-colors duration-200', buttonPrimaryClasses]"
                   text-color="currentColor"
                   bg-color="transparent"
                   width="auto"
@@ -383,22 +384,22 @@
                 >
                   <div class="flex items-start justify-between mb-3">
                     <div class="flex items-center gap-2">
-                      <v-icon name="hi-location-marker" scale="1.1" class="text-gray-500" />
+                      <v-icon name="hi-location-marker" scale="1.1" :class="iconColorClasses" />
                       <!-- Address Name -->
-                      <h4 class="font-semibold text-black font-srProDisplay">
+                      <h4 :class="['font-semibold font-srProDisplay', textClasses]">
                         {{ address.name }}
                       </h4>
                     </div>
                     <div class="flex gap-1 transition-opacity opacity-0 group-hover:opacity-100">
                       <button
-                        class="p-1 text-gray-500 transition-colors rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300 hover:bg-gray-100 hover:text-black"
+                        :class="['p-1 transition-colors rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300 hover:bg-gray-100 dark:hover:bg-gray-700', interactiveIconClasses]"
                         aria-label="Editar dirección"
                         tabindex="0"
                       >
                         <v-icon name="hi-pencil" scale="0.9" />
                       </button>
                       <button
-                        class="p-1 text-gray-500 transition-colors rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-300 hover:bg-red-50 hover:text-red-600"
+                        :class="['p-1 transition-colors rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400', interactiveIconClasses]"
                         aria-label="Eliminar dirección"
                         tabindex="0"
                       >
@@ -408,7 +409,7 @@
                   </div>
 
                   <!-- Display all address fields from the API -->
-                  <p class="text-sm leading-relaxed text-gray-600 font-srProDisplay">
+                  <p :class="['text-sm leading-relaxed font-srProDisplay', textSecondaryClasses]">
                     {{ address.street }}<br />
                     {{ address.city }}, {{ address.state }} {{ address.zipCode }}<br />
                     {{ address.country }}
@@ -426,20 +427,20 @@
                 <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
                 <span :class="sectionHeaderClasses">{{ $t('account.reviews.title') }}</span>
                 </h2>
-                <span class="text-sm font-medium text-gray-600 dark:text-gray-300"
+                <span :class="['text-sm font-medium', textSecondaryClasses]"
                   >{{ reviews.length }} {{ $t('account.reviews.reviews') }}</span
                 >
               </div>
               <div class="space-y-4">
-                <div v-if="reviewsLoading" class="py-4 text-center text-gray-500 dark:text-gray-400">
+                <div v-if="reviewsLoading" :class="['py-4 text-center', loadingTextClasses]">
                   <span class="font-medium opacity-80">Loading reviews...</span>
                 </div>
                 <div v-else-if="reviewsError" class="p-4 text-red-700 border border-red-200 rounded-lg dark:text-red-400 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
                   <span class="font-semibold">{{ reviewsError }}</span>
                 </div>
                 <div v-else-if="reviews.length === 0" class="py-8 text-center">
-                  <v-icon name="hi-annotation" scale="2" class="mb-4 text-gray-300 dark:text-gray-600 opacity-80" />
-                  <p class="text-base text-gray-500 dark:text-gray-400 font-srProDisplay">{{ $t('account.reviews.empty') }}</p>
+                  <v-icon name="hi-annotation" scale="2" :class="['mb-4 opacity-80', emptyStateIconClasses]" />
+                  <p :class="['text-base font-srProDisplay', emptyStateTextClasses]">{{ $t('account.reviews.empty') }}</p>
                 </div>
                 <div v-else class="max-h-[400px] overflow-y-auto custom-scrollbar pr-2 space-y-4">
                   <div
@@ -475,14 +476,14 @@
                 <div :class="reviewContentClasses">
                   <div class="flex items-center justify-between p-4">
                     <div class="flex items-center gap-3">
-                      <div class="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-lg">
-                        <v-icon name="hi-globe" scale="1.2" class="text-white" />
+                      <div :class="['flex items-center justify-center w-10 h-10 rounded-lg', iconContainerClasses]">
+                        <v-icon name="hi-globe" scale="1.2" :class="iconInContainerClasses" />
                       </div>
                       <div>
                         <h4 :class="['font-medium font-srProDisplay', textClasses]">
                           {{ $t('account.settings.language.title') }}
                         </h4>
-                        <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
+                        <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
                           {{ $t('account.settings.language.description') }}
                         </p>
                       </div>
@@ -503,14 +504,14 @@
                 <div :class="reviewContentClasses">
                   <div class="flex items-center justify-between p-4">
                     <div class="flex items-center gap-3">
-                      <div class="flex items-center justify-center w-10 h-10 bg-gray-800 rounded-lg dark:bg-gray-600">
-                        <v-icon name="hi-color-swatch" scale="1.2" class="text-white" />
+                      <div :class="['flex items-center justify-center w-10 h-10 rounded-lg', iconContainerClasses]">
+                        <v-icon name="hi-color-swatch" scale="1.2" :class="iconInContainerClasses" />
                       </div>
                       <div>
                         <h4 :class="['font-medium font-srProDisplay', textClasses]">
                           {{ $t('account.settings.theme.title') }}
                         </h4>
-                        <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
+                        <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
                           {{ $t('account.settings.theme.description') }}
                         </p>
                         <!-- Current theme indicator -->
@@ -581,14 +582,14 @@
                 <div :class="reviewContentClasses">
                   <div class="flex items-center justify-between p-4">
                     <div class="flex items-center gap-3">
-                      <div class="flex items-center justify-center w-10 h-10 bg-red-500 rounded-lg">
-                        <v-icon name="hi-key" scale="1.2" class="text-white" />
+                      <div :class="['flex items-center justify-center w-10 h-10 rounded-lg', iconContainerClasses]">
+                        <v-icon name="hi-key" scale="1.2" :class="iconInContainerClasses" />
                       </div>
                       <div>
                         <h4 :class="['font-medium font-srProDisplay', textClasses]">
                           {{ $t('account.settings.security.title') }}
                         </h4>
-                        <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
+                        <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
                           {{ $t('account.settings.security.description') }}
                         </p>
                       </div>
@@ -681,8 +682,10 @@ const toast = useToast()
 const {
   textClasses,
   navClasses,
+  buttonPrimaryClasses,
   buttonOutlineClasses,
   buttonTextClasses,
+  inputClasses,
   linkClasses,
   themeButtonBaseClasses,
   themeButtonActiveClasses,
@@ -696,7 +699,16 @@ const {
   sectionHeaderClasses,
   listItemClasses,
   statusBadgeClasses,
-  actionButtonClasses
+  actionButtonClasses,
+  iconContainerClasses,
+  iconInContainerClasses,
+  emptyStateTextClasses,
+  emptyStateIconClasses,
+  loadingTextClasses,
+  iconColorClasses,
+  interactiveIconClasses,
+  priceTextClasses,
+  textSecondaryClasses
 } = useThemeClasses()
 
 const { t } = useI18n()
@@ -1430,7 +1442,7 @@ const handleDebugKeyboard = (event: KeyboardEvent) => {
 
 onMounted(async () => {
   // Theme initialization is now handled by the store in main.ts
-  
+
   // Add keyboard shortcut for debug panel (Ctrl+D or Cmd+D)
   if (import.meta.env.DEV) {
     document.addEventListener('keydown', handleDebugKeyboard)
@@ -1525,7 +1537,7 @@ onUnmounted(() => {
   document.body.classList.remove('nav-open')
   // Restore body scrolling in case modal was open
   document.body.style.overflow = 'auto'
-  
+
   // Remove keyboard event listener for debug panel
   if (import.meta.env.DEV) {
     document.removeEventListener('keydown', handleDebugKeyboard)
