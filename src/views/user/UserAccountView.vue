@@ -1,35 +1,19 @@
 <template>
   <div class="pt-[85px] lg:pt-0 bg-white dark:bg-gray-900 text-black dark:text-white animate-fadeInUp transition-colors duration-200">
     <!-- Debug Panel - Only shown in development -->
-    <div
-      v-if="showDebugPanel"
-      class="fixed bottom-4 right-4 z-50 max-w-[420px] w-full"
-      role="region"
-      aria-label="Debug information panel"
-    >
-      <div class="p-4 border border-yellow-300 rounded-lg shadow-lg bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-700">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-sm font-bold text-yellow-800 dark:text-yellow-300">🛠️ Debug Panel</span>
-          <button
-            @click="showDebug = !showDebug"
-            class="text-xs text-yellow-700 underline rounded dark:text-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            :aria-expanded="showDebug"
-            aria-controls="debug-content"
-          >
-            Hide
-          </button>
-        </div>
-        <div id="debug-content" class="space-y-2 text-xs text-yellow-900 dark:text-yellow-200">
-          <div><b>User:</b> {{ user?.username || 'N/A' }}</div>
-          <div><b>Theme:</b> {{ themeStore.selectedTheme }}</div>
-          <div><b>Wishlist Count:</b> {{ wishlistProducts.length }}</div>
-          <div><b>Orders Count:</b> {{ orders.length }}</div>
-          <div><b>Refunds Count:</b> {{ refunds.length }}</div>
-          <div><b>Addresses Count:</b> {{ addresses.length }}</div>
-          <div><b>Reviews Count:</b> {{ reviews.length }}</div>
-        </div>
-      </div>
-    </div>
+    <DebugPanel
+      :show-debug-panel="showDebugPanel"
+      :debug-data="{
+        username: user?.username,
+        theme: themeStore.selectedTheme,
+        wishlistCount: wishlistProducts.length,
+        ordersCount: orders.length,
+        refundsCount: refunds.length,
+        addressesCount: addresses.length,
+        reviewsCount: reviews.length
+      }"
+      @toggle="toggleDebugPanel"
+    />
     <Wrapper class="py-8">
       <!-- SEO and Accessibility improvements -->
       <div class="sr-only">
@@ -51,327 +35,38 @@
         <div class="flex flex-col gap-8 lg:flex-row">
           <!-- Sidebar Navigation -->
           <aside class="self-start w-full mb-4 lg:w-1/4 lg:mb-0" role="navigation" aria-label="Account sections">
-            <!-- Desktop Navigation -->
-            <nav :class="['hidden p-6 rounded-lg shadow-lg lg:block', navClasses]" aria-label="Desktop account navigation">
-              <h2 :class="['mb-4 text-lg font-extrabold tracking-tight uppercase font-srProDisplay', textClasses]">{{ $t('account.navigation') }}</h2>
-              <ul class="space-y-1" role="list">
-                <li v-for="section in sections" :key="section.id" role="listitem">
-                  <a
-                    :href="`#${section.id}`"
-                    class="flex items-center px-3 py-3 text-sm text-gray-700 transition-all duration-200 border-l-4 border-transparent rounded-lg cursor-pointer dark:text-gray-300 group font-srProDisplay hover:bg-gradient-to-r hover:from-gray-50 dark:hover:from-gray-700 hover:to-gray-100 dark:hover:to-gray-600 hover:border-black dark:hover:border-white focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-500"
-                    :aria-label="`Go to ${section.label} section`"
-                    :aria-current="activeSection === section.id ? 'page' : undefined"
-                  >
-                    <v-icon
-                      :name="section.icon"
-                      scale="1.1"
-                      class="mr-3 text-gray-500 transition-colors duration-200 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white"
-                      :aria-hidden="true"
-                    />
-                    <span
-                      class="transition-all duration-200 group-hover:text-black dark:group-hover:text-white group-hover:font-semibold"
-                    >{{ section.label }}</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-
-            <!-- Mobile Navigation Toggle -->
-            <button
-              @click="toggleMobileNav"
-              :class="['fixed z-50 p-3 transition-all duration-200 rounded-lg shadow-lg lg:hidden top-28 left-4 hover:shadow-xl', navClasses, 'focus:outline-none focus:ring-2 focus:ring-blue-500']"
-              aria-label="Open mobile navigation menu"
-              :aria-expanded="isMobileNavOpen"
-              aria-controls="mobile-nav"
-            >
-              <v-icon name="hi-menu" scale="1.2" class="text-black" aria-hidden="true" />
-            </button>
-
-            <!-- Mobile Navigation Overlay -->
-            <div
-              v-if="isMobileNavOpen"
-              class="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
-              @click="closeMobileNav"
-              aria-hidden="true"
-            ></div>
-
-            <!-- Mobile Navigation Sidebar -->
-            <nav
-              id="mobile-nav"
-              :class="[
-                'lg:hidden fixed top-0 left-0 h-full w-80 shadow-xl z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto',
-                navClasses,
-                isMobileNavOpen ? 'translate-x-0' : '-translate-x-full',
-              ]"
-              aria-label="Mobile account navigation"
-              :aria-hidden="!isMobileNavOpen"
-            >
-              <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                  <h2 :class="['text-lg font-semibold font-srProDisplay', textClasses]">{{ $t('account.navigation') }}</h2>
-                  <button
-                    @click="closeMobileNav"
-                    :class="['transition-colors cursor-pointer', linkClasses, 'focus:outline-none focus:ring-2 focus:ring-blue-500 rounded']"
-                    aria-label="Close mobile navigation menu"
-                  >
-                    <v-icon name="hi-x" scale="1.2" aria-hidden="true" />
-                  </button>
-                </div>
-                <ul class="space-y-1" role="list">
-                  <li v-for="section in sections" :key="`mobile-${section.id}`" role="listitem">
-                    <a
-                      :href="`#${section.id}`"
-                      @click="closeMobileNav"
-                      class="flex items-center px-3 py-3 text-sm text-gray-700 transition-all duration-200 border-l-4 border-transparent rounded-lg cursor-pointer dark:text-gray-300 group font-srProDisplay hover:bg-gradient-to-r hover:from-gray-50 dark:hover:from-gray-700 hover:to-gray-100 dark:hover:to-gray-600 hover:border-black dark:hover:border-white focus:outline-none focus:ring-2 focus:ring-blue-300"
-                      :aria-label="`Go to ${section.label} section`"
-                      :aria-current="activeSection === section.id ? 'page' : undefined"
-                    >
-                      <v-icon
-                        :name="section.icon"
-                        scale="1.1"
-                        class="mr-3 text-gray-500 transition-colors duration-200 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white"
-                        :aria-hidden="true"
-                      />
-                      <span
-                        class="transition-all duration-200 group-hover:text-black dark:group-hover:text-white group-hover:font-medium"
-                      >{{ section.label }}</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </nav>
+            <AccountNavigation
+              :sections="sections"
+              :active-section="activeSection"
+              :is-mobile-nav-open="isMobileNavOpen"
+              :nav-classes="navClasses"
+              :text-classes="textClasses"
+              :link-classes="linkClasses"
+              @toggle-mobile="toggleMobileNav"
+              @close-mobile="closeMobileNav"
+            />
           </aside>
 
           <!-- Main Content -->
           <main class="flex-1 space-y-8 lg:ml-0">
             <!-- Profile Section -->
-            <section
-              :id="sections[0].id"
-              :class="['transition-colors duration-200', sectionContainerClasses]"
-              aria-labelledby="profile-title"
-            >
-              <div class="flex items-center justify-between mb-6">
-                <h2 id="profile-title" :class="['text-xl font-semibold font-srProDisplay', textClasses]">
-                  <span :class="sectionHeaderClasses">{{ $t('account.profile.title') }}</span>
-                </h2>
-                <div class="flex gap-2" role="group" aria-label="Profile actions">
-                  <Button
-                    @click="toggleEditProfile"
-                    :class="['px-4 transition-all duration-200', buttonOutlineClasses]"
-                    text-color="currentColor"
-                    bg-color="transparent"
-                    border-width="1px"
-                    width="auto"
-                    height="36px"
-                    :aria-label="isEditProfileOpen ? 'Cancel edit profile' : 'Edit profile'"
-                  >
-                    <v-icon
-                      :name="isEditProfileOpen ? 'hi-x' : 'hi-pencil'"
-                      scale="0.9"
-                      class="mr-2 transition-transform duration-200"
-                      :class="{ 'rotate-90': isEditProfileOpen }"
-                      aria-hidden="true"
-                    />
-                    <span :class="buttonTextClasses">{{
-                      isEditProfileOpen
-                        ? $t('account.profile.cancelButton')
-                        : $t('account.profile.editButton')
-                    }}</span>
-                  </Button>
-                  <Button
-                    @click="refreshProfile"
-                    :class="['px-4 transition-all duration-200', buttonOutlineClasses]"
-                    text-color="currentColor"
-                    bg-color="transparent"
-                    border-width="1px"
-                    width="auto"
-                    height="36px"
-                    aria-label="Refresh profile data"
-                  >
-                    <v-icon name="hi-refresh" scale="0.9" class="mr-2" aria-hidden="true" />
-                    <span :class="buttonTextClasses">{{ $t('account.profile.refreshButton') }}</span>
-                  </Button>
-                </div>
-              </div>
-
-              <!-- Profile Display -->
-              <div
-                v-show="!isEditProfileOpen"
-                class="transition-all duration-300 ease-in-out"
-                :class="{
-                  'opacity-0 transform -translate-y-2': isEditProfileOpen,
-                  'opacity-100 transform translate-y-0': !isEditProfileOpen,
-                }"
-                role="region"
-                aria-live="polite"
-              >
-                <div class="flex flex-col items-start gap-6 md:flex-row">
-                  <div class="relative">
-                    <img
-                      :src="authStore.user?.avatar || '/images/User.png'"
-                      :alt="`${user?.username || 'User'} profile picture`"
-                      class="object-cover w-24 h-24 border-2 border-gray-200 rounded-full"
-                      loading="eager"
-                      width="96"
-                      height="96"
-                    />
-                    <div
-                      class="absolute w-6 h-6 bg-green-500 border-2 border-white rounded-full -bottom-1 -right-1"
-                      aria-label="User is online"
-                      role="status"
-                    ></div>
-                  </div>
-                  <div class="flex-1">
-                    <h3 class="mb-1 text-xl font-semibold text-black dark:text-white font-srProDisplay">
-                      {{ user?.username || 'Guest User' }}
-                    </h3>
-                    <p class="mb-2 text-gray-600 font-srProDisplay">{{ user.email }}</p>
-                    <div class="flex items-center gap-4 text-sm text-gray-500" role="list">
-                      <span class="flex items-center gap-1" role="listitem">
-                        <v-icon name="hi-shield-check" scale="0.9" aria-hidden="true" />
-                        {{
-                          authStore.user?.isVerified
-                            ? $t('account.profile.verified')
-                            : $t('account.profile.unverified')
-                        }}
-                      </span>
-                      <span class="flex items-center gap-1" role="listitem">
-                        <v-icon name="hi-badge-check" scale="0.9" aria-hidden="true" />
-                        {{ authStore.user?.role }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Edit Profile Form -->
-              <div
-                v-show="isEditProfileOpen"
-                class="transition-all duration-300 ease-in-out"
-                :class="{
-                  'opacity-100 transform translate-y-0': isEditProfileOpen,
-                  'opacity-0 transform translate-y-2': !isEditProfileOpen,
-                }"
-              >
-                <div
-                  class="p-6 border border-blue-100 rounded-lg dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20"
-                >
-                  <form @submit.prevent="saveProfile" class="space-y-6">
-                    <!-- Avatar Section -->
-                    <div class="flex items-center gap-6">
-                      <div class="relative group">
-                        <img
-                          :src="authStore.user?.avatar || '/images/User.png'"
-                          alt="User avatar"
-                          class="object-cover w-24 h-24 transition-all duration-200 border-2 border-gray-200 rounded-full cursor-pointer group-hover:border-blue-400 group-hover:shadow-lg"
-                          @click="openAvatarSelector"
-                        />
-                        <div
-                          class="absolute w-6 h-6 bg-green-500 border-2 border-white rounded-full -bottom-1 -right-1"
-                        ></div>
-                      </div>
-                      <div>
-                        <h4 class="mb-1 font-medium text-black font-srProDisplay">
-                          {{ $t('account.profile.editModal.avatarTitle') }}
-                        </h4>
-                        <p class="mb-2 text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
-                          {{ $t('account.profile.editModal.avatarDescription') }}
-                        </p>
-                        <Button
-                          type="button"
-                          @click="openAvatarSelector"
-                          text-color="currentColor"
-                          bg-color="transparent"
-                          border-width="1px"
-                          width="auto"
-                          height="32px"
-                          :class="['px-3 text-sm', buttonOutlineClasses]"
-                        >
-                          <span :class="buttonTextClasses">{{ $t('account.profile.editModal.changeAvatarButton') }}</span>
-                        </Button>
-                      </div>
-                    </div>
-
-                    <!-- Form Fields -->
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                      <!-- Name field -->
-                      <div class="space-y-2">
-                        <label
-                          for="name"
-                          class="block text-sm font-medium text-gray-700 dark:text-gray-300 font-srProDisplay"
-                        >
-                          {{ $t('account.profile.editModal.nameLabel') }}
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          v-model="editableUser.name"
-                          class="w-full px-4 py-3 text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg shadow-sm dark:text-white dark:placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-blue-600 dark:focus:border-blue-400 font-srProDisplay focus:shadow-lg"
-                          :placeholder="$t('account.profile.editModal.namePlaceholder')"
-                        />
-                      </div>
-
-                      <!-- Email field (non-editable) -->
-                      <div class="space-y-2">
-                        <label
-                          for="email"
-                          class="block text-sm font-medium text-gray-700 dark:text-gray-300 font-srProDisplay"
-                        >
-                          {{ $t('account.profile.editModal.emailLabel') }}
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          :value="user.email"
-                          disabled
-                          class="w-full px-4 py-3 text-blue-700 placeholder-blue-400 border border-blue-200 rounded-lg shadow-sm cursor-not-allowed dark:text-blue-300 dark:placeholder-blue-500 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 font-srProDisplay opacity-80"
-                          :placeholder="$t('account.profile.editModal.emailPlaceholder')"
-                        />
-                      </div>
-
-                      <!-- Location field (editable) -->
-                      <div class="space-y-2 md:col-span-2">
-                        <label
-                          for="location"
-                          class="block text-sm font-medium text-gray-700 dark:text-gray-300 font-srProDisplay"
-                        >
-                          {{ $t('account.profile.editModal.locationLabel') }}
-                        </label>
-                        <input
-                          type="text"
-                          id="location"
-                          v-model="editableUser.location"
-                          class="w-full px-4 py-3 text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg shadow-sm dark:text-white dark:placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-blue-600 dark:focus:border-blue-400 font-srProDisplay focus:shadow-lg"
-                          :placeholder="$t('account.profile.editModal.locationPlaceholder')"
-                        />
-                      </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex justify-end gap-4 pt-4 border-t border-gray-200 dark:border-gray-600">
-                      <Button
-                        @click="cancelEdit"
-                        type="button"
-                        text-color="currentColor"
-                        bg-color="transparent"
-                        border-width="1px"
-                        :class="['px-6 py-2 transition-all duration-200', buttonOutlineClasses]"
-                      >
-                        <span :class="buttonTextClasses">{{ $t('account.profile.editModal.cancelButton') }}</span>
-                      </Button>
-                      <Button
-                        type="submit"
-                        class="px-6 py-2 text-white transition-all duration-200 bg-black shadow-lg hover:shadow-xl dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
-                        text-color="currentColor"
-                        bg-color="transparent"
-                      >
-                        {{ $t('account.profile.editModal.saveButton') }}
-                      </Button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </section>
+            <ProfileSection
+              :section-id="sections[0].id"
+              :user="user"
+              :editable-user="editableUser"
+              :is-edit-profile-open="isEditProfileOpen"
+              :section-container-classes="sectionContainerClasses"
+              :text-classes="textClasses"
+              :section-header-classes="sectionHeaderClasses"
+              :button-outline-classes="buttonOutlineClasses"
+              :button-text-classes="buttonTextClasses"
+              @toggle-edit="toggleEditProfile"
+              @refresh-profile="refreshProfile"
+              @save-profile="saveProfile"
+              @cancel-edit="cancelEdit"
+              @open-avatar-selector="openAvatarSelector"
+              @update-field="updateEditableField"
+            />
 
             <!-- Orders Section -->
             <section
@@ -965,10 +660,15 @@ const OrderDetailsModal = defineAsyncComponent(() => import('@/components/orders
 const AvatarSelector = defineAsyncComponent(() => import('@/components/users/AvatarSelector.vue'))
 const ChangePasswordModal = defineAsyncComponent(() => import('@/components/users/ChangePasswordModal.vue'))
 
+// Import new refactored components
+import DebugPanel from '@/components/user/DebugPanel.vue'
+import AccountNavigation from '@/components/user/AccountNavigation.vue'
+import ProfileSection from '@/components/user/ProfileSection.vue'
+
 import axios from '@/lib/axios'
 
 // Performance optimizations
-const showDebug = ref(false) // Debug toggle state
+const showDebug = ref(import.meta.env.DEV) // Debug toggle state - show by default in dev mode
 const showDebugPanel = computed(() => import.meta.env.DEV && showDebug.value) // Only show in dev mode
 
 // Language composable for global language sync
@@ -1235,6 +935,22 @@ const cancelEdit = () => {
     avatar: authStore.user?.avatar || '',
     role: authStore.user?.role || '',
     isVerified: authStore.user?.isVerified || false,
+  }
+}
+
+const updateEditableField = (field: string, value: string) => {
+  switch (field) {
+    case 'name':
+      editableUser.value.name = value
+      break
+    case 'location':
+      editableUser.value.location = value
+      break
+    case 'avatar':
+      editableUser.value.avatar = value
+      break
+    default:
+      console.warn(`Unknown field: ${field}`)
   }
 }
 
@@ -1698,8 +1414,27 @@ const fetchDetailedOrderInfo = async (orderId: number): Promise<OrderType> => {
   }
 }
 
+// Debug panel toggle function
+const toggleDebugPanel = () => {
+  showDebug.value = !showDebug.value
+  console.log(`🛠️ Debug panel ${showDebug.value ? 'enabled' : 'disabled'}`)
+}
+
+// Keyboard shortcut handler for debug panel
+const handleDebugKeyboard = (event: KeyboardEvent) => {
+  if ((event.ctrlKey || event.metaKey) && event.key === 'd' && import.meta.env.DEV) {
+    event.preventDefault()
+    toggleDebugPanel()
+  }
+}
+
 onMounted(async () => {
   // Theme initialization is now handled by the store in main.ts
+  
+  // Add keyboard shortcut for debug panel (Ctrl+D or Cmd+D)
+  if (import.meta.env.DEV) {
+    document.addEventListener('keydown', handleDebugKeyboard)
+  }
 
   // Performance optimization: Load critical data first, then lazy load other sections
   if (authStore.isAuthenticated && authStore.user?.id) {
@@ -1790,6 +1525,11 @@ onUnmounted(() => {
   document.body.classList.remove('nav-open')
   // Restore body scrolling in case modal was open
   document.body.style.overflow = 'auto'
+  
+  // Remove keyboard event listener for debug panel
+  if (import.meta.env.DEV) {
+    document.removeEventListener('keydown', handleDebugKeyboard)
+  }
 })
 
 const refreshProfile = async () => {
