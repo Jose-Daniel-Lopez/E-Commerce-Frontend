@@ -76,11 +76,11 @@
           ></div>
         </div>
         <div class="flex-1">
-          <h3 class="mb-1 text-xl font-semibold text-black dark:text-white font-srProDisplay">
+          <h3 :class="['mb-1 text-xl font-semibold font-srProDisplay', textClasses]">
             {{ user?.username || 'Guest User' }}
           </h3>
-          <p class="mb-2 text-gray-600 font-srProDisplay">{{ user.email }}</p>
-          <div class="flex items-center gap-4 text-sm text-gray-500" role="list">
+          <p :class="['mb-2 font-srProDisplay', textSecondaryClasses]">{{ user.email }}</p>
+          <div :class="['flex items-center gap-4 text-sm', textSecondaryClasses]" role="list">
             <span class="flex items-center gap-1" role="listitem">
               <v-icon name="hi-shield-check" scale="0.9" aria-hidden="true" />
               {{
@@ -125,10 +125,10 @@
               ></div>
             </div>
             <div>
-              <h4 class="mb-1 font-medium text-black font-srProDisplay">
+              <h4 :class="['mb-1 font-medium font-srProDisplay', textClasses]">
                 {{ $t('account.profile.editModal.avatarTitle') }}
               </h4>
-              <p class="mb-2 text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
+              <p :class="['mb-2 text-sm font-srProDisplay', textSecondaryClasses]">
                 {{ $t('account.profile.editModal.avatarDescription') }}
               </p>
               <Button
@@ -152,7 +152,7 @@
             <div class="space-y-2">
               <label
                 for="name"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 font-srProDisplay"
+                :class="['block text-sm font-medium font-srProDisplay', textClasses]"
               >
                 {{ $t('account.profile.editModal.nameLabel') }}
               </label>
@@ -161,7 +161,7 @@
                 id="name"
                 :value="editableUser.name"
                 @input="$emit('updateField', 'name', ($event.target as HTMLInputElement).value)"
-                class="w-full px-4 py-3 text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg shadow-sm dark:text-white dark:placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-blue-600 dark:focus:border-blue-400 font-srProDisplay focus:shadow-lg"
+                :class="['w-full px-4 py-3 transition-all duration-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 font-srProDisplay focus:shadow-lg', inputClasses]"
                 :placeholder="$t('account.profile.editModal.namePlaceholder')"
               />
             </div>
@@ -170,7 +170,7 @@
             <div class="space-y-2">
               <label
                 for="email"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 font-srProDisplay"
+                :class="['block text-sm font-medium font-srProDisplay', textClasses]"
               >
                 {{ $t('account.profile.editModal.emailLabel') }}
               </label>
@@ -188,7 +188,7 @@
             <div class="space-y-2 md:col-span-2">
               <label
                 for="location"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 font-srProDisplay"
+                :class="['block text-sm font-medium font-srProDisplay', textClasses]"
               >
                 {{ $t('account.profile.editModal.locationLabel') }}
               </label>
@@ -197,7 +197,7 @@
                 id="location"
                 :value="editableUser.location"
                 @input="$emit('updateField', 'location', ($event.target as HTMLInputElement).value)"
-                class="w-full px-4 py-3 text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg shadow-sm dark:text-white dark:placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-blue-600 dark:focus:border-blue-400 font-srProDisplay focus:shadow-lg"
+                :class="['w-full px-4 py-3 transition-all duration-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 font-srProDisplay focus:shadow-lg', inputClasses]"
                 :placeholder="$t('account.profile.editModal.locationPlaceholder')"
               />
             </div>
@@ -215,14 +215,12 @@
             >
               <span :class="buttonTextClasses">{{ $t('account.profile.editModal.cancelButton') }}</span>
             </Button>
-            <Button
+            <button
               type="submit"
-              class="px-6 py-2 text-white transition-all duration-200 bg-black shadow-lg hover:shadow-xl dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
-              text-color="currentColor"
-              bg-color="transparent"
+              :class="['px-6 py-2 transition-all duration-200 shadow-lg hover:shadow-xl rounded-md font-srProDisplay', buttonPrimaryClasses]"
             >
               {{ $t('account.profile.editModal.saveButton') }}
-            </Button>
+            </button>
           </div>
         </form>
       </div>
@@ -260,6 +258,9 @@ interface Props {
   sectionHeaderClasses: string
   buttonOutlineClasses: string
   buttonTextClasses: string
+  buttonPrimaryClasses: string
+  textSecondaryClasses: string
+  inputClasses: string
 }
 
 defineProps<Props>()
