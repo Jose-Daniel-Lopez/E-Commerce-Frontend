@@ -141,6 +141,7 @@ addIcons(
   AllIcons.HiClock,          // Battery life, refresh rate
   AllIcons.HiSun,            // Backlighting
   AllIcons.HiMoon,           // Dark mode / backlighting
+  AllIcons.HiDesktopComputer, // System theme option
 )
 
 
@@ -181,6 +182,17 @@ app.use(i18n)
  */
 const authStore = useAuthStore()
 authStore.initializeAuth()
+
+// ========================
+// THEME INITIALIZATION
+// ========================
+/**
+ * Initialize theme system after Pinia is available.
+ * This sets up the initial theme based on user preference or system default.
+ */
+import { useThemeStore } from '@/stores/theme'
+const themeStore = useThemeStore()
+themeStore.initializeTheme()
 
 // ========================
 // MOUNT APP

@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-white text-black animate-fadeInUp">
+  <div class="pt-[85px] lg:pt-0 bg-white dark:bg-gray-900 text-black dark:text-white animate-fadeInUp transition-colors duration-200">
     <!-- Debug Panel - Only shown in development -->
     <div
       v-if="showDebugPanel"
@@ -7,21 +7,21 @@
       role="region"
       aria-label="Debug information panel"
     >
-      <div class="bg-yellow-50 border border-yellow-300 rounded-lg shadow-lg p-4">
+      <div class="p-4 border border-yellow-300 rounded-lg shadow-lg bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-700">
         <div class="flex items-center justify-between mb-2">
-          <span class="font-bold text-yellow-800 text-sm">🛠️ Debug Panel</span>
+          <span class="text-sm font-bold text-yellow-800 dark:text-yellow-300">🛠️ Debug Panel</span>
           <button
             @click="showDebug = !showDebug"
-            class="text-xs text-yellow-700 underline focus:outline-none focus:ring-2 focus:ring-yellow-500 rounded"
+            class="text-xs text-yellow-700 underline rounded dark:text-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
             :aria-expanded="showDebug"
             aria-controls="debug-content"
           >
             Hide
           </button>
         </div>
-        <div id="debug-content" class="text-xs text-yellow-900 space-y-2">
+        <div id="debug-content" class="space-y-2 text-xs text-yellow-900 dark:text-yellow-200">
           <div><b>User:</b> {{ user?.username || 'N/A' }}</div>
-          <div><b>Theme:</b> {{ theme }}</div>
+          <div><b>Theme:</b> {{ themeStore.selectedTheme }}</div>
           <div><b>Wishlist Count:</b> {{ wishlistProducts.length }}</div>
           <div><b>Orders Count:</b> {{ orders.length }}</div>
           <div><b>Refunds Count:</b> {{ refunds.length }}</div>
@@ -42,7 +42,7 @@
 
       <!-- Page Header -->
       <header class="mx-auto mb-8 max-w-7xl">
-        <h1 class="text-2xl font-semibold text-left text-black font-srProDisplay">
+        <h1 :class="['text-2xl font-semibold text-left font-srProDisplay', textClasses]">
           {{ $t('account.title') }}
         </h1>
       </header>
@@ -52,24 +52,24 @@
           <!-- Sidebar Navigation -->
           <aside class="self-start w-full mb-4 lg:w-1/4 lg:mb-0" role="navigation" aria-label="Account sections">
             <!-- Desktop Navigation -->
-            <nav class="hidden p-6 bg-white border border-gray-200 rounded-lg shadow-lg lg:block" aria-label="Desktop account navigation">
-              <h2 class="mb-4 text-lg font-extrabold tracking-tight text-black uppercase font-srProDisplay">{{ $t('account.navigation') }}</h2>
+            <nav :class="['hidden p-6 rounded-lg shadow-lg lg:block', navClasses]" aria-label="Desktop account navigation">
+              <h2 :class="['mb-4 text-lg font-extrabold tracking-tight uppercase font-srProDisplay', textClasses]">{{ $t('account.navigation') }}</h2>
               <ul class="space-y-1" role="list">
                 <li v-for="section in sections" :key="section.id" role="listitem">
                   <a
                     :href="`#${section.id}`"
-                    class="flex items-center px-3 py-3 text-sm text-gray-700 transition-all duration-200 border-l-4 border-transparent rounded-lg cursor-pointer group font-srProDisplay hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:border-black focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    class="flex items-center px-3 py-3 text-sm text-gray-700 transition-all duration-200 border-l-4 border-transparent rounded-lg cursor-pointer dark:text-gray-300 group font-srProDisplay hover:bg-gradient-to-r hover:from-gray-50 dark:hover:from-gray-700 hover:to-gray-100 dark:hover:to-gray-600 hover:border-black dark:hover:border-white focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-500"
                     :aria-label="`Go to ${section.label} section`"
                     :aria-current="activeSection === section.id ? 'page' : undefined"
                   >
                     <v-icon
                       :name="section.icon"
                       scale="1.1"
-                      class="mr-3 text-gray-500 transition-colors duration-200 group-hover:text-black"
+                      class="mr-3 text-gray-500 transition-colors duration-200 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white"
                       :aria-hidden="true"
                     />
                     <span
-                      class="transition-all duration-200 group-hover:text-black group-hover:font-semibold"
+                      class="transition-all duration-200 group-hover:text-black dark:group-hover:text-white group-hover:font-semibold"
                     >{{ section.label }}</span>
                   </a>
                 </li>
@@ -79,7 +79,7 @@
             <!-- Mobile Navigation Toggle -->
             <button
               @click="toggleMobileNav"
-              class="fixed z-50 p-3 transition-all duration-200 bg-white border border-gray-200 rounded-lg shadow-lg lg:hidden top-28 left-4 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+              :class="['fixed z-50 p-3 transition-all duration-200 rounded-lg shadow-lg lg:hidden top-28 left-4 hover:shadow-xl', navClasses, 'focus:outline-none focus:ring-2 focus:ring-blue-500']"
               aria-label="Open mobile navigation menu"
               :aria-expanded="isMobileNavOpen"
               aria-controls="mobile-nav"
@@ -99,7 +99,8 @@
             <nav
               id="mobile-nav"
               :class="[
-                'lg:hidden fixed top-0 left-0 h-full w-80 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto',
+                'lg:hidden fixed top-0 left-0 h-full w-80 shadow-xl z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto',
+                navClasses,
                 isMobileNavOpen ? 'translate-x-0' : '-translate-x-full',
               ]"
               aria-label="Mobile account navigation"
@@ -107,10 +108,10 @@
             >
               <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
-                  <h2 class="text-lg font-semibold text-black font-srProDisplay">{{ $t('account.navigation') }}</h2>
+                  <h2 :class="['text-lg font-semibold font-srProDisplay', textClasses]">{{ $t('account.navigation') }}</h2>
                   <button
                     @click="closeMobileNav"
-                    class="text-gray-500 transition-colors cursor-pointer hover:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                    :class="['transition-colors cursor-pointer', linkClasses, 'focus:outline-none focus:ring-2 focus:ring-blue-500 rounded']"
                     aria-label="Close mobile navigation menu"
                   >
                     <v-icon name="hi-x" scale="1.2" aria-hidden="true" />
@@ -121,18 +122,18 @@
                     <a
                       :href="`#${section.id}`"
                       @click="closeMobileNav"
-                      class="flex items-center px-3 py-3 text-sm text-gray-700 transition-all duration-200 border-l-4 border-transparent rounded-lg cursor-pointer group font-srProDisplay hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:border-black focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      class="flex items-center px-3 py-3 text-sm text-gray-700 transition-all duration-200 border-l-4 border-transparent rounded-lg cursor-pointer dark:text-gray-300 group font-srProDisplay hover:bg-gradient-to-r hover:from-gray-50 dark:hover:from-gray-700 hover:to-gray-100 dark:hover:to-gray-600 hover:border-black dark:hover:border-white focus:outline-none focus:ring-2 focus:ring-blue-300"
                       :aria-label="`Go to ${section.label} section`"
                       :aria-current="activeSection === section.id ? 'page' : undefined"
                     >
                       <v-icon
                         :name="section.icon"
                         scale="1.1"
-                        class="mr-3 text-gray-500 transition-colors duration-200 group-hover:text-black"
+                        class="mr-3 text-gray-500 transition-colors duration-200 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white"
                         :aria-hidden="true"
                       />
                       <span
-                        class="transition-all duration-200 group-hover:text-black group-hover:font-medium"
+                        class="transition-all duration-200 group-hover:text-black dark:group-hover:text-white group-hover:font-medium"
                       >{{ section.label }}</span>
                     </a>
                   </li>
@@ -146,24 +147,22 @@
             <!-- Profile Section -->
             <section
               :id="sections[0].id"
-              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
+              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
               aria-labelledby="profile-title"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 id="profile-title" class="text-xl font-semibold text-black font-srProDisplay">
-                  <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.profile.title') }}</span>
+                <h2 id="profile-title" :class="['text-xl font-semibold font-srProDisplay', textClasses]">
+                  <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.profile.title') }}</span>
                 </h2>
                 <div class="flex gap-2" role="group" aria-label="Profile actions">
                   <Button
                     @click="toggleEditProfile"
-                    text-color="black"
+                    :class="['px-4 transition-all duration-200', buttonOutlineClasses]"
+                    text-color="currentColor"
                     bg-color="transparent"
                     border-width="1px"
-                    border-color="#e5e7eb"
-                    hover-bg-color="#f9fafb"
                     width="auto"
                     height="36px"
-                    class="px-4 transition-all duration-200"
                     :aria-label="isEditProfileOpen ? 'Cancel edit profile' : 'Edit profile'"
                   >
                     <v-icon
@@ -173,26 +172,24 @@
                       :class="{ 'rotate-90': isEditProfileOpen }"
                       aria-hidden="true"
                     />
-                    {{
+                    <span :class="buttonTextClasses">{{
                       isEditProfileOpen
                         ? $t('account.profile.cancelButton')
                         : $t('account.profile.editButton')
-                    }}
+                    }}</span>
                   </Button>
                   <Button
                     @click="refreshProfile"
-                    text-color="black"
+                    :class="['px-4 transition-all duration-200', buttonOutlineClasses]"
+                    text-color="currentColor"
                     bg-color="transparent"
                     border-width="1px"
-                    border-color="#e5e7eb"
-                    hover-bg-color="#f9fafb"
                     width="auto"
                     height="36px"
-                    class="px-4 transition-all duration-200"
                     aria-label="Refresh profile data"
                   >
                     <v-icon name="hi-refresh" scale="0.9" class="mr-2" aria-hidden="true" />
-                    {{ $t('account.profile.refreshButton') }}
+                    <span :class="buttonTextClasses">{{ $t('account.profile.refreshButton') }}</span>
                   </Button>
                 </div>
               </div>
@@ -257,7 +254,7 @@
                 }"
               >
                 <div
-                  class="p-6 border border-blue-100 rounded-lg bg-blue-50"
+                  class="p-6 border border-blue-100 rounded-lg dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20"
                 >
                   <form @submit.prevent="saveProfile" class="space-y-6">
                     <!-- Avatar Section -->
@@ -277,22 +274,20 @@
                         <h4 class="mb-1 font-medium text-black font-srProDisplay">
                           {{ $t('account.profile.editModal.avatarTitle') }}
                         </h4>
-                        <p class="mb-2 text-sm text-gray-600 font-srProDisplay">
+                        <p class="mb-2 text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
                           {{ $t('account.profile.editModal.avatarDescription') }}
                         </p>
                         <Button
                           type="button"
                           @click="openAvatarSelector"
-                          text-color="gray-700"
+                          text-color="currentColor"
                           bg-color="transparent"
                           border-width="1px"
-                          border-color="#d1d5db"
-                          hover-bg-color="#f3f4f6"
                           width="auto"
                           height="32px"
-                          class="px-3 text-sm text-gray-700 border-gray-200 hover:bg-gray-100"
+                          :class="['px-3 text-sm', buttonOutlineClasses]"
                         >
-                          {{ $t('account.profile.editModal.changeAvatarButton') }}
+                          <span :class="buttonTextClasses">{{ $t('account.profile.editModal.changeAvatarButton') }}</span>
                         </Button>
                       </div>
                     </div>
@@ -303,7 +298,7 @@
                       <div class="space-y-2">
                         <label
                           for="name"
-                          class="block text-sm font-medium text-gray-700 font-srProDisplay"
+                          class="block text-sm font-medium text-gray-700 dark:text-gray-300 font-srProDisplay"
                         >
                           {{ $t('account.profile.editModal.nameLabel') }}
                         </label>
@@ -311,7 +306,7 @@
                           type="text"
                           id="name"
                           v-model="editableUser.name"
-                          class="w-full px-4 py-3 text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 font-srProDisplay focus:shadow-lg"
+                          class="w-full px-4 py-3 text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg shadow-sm dark:text-white dark:placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-blue-600 dark:focus:border-blue-400 font-srProDisplay focus:shadow-lg"
                           :placeholder="$t('account.profile.editModal.namePlaceholder')"
                         />
                       </div>
@@ -320,7 +315,7 @@
                       <div class="space-y-2">
                         <label
                           for="email"
-                          class="block text-sm font-medium text-gray-700 font-srProDisplay"
+                          class="block text-sm font-medium text-gray-700 dark:text-gray-300 font-srProDisplay"
                         >
                           {{ $t('account.profile.editModal.emailLabel') }}
                         </label>
@@ -329,7 +324,7 @@
                           id="email"
                           :value="user.email"
                           disabled
-                          class="w-full px-4 py-3 text-blue-700 placeholder-blue-400 border border-blue-200 rounded-lg shadow-sm cursor-not-allowed bg-blue-50 font-srProDisplay opacity-80"
+                          class="w-full px-4 py-3 text-blue-700 placeholder-blue-400 border border-blue-200 rounded-lg shadow-sm cursor-not-allowed dark:text-blue-300 dark:placeholder-blue-500 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 font-srProDisplay opacity-80"
                           :placeholder="$t('account.profile.editModal.emailPlaceholder')"
                         />
                       </div>
@@ -338,7 +333,7 @@
                       <div class="space-y-2 md:col-span-2">
                         <label
                           for="location"
-                          class="block text-sm font-medium text-gray-700 font-srProDisplay"
+                          class="block text-sm font-medium text-gray-700 dark:text-gray-300 font-srProDisplay"
                         >
                           {{ $t('account.profile.editModal.locationLabel') }}
                         </label>
@@ -346,32 +341,29 @@
                           type="text"
                           id="location"
                           v-model="editableUser.location"
-                          class="w-full px-4 py-3 text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 font-srProDisplay focus:shadow-lg"
+                          class="w-full px-4 py-3 text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg shadow-sm dark:text-white dark:placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-blue-600 dark:focus:border-blue-400 font-srProDisplay focus:shadow-lg"
                           :placeholder="$t('account.profile.editModal.locationPlaceholder')"
                         />
                       </div>
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex justify-end gap-4 pt-4 border-t border-gray-200">
+                    <div class="flex justify-end gap-4 pt-4 border-t border-gray-200 dark:border-gray-600">
                       <Button
                         @click="cancelEdit"
                         type="button"
-                        text-color="gray-700"
+                        text-color="currentColor"
                         bg-color="transparent"
                         border-width="1px"
-                        border-color="#d1d5db"
-                        hover-bg-color="#f3f4f6"
-                        class="px-6 py-2 text-gray-700 transition-all duration-200 border-gray-200 hover:bg-gray-100"
+                        :class="['px-6 py-2 transition-all duration-200', buttonOutlineClasses]"
                       >
-                        {{ $t('account.profile.editModal.cancelButton') }}
+                        <span :class="buttonTextClasses">{{ $t('account.profile.editModal.cancelButton') }}</span>
                       </Button>
                       <Button
                         type="submit"
-                        text-color="white"
-                        bg-color="black"
-                        hover-bg-color="#333333"
-                        class="px-6 py-2 transition-all duration-200 shadow-lg hover:shadow-xl"
+                        class="px-6 py-2 text-white transition-all duration-200 bg-black shadow-lg hover:shadow-xl dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
+                        text-color="currentColor"
+                        bg-color="transparent"
                       >
                         {{ $t('account.profile.editModal.saveButton') }}
                       </Button>
@@ -384,15 +376,15 @@
             <!-- Orders Section -->
             <section
               :id="sections[1].id"
-              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
+              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-semibold text-black font-srProDisplay">
-                <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.orders.title') }}</span>
+                <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
+                <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.orders.title') }}</span>
                 </h2>
                 <router-link
                   to="/orders"
-                  class="text-sm font-medium text-gray-600 transition-colors hover:text-black"
+                  :class="['text-sm font-medium transition-colors', linkClasses]"
                 >
                   {{ $t('account.orders.viewAll') }}
                 </router-link>
@@ -406,7 +398,7 @@
                   <div
                     v-for="order in orders.slice(0, 5)"
                     :key="order.id"
-                    class="flex items-center justify-between p-4 transition-all duration-200 border border-gray-200 rounded-xl bg-gray-50 hover:shadow-lg hover:bg-white hover:border-gray-300"
+                    class="flex items-center justify-between p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-800 hover:shadow-lg hover:bg-white dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500"
                     role="listitem"
                   >
                     <div class="flex items-center gap-4">
@@ -446,22 +438,22 @@
             <!-- Refunds and Returns Section -->
             <section
               :id="sections[2].id"
-              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
+              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-semibold text-black font-srProDisplay">
-                <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.refunds.title') }}</span>
+                <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
+                <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.refunds.title') }}</span>
                 </h2>
               </div>
               <div v-if="refunds.length === 0" class="py-8 text-center">
-                <v-icon name="hi-arrow-left" scale="2" class="mb-4 text-gray-300 opacity-80" />
-                <p class="text-base text-gray-500 font-srProDisplay">{{ $t('account.refunds.empty') }}</p>
+                <v-icon name="hi-arrow-left" scale="2" class="mb-4 text-gray-300 dark:text-gray-600 opacity-80" />
+                <p class="text-base text-gray-500 dark:text-gray-400 font-srProDisplay">{{ $t('account.refunds.empty') }}</p>
               </div>
               <div v-else class="space-y-4">
                 <div
                   v-for="refund in refunds.slice(0, 5)"
                   :key="refund.id"
-                  class="flex items-center justify-between p-4 transition-all duration-200 border border-gray-200 rounded-xl bg-gray-50 hover:shadow-lg hover:bg-white hover:border-gray-300"
+                  class="flex items-center justify-between p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-800 hover:shadow-lg hover:bg-white dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-500"
                   role="listitem"
                 >
                   <div class="flex items-center gap-4">
@@ -501,16 +493,16 @@
             <!-- Wishlist Section -->
             <section
               :id="sections[3].id"
-              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
+              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
               aria-labelledby="wishlist-title"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 id="wishlist-title" class="text-xl font-semibold text-black font-srProDisplay">
-                  <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.wishlist.title') }}</span>
+                <h2 id="wishlist-title" :class="['text-xl font-semibold font-srProDisplay', textClasses]">
+                  <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.wishlist.title') }}</span>
                 </h2>
                 <router-link
                   to="/wishlist"
-                  class="text-sm font-medium text-gray-600 transition-colors hover:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1"
+                  :class="['text-sm font-medium transition-colors', linkClasses, 'focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1']"
                   :aria-label="`View all ${wishlistProducts.length} wishlist items`"
                 >
                   {{ $t('account.wishlist.viewAll') }}
@@ -519,19 +511,19 @@
 
               <!-- Loading state for wishlist -->
               <div v-if="wishlistLoading" class="flex items-center justify-center py-8" role="status" aria-live="polite">
-                <div class="w-8 h-8 border-b-2 border-black rounded-full animate-spin opacity-70" aria-hidden="true"></div>
+                <div class="w-8 h-8 border-b-2 border-black rounded-full dark:border-white animate-spin opacity-70" aria-hidden="true"></div>
                 <span class="sr-only">Loading wishlist items...</span>
               </div>
 
               <!-- Error state for wishlist -->
-              <div v-else-if="wishlistError" class="p-4 border border-red-200 rounded-lg bg-red-50" role="alert">
-                <p class="text-sm font-semibold text-red-700">{{ wishlistError }}</p>
+              <div v-else-if="wishlistError" class="p-4 border border-red-200 rounded-lg dark:border-red-800 bg-red-50" role="alert dark:bg-red-900/20">
+                <p class="text-sm font-semibold text-red-700 dark:text-red-400">{{ wishlistError }}</p>
               </div>
 
               <!-- Empty state when no wishlist items are available -->
               <div v-else-if="wishlistProducts.length === 0" class="py-8 text-center">
-                <v-icon name="hi-heart" scale="2" class="mb-4 text-gray-300 opacity-80" aria-hidden="true" />
-                <p class="text-base text-gray-500 font-srProDisplay">{{ $t('account.wishlist.emptyMessage') }}</p>
+                <v-icon name="hi-heart" scale="2" class="mb-4 text-gray-300 dark:text-gray-600 opacity-80" aria-hidden="true" />
+                <p class="text-base text-gray-500 dark:text-gray-400 font-srProDisplay">{{ $t('account.wishlist.emptyMessage') }}</p>
               </div>
 
               <!-- Display grid of wishlist items -->
@@ -544,13 +536,13 @@
                 <div
                   v-for="item in wishlistProducts.slice(0, 6)"
                   :key="item.id"
-                  class="flex items-center gap-4 p-4 transition-all duration-200 border border-gray-200 rounded-xl group bg-gray-50 hover:shadow-lg hover:bg-white hover:border-gray-300"
+                  :class="['flex items-center gap-4 p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 rounded-xl group bg-gray-50 dark:bg-gray-800', hoverClasses]"
                   role="listitem"
                 >
                   <div class="relative">
                     <router-link
                       :to="`/products/${item.id}`"
-                      class="block focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+                      class="block rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                       :aria-label="`View ${item.name} details`"
                     >
                       <img
@@ -570,12 +562,12 @@
                       :aria-label="`Remove ${item.name} from wishlist`"
                       type="button"
                     >
-                      <div v-if="removeItemLoading[item.id]" class="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
+                      <div v-if="removeItemLoading[item.id]" class="w-3 h-3 border border-white rounded-full border-t-transparent animate-spin" aria-hidden="true"></div>
                       <v-icon v-else name="hi-x" scale="0.8" class="text-white" aria-hidden="true" />
                     </button>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <h4 class="text-sm font-medium text-black font-srProDisplay line-clamp-2 mb-1">
+                    <h4 class="mb-1 text-sm font-medium text-black font-srProDisplay line-clamp-2">
                       {{ item.name }}
                     </h4>
                     <p class="text-lg font-semibold text-black font-srProDisplay">
@@ -596,7 +588,7 @@
                     :aria-label="addedToCartItems[item.id] ? `${item.name} is in cart` : `Add ${item.name} to cart`"
                   >
                     <span v-if="cartItemLoading[item.id]" class="flex items-center gap-2">
-                      <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
+                      <div class="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin" aria-hidden="true"></div>
                       <span class="sr-only">Adding to cart...</span>
                       Adding...
                     </span>
@@ -615,65 +607,59 @@
             <!-- Addresses Section -->
             <section
               :id="sections[4].id"
-              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
+              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-semibold text-black font-srProDisplay">
-                <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.addresses.title') }}</span>
+                <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
+                <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.addresses.title') }}</span>
                 </h2>
                 <div class="flex gap-2">
                   <Button
                     @click="refreshAddresses"
-                    text-color="black"
+                    :class="['px-4', buttonOutlineClasses]"
+                    text-color="currentColor"
                     bg-color="transparent"
                     border-width="1px"
-                    border-color="#e5e7eb"
-                    hover-bg-color="#f9fafb"
                     width="auto"
                     height="36px"
-                    class="px-4"
                   >
                     <v-icon name="hi-refresh" scale="0.9" class="mr-2" />
-                    Refresh
+                    <span :class="buttonTextClasses">Refresh</span>
                   </Button>
                   <Button
-                    text-color="black"
+                    :class="['px-4', buttonOutlineClasses]"
+                    text-color="currentColor"
                     bg-color="transparent"
                     border-width="1px"
-                    border-color="#e5e7eb"
-                    hover-bg-color="#f9fafb"
                     width="auto"
                     height="36px"
-                    class="px-4"
                   >
                     <v-icon name="hi-plus" scale="0.9" class="mr-2" />
-                    {{ $t('account.addresses.addButton') }}
+                    <span :class="buttonTextClasses">{{ $t('account.addresses.addButton') }}</span>
                   </Button>
                 </div>
               </div>
 
               <!-- Loading state for addresses -->
               <div v-if="addressesLoading" class="flex items-center justify-center py-8">
-                <div class="w-8 h-8 border-b-2 border-black rounded-full animate-spin opacity-70"></div>
-                <span class="ml-3 font-medium text-gray-600">Loading addresses...</span>
+                <div class="w-8 h-8 border-b-2 border-black rounded-full dark:border-white animate-spin opacity-70"></div>
+                <span class="ml-3 font-medium text-gray-600 dark:text-gray-300">Loading addresses...</span>
               </div>
 
               <!-- Error state for addresses -->
               <div
                 v-else-if="addressesError"
-                class="p-4 border border-red-200 rounded-lg bg-red-50"
+                class="p-4 border border-red-200 rounded-lg dark:border-red-800 bg-red-50 dark:bg-red-900/20"
               >
-                <p class="font-semibold text-red-700">{{ addressesError }}</p>
+                <p class="font-semibold text-red-700 dark:text-red-400">{{ addressesError }}</p>
                 <Button
                   @click="refreshAddresses"
-                  text-color="red-600"
+                  class="px-3 mt-2 text-sm font-semibold text-red-600 transition-colors duration-200 bg-transparent border border-red-600 dark:border-red-400 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  text-color="currentColor"
                   bg-color="transparent"
                   border-width="1px"
-                  border-color="#dc2626"
-                  hover-bg-color="#fef2f2"
                   width="auto"
                   height="32px"
-                  class="px-3 mt-2 text-sm font-semibold"
                 >
                   Retry
                 </Button>
@@ -681,15 +667,14 @@
 
               <!-- Empty state when no addresses are available -->
               <div v-else-if="addresses.length === 0" class="py-8 text-center">
-                <v-icon name="hi-location-marker" scale="2" class="mb-3 text-gray-400 opacity-80" />
-                <p class="mb-4 text-base text-gray-600 font-srProDisplay">You have no saved addresses</p>
+                <v-icon name="hi-location-marker" scale="2" class="mb-3 text-gray-400 dark:text-gray-600 opacity-80" />
+                <p class="mb-4 text-base text-gray-600 dark:text-gray-300 font-srProDisplay">You have no saved addresses</p>
                 <Button
-                  text-color="white"
-                  bg-color="black"
-                  hover-bg-color="#333333"
+                  class="px-4 font-semibold text-white transition-colors duration-200 bg-black dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
+                  text-color="currentColor"
+                  bg-color="transparent"
                   width="auto"
                   height="36px"
-                  class="px-4 font-semibold"
                 >
                   <v-icon name="hi-plus" scale="0.9" class="mr-2" />
                   Add your first address
@@ -701,7 +686,7 @@
                 <div
                   v-for="address in addresses"
                   :key="address.id"
-                  class="p-4 transition-all duration-200 border border-gray-200 rounded-xl group bg-gray-50 hover:shadow-lg hover:bg-white hover:border-gray-300"
+                  :class="['p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 rounded-xl group bg-gray-50 dark:bg-gray-800', hoverClasses]"
                 >
                   <div class="flex items-start justify-between mb-3">
                     <div class="flex items-center gap-2">
@@ -742,41 +727,41 @@
             <!-- Reviews Section -->
             <section
               :id="sections[5].id"
-              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
+              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
             >
               <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-semibold text-black font-srProDisplay">
-                <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.reviews.title') }}</span>
+                <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
+                <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.reviews.title') }}</span>
                 </h2>
-                <span class="text-sm font-medium text-gray-600"
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-300"
                   >{{ reviews.length }} {{ $t('account.reviews.reviews') }}</span
                 >
               </div>
               <div class="space-y-4">
-                <div v-if="reviewsLoading" class="py-4 text-center text-gray-500">
+                <div v-if="reviewsLoading" class="py-4 text-center text-gray-500 dark:text-gray-400">
                   <span class="font-medium opacity-80">Loading reviews...</span>
                 </div>
-                <div v-else-if="reviewsError" class="p-4 text-red-700 border border-red-200 rounded-lg bg-red-50">
+                <div v-else-if="reviewsError" class="p-4 text-red-700 border border-red-200 rounded-lg dark:text-red-400 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
                   <span class="font-semibold">{{ reviewsError }}</span>
                 </div>
                 <div v-else-if="reviews.length === 0" class="py-8 text-center">
-                  <v-icon name="hi-annotation" scale="2" class="mb-4 text-gray-300 opacity-80" />
-                  <p class="text-base text-gray-500 font-srProDisplay">{{ $t('account.reviews.empty') }}</p>
+                  <v-icon name="hi-annotation" scale="2" class="mb-4 text-gray-300 dark:text-gray-600 opacity-80" />
+                  <p class="text-base text-gray-500 dark:text-gray-400 font-srProDisplay">{{ $t('account.reviews.empty') }}</p>
                 </div>
                 <div v-else class="max-h-[400px] overflow-y-auto custom-scrollbar pr-2 space-y-4">
                   <div
                     v-for="review in reviews"
                     :key="review.id"
-                    class="p-4 transition-all duration-200 border border-gray-200 rounded-xl bg-gray-50 hover:shadow-lg hover:bg-white hover:border-gray-300"
+                    :class="['p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-800', hoverClasses]"
                   >
                     <div class="flex items-start justify-between mb-3">
                       <div>
-                        <span class="font-semibold text-black">{{ review.product }}</span>
-                        <span class="ml-2 text-yellow-500">{{ '★'.repeat(review.rating) }}</span>
+                        <span :class="['font-semibold', textClasses]">{{ review.product }}</span>
+                        <span class="ml-2 text-yellow-500 dark:text-yellow-400">{{ '★'.repeat(review.rating) }}</span>
                       </div>
-                      <span class="text-xs text-gray-500">{{ review.date }}</span>
+                      <span class="text-xs text-gray-500 dark:text-gray-400">{{ review.date }}</span>
                     </div>
-                    <p class="text-sm leading-relaxed text-gray-700 font-srProDisplay">
+                    <p class="text-sm leading-relaxed text-gray-700 dark:text-gray-300 font-srProDisplay">
                       {{ review.comment }}
                     </p>
                   </div>
@@ -787,23 +772,23 @@
             <!-- Settings Section -->
             <section
               :id="sections[6].id"
-              class="p-6 bg-white border border-gray-200 shadow-md rounded-2xl"
+              :class="['p-6 shadow-md rounded-2xl', cardClasses]"
             >
-              <h2 class="mb-6 text-xl font-semibold text-black font-srProDisplay">
-                <span class="text-base font-bold tracking-tight text-gray-700 uppercase">{{ $t('account.settings.title') }}</span>
+              <h2 :class="['mb-6 text-xl font-semibold font-srProDisplay', textClasses]">
+                <span class="text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300">{{ $t('account.settings.title') }}</span>
               </h2>
               <div class="space-y-6">
                 <!-- Language Setting -->
-                <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50">
+                <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
                   <div class="flex items-center gap-3">
                     <div class="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-lg">
                       <v-icon name="hi-globe" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <h4 class="font-medium text-black font-srProDisplay">
+                      <h4 :class="['font-medium font-srProDisplay', textClasses]">
                         {{ $t('account.settings.language.title') }}
                       </h4>
-                      <p class="text-sm text-gray-600 font-srProDisplay">
+                      <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
                         {{ $t('account.settings.language.description') }}
                       </p>
                     </div>
@@ -811,7 +796,7 @@
                   <select
                     :value="currentLocale.code"
                     @change="handleLanguageChange(($event.target as HTMLSelectElement).value)"
-                    class="px-3 py-2 text-sm placeholder-gray-400 transition-all duration-200 border border-gray-300 rounded-lg cursor-pointer font-srProDisplay focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 focus:shadow-lg"
+                    class="px-3 py-2 text-sm text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg cursor-pointer dark:placeholder-gray-500 dark:border-gray-600 font-srProDisplay dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-blue-600 dark:focus:border-blue-400 focus:shadow-lg"
                   >
                     <option v-for="locale in availableLocales" :key="locale.code" :value="locale.code">
                       {{ locale.name }}
@@ -820,84 +805,106 @@
                 </div>
 
                 <!-- App Theme Setting -->
-                <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50">
+                <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
                   <div class="flex items-center gap-3">
-                    <div class="flex items-center justify-center w-10 h-10 bg-gray-800 rounded-lg">
+                    <div class="flex items-center justify-center w-10 h-10 bg-gray-800 rounded-lg dark:bg-gray-600">
                       <v-icon name="hi-color-swatch" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <h4 class="font-medium text-black font-srProDisplay">
+                      <h4 :class="['font-medium font-srProDisplay', textClasses]">
                         {{ $t('account.settings.theme.title') }}
                       </h4>
-                      <p class="text-sm text-gray-600 font-srProDisplay">
+                      <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
                         {{ $t('account.settings.theme.description') }}
+                      </p>
+                      <!-- Current theme indicator -->
+                      <p class="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">
+                        Current: {{ themeStore.selectedTheme === 'system' ? `System (${themeStore.effectiveTheme})` : themeStore.selectedTheme }}
                       </p>
                     </div>
                   </div>
                   <div class="flex items-center gap-2">
-                    <button
-                      @click="setTheme('light')"
-                      :class="[
-                        'p-2 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300',
-                        theme === 'light' ? 'bg-black text-white shadow' : 'bg-gray-200 text-black hover:bg-gray-100',
-                      ]"
-                      aria-label="Tema claro"
-                      tabindex="0"
-                    >
-                      <v-icon name="hi-sun" />
-                    </button>
-                    <button
-                      @click="setTheme('dark')"
-                      :class="[
-                        'p-2 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300',
-                        theme === 'dark' ? 'bg-black text-white shadow' : 'bg-gray-200 text-black hover:bg-gray-100',
-                      ]"
-                      aria-label="Tema oscuro"
-                      tabindex="0"
-                    >
-                      <v-icon name="hi-moon" />
-                    </button>
-                    <button
-                      @click="setTheme('system')"
-                      :class="[
-                        'p-2 rounded-lg cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300',
-                        theme === 'system' ? 'bg-black text-white shadow' : 'bg-gray-200 text-black hover:bg-gray-100',
-                      ]"
-                      aria-label="Tema del sistema"
-                      tabindex="0"
-                    >
-                      <v-icon name="hi-chip" />
-                    </button>
+                    <div class="relative group">
+                      <button
+                        @click="setTheme('light')"
+                        :class="[
+                          themeButtonBaseClasses,
+                          themeStore.selectedTheme === 'light' ? themeButtonActiveClasses : themeButtonInactiveClasses
+                        ]"
+                        aria-label="Tema claro"
+                        tabindex="0"
+                      >
+                        <v-icon name="hi-sun" class="w-4 h-4" />
+                      </button>
+                      <!-- Tooltip -->
+                      <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
+                        Light theme
+                      </div>
+                    </div>
+
+                    <div class="relative group">
+                      <button
+                        @click="setTheme('dark')"
+                        :class="[
+                          themeButtonBaseClasses,
+                          themeStore.selectedTheme === 'dark' ? themeButtonActiveClasses : themeButtonInactiveClasses
+                        ]"
+                        aria-label="Tema oscuro"
+                        tabindex="0"
+                      >
+                        <v-icon name="hi-moon" class="w-4 h-4" />
+                      </button>
+                      <!-- Tooltip -->
+                      <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
+                        Dark theme
+                      </div>
+                    </div>
+
+                    <div class="relative group">
+                      <button
+                        @click="setTheme('system')"
+                        :class="[
+                          themeButtonBaseClasses,
+                          themeStore.selectedTheme === 'system' ? themeButtonActiveClasses : themeButtonInactiveClasses
+                        ]"
+                        aria-label="Tema del sistema"
+                        tabindex="0"
+                      >
+                        <v-icon name="hi-desktop-computer" class="w-4 h-4" />
+                      </button>
+                      <!-- Tooltip -->
+                      <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
+                        Follow system preference
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 <!-- Security Setting -->
-                <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50">
+                <div class="flex items-center justify-between p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
                   <div class="flex items-center gap-3">
                     <div class="flex items-center justify-center w-10 h-10 bg-red-500 rounded-lg">
                       <v-icon name="hi-key" scale="1.2" class="text-white" />
                     </div>
                     <div>
-                      <h4 class="font-medium text-black font-srProDisplay">
+                      <h4 :class="['font-medium font-srProDisplay', textClasses]">
                         {{ $t('account.settings.security.title') }}
                       </h4>
-                      <p class="text-sm text-gray-600 font-srProDisplay">
+                      <p class="text-sm text-gray-600 dark:text-gray-300 font-srProDisplay">
                         {{ $t('account.settings.security.description') }}
                       </p>
                     </div>
                   </div>
                   <Button
-                    text-color="black"
+                    :class="['px-4 text-sm transition-all duration-200', buttonOutlineClasses]"
+                    text-color="currentColor"
                     bg-color="transparent"
                     border-width="1px"
-                    border-color="#e5e7eb"
-                    hover-bg-color="#f9fafb"
                     width="auto"
                     height="36px"
-                    class="px-4 text-sm"
                     @click="openChangePasswordModal"
                   >
-                    {{ $t('account.settings.security.changePasswordButton') }}
+                    <span :class="buttonTextClasses">{{ $t('account.settings.security.changePasswordButton') }}</span>
                   </Button>
                 </div>
               </div>
@@ -943,6 +950,7 @@ import type { User } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import { useLanguage } from '@/composables/useLanguage'
 import { useToast } from '@/composables/useToast'
+import { useThemeClasses } from '@/composables/useThemeClasses'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import Button from '@/components/shared/Button.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
@@ -964,6 +972,9 @@ const { currentLocale, availableLocales, changeLanguage } = useLanguage()
 
 // Toast notifications
 const toast = useToast()
+
+// Theme classes composable for consistent styling
+const { cardClasses, textClasses, navClasses, buttonOutlineClasses, buttonTextClasses, linkClasses, hoverClasses, themeButtonBaseClasses, themeButtonActiveClasses, themeButtonInactiveClasses } = useThemeClasses()
 
 const { t } = useI18n()
 const authStore = useAuthStore()
@@ -994,8 +1005,10 @@ import { useOrdersStore } from '@/stores/orders'
 import { useWishlistStore } from '@/stores/wishlist'
 import { useUserCartStore } from '@/stores/userCart'
 import { useProductVariantsStore } from '@/stores/productVariants'
+import { useThemeStore } from '@/stores/theme'
 
 const ordersStore = useOrdersStore()
+const themeStore = useThemeStore()
 const { wishlistProducts, wishlistLoading, wishlistError, fetchUserWishlist } = useWishlistStore()
 const userCartStore = useUserCartStore()
 const productVariantsStore = useProductVariantsStore()
@@ -1235,7 +1248,7 @@ const saveProfile = async () => {
 }
 
 // State for user settings
-const theme = ref('system')
+// const theme = ref('system') // Replaced by themeStore
 
 // Logic for mobile navigation.
 const isMobileNavOpen = ref(false)
@@ -1295,14 +1308,8 @@ const closeMobileNav = () => {
   document.body.classList.remove('nav-open')
 }
 
-const setTheme = (newTheme: string) => {
-  theme.value = newTheme
-  // Apply the theme change, for example, by adding or removing a 'dark' class from the root element.
-  if (newTheme === 'dark') {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
+const setTheme = (newTheme: 'light' | 'dark' | 'system') => {
+  themeStore.setTheme(newTheme)
 }
 
 // Language change wrapper with toast
@@ -1669,14 +1676,7 @@ const fetchDetailedOrderInfo = async (orderId: number): Promise<OrderType> => {
 }
 
 onMounted(async () => {
-  // Set the initial theme based on system preference if the theme is set to 'system'.
-  if (theme.value === 'system') {
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }
+  // Theme initialization is now handled by the store in main.ts
 
   // Performance optimization: Load critical data first, then lazy load other sections
   if (authStore.isAuthenticated && authStore.user?.id) {
