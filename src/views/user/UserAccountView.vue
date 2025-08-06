@@ -72,543 +72,127 @@
             />
 
             <!-- Orders Section -->
-            <section
-              :id="sections[1].id"
-              :class="['transition-colors duration-200', sectionContainerClasses]"
-            >
-              <div class="flex items-center justify-between mb-6">
-                <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
-                <span :class="sectionHeaderClasses">{{ $t('account.orders.title') }}</span>
-                </h2>
-                <router-link
-                  to="/orders"
-                  :class="['text-sm font-medium transition-colors', linkClasses]"
-                >
-                  {{ $t('account.orders.viewAll') }}
-                </router-link>
-              </div>
-              <div class="space-y-4">
-                <div v-if="orders.length === 0" class="py-8 text-center">
-                  <v-icon name="hi-clipboard-list" scale="2" :class="['mb-4 opacity-80', emptyStateIconClasses]" aria-hidden="true" />
-                  <p :class="['text-base font-srProDisplay', emptyStateTextClasses]">{{ $t('account.orders.emptyMessage') }}</p>
-                </div>
-                <div v-else>
-                  <div
-                    v-for="order in orders.slice(0, 5)"
-                    :key="order.id"
-                    :class="listItemClasses"
-                    role="listitem"
-                  >
-                    <div class="flex items-center gap-4">
-                      <div :class="iconContainerClasses">
-                        <v-icon name="hi-clipboard-list" scale="1.2" :class="iconInContainerClasses" />
-                      </div>
-                      <div>
-                        <p :class="['font-medium font-srProDisplay', textClasses]">
-                          {{ $t('account.orders.order') }} #{{ order.id }}
-                        </p>
-                        <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">{{ order.date }}</p>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                      <span
-                        :class="[getStatusColor(order.status), statusBadgeClasses]"
-                      >
-                        {{ order.status }}
-                      </span>
-                      <Button
-                        @click="openOrderDetailsModal(order)"
-                        bg-color="transparent"
-                        width="auto"
-                        height="auto"
-                        :class="['px-4', actionButtonClasses]"
-                      >
-                        {{ $t('account.orders.viewDetails') }}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <OrdersSection
+              :section-id="sections[1].id"
+              :orders="orders"
+              :section-container-classes="sectionContainerClasses"
+              :text-classes="textClasses"
+              :section-header-classes="sectionHeaderClasses"
+              :link-classes="linkClasses"
+              :empty-state-icon-classes="emptyStateIconClasses"
+              :empty-state-text-classes="emptyStateTextClasses"
+              :list-item-classes="listItemClasses"
+              :icon-container-classes="iconContainerClasses"
+              :icon-in-container-classes="iconInContainerClasses"
+              :text-secondary-classes="textSecondaryClasses"
+              :status-badge-classes="statusBadgeClasses"
+              :action-button-classes="actionButtonClasses"
+              @open-details="openOrderDetailsModal"
+            />
 
-            <!-- Resto de las secciones permanecen igual... -->
             <!-- Refunds and Returns Section -->
-            <section
-              :id="sections[2].id"
-              :class="['transition-colors duration-200', sectionContainerClasses]"
-            >
-              <div class="flex items-center justify-between mb-6">
-                <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
-                <span :class="sectionHeaderClasses">{{ $t('account.refunds.title') }}</span>
-                </h2>
-              </div>
-              <div v-if="refunds.length === 0" class="py-8 text-center">
-                <v-icon name="hi-arrow-left" scale="2" :class="['mb-4 opacity-80', emptyStateIconClasses]" />
-                <p :class="['text-base font-srProDisplay', emptyStateTextClasses]">{{ $t('account.refunds.empty') }}</p>
-              </div>
-              <div v-else class="space-y-4">
-                <div
-                  v-for="refund in refunds.slice(0, 5)"
-                  :key="refund.id"
-                  :class="listItemClasses"
-                  role="listitem"
-                >
-                  <div class="flex items-center gap-4">
-                    <div :class="['flex items-center justify-center w-10 h-10 rounded-lg', iconContainerClasses]">
-                      <v-icon name="hi-arrow-left" scale="1.2" :class="iconInContainerClasses" />
-                    </div>
-                    <div>
-                      <p :class="['font-medium font-srProDisplay', textClasses]">
-                        {{ refund.status === 'Returned' ? 'Return' : 'Refund' }} #{{ refund.id }}
-                      </p>
-                      <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">{{ refund.date }}</p>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-4">
-                    <span
-                      :class="[getRefundStatusColor(refund.status), statusBadgeClasses]"
-                    >
-                      {{ refund.status }}
-                    </span>
-                    <Button
-                      @click="openOrderDetailsModal(refund)"
-                      bg-color="transparent"
-                      width="auto"
-                      height="auto"
-                      :class="['px-4', actionButtonClasses]"
-                    >
-                      {{ $t('account.refunds.viewDetails') }}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <RefundsSection
+              :section-id="sections[2].id"
+              :refunds="refunds"
+              :section-container-classes="sectionContainerClasses"
+              :text-classes="textClasses"
+              :section-header-classes="sectionHeaderClasses"
+              :empty-state-icon-classes="emptyStateIconClasses"
+              :empty-state-text-classes="emptyStateTextClasses"
+              :list-item-classes="listItemClasses"
+              :icon-container-classes="iconContainerClasses"
+              :icon-in-container-classes="iconInContainerClasses"
+              :text-secondary-classes="textSecondaryClasses"
+              :status-badge-classes="statusBadgeClasses"
+              :action-button-classes="actionButtonClasses"
+              @open-details="openOrderDetailsModal"
+            />
 
             <!-- Wishlist Section -->
-            <section
-              :id="sections[3].id"
-              :class="['transition-colors duration-200', sectionContainerClasses]"
-              aria-labelledby="wishlist-title"
-            >
-              <div class="flex items-center justify-between mb-6">
-                <h2 id="wishlist-title" :class="['text-xl font-semibold font-srProDisplay', textClasses]">
-                  <span :class="sectionHeaderClasses">{{ $t('account.wishlist.title') }}</span>
-                </h2>
-                <router-link
-                  to="/wishlist"
-                  :class="['text-sm font-medium transition-colors', linkClasses, 'focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1']"
-                  :aria-label="`View all ${wishlistProducts.length} wishlist items`"
-                >
-                  {{ $t('account.wishlist.viewAll') }}
-                </router-link>
-              </div>
-
-              <!-- Loading state for wishlist -->
-              <div v-if="wishlistLoading" class="flex items-center justify-center py-8" role="status" aria-live="polite">
-                <div class="w-8 h-8 border-b-2 border-black rounded-full dark:border-white animate-spin opacity-70" aria-hidden="true"></div>
-                <span class="sr-only">Loading wishlist items...</span>
-              </div>
-
-              <!-- Error state for wishlist -->
-              <div v-else-if="wishlistError" class="p-4 border border-red-200 rounded-lg dark:border-red-800 bg-red-50" role="alert dark:bg-red-900/20">
-                <p class="text-sm font-semibold text-red-700 dark:text-red-400">{{ wishlistError }}</p>
-              </div>
-
-              <!-- Empty state when no wishlist items are available -->
-              <div v-else-if="wishlistProducts.length === 0" class="py-8 text-center">
-                <v-icon name="hi-heart" scale="2" :class="['mb-4 opacity-80', emptyStateIconClasses]" aria-hidden="true" />
-                <p :class="['text-base font-srProDisplay', emptyStateTextClasses]">{{ $t('account.wishlist.emptyMessage') }}</p>
-              </div>
-
-              <!-- Display grid of wishlist items -->
-              <div
-                v-else
-                class="grid grid-cols-1 gap-4 md:grid-cols-2"
-                role="list"
-                :aria-label="`${wishlistProducts.length} wishlist items`"
-              >
-                <div
-                  v-for="item in wishlistProducts.slice(0, 6)"
-                  :key="item.id"
-                  :class="['flex items-center gap-4 transition-all duration-200 group', listItemClasses]"
-                  role="listitem"
-                >
-                  <div class="relative">
-                    <router-link
-                      :to="`/products/${item.id}`"
-                      class="block rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      :aria-label="`View ${item.name} details`"
-                    >
-                      <img
-                        :src="item.imageUrl"
-                        :alt="item.name"
-                        class="object-contain w-16 h-16 p-2 transition-transform rounded-lg hover:scale-105"
-                        loading="lazy"
-                        width="64"
-                        height="64"
-                        :onerror="`this.src='https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp'`"
-                      />
-                    </router-link>
-                    <button
-                      @click="removeFromWishlist(item.id, item.name)"
-                      :disabled="removeItemLoading[item.id]"
-                      class="absolute flex items-center justify-center w-6 h-6 transition-opacity bg-red-500 rounded-full opacity-0 cursor-pointer -top-2 -right-2 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-300 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                      :aria-label="`Remove ${item.name} from wishlist`"
-                      type="button"
-                    >
-                      <div v-if="removeItemLoading[item.id]" class="w-3 h-3 border border-white rounded-full border-t-transparent animate-spin" aria-hidden="true"></div>
-                      <v-icon v-else name="hi-x" scale="0.8" class="text-white" aria-hidden="true" />
-                    </button>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <h4 :class="['mb-1 text-sm font-medium font-srProDisplay line-clamp-2', textClasses]">
-                      {{ item.name }}
-                    </h4>
-                    <p :class="['text-lg font-semibold font-srProDisplay', priceTextClasses]">
-                      ${{ item.basePrice.toFixed(2) }}
-                    </p>
-                  </div>
-                  <Button
-                    @click="addToCartFromWishlist(item.id, item.name)"
-                    :disabled="cartItemLoading[item.id] || addedToCartItems[item.id]"
-                    :text-color="addedToCartItems[item.id] ? '#16a34a' : 'white'"
-                    :bg-color="addedToCartItems[item.id] ? '#f0fdf4' : 'black'"
-                    :hover-bg-color="addedToCartItems[item.id] ? '#dcfce7' : '#333333'"
-                    :border-width="addedToCartItems[item.id] ? '1px' : '0'"
-                    :border-color="addedToCartItems[item.id] ? '#16a34a' : 'transparent'"
-                    width="auto"
-                    height="32px"
-                    class="px-3 text-sm transition-all duration-300 shrink-0"
-                    :aria-label="addedToCartItems[item.id] ? `${item.name} is in cart` : `Add ${item.name} to cart`"
-                  >
-                    <span v-if="cartItemLoading[item.id]" class="flex items-center gap-2">
-                      <div class="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin" aria-hidden="true"></div>
-                      <span class="sr-only">Adding to cart...</span>
-                      Adding...
-                    </span>
-                    <span v-else-if="addedToCartItems[item.id]" class="flex items-center gap-2">
-                      <v-icon name="hi-check" scale="0.9" class="text-green-600" aria-hidden="true" />
-                      Added to Cart
-                    </span>
-                    <span v-else>
-                      {{ $t('account.wishlist.addToCart') }}
-                    </span>
-                  </Button>
-                </div>
-              </div>
-            </section>
+            <WishlistSection
+              :section-id="sections[3].id"
+              :wishlist-products="wishlistProducts"
+              :wishlist-loading="wishlistLoading"
+              :wishlist-error="wishlistError"
+              :cart-item-loading="cartItemLoading"
+              :remove-item-loading="removeItemLoading"
+              :added-to-cart-items="addedToCartItems"
+              :section-container-classes="sectionContainerClasses"
+              :text-classes="textClasses"
+              :section-header-classes="sectionHeaderClasses"
+              :link-classes="linkClasses"
+              :empty-state-icon-classes="emptyStateIconClasses"
+              :empty-state-text-classes="emptyStateTextClasses"
+              :list-item-classes="listItemClasses"
+              :price-text-classes="priceTextClasses"
+              @add-to-cart="addToCartFromWishlist"
+              @remove-from-wishlist="removeFromWishlist"
+            />
 
             <!-- Addresses Section -->
-            <section
-              :id="sections[4].id"
-              :class="['transition-colors duration-200', sectionContainerClasses]"
-            >
-              <div class="flex items-center justify-between mb-6">
-                <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
-                <span :class="sectionHeaderClasses">{{ $t('account.addresses.title') }}</span>
-                </h2>
-                <div class="flex gap-2">
-                  <Button
-                    @click="refreshAddresses"
-                    :class="['px-4', buttonOutlineClasses]"
-                    text-color="currentColor"
-                    bg-color="transparent"
-                    border-width="1px"
-                    width="auto"
-                    height="36px"
-                  >
-                    <v-icon name="hi-refresh" scale="0.9" class="mr-2" />
-                    <span :class="buttonTextClasses">Refresh</span>
-                  </Button>
-                  <Button
-                    :class="['px-4', buttonOutlineClasses]"
-                    text-color="currentColor"
-                    bg-color="transparent"
-                    border-width="1px"
-                    width="auto"
-                    height="36px"
-                  >
-                    <v-icon name="hi-plus" scale="0.9" class="mr-2" />
-                    <span :class="buttonTextClasses">{{ $t('account.addresses.addButton') }}</span>
-                  </Button>
-                </div>
-              </div>
-
-              <!-- Loading state for addresses -->
-              <div v-if="addressesLoading" class="flex items-center justify-center py-8">
-                <div class="w-8 h-8 border-b-2 border-black rounded-full dark:border-white animate-spin opacity-70"></div>
-                <span :class="['ml-3 font-medium', loadingTextClasses]">Loading addresses...</span>
-              </div>
-
-              <!-- Error state for addresses -->
-              <div
-                v-else-if="addressesError"
-                class="p-4 border border-red-200 rounded-lg dark:border-red-800 bg-red-50 dark:bg-red-900/20"
-              >
-                <p class="font-semibold text-red-700 dark:text-red-400">{{ addressesError }}</p>
-                <Button
-                  @click="refreshAddresses"
-                  class="px-3 mt-2 text-sm font-semibold text-red-600 transition-colors duration-200 bg-transparent border border-red-600 dark:border-red-400 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-                  text-color="currentColor"
-                  bg-color="transparent"
-                  border-width="1px"
-                  width="auto"
-                  height="32px"
-                >
-                  Retry
-                </Button>
-              </div>
-
-              <!-- Empty state when no addresses are available -->
-              <div v-else-if="addresses.length === 0" class="py-8 text-center">
-                <v-icon name="hi-location-marker" scale="2" :class="['mb-3 opacity-80', emptyStateIconClasses]" />
-                <p :class="['mb-4 text-base font-srProDisplay', emptyStateTextClasses]">You have no saved addresses</p>
-                <Button
-                  :class="['px-4 font-semibold transition-colors duration-200', buttonPrimaryClasses]"
-                  text-color="currentColor"
-                  bg-color="transparent"
-                  width="auto"
-                  height="36px"
-                >
-                  <v-icon name="hi-plus" scale="0.9" class="mr-2" />
-                  Add your first address
-                </Button>
-              </div>
-
-              <!-- Display grid of user addresses -->
-              <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div
-                  v-for="address in addresses"
-                  :key="address.id"
-                  :class="['transition-all duration-200 group', listItemClasses]"
-                >
-                  <div class="flex items-start justify-between mb-3">
-                    <div class="flex items-center gap-2">
-                      <v-icon name="hi-location-marker" scale="1.1" :class="iconColorClasses" />
-                      <!-- Address Name -->
-                      <h4 :class="['font-semibold font-srProDisplay', textClasses]">
-                        {{ address.name }}
-                      </h4>
-                    </div>
-                    <div class="flex gap-1 transition-opacity opacity-0 group-hover:opacity-100">
-                      <button
-                        :class="['p-1 transition-colors rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300 hover:bg-gray-100 dark:hover:bg-gray-700', interactiveIconClasses]"
-                        aria-label="Editar dirección"
-                        tabindex="0"
-                      >
-                        <v-icon name="hi-pencil" scale="0.9" />
-                      </button>
-                      <button
-                        :class="['p-1 transition-colors rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400', interactiveIconClasses]"
-                        aria-label="Eliminar dirección"
-                        tabindex="0"
-                      >
-                        <v-icon name="hi-trash" scale="0.9" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Display all address fields from the API -->
-                  <p :class="['text-sm leading-relaxed font-srProDisplay', textSecondaryClasses]">
-                    {{ address.street }}<br />
-                    {{ address.city }}, {{ address.state }} {{ address.zipCode }}<br />
-                    {{ address.country }}
-                  </p>
-                </div>
-              </div>
-            </section>
+            <AddressesSection
+              :section-id="sections[4].id"
+              :addresses="addresses"
+              :addresses-loading="addressesLoading"
+              :addresses-error="addressesError"
+              :section-container-classes="sectionContainerClasses"
+              :text-classes="textClasses"
+              :section-header-classes="sectionHeaderClasses"
+              :button-outline-classes="buttonOutlineClasses"
+              :button-text-classes="buttonTextClasses"
+              :button-primary-classes="buttonPrimaryClasses"
+              :loading-text-classes="loadingTextClasses"
+              :empty-state-icon-classes="emptyStateIconClasses"
+              :empty-state-text-classes="emptyStateTextClasses"
+              :list-item-classes="listItemClasses"
+              :icon-color-classes="iconColorClasses"
+              :interactive-icon-classes="interactiveIconClasses"
+              :text-secondary-classes="textSecondaryClasses"
+              @refresh-addresses="refreshAddresses"
+            />
 
             <!-- Reviews Section -->
-            <section
-              :id="sections[5].id"
-              :class="['transition-colors duration-200', sectionContainerClasses]"
-            >
-              <div class="flex items-center justify-between mb-6">
-                <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
-                <span :class="sectionHeaderClasses">{{ $t('account.reviews.title') }}</span>
-                </h2>
-                <span :class="['text-sm font-medium', textSecondaryClasses]"
-                  >{{ reviews.length }} {{ $t('account.reviews.reviews') }}</span
-                >
-              </div>
-              <div class="space-y-4">
-                <div v-if="reviewsLoading" :class="['py-4 text-center', loadingTextClasses]">
-                  <span class="font-medium opacity-80">Loading reviews...</span>
-                </div>
-                <div v-else-if="reviewsError" class="p-4 text-red-700 border border-red-200 rounded-lg dark:text-red-400 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
-                  <span class="font-semibold">{{ reviewsError }}</span>
-                </div>
-                <div v-else-if="reviews.length === 0" class="py-8 text-center">
-                  <v-icon name="hi-annotation" scale="2" :class="['mb-4 opacity-80', emptyStateIconClasses]" />
-                  <p :class="['text-base font-srProDisplay', emptyStateTextClasses]">{{ $t('account.reviews.empty') }}</p>
-                </div>
-                <div v-else class="max-h-[400px] overflow-y-auto custom-scrollbar pr-2 space-y-4">
-                  <div
-                    v-for="review in reviews"
-                    :key="review.id"
-                    :class="reviewCardClasses"
-                  >
-                    <div class="flex items-start justify-between mb-3">
-                      <div>
-                        <span :class="reviewHeaderClasses">{{ review.product }}</span>
-                        <span class="ml-2 text-yellow-500 dark:text-yellow-400">{{ '★'.repeat(review.rating) }}</span>
-                      </div>
-                      <span :class="reviewMetaClasses">{{ review.date }}</span>
-                    </div>
-                    <p :class="['text-sm font-srProDisplay', reviewBodyClasses]">
-                      {{ review.comment }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <ReviewsSection
+              :section-id="sections[5].id"
+              :reviews="reviews"
+              :reviews-loading="reviewsLoading"
+              :reviews-error="reviewsError"
+              :section-container-classes="sectionContainerClasses"
+              :text-classes="textClasses"
+              :section-header-classes="sectionHeaderClasses"
+              :text-secondary-classes="textSecondaryClasses"
+              :loading-text-classes="loadingTextClasses"
+              :empty-state-icon-classes="emptyStateIconClasses"
+              :empty-state-text-classes="emptyStateTextClasses"
+              :review-card-classes="reviewCardClasses"
+              :review-header-classes="reviewHeaderClasses"
+              :review-meta-classes="reviewMetaClasses"
+              :review-body-classes="reviewBodyClasses"
+            />
 
             <!-- Settings Section -->
-            <section
-              :id="sections[6].id"
-              :class="['transition-colors duration-200', sectionContainerClasses]"
-            >
-              <h2 :class="['mb-6 text-xl font-semibold font-srProDisplay', textClasses]">
-                <span :class="sectionHeaderClasses">{{ $t('account.settings.title') }}</span>
-              </h2>
-              <div class="space-y-6">
-                <!-- Language Setting -->
-                <div :class="reviewContentClasses">
-                  <div class="flex items-center justify-between p-4">
-                    <div class="flex items-center gap-3">
-                      <div :class="['flex items-center justify-center w-10 h-10 rounded-lg', iconContainerClasses]">
-                        <v-icon name="hi-globe" scale="1.2" :class="iconInContainerClasses" />
-                      </div>
-                      <div>
-                        <h4 :class="['font-medium font-srProDisplay', textClasses]">
-                          {{ $t('account.settings.language.title') }}
-                        </h4>
-                        <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
-                          {{ $t('account.settings.language.description') }}
-                        </p>
-                      </div>
-                    </div>
-                    <select
-                      :value="currentLocale.code"
-                      @change="handleLanguageChange(($event.target as HTMLSelectElement).value)"
-                      class="px-3 py-2 text-sm text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg cursor-pointer dark:placeholder-gray-500 dark:border-gray-600 font-srProDisplay dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-blue-600 dark:focus:border-blue-400 focus:shadow-lg"
-                    >
-                      <option v-for="locale in availableLocales" :key="locale.code" :value="locale.code">
-                        {{ locale.name }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- App Theme Setting -->
-                <div :class="reviewContentClasses">
-                  <div class="flex items-center justify-between p-4">
-                    <div class="flex items-center gap-3">
-                      <div :class="['flex items-center justify-center w-10 h-10 rounded-lg', iconContainerClasses]">
-                        <v-icon name="hi-color-swatch" scale="1.2" :class="iconInContainerClasses" />
-                      </div>
-                      <div>
-                        <h4 :class="['font-medium font-srProDisplay', textClasses]">
-                          {{ $t('account.settings.theme.title') }}
-                        </h4>
-                        <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
-                          {{ $t('account.settings.theme.description') }}
-                        </p>
-                        <!-- Current theme indicator -->
-                        <p class="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">
-                          Current: {{ themeStore.selectedTheme === 'system' ? `System (${themeStore.effectiveTheme})` : themeStore.selectedTheme }}
-                        </p>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <div class="relative group">
-                        <button
-                          @click="setTheme('light')"
-                          :class="[
-                            themeButtonBaseClasses,
-                            themeStore.selectedTheme === 'light' ? themeButtonActiveClasses : themeButtonInactiveClasses
-                          ]"
-                          aria-label="Tema claro"
-                          tabindex="0"
-                        >
-                          <v-icon name="hi-sun" class="w-4 h-4" />
-                        </button>
-                        <!-- Tooltip -->
-                        <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
-                          Light theme
-                        </div>
-                      </div>
-
-                      <div class="relative group">
-                        <button
-                          @click="setTheme('dark')"
-                          :class="[
-                            themeButtonBaseClasses,
-                            themeStore.selectedTheme === 'dark' ? themeButtonActiveClasses : themeButtonInactiveClasses
-                          ]"
-                          aria-label="Tema oscuro"
-                          tabindex="0"
-                        >
-                          <v-icon name="hi-moon" class="w-4 h-4" />
-                        </button>
-                        <!-- Tooltip -->
-                        <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
-                          Dark theme
-                        </div>
-                      </div>
-
-                      <div class="relative group">
-                        <button
-                          @click="setTheme('system')"
-                          :class="[
-                            themeButtonBaseClasses,
-                            themeStore.selectedTheme === 'system' ? themeButtonActiveClasses : themeButtonInactiveClasses
-                          ]"
-                          aria-label="Tema del sistema"
-                          tabindex="0"
-                        >
-                          <v-icon name="hi-desktop-computer" class="w-4 h-4" />
-                        </button>
-                        <!-- Tooltip -->
-                        <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
-                          Follow system preference
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Security Setting -->
-                <div :class="reviewContentClasses">
-                  <div class="flex items-center justify-between p-4">
-                    <div class="flex items-center gap-3">
-                      <div :class="['flex items-center justify-center w-10 h-10 rounded-lg', iconContainerClasses]">
-                        <v-icon name="hi-key" scale="1.2" :class="iconInContainerClasses" />
-                      </div>
-                      <div>
-                        <h4 :class="['font-medium font-srProDisplay', textClasses]">
-                          {{ $t('account.settings.security.title') }}
-                        </h4>
-                        <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
-                          {{ $t('account.settings.security.description') }}
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      :class="['px-4 text-sm transition-all duration-200', buttonOutlineClasses]"
-                      text-color="currentColor"
-                      bg-color="transparent"
-                      border-width="1px"
-                      width="auto"
-                      height="36px"
-                      @click="openChangePasswordModal"
-                    >
-                      <span :class="buttonTextClasses">{{ $t('account.settings.security.changePasswordButton') }}</span>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <SettingsSection
+              :section-id="sections[6].id"
+              :current-locale="currentLocale"
+              :available-locales="availableLocales"
+              :selected-theme="themeStore.selectedTheme"
+              :effective-theme="themeStore.effectiveTheme"
+              :section-container-classes="sectionContainerClasses"
+              :text-classes="textClasses"
+              :section-header-classes="sectionHeaderClasses"
+              :text-secondary-classes="textSecondaryClasses"
+              :review-content-classes="reviewContentClasses"
+              :icon-container-classes="iconContainerClasses"
+              :icon-in-container-classes="iconInContainerClasses"
+              :theme-button-base-classes="themeButtonBaseClasses"
+              :theme-button-active-classes="themeButtonActiveClasses"
+              :theme-button-inactive-classes="themeButtonInactiveClasses"
+              :button-outline-classes="buttonOutlineClasses"
+              :button-text-classes="buttonTextClasses"
+              @language-change="handleLanguageChange"
+              @theme-change="setTheme"
+              @open-change-password="openChangePasswordModal"
+            />
           </main>
         </div>
       </div>
@@ -652,7 +236,6 @@ import { useLanguage } from '@/composables/useLanguage'
 import { useToast } from '@/composables/useToast'
 import { useThemeClasses } from '@/composables/useThemeClasses'
 import Wrapper from '@/components/shared/Wrapper.vue'
-import Button from '@/components/shared/Button.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
 // Lazy load heavy components for better performance
@@ -665,6 +248,12 @@ const ChangePasswordModal = defineAsyncComponent(() => import('@/components/user
 import DebugPanel from '@/components/user/DebugPanel.vue'
 import AccountNavigation from '@/components/user/AccountNavigation.vue'
 import ProfileSection from '@/components/user/ProfileSection.vue'
+import OrdersSection from '@/components/user/OrdersSection.vue'
+import RefundsSection from '@/components/user/RefundsSection.vue'
+import WishlistSection from '@/components/user/WishlistSection.vue'
+import AddressesSection from '@/components/user/AddressesSection.vue'
+import ReviewsSection from '@/components/user/ReviewsSection.vue'
+import SettingsSection from '@/components/user/SettingsSection.vue'
 
 import axios from '@/lib/axios'
 
@@ -1066,33 +655,6 @@ const setTheme = (newTheme: 'light' | 'dark' | 'system') => {
 // Language change wrapper with toast
 const handleLanguageChange = (newLocale: string) => {
   changeLanguage(newLocale)
-}
-
-// Helper functions to determine status colors.
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'Delivered':
-      return 'bg-green-100 text-green-800'
-    case 'Shipped':
-      return 'bg-blue-100 text-blue-800'
-    case 'Cancelled':
-      return 'bg-red-100 text-red-800'
-    default:
-      return 'bg-gray-100 text-gray-800'
-  }
-}
-
-const getRefundStatusColor = (status: string) => {
-  switch (status) {
-    case 'Completed':
-    case 'Refunded':
-      return 'bg-green-100 text-green-800'
-    case 'Processing':
-    case 'Returned':
-      return 'bg-orange-100 text-orange-800'
-    default:
-      return 'bg-gray-100 text-gray-800'
-  }
 }
 
 const activeSection = ref('profile')
@@ -1768,27 +1330,6 @@ const removeFromWishlist = async (productId: number, productName: string) => {
   opacity: 0;
 }
 
-/* Optimized scrollbar styles with hardware acceleration */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #d1d5db #f3f4f6;
-  transform: translateZ(0); /* Hardware acceleration */
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #f3f4f6;
-  border-radius: 6px;
-}
-
 /* Hardware acceleration for animations */
 .animate-spin {
   transform: translateZ(0);
@@ -1803,12 +1344,6 @@ const removeFromWishlist = async (productId: number, productName: string) => {
 /* Performance optimization for hover effects */
 .group:hover .group-hover\:opacity-100 {
   will-change: opacity;
-}
-
-/* Prevent layout shifts with explicit dimensions */
-.w-16.h-16 img {
-  min-height: 4rem;
-  min-width: 4rem;
 }
 
 /* Optimize focus states for accessibility */
