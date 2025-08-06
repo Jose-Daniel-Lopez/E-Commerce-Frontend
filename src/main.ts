@@ -56,6 +56,7 @@ addIcons(
   AllIcons.HiCheckCircle,
   AllIcons.HiExclamationCircle,
   AllIcons.HiBadgeCheck,
+  AllIcons.HiUsers,
   AllIcons.HiMenu,
 
   // ====== Review Stars ======
