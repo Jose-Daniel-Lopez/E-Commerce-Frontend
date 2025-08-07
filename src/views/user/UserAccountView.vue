@@ -225,6 +225,7 @@
   </div>
 </template>
 
+<!-- Script section -->
 <script setup lang="ts">
 import '@/assets/base.css'
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
