@@ -334,10 +334,12 @@ import CreditCard from '@/components/shared/CreditCard.vue'
 import { useRouter } from 'vue-router'
 import { useUserCartStore } from '@/stores/userCart'
 import { useCheckoutStore } from '@/stores/checkout'
+import { useToast } from '@/composables/useToast'
 
 const router = useRouter()
 const userCartStore = useUserCartStore()
 const checkoutStore = useCheckoutStore()
+const toast = useToast()
 
 // Payment methods
 const paymentMethods = ref([
@@ -409,13 +411,88 @@ function goBack() {
   router.push({ name: 'checkoutShipping' })
 }
 
-function processPayment() {
+async function processPayment() {
+  if (!isFormValid.value) {
+    toast.warning('Please complete all required payment information', {
+      title: 'Payment Information Required'
+    })
+    return
+  }
+
+  // Determine the loading message based on payment method
+  let loadingMessage = 'Processing payment...'
+  let successMessage = 'Credit card payment completed successfully!'
+
   if (selectedPaymentMethod.value === 'apple-pay') {
-    alert('Payment processed successfully with Apple Pay!')
+    loadingMessage = 'Processing Apple Pay payment...'
+    successMessage = 'Payment completed successfully with Apple Pay!'
   } else if (selectedPaymentMethod.value === 'paypal') {
-    alert('You will be redirected to PayPal to complete your payment.')
-  } else {
-    alert('Payment processed successfully!')
+    loadingMessage = 'Redirecting to PayPal...'
+    successMessage = 'PayPal payment completed successfully!'
+  }
+
+  try {
+    // Start loading toast
+    const paymentLoader = toast.loading(loadingMessage)
+
+    // Simulate payment processing delay
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
+    // Clear the cart (both server and client)
+    const clearResult = await userCartStore.clearCart()
+
+    if (clearResult.success) {
+      // Clear checkout state
+      checkoutStore.clearCheckoutState()
+
+      // Show success message
+      paymentLoader.success(successMessage, {
+        title: 'Payment Successful'
+      })
+
+      // Show order confirmation toast
+      setTimeout(() => {
+        toast.success('Your order has been confirmed and will be processed shortly.', {
+          title: 'Order Confirmed',
+          duration: 5000,
+          action: {
+            label: 'View Orders',
+            handler: () => {
+              router.push({ name: 'userAccount' })
+            }
+          }
+        })
+      }, 1000)
+
+      // Navigate to home after a short delay
+      setTimeout(() => {
+        router.push({ name: 'home' })
+      }, 2500)
+
+    } else {
+      console.error('Failed to clear cart:', clearResult.error)
+      paymentLoader.error('Payment was successful, but there was an issue processing your order.', {
+        title: 'Processing Error'
+      })
+
+      toast.warning('Please refresh the page or contact support if the issue persists.', {
+        title: 'Action Required',
+        persistent: true,
+        action: {
+          label: 'Refresh Page',
+          handler: () => {
+            window.location.reload()
+          }
+        }
+      })
+    }
+  } catch (error) {
+    console.error('Error processing payment:', error)
+
+    toast.error('There was an error processing your payment. Please try again.', {
+      title: 'Payment Error',
+      duration: 6000
+    })
   }
 }
 

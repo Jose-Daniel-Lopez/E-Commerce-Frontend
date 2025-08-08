@@ -231,10 +231,45 @@ export const useUserCartStore = defineStore('userCart', () => {
     }
   }
 
-  function clearCart() {
-    cart.value = null
-    cartItems.value = []
-    error.value = null
+  async function clearCart() {
+    if (!cart.value || cartItems.value.length === 0) {
+      // If cart is already empty, just clear local state
+      cart.value = null
+      cartItems.value = []
+      error.value = null
+      return { success: true }
+    }
+
+    try {
+      loading.value = true
+      error.value = null
+
+      // Delete all cart items from the server
+      const deletePromises = cartItems.value.map(item =>
+        api.delete(`/cartItems/${item.id}`)
+      )
+
+      await Promise.all(deletePromises)
+
+      // Clear local state
+      cart.value = null
+      cartItems.value = []
+
+      console.log('🟢 [CART STORE] Cart cleared successfully')
+      return { success: true }
+    } catch (e) {
+      console.error('🔴 [CART STORE] Failed to clear cart:', e)
+      let errorMessage = 'Failed to clear cart'
+
+      if (e instanceof Error) {
+        errorMessage = `Error clearing cart: ${e.message}`
+      }
+
+      error.value = errorMessage
+      return { success: false, error: errorMessage }
+    } finally {
+      loading.value = false
+    }
   }
 
   const formatPrice = (price: number) => {
