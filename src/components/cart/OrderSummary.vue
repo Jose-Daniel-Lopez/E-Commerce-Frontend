@@ -61,12 +61,14 @@
     </div>
 
     <!-- Checkout Button -->
-    <button
-      @click="$emit('checkout')"
-      class="w-full bg-black text-white font-srProDisplay font-medium py-4 rounded-md hover:bg-gray-800 transition-colors duration-200 mt-4 cursor-pointer"
-    >
-      Checkout
-    </button>
+      <button
+        @click="$emit('checkout')"
+        :disabled="props.isCartEmpty"
+        class="w-full bg-black text-white font-srProDisplay font-medium py-4 rounded-md hover:bg-gray-800 transition-colors duration-200 mt-4 cursor-pointer"
+        :class="{ 'opacity-50 cursor-not-allowed': props.isCartEmpty }"
+      >
+        Checkout
+      </button>
   </div>
 </template>
 
@@ -78,6 +80,7 @@ interface Props {
   estimatedTax: number
   estimatedShipping: number
   discount: number
+  isCartEmpty: boolean
 }
 
 const props = defineProps<Props>()
