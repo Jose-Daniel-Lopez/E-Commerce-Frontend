@@ -335,11 +335,13 @@ import { useRouter } from 'vue-router'
 import { useUserCartStore } from '@/stores/userCart'
 import { useCheckoutStore } from '@/stores/checkout'
 import { useToast } from '@/composables/useToast'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const userCartStore = useUserCartStore()
 const checkoutStore = useCheckoutStore()
 const toast = useToast()
+const authStore = useAuthStore()
 
 // Payment methods
 const paymentMethods = ref([
@@ -419,7 +421,6 @@ async function processPayment() {
     return
   }
 
-  // Determine the loading message based on payment method
   let loadingMessage = 'Processing payment...'
   let successMessage = 'Credit card payment completed successfully!'
 
@@ -432,25 +433,30 @@ async function processPayment() {
   }
 
   try {
-    // Start loading toast
     const paymentLoader = toast.loading(loadingMessage)
-
-    // Simulate payment processing delay
     await new Promise(resolve => setTimeout(resolve, 2000))
 
-    // Clear the cart (both server and client)
+    // --- ORDER CREATION LOGIC ---
+    const userId = authStore.user?.id
+    const shippingAddressId = selectedAddress.value?.id
+    // If you have a discount code, add it here
+  const discountCode: string | undefined = undefined
+    // Example: discountCode = checkoutStore.discountCode
+    if (!userId || !shippingAddressId) {
+      paymentLoader.error('Missing user or address information.', { title: 'Order Error' })
+      return
+    }
+    const orderResult = await userCartStore.createOrder({ userId, shippingAddressId, discountCode })
+    if (!orderResult.success) {
+      paymentLoader.error('Order creation failed. Please try again.', { title: 'Order Error' })
+      return
+    }
+    // --- END ORDER CREATION ---
+
     const clearResult = await userCartStore.clearCart()
-
     if (clearResult.success) {
-      // Clear checkout state
       checkoutStore.clearCheckoutState()
-
-      // Show success message
-      paymentLoader.success(successMessage, {
-        title: 'Payment Successful'
-      })
-
-      // Show order confirmation toast
+      paymentLoader.success(successMessage, { title: 'Payment Successful' })
       setTimeout(() => {
         toast.success('Your order has been confirmed and will be processed shortly.', {
           title: 'Order Confirmed',
@@ -463,18 +469,12 @@ async function processPayment() {
           }
         })
       }, 1000)
-
-      // Navigate to home after a short delay
       setTimeout(() => {
         router.push({ name: 'home' })
       }, 2500)
-
     } else {
       console.error('Failed to clear cart:', clearResult.error)
-      paymentLoader.error('Payment was successful, but there was an issue processing your order.', {
-        title: 'Processing Error'
-      })
-
+      paymentLoader.error('Payment was successful, but there was an issue processing your order.', { title: 'Processing Error' })
       toast.warning('Please refresh the page or contact support if the issue persists.', {
         title: 'Action Required',
         persistent: true,
@@ -488,7 +488,6 @@ async function processPayment() {
     }
   } catch (error) {
     console.error('Error processing payment:', error)
-
     toast.error('There was an error processing your payment. Please try again.', {
       title: 'Payment Error',
       duration: 6000

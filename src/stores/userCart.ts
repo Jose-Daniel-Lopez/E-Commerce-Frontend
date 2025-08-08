@@ -231,6 +231,36 @@ export const useUserCartStore = defineStore('userCart', () => {
     }
   }
 
+  async function createOrder({ userId, shippingAddressId, discountCode }: { userId: number, shippingAddressId: number, discountCode?: string }) {
+    try {
+      loading.value = true
+      error.value = null
+      const payload: { userId: number, shippingAddressId: number, discountCode?: string } = {
+        userId,
+        shippingAddressId
+      }
+      if (discountCode) {
+        payload.discountCode = discountCode
+      }
+      // Debug log
+      console.log('[ORDER DEBUG] POST http://localhost:8080/orders')
+      console.log('[ORDER DEBUG] Payload:', JSON.stringify(payload, null, 2))
+      const response = await api.post('/orders', payload)
+      console.log('[ORDER DEBUG] Response:', response)
+      return { success: true, data: response.data }
+    } catch (e) {
+      console.error('🔴 [CART STORE] Failed to create order:', e)
+      let errorMessage = 'Failed to create order'
+      if (e instanceof Error) {
+        errorMessage = `Error creating order: ${e.message}`
+      }
+      error.value = errorMessage
+      return { success: false, error: errorMessage }
+    } finally {
+      loading.value = false
+    }
+  }
+
   async function clearCart() {
     if (!cart.value || cartItems.value.length === 0) {
       // If cart is already empty, just clear local state
@@ -300,15 +330,16 @@ export const useUserCartStore = defineStore('userCart', () => {
     totalQuantity,
     totalPrice,
     hasItems,
-    // Actions
-    fetchUserCart,
-    fetchCartItems,
-    addProductToCart,
-    updateItemQuantity,
-    removeItem,
-    clearCart,
-    // Utilities
-    formatPrice,
-    formatDate,
+  // Actions
+  fetchUserCart,
+  fetchCartItems,
+  addProductToCart,
+  updateItemQuantity,
+  removeItem,
+  clearCart,
+  createOrder,
+  // Utilities
+  formatPrice,
+  formatDate,
   }
 })
