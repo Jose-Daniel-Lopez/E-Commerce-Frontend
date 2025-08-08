@@ -1,5 +1,5 @@
 <template>
-  <section class="h-auto w-full">
+  <section :class="cardClasses">
     <Wrapper class="flex h-fit w-full flex-col gap-8 py-14">
       <!-- Tabs Navigation -->
       <div class="relative flex h-9 w-full items-center justify-between">
@@ -20,7 +20,7 @@
               class="cursor-pointer !w-auto !flex-shrink-0 font-srProDisplay text-base sm:text-lg font-medium outline-none"
               @click="handleTabClick(tab)"
             >
-              <span class="tab whitespace-nowrap px-2 py-1" :class="{ activeTab: value === tab }">
+              <span :class="['tab whitespace-nowrap px-2 py-1 transition-colors duration-200', textSecondaryClasses, { activeTab: value === tab }]">
                 {{ tab }}
               </span>
             </SwiperSlide>
@@ -30,7 +30,7 @@
         <div class="flex items-center gap-2 absolute right-0 top-1/2 -translate-y-1/2 z-20">
           <button
             ref="prevBtnRef"
-            class="custom-swiper-button-prev-products-browse flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            :class="['custom-swiper-button-prev-products-browse flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed', interactiveIconClasses]"
             type="button"
             aria-label="Previous slide"
             :disabled="!canGoPrev"
@@ -51,7 +51,7 @@
           </button>
           <button
             ref="nextBtnRef"
-            class="custom-swiper-button-next-products-browse flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            :class="['custom-swiper-button-next-products-browse flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed', interactiveIconClasses]"
             type="button"
             aria-label="Next slide"
             :disabled="!canGoNext"
@@ -109,20 +109,20 @@
           <!-- Loading State -->
           <SwiperSlide v-for="n in 8" :key="`loading-${n}`">
             <div class="mb-4 w-[163.5px] xs:w-[190px] sm:w-[298px] md:w-[240px] xl:w-[268px]">
-              <div class="animate-pulse rounded-[9px] bg-gray-200 h-[355px] sm:h-[330px] md:h-[390px]"></div>
+              <div class="animate-pulse rounded-[9px] bg-gray-200 dark:bg-gray-700 h-[355px] sm:h-[330px] md:h-[390px] transition-colors duration-200"></div>
             </div>
           </SwiperSlide>
         </template>
         <template v-else>
           <!-- No Data State -->
           <div
-            class="mb-4 ml-[2px] h-auto w-[163.5px] rounded-[9px] px-3 py-6 duration-500 hover:scale-[1.02] xs:w-[190px] sm:mb-0 sm:w-[298px] md:h-[435px] md:w-[240px] md:px-4 xl:w-[268px]"
+            :class="['mb-4 ml-[2px] h-auto w-[163.5px] rounded-[9px] px-3 py-6 hover:scale-[1.02] xs:w-[190px] sm:mb-0 sm:w-[298px] md:h-[435px] md:w-[240px] md:px-4 xl:w-[268px] transition-all duration-200', cardClasses]"
           >
             <div
               class="flex h-[355px] w-full flex-col items-center justify-center gap-4 sm:h-[330px] md:h-[390px]"
             >
               <div
-                class="flex items-center justify-center font-srProDisplay text-xl font-semibold"
+                :class="['flex items-center justify-center font-srProDisplay text-xl font-semibold transition-colors duration-200', emptyStateTextClasses]"
               >
                 {{ $t('productsSection.noData') }}
               </div>
@@ -142,6 +142,7 @@ import Wrapper from '../shared/Wrapper.vue'
 import ProductCard from '../shared/ProductCard.vue'
 import ViewMoreCard from '../shared/ViewMoreCard.vue'
 import { useProductStore } from '@/stores/products'
+import { useThemeClasses } from '@/composables/useThemeClasses'
 
 // Import Swiper styles
 import 'swiper/css'
@@ -164,6 +165,14 @@ const nextBtnRef = ref<HTMLButtonElement | null>(null)
 
 // Store
 const productStore = useProductStore()
+
+// Theme classes
+const {
+  cardClasses,
+  textSecondaryClasses,
+  interactiveIconClasses,
+  emptyStateTextClasses
+} = useThemeClasses()
 
 // Products data - now from backend
 const newProducts = ref<Product[]>([])

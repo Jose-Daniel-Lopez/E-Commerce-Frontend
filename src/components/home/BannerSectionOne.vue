@@ -1,5 +1,5 @@
 <template>
-  <section class="overflow-hidden h-[640px] w-full">
+  <section class="overflow-hidden h-[640px] w-full bg-white dark:bg-gray-900 transition-colors duration-200">
     <Swiper
       :modules="modules"
       :slides-per-view="4"
@@ -12,22 +12,22 @@
       class="bannerOne w-full"
     >
       <SwiperSlide>
-        <div class="h-[640px] bg-white pb-[56px]">
+        <div class="h-[640px] bg-white dark:bg-gray-800 pb-[56px] transition-colors duration-200">
           <div class="h-[338px] w-full overflow-hidden">
             <img
               src="/images/Smart-watch.png"
               alt=""
-              class="object-contain object-center w-full h-[338px]"
+              class="object-contain object-center w-full h-[338px] transition-opacity duration-200"
             />
           </div>
           <div class="flex flex-col gap-4 p-[38px_32px_56px_32px]">
             <h3
-              class="text-center font-srProDisplay text-[33px] font-light text-black lg:text-left"
+              class="text-center font-srProDisplay text-[33px] font-light text-black dark:text-white lg:text-left transition-colors duration-200"
             >
               Popular Products
             </h3>
             <p
-              class="text-center font-srProDisplay text-sm font-medium text-[#909090] lg:text-left"
+              class="text-center font-srProDisplay text-sm font-medium text-[#909090] dark:text-gray-400 lg:text-left transition-colors duration-200"
             >
               iPad combines a magnificent 10.2-inch Retina display, incredible performance,
               multitasking and ease of use.
@@ -48,7 +48,7 @@
       </SwiperSlide>
 
       <SwiperSlide>
-        <div class="h-[640px] bg-[#f9f9f9] pb-[56px]">
+        <div class="h-[640px] bg-[#f9f9f9] dark:bg-gray-700 pb-[56px] transition-colors duration-200">
           <div class="h-[338px] w-full overflow-hidden">
             <img
               src="/images/apple-tablet.png"
@@ -58,12 +58,12 @@
           </div>
           <div class="flex flex-col gap-4 p-[38px_32px_56px_32px]">
             <h3
-              class="text-center font-srProDisplay text-[33px] font-light text-black lg:text-left"
+              class="text-center font-srProDisplay text-[33px] font-light text-black dark:text-white lg:text-left transition-colors duration-200"
             >
               Ipad Pro
             </h3>
             <p
-              class="text-center font-srProDisplay text-sm font-medium text-[#909090] lg:text-left"
+              class="text-center font-srProDisplay text-sm font-medium text-[#909090] dark:text-gray-400 lg:text-left transition-colors duration-200"
             >
               iPad combines a magnificent 10.2-inch Retina display, incredible performance,
               multitasking and ease of use.
@@ -84,22 +84,22 @@
       </SwiperSlide>
 
       <SwiperSlide>
-        <div class="h-[640px] bg-[#eaeaea] pb-[56px]">
+        <div class="h-[640px] bg-[#eaeaea] dark:bg-gray-600 pb-[56px] transition-colors duration-200">
           <div class="h-[338px] w-full overflow-hidden">
             <img
               src="/images/Apple-phone.png"
               alt=""
-              class="object-contain object-center w-full h-[338px]"
+              class="object-contain object-center w-full h-[338px] transition-opacity duration-200"
             />
           </div>
           <div class="flex flex-col gap-4 p-[38px_32px_56px_32px]">
             <h3
-              class="text-center font-srProDisplay text-[33px] font-light text-black lg:text-left"
+              class="text-center font-srProDisplay text-[33px] font-light text-black dark:text-white lg:text-left transition-colors duration-200"
             >
               Samsung Galaxy
             </h3>
             <p
-              class="text-center font-srProDisplay text-sm font-medium text-[#909090] lg:text-left"
+              class="text-center font-srProDisplay text-sm font-medium text-[#909090] dark:text-gray-400 lg:text-left transition-colors duration-200"
             >
               iPad combines a magnificent 10.2-inch Retina display, incredible performance,
               multitasking and ease of use.
@@ -120,22 +120,22 @@
       </SwiperSlide>
 
       <SwiperSlide>
-        <div class="h-[640px] bg-[#2c2c2c] pb-[56px]">
+        <div class="h-[640px] bg-[#2c2c2c] dark:bg-gray-800 pb-[56px] transition-colors duration-200">
           <div class="h-[338px] w-full overflow-hidden">
             <img
               src="/images/Macbook.png"
               alt=""
-              class="object-contain object-center w-full h-[338px]"
+              class="object-contain object-center w-full h-[338px] transition-opacity duration-200"
             />
           </div>
           <div class="flex flex-col gap-4 p-[38px_32px_56px_32px]">
             <h3
-              class="text-center font-srProDisplay text-[33px] font-light text-white lg:text-left"
+              class="text-center font-srProDisplay text-[33px] font-light text-white lg:text-left transition-colors duration-200"
             >
               Macbook Pro
             </h3>
             <p
-              class="text-center font-srProDisplay text-sm font-medium text-[#909090] lg:text-left"
+              class="text-center font-srProDisplay text-sm font-medium text-[#909090] dark:text-gray-400 lg:text-left transition-colors duration-200"
             >
               iPad combines a magnificent 10.2-inch Retina display, incredible performance,
               multitasking and ease of use.
@@ -158,7 +158,7 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination } from 'swiper/modules'

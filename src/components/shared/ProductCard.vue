@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4"
+    :class="['relative h-auto rounded-[9px] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4 transition-colors', cardClasses]"
   >
     <!-- Debug Panel (only visible in development) -->
     <div
@@ -68,7 +68,7 @@
           <div class="h-[75px] sm:h-[50px]">
             <a href="#" @click.prevent class="block">
               <h3
-                class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors"
+                :class="['text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors', textClasses]"
               >
                 {{ truncatedName }}
               </h3>
@@ -81,11 +81,11 @@
             </span>
             <span
               v-if="hasDiscount"
-              class="font-figtree text-lg font-medium text-gray-500 line-through"
+              :class="['font-figtree text-lg font-medium line-through', textSecondaryClasses]"
             >
               ${{ product.originalPrice }}
             </span>
-            <span v-if="!hasDiscount" class="font-figtree text-xl font-semibold">
+            <span v-if="!hasDiscount" :class="['font-figtree text-xl font-semibold', textClasses]">
               {{ isUpcoming ? 'N/A' : `$${product.originalPrice}` }}
             </span>
           </div>
@@ -118,6 +118,7 @@ import { storeToRefs } from 'pinia'
 import Button from './Button.vue'
 import { useWishlistStore } from '@/stores/wishlistStore'
 import { useAuthStore } from '@/stores/auth'
+import { useThemeClasses } from '@/composables/useThemeClasses'
 
 interface ProductImage {
   url: string
@@ -149,6 +150,13 @@ const authStore = useAuthStore()
 const wishlistStore = useWishlistStore()
 const { user } = storeToRefs(authStore)
 const { wishlistProducts, wishlistId } = storeToRefs(wishlistStore)
+
+// Theme classes
+const {
+  cardClasses,
+  textClasses,
+  textSecondaryClasses
+} = useThemeClasses()
 
 const truncatedName = computed(() => {
   return props.product.name.length <= 40
