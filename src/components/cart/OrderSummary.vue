@@ -1,14 +1,20 @@
 <template>
   <div class="bg-white border border-[#EBEBEB] rounded-[10px] p-6 py-16 h-full">
-    <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">Order Summary</h2>
+    <!-- Section header for order summary -->
+    <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">
+      Order Summary
+    </h2>
 
     <!-- Discount Code Form -->
     <form class="space-y-4" @submit.prevent>
       <div>
+        <!-- Label and success feedback -->
         <div class="flex items-center justify-between mb-2">
           <label class="block font-srProDisplay text-sm text-black">
             Discount code / Promo code
           </label>
+
+          <!-- Success feedback with transition effect when coupon is applied -->
           <transition name="fade">
             <span
               v-if="couponEffect"
@@ -18,6 +24,8 @@
             </span>
           </transition>
         </div>
+
+        <!-- Input field with apply button -->
         <div class="relative">
           <input
             type="text"
@@ -61,45 +69,73 @@
     </div>
 
     <!-- Checkout Button -->
-      <button
-        @click="$emit('checkout')"
-        :disabled="props.isCartEmpty"
-        class="w-full bg-black text-white font-srProDisplay font-medium py-4 rounded-md hover:bg-gray-800 transition-colors duration-200 mt-4 cursor-pointer"
-        :class="{ 'opacity-50 cursor-not-allowed': props.isCartEmpty }"
-      >
-        Checkout
-      </button>
+    <button
+      @click="$emit('checkout')"
+      :disabled="props.isCartEmpty"
+      class="w-full bg-black text-white font-srProDisplay font-medium py-4 rounded-md hover:bg-gray-800 transition-colors duration-200 mt-4 cursor-pointer"
+      :class="{ 'opacity-50 cursor-not-allowed': props.isCartEmpty }"
+    >
+      Checkout
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
+// Vue imports
 import { ref, computed } from 'vue'
 
+/**
+ * Props definition for OrderSummary component
+ *
+ * All values are expected in cents (integer) to avoid floating-point precision issues.
+ */
 interface Props {
-  subtotal: number
-  estimatedTax: number
-  estimatedShipping: number
-  discount: number
-  isCartEmpty: boolean
+  subtotal: number // Cart subtotal in cents
+  estimatedTax: number // Estimated tax in cents
+  estimatedShipping: number // Estimated shipping cost in cents
+  discount: number // Discount amount in euros (converted to cents internally)
+  isCartEmpty: boolean // Flag to disable checkout if cart is empty
 }
 
 const props = defineProps<Props>()
 
+/**
+ * Events emitted by this component:
+ * - 'checkout': Triggered when user clicks checkout button
+ * - 'applyDiscount': Sends the entered discount code to parent for processing
+ */
 const emit = defineEmits<{
   checkout: []
   applyDiscount: [code: string]
 }>()
 
-const localDiscountCode = ref('')
-const couponEffect = ref(false)
-
-const total = computed(
-  () => props.subtotal - props.discount * 100 + props.estimatedTax + props.estimatedShipping,
-)
+/**
+ * Local state
+ */
+const localDiscountCode = ref<string>('') // Tracks user input for discount code
+const couponEffect = ref<boolean>(false) // Controls visual feedback animation
 
 /**
- * Format price with proper currency formatting
- * Converts from cents (API format) to euros and formats with Spanish locale
+ * Computed total price
+ * - Subtotal (in cents)
+ * - Minus discount (converted from euros to cents)
+ * - Plus tax and shipping (in cents)
+ */
+const total = computed<number>(() => {
+  return (
+    props.subtotal -
+    props.discount * 100 + // Convert euros to cents
+    props.estimatedTax +
+    props.estimatedShipping
+  )
+})
+
+/**
+ * Format price from cents to localized currency string
+ * Uses Spanish locale (es-ES) with EUR currency formatting
+ *
+ * @param priceInCents - The amount in cents (e.g., 1299 = €12.99)
+ * @returns Formatted currency string (e.g., "12,99 €")
  */
 const formatPrice = (priceInCents: number): string => {
   const priceInEuros = priceInCents / 100
@@ -111,25 +147,35 @@ const formatPrice = (priceInCents: number): string => {
   }).format(priceInEuros)
 }
 
+/**
+ * Handle discount code application
+ * - Triggers visual feedback if the code is 'SAVE10'
+ * - Emits the code to parent component for business logic processing
+ * - Clears visual effect after 1.5 seconds
+ */
 const handleApplyDiscount = () => {
-  // Hardcoded: if code is 'SAVE10', apply 10€ discount
-  if (localDiscountCode.value.trim().toUpperCase() === 'SAVE10') {
+  const code = localDiscountCode.value.trim().toUpperCase()
+
+  // Visual feedback for successful coupon (hardcoded for 'SAVE10')
+  if (code === 'SAVE10') {
     couponEffect.value = true
     setTimeout(() => {
       couponEffect.value = false
     }, 1500)
   }
 
-  // Emit the discount code to parent
+  // Always emit the code so parent can apply discount logic
   emit('applyDiscount', localDiscountCode.value)
 }
 </script>
 
 <style scoped>
+/* Fade transition for coupon success message */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.4s;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
