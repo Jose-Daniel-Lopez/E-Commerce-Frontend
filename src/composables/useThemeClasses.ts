@@ -180,6 +180,11 @@ export const useThemeClasses = () => {
     'text-black dark:text-white font-semibold'
   )
 
+  // Classes for footer sections
+  const footerLinkClasses = computed(() =>
+  "transition-colors hover:text-orange-400 text-gray-300 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200"
+  )
+
   return {
     cardClasses,
     textClasses,
@@ -215,6 +220,7 @@ export const useThemeClasses = () => {
     loadingTextClasses,
     iconColorClasses,
     interactiveIconClasses,
-    priceTextClasses
+    priceTextClasses,
+    footerLinkClasses
   }
 }
