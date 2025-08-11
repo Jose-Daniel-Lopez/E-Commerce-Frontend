@@ -1614,8 +1614,26 @@ const fetchProductVariants = async (productId: number) => {
                       </div>
                     </div>
                     <div class="flex justify-end gap-2 mt-6">
-                      <button type="button" @click="closeReviewModal" class="px-4 py-2 rounded bg-gray-100 text-gray-700 font-medium hover:bg-gray-200">Cancel</button>
-                      <button type="submit" :disabled="reviewSubmitting" class="px-6 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                      <button
+                        type="button"
+                        @click="closeReviewModal"
+                        :class="[
+                          'flex-1 border border-gray-300 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
+                          'text-gray-700 hover:bg-gray-50'
+                        ]"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        :disabled="reviewSubmitting"
+                        :class="[
+                          'flex-1 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
+                          !reviewSubmitting
+                            ? 'bg-black text-white hover:bg-gray-800'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        ]"
+                      >
                         <span v-if="reviewSubmitting">Submitting...</span>
                         <span v-else>Submit Review</span>
                       </button>
