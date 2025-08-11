@@ -1,6 +1,7 @@
 <script setup lang="ts">
-// Debug panel state
-const showDebug = ref(false)
+// =======================
+// 📦 IMPORTS
+// =======================
 import { onMounted, ref, computed, watch } from 'vue'
 import { useProductStore } from '@/stores/products'
 import { useCategoriesStore } from '@/stores/categories'
@@ -11,126 +12,50 @@ import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import { storeToRefs } from 'pinia'
 
 // =======================
-// 🧩 Props
+// 🧩 PROPS
 // =======================
-
-/**
- * Props passed to this component via route parameters.
- * The `categoryName` is a URL-friendly slug (e.g., "smartphones").
- */
 interface Props {
   categoryName: string
 }
 const props = defineProps<Props>()
 
+// =======================
+// 🏦 STORES & REFS
+// =======================
 const router = useRouter()
 const productStore = useProductStore()
 const categoriesStore = useCategoriesStore()
 const authStore = useAuthStore()
 const wishlistStore = useWishlistStore()
+
 const { user } = storeToRefs(authStore)
 const { wishlistProducts, wishlistLoading } = storeToRefs(wishlistStore)
 
 // =======================
-// 📦 State
+// 🧩 STATE
 // =======================
-
-/**
- * Current page number for client-side pagination.
- * 1-indexed for better UX (vs. 0-indexed).
- */
+// UI Controls
+const showDebug = ref(false)
 const currentPage = ref(1)
-
-/**
- * Price range filter bounds (in EUR or local currency).
- * Default: full range from 0 to 5000.
- */
-const priceRange = ref({ min: 0, max: 5000 })
-
-/**
- * Sort order for products.
- * Options: name, name-desc, price-low, price-high, rating.
- */
 const sortBy = ref('name')
-
-/**
- * Display name of the current category (e.g., "Smartphones").
- * May differ from URL slug due to formatting.
- */
-const categoryDisplayName = ref('')
-
-/**
- * The actual category name (after decoding the URL slug).
- * Used in API calls and store interactions.
- */
-const actualCategoryName = ref('')
-
-// =======================
-// 🔍 Search States
-// =======================
-
-/**
- * Search query for filtering brand options in the sidebar.
- * Triggers fuzzy search when ≥2 characters.
- */
 const brandSearchQuery = ref('')
 
-// =======================
-// 🧱 Filter Collapse States
-// =======================
-
-/**
- * Tracks which filter sections are collapsed.
- * Improves UX by allowing users to hide unused filters.
- */
+// Filters
+const priceRange = ref({ min: 0, max: 5000 })
 const collapsedFilters = ref({
   price: false,
   brand: false,
 })
 
-// =======================
-// 🔁 Watchers
-// =======================
-
-// Ensure price range stays valid
-watch(
-  () => priceRange.value.min,
-  (newMin: number) => {
-    if (newMin > priceRange.value.max) {
-      priceRange.value.min = priceRange.value.max
-    } else if (newMin < 0) {
-      priceRange.value.min = 0
-    }
-  }
-)
-
-watch(
-  () => priceRange.value.max,
-  (newMax: number) => {
-    if (newMax < priceRange.value.min) {
-      priceRange.value.max = priceRange.value.min
-    } else if (newMax > 5000) {
-      priceRange.value.max = 5000
-    }
-  }
-)
+// Category Display
+const categoryDisplayName = ref('')
+const actualCategoryName = ref('')
 
 // =======================
-// 🧮 Computed Properties
+// 🧮 COMPUTED PROPERTIES
 // =======================
-
-/**
- * Number of items to display per page.
- * Matches the backend page size used in `fetchProductsByCategoryName`.
- */
 const itemsPerPage = 9
 
-/**
- * Returns products filtered by:
- * - Price range
- * - Selected brands
- * Then sorts them based on `sortBy`.
- */
 const filteredProducts = computed(() => {
   let filtered = [...productStore.products]
 
@@ -150,7 +75,7 @@ const filteredProducts = computed(() => {
     filtered = filtered.filter((product) => selectedBrands.includes(product.brand))
   }
 
-  // Sort products
+  // Sort
   switch (sortBy.value) {
     case 'name':
       filtered.sort((a, b) => a.name.localeCompare(b.name))
@@ -165,8 +90,6 @@ const filteredProducts = computed(() => {
       filtered.sort((a, b) => b.basePrice - a.basePrice)
       break
     case 'rating':
-      // Note: Rating data may be missing in initial fetch
-      // Sorting by rating requires full product details
       filtered.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
       break
   }
@@ -174,25 +97,14 @@ const filteredProducts = computed(() => {
   return filtered
 })
 
-/**
- * Paginates the filtered product list.
- * Returns only the items for the current page.
- */
 const paginatedProducts = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage
   const end = start + itemsPerPage
   return filteredProducts.value.slice(start, end)
 })
 
-/**
- * Total number of pages based on filtered results.
- */
 const totalPages = computed(() => Math.ceil(filteredProducts.value.length / itemsPerPage))
 
-/**
- * Filters brand list based on search query with fuzzy matching.
- * Scores matches by relevance (exact > startsWith > contains).
- */
 const filteredBrands = computed(() => {
   const query = brandSearchQuery.value?.trim().toLowerCase()
   if (!query || query.length < 2) return productStore.brands
@@ -212,26 +124,14 @@ const filteredBrands = computed(() => {
     .map(({ brand }) => brand)
 })
 
-/**
- * Breadcrumb navigation path.
- * Dynamically updates based on current category.
- */
 const breadcrumbs = computed(() => [
   { label: 'catalog.title', to: '/catalog' },
   { label: categoryDisplayName.value },
 ])
 
 // =======================
-// 🛠️ Utility Functions
+// 🛠️ UTILITY FUNCTIONS
 // =======================
-
-/**
- * Converts a URL-friendly slug back to the original category name.
- * Reverses the normalization done in the category listing.
- *
- * @param urlName - URL slug (e.g., "smartphones")
- * @returns Original category name (e.g., "Smartphones")
- */
 const getCategoryNameFromUrl = (urlName: string): string => {
   const category = categoriesStore.categories.find((cat) => {
     const normalizedCatName = cat.name
@@ -247,75 +147,21 @@ const getCategoryNameFromUrl = (urlName: string): string => {
 }
 
 // =======================
-// 🧪 Lifecycle & Effects
+// ⚙️ METHODS
 // =======================
-
-onMounted(async () => {
-  // Ensure categories are loaded before resolving name
-  if (categoriesStore.categories.length === 0) {
-    await categoriesStore.fetchCategories()
-  }
-
-  actualCategoryName.value = getCategoryNameFromUrl(props.categoryName)
-  categoryDisplayName.value = actualCategoryName.value
-
-  // Load initial data: products, brands, and wishlist
-  await Promise.all([
-    productStore.fetchProductsByCategoryName(actualCategoryName.value, currentPage.value - 1, itemsPerPage),
-    productStore.fetchBrands(),
-  ])
-
-  // Load user wishlist if authenticated
-  if (authStore.user?.id) {
-    try {
-      await wishlistStore.fetchUserWishlist(authStore.user.id)
-      console.log('🟢 [CATALOG] Wishlist loaded successfully')
-    } catch (error) {
-      console.error('🔴 [CATALOG] Error loading wishlist:', error)
-    }
-  }
-})
-
-// Watch for route changes (e.g., navigating between categories)
-watch(
-  () => props.categoryName,
-  async (newCategoryName) => {
-    if (newCategoryName) {
-      actualCategoryName.value = getCategoryNameFromUrl(newCategoryName)
-      categoryDisplayName.value = actualCategoryName.value
-      currentPage.value = 1
-      await productStore.fetchProductsByCategoryName(actualCategoryName.value, 0, itemsPerPage)
-    }
-  }
-)
-
-// =======================
-// ⚙️ Methods
-// =======================
-
-/**
- * Formats a price number into a localized currency string.
- * Currently uses a placeholder "$" — consider using `Intl.NumberFormat`.
- */
 const formatPrice = (price: number) => {
   return `$${price}`
 }
 
-/**
- * Toggles product favorite status using the wishlist API.
- * Handles authentication, adds/removes from wishlist, and shows feedback.
- */
 const toggleFavorite = async (productId: number) => {
   console.log('🔵 [CATALOG] toggleFavorite called for product:', productId)
 
-  // Check if user is authenticated
   if (!user.value || !user.value.id) {
     console.error('🔴 [CATALOG] User not authenticated')
     alert('Please log in to add products to your wishlist')
     return
   }
 
-  // Find the product to get its data
   const product = productStore.products.find(p => p.id === productId)
   if (!product) {
     console.error('🔴 [CATALOG] Product not found:', productId)
@@ -324,7 +170,6 @@ const toggleFavorite = async (productId: number) => {
   }
 
   try {
-    // Ensure wishlist is loaded
     if (!wishlistStore.wishlistId) {
       console.log('🟡 [CATALOG] Loading user wishlist...')
       await wishlistStore.fetchUserWishlist(user.value.id)
@@ -335,7 +180,6 @@ const toggleFavorite = async (productId: number) => {
 
     if (!isCurrentlyInWishlist) {
       console.log('🟡 [CATALOG] Adding product to wishlist...')
-
       const productData = {
         name: product.name,
         description: product.description || product.name,
@@ -345,7 +189,6 @@ const toggleFavorite = async (productId: number) => {
         totalStock: product.totalStock,
         imageUrl: product.imageUrl || undefined,
       }
-
       await wishlistStore.addProductToWishlist(productId, productData)
       console.log('✅ [CATALOG] Product added to wishlist')
     } else {
@@ -354,7 +197,6 @@ const toggleFavorite = async (productId: number) => {
       console.log('✅ [CATALOG] Product removed from wishlist')
     }
 
-    // Verify the state change
     const isInWishlistAfter = wishlistStore.isProductInWishlist(productId)
     console.log('🟡 [CATALOG] Product in wishlist after action:', isInWishlistAfter)
 
@@ -364,14 +206,8 @@ const toggleFavorite = async (productId: number) => {
   }
 }
 
-/**
- * Navigates to the product details page.
- * Scrolls to top after navigation.
- */
 const goToProductDetails = (productId: number) => {
   console.log('🟢 [CATALOG] goToProductDetails called with productId:', productId)
-  console.log('🟢 [CATALOG] Current route params:', props.categoryName)
-
   router
     .push({
       name: 'productDetails',
@@ -388,61 +224,90 @@ const goToProductDetails = (productId: number) => {
     })
 }
 
-/**
- * Shortcut to go directly to product details when "Buy Now" is clicked.
- */
 const buyNow = (productId: number) => {
   goToProductDetails(productId)
 }
 
-/**
- * Navigates to a specific page.
- * Resets to first page if filters are active and not already on page 1.
- */
-const goToPage = async (page: number) => {
+const goToPage = (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page
   }
 }
 
-/**
- * Toggles the visibility of a filter section.
- */
 const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
   collapsedFilters.value[filterName] = !collapsedFilters.value[filterName]
 }
 
-/**
- * Checks if any filters are currently active.
- * Used to show/hide "Clear All" buttons.
- */
 const hasActiveFilters = () => {
   const priceFilterActive = priceRange.value.min > 0 || priceRange.value.max < 5000
   const brandFilterActive = productStore.brands.some((brand) => brand.checked)
   return priceFilterActive || brandFilterActive
 }
 
-/**
- * Clears all applied filters and resets pagination.
- */
 const clearAllFilters = () => {
   priceRange.value = { min: 0, max: 5000 }
   productStore.brands.forEach((brand) => (brand.checked = false))
   currentPage.value = 1
 }
 
-/**
- * Clears only brand filters.
- */
 const clearBrandFilters = () => {
   productStore.brands.forEach((brand) => (brand.checked = false))
   currentPage.value = 1
 }
 
-// Reset to page 1 whenever filters or sort order change
-watch([priceRange, () => productStore.brands, sortBy], () => {
-  currentPage.value = 1
-}, { deep: true })
+// =======================
+// 🔁 WATCHERS
+// =======================
+watch(
+  () => props.categoryName,
+  async (newCategoryName) => {
+    if (newCategoryName) {
+      actualCategoryName.value = getCategoryNameFromUrl(newCategoryName)
+      categoryDisplayName.value = actualCategoryName.value
+      currentPage.value = 1
+      await productStore.fetchProductsByCategoryName(actualCategoryName.value, 0, itemsPerPage)
+    }
+  }
+)
+
+// =======================
+// 🧪 LIFECYCLE HOOKS
+// =======================
+onMounted(async () => {
+  if (categoriesStore.categories.length === 0) {
+    await categoriesStore.fetchCategories()
+  }
+
+  actualCategoryName.value = getCategoryNameFromUrl(props.categoryName)
+  categoryDisplayName.value = actualCategoryName.value
+
+  await Promise.all([
+    productStore.fetchProductsByCategoryName(actualCategoryName.value, currentPage.value - 1, itemsPerPage),
+    productStore.fetchBrands(),
+  ])
+
+  if (authStore.user?.id) {
+    try {
+      await wishlistStore.fetchUserWishlist(authStore.user.id)
+      console.log('🟢 [CATALOG] Wishlist loaded successfully')
+    } catch (error) {
+      console.error('🔴 [CATALOG] Error loading wishlist:', error)
+    }
+  }
+})
+
+// =======================
+// 🔁 PRICE RANGE HELPERS
+// =======================
+function updateMin(e: any) {
+  const val = Number(e.target.value)
+  priceRange.value.min = Math.min(val, priceRange.value.max - 50)
+}
+
+function updateMax(e: any) {
+  const val = Number(e.target.value)
+  priceRange.value.max = Math.max(val, priceRange.value.min + 50)
+}
 </script>
 
 <template>
@@ -518,10 +383,7 @@ watch([priceRange, () => productStore.brands, sortBy], () => {
                 </svg>
               </button>
             </div>
-            <div
-              v-show="!collapsedFilters.price"
-              class="flex flex-col space-y-4 transition-all duration-200"
-            >
+            <div v-show="!collapsedFilters.price" class="flex flex-col space-y-4 transition-all duration-200">
               <div class="flex items-center space-x-4">
                 <div class="flex-1">
                   <label class="text-xs font-srProDisplay text-gray-500 mt-1 block mb-2">From</label>
@@ -554,21 +416,27 @@ watch([priceRange, () => productStore.brands, sortBy], () => {
                       width: ((priceRange.max - priceRange.min) / 5000) * 100 + '%',
                     }"
                   ></div>
+
                   <input
-                    v-model.number="priceRange.min"
+                    :value="priceRange.min"
+                    @input="updateMin($event)"
                     type="range"
-                    :min="0"
-                    :max="5000"
+                    min="0"
+                    max="5000"
                     step="50"
-                    class="absolute w-full h-1 appearance-none bg-transparent pointer-events-none slider-thumb-min"
+                    class="absolute w-full h-1 appearance-none bg-transparent cursor-pointer slider-thumb-min"
+                    style="z-index: 3;"
                   />
+
                   <input
-                    v-model.number="priceRange.max"
+                    :value="priceRange.max"
+                    @input="updateMax($event)"
                     type="range"
-                    :min="0"
-                    :max="5000"
+                    min="0"
+                    max="5000"
                     step="50"
-                    class="absolute w-full h-1 appearance-none bg-transparent pointer-events-none slider-thumb-max"
+                    class="absolute w-full h-1 appearance-none bg-transparent cursor-pointer slider-thumb-max"
+                    style="z-index: 4;"
                   />
                 </div>
               </div>
@@ -868,7 +736,6 @@ watch([priceRange, () => productStore.brands, sortBy], () => {
 </template>
 
 <style scoped>
-/* Truncate text after 2 lines */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -877,21 +744,20 @@ watch([priceRange, () => productStore.brands, sortBy], () => {
   overflow: hidden;
 }
 
-/* Debug panel fade */
-.fade-debug-enter-active, .fade-debug-leave-active {
+.fade-debug-enter-active,
+.fade-debug-leave-active {
   transition: opacity 0.2s;
 }
-.fade-debug-enter-from, .fade-debug-leave-to {
+.fade-debug-enter-from,
+.fade-debug-leave-to {
   opacity: 0;
 }
 
-/* Remove default button focus styles */
 button:focus {
   outline: none;
   box-shadow: none;
 }
 
-/* Custom scrollbar */
 .overflow-y-auto::-webkit-scrollbar {
   width: 2px;
 }
@@ -907,7 +773,6 @@ button:focus {
   background: #222;
 }
 
-/* Custom checkbox styling */
 .custom-checkbox {
   appearance: none;
   -webkit-appearance: none;
@@ -931,24 +796,33 @@ button:focus {
   background-repeat: no-repeat;
 }
 
-/* Price slider thumbs */
 .slider-thumb-min::-webkit-slider-thumb,
 .slider-thumb-max::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: #000;
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  border: 2px solid #fff;
 }
 .slider-thumb-min::-moz-range-thumb,
 .slider-thumb-max::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: #000;
   cursor: pointer;
-  border: none;
+  border: 2px solid #fff;
+}
+.slider-thumb-min::-ms-thumb,
+.slider-thumb-max::-ms-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #000;
+  cursor: pointer;
+  border: 2px solid #fff;
 }
 </style>
