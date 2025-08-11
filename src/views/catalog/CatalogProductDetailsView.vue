@@ -267,6 +267,40 @@ const getColorClass = (color: string) => {
   return colorMap[color] || 'bg-gray-400'
 }
 const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+const getUserInitials = (userName: string) => {
+  if (!userName || userName === 'Anonymous') return 'A'
+  return userName
+    .split(' ')
+    .map(name => name.charAt(0))
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
+}
+const getAvatarColor = (userName: string) => {
+  const colors = [
+    'from-blue-500 to-purple-600',
+    'from-green-500 to-teal-600',
+    'from-pink-500 to-rose-600',
+    'from-yellow-500 to-orange-600',
+    'from-indigo-500 to-blue-600',
+    'from-red-500 to-pink-600',
+    'from-purple-500 to-indigo-600',
+    'from-teal-500 to-green-600',
+  ]
+  const nameHash = (userName || 'Anonymous').split('').reduce((a, b) => {
+    a = (a << 5) - a + b.charCodeAt(0)
+    return a & a
+  }, 0)
+  return colors[Math.abs(nameHash) % colors.length]
+}
+const handleAvatarError = (event: Event) => {
+  const img = event.target as HTMLImageElement
+  const fallback = img.nextElementSibling as HTMLElement
+  if (img && fallback) {
+    img.style.display = 'none'
+    fallback.style.display = 'flex'
+  }
+}
 const getProductImage = (productName: string, category?: string): string => {
   const cat = category?.toLowerCase() || currentProduct.value?.category?.toLowerCase()
   if (cat === 'smartphones' || cat === 'phones') return '/images/placeholder-phone-red.webp'
@@ -1682,12 +1716,23 @@ const fetchProductVariants = async (productId: number) => {
                       class="flex items-start gap-4 bg-[#F4F4F4] rounded-[10px] w-auto h-auto p-8"
                     >
                       <!-- Avatar -->
-                      <div
-                        class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0"
-                      >
-                        <span class="text-gray-600 text-sm font-medium">{{
-                          (review.userName || 'A').charAt(0)
-                        }}</span>
+                      <div class="w-12 h-12 flex-shrink-0">
+                        <img
+                          v-if="review.userAvatar"
+                          :src="review.userAvatar"
+                          :alt="`${review.userName || 'User'} avatar`"
+                          class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-lg avatar-hover"
+                          @error="handleAvatarError"
+                        />
+                        <div
+                          v-else
+                          class="w-12 h-12 bg-gradient-to-br rounded-full flex items-center justify-center shadow-lg avatar-hover"
+                          :class="`bg-gradient-to-br ${getAvatarColor(review.userName || 'Anonymous')} ${review.userAvatar ? 'hidden' : ''}`"
+                        >
+                          <span class="text-white text-sm font-semibold">{{
+                            getUserInitials(review.userName || 'Anonymous')
+                          }}</span>
+                        </div>
                       </div>
 
                       <!-- Review Content -->
@@ -1889,5 +1934,15 @@ input::placeholder {
 .review-fade-overlay {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
   z-index: 2;
+}
+
+/* Avatar hover effects */
+.avatar-hover {
+  transition: all 0.2s ease-in-out;
+}
+
+.avatar-hover:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 </style>

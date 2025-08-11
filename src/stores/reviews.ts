@@ -15,6 +15,7 @@ export interface ProductReview {
   comment: string
   date: string
   userName?: string
+  userAvatar?: string
 }
 
 export function useReviewsStore() {
@@ -64,11 +65,14 @@ export function useReviewsStore() {
 
       const reviewPromises = rawReviews.map(async (review: { id: number; rating: number; comment: string; createdAt: string; _links: { user: { href: string } } }) => {
         let userName = 'Anonymous'
+        let userAvatar = ''
         try {
           const userRes = await axios.get(review._links.user.href)
           userName = userRes.data.name || userRes.data.username || 'Anonymous'
+          userAvatar = userRes.data.avatar || ''
         } catch {
           userName = 'Anonymous'
+          userAvatar = ''
         }
 
         return {
@@ -77,6 +81,7 @@ export function useReviewsStore() {
           comment: review.comment,
           date: new Date(review.createdAt).toLocaleDateString(),
           userName,
+          userAvatar,
         }
       })
 
