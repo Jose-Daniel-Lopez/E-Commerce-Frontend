@@ -377,7 +377,14 @@ const goToPage = async (page: number) => {
     currentPage.value = page
     // Backend expects 1-indexed pagination, so pass the page as-is
     await productStore.fetchAllProducts(currentPage.value, itemsPerPage)
-    console.log('🔵 [ALL PRODUCTS] Page navigation complete. New currentPage:', currentPage.value)
+
+    // Ensure currentPage is synced with backend response
+    // Backend returns 1-indexed page numbers, so use as-is
+    const backendPage = productStore.pagination.page
+    if (typeof backendPage === 'number') {
+      currentPage.value = backendPage
+    }
+    console.log('🔵 [ALL PRODUCTS] Page navigation complete. Backend page:', backendPage, 'Frontend currentPage:', currentPage.value)
   } else {
     console.warn('🔴 [ALL PRODUCTS] Invalid page requested:', page, 'valid range: 1 -', totalPages.value)
   }
@@ -445,6 +452,18 @@ watch(() => productStore.brands.map(b => b.checked), () => {
 watch(() => availableCategories.value.map(c => c.checked), () => {
   currentPage.value = 1
 }, { deep: true })
+
+// Sync currentPage with backend pagination state
+// This ensures the UI pagination buttons show the correct active state
+watch(() => productStore.pagination.page, (newBackendPage) => {
+  if (typeof newBackendPage === 'number') {
+    // Backend returns 1-indexed page numbers, so use as-is
+    if (newBackendPage !== currentPage.value) {
+      console.log('🔵 [ALL PRODUCTS] Syncing currentPage from backend. Backend page:', newBackendPage)
+      currentPage.value = newBackendPage
+    }
+  }
+})
 </script>
 
 <template>
