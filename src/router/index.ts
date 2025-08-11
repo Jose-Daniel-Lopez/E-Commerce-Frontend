@@ -61,6 +61,12 @@ const router = createRouter({
       meta: { title: 'Product Catalog' }
     },
     {
+      path: '/catalog/all-products',
+      name: 'allProducts',
+      component: () => import('../views/catalog/CatalogAllProductsView.vue'),
+      meta: { title: 'All Products' }
+    },
+    {
       path: '/catalog/:categoryName',
       name: 'categoryProducts',
       component: () => import('../views/catalog/CatalogCategoryView.vue'),

@@ -88,4 +88,11 @@ export interface Product {
    * Fetched separately if needed (see `fetchProductsByCategoryName`).
    */
   rating?: number
+
+  /**
+   * Optional category name for the product (e.g., "Smartphones", "Tablets").
+   * Added when fetching all products to enable category-based filtering.
+   * Not always present in category-specific views where category is implicit.
+   */
+  categoryName?: string
 }

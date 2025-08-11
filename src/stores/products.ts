@@ -281,6 +281,93 @@ export const useProductStore = defineStore('product', () => {
   }
 
   /**
+   * Fetches all products with pagination specifically optimized for the all products view.
+   * Similar to fetchProducts but with additional category information for filtering.
+   *
+   * @param page - Page number (1-indexed for backend compatibility)
+   * @param size - Number of items per page (default 20 for all products view)
+   */
+  const fetchAllProducts = async (page = 1, size = 20) => {
+    loading.value = true
+    error.value = ''
+    try {
+      const response = await api.get('/products', {
+        params: { page, size },
+      })
+      const data = response.data
+      const rawProducts = data._embedded ? data._embedded.products : data.content
+
+      console.log('🔍 [fetchAllProducts] Raw response structure:', {
+        hasEmbedded: !!data._embedded,
+        hasContent: !!data.content,
+        rawProductsLength: rawProducts?.length || 0,
+        totalElements: data.page?.totalElements || data.totalElements || 0,
+        requestedPage: page,
+        requestedSize: size,
+        fullPaginationData: data.page || data,
+      })
+
+      // Transform backend data and fetch category names for each product
+      const transformedProducts = await Promise.all((rawProducts || []).map(async (product: BackendProductResponse, index: number) => {
+        if (!product.id) {
+          console.warn(`🔍 [fetchAllProducts] Product at index ${index} missing ID:`, product.name)
+        }
+
+        // Fetch category name for the product if it has category link
+        let categoryName = 'Unknown'
+        try {
+          if (product.id) {
+            const categoryResponse = await api.get(`/products/${product.id}/category`)
+            categoryName = categoryResponse.data?.name || 'Unknown'
+          }
+        } catch (err) {
+          console.warn(`Could not fetch category for product ${product.id}:`, err)
+        }
+
+        return {
+          id: product.id ?? index + 1,
+          name: product.name ?? 'Unknown Product',
+          description: product.description ?? '',
+          brand: product.brand ?? 'Unknown',
+          isFeatured: product.isFeatured ?? false,
+          imageUrl: product.imageUrl ?? 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+          basePrice: product.basePrice ?? 0,
+          totalStock: product.totalStock ?? 10,
+          cpu: product.cpu ?? '',
+          memory: product.memory ?? '',
+          camera: product.camera ?? '',
+          createdAt: product.createdAt ?? new Date().toISOString(),
+          rating: typeof product.rating === 'number' ? product.rating : 0,
+          categoryName, // Add category name for filtering
+        }
+      }))
+
+      console.log('🔍 [fetchAllProducts] Transformed products with categories:',
+        transformedProducts.map((p: Product & { categoryName?: string }) => ({ id: p.id, name: p.name, category: p.categoryName }))
+      )
+
+      products.value = transformedProducts
+      currentCategoryId.value = null // Reset category context
+
+      // Update pagination state from response
+      pagination.value = {
+        page: data.page?.number || data.number || page,
+        size: data.page?.size || data.size || size,
+        totalElements: data.page?.totalElements || data.totalElements || 0,
+        totalPages: data.page?.totalPages || data.totalPages || 0,
+        first: data.page?.first || data.first || true,
+        last: data.page?.last || data.last || true,
+        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0,
+      }
+
+      console.log('🔍 [fetchAllProducts] Updated pagination state:', pagination.value)
+    } catch (err) {
+      console.error('Error fetching all products:', err)
+      error.value = 'Error al cargar todos los productos'
+    } finally {
+      loading.value = false
+    }
+  }  /**
    * Fetches all featured products (isFeatured = true).
    * Used on the homepage or promotional sections.
    */
@@ -743,6 +830,7 @@ export const useProductStore = defineStore('product', () => {
 
     // Actions
     fetchProducts,
+    fetchAllProducts,
     fetchFeaturedProducts,
     fetchNewProducts,
     fetchBrands,

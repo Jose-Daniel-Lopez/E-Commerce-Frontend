@@ -101,10 +101,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import Wrapper from './Wrapper.vue'
 import HeaderSearch from './HeaderSearch.vue'
 import IconMenu from './IconMenu.vue'
 
+const router = useRouter()
 const showMobileMenu = ref('left-[-300px]')
 const positionSearchBar = ref('invisible opacity-0 top-[100px]')
 const show = ref('lg:translate-y-0')
@@ -118,6 +120,7 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const categories = [
   { name: t('shop.categories.all'), route: '/catalog' },
+  { name: 'All Products', route: '/catalog/all-products' },
   { name: t('shop.categories.smartphones'), route: '/catalog/smartphones' },
   { name: t('shop.categories.smartwatches'), route: '/catalog/smartwatches' },
   { name: t('shop.categories.cameras'), route: '/catalog/cameras' },
@@ -140,7 +143,7 @@ const toggleCategoriesDropdown = () => {
 // Function to select a category and navigate
 const selectCategory = (category: { name: string; route: string }) => {
   showCategoriesDropdown.value = false
-  window.location.href = category.route
+  router.push(category.route)
 }
 
 // --- EVENT MANAGER ---
