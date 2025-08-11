@@ -9,6 +9,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import { storeToRefs } from 'pinia'
+import api from '@/lib/axios'
 
 const router = useRouter()
 const productStore = useProductStore()
@@ -102,20 +103,43 @@ watch(
 const itemsPerPage = 20
 
 /**
- * Get unique categories from loaded products for category filter
+ * Available categories for the category filter.
+ * Populated from the full catalog categories, not just current page products.
  */
-const availableCategories = computed(() => {
-  const categories = new Set<string>()
-  productStore.products.forEach(product => {
-    if (product.categoryName && product.categoryName !== 'Unknown') {
-      categories.add(product.categoryName)
-    }
-  })
-  return Array.from(categories).map(name => ({
-    name,
-    checked: false
-  }))
-})
+const availableCategories = ref<{ name: string; checked: boolean }[]>([])
+
+/**
+ * Fetches all categories from the backend catalog.
+ * This populates the category filter with all available categories.
+ */
+const fetchAllCategories = async () => {
+  try {
+    const response = await api.get('/categories')
+    const categories = response.data._embedded?.categories || response.data || []
+
+    console.log('🔍 [ALL PRODUCTS] Fetched categories from /categories endpoint:', categories.length)
+
+    availableCategories.value = categories.map((category: { name?: string; id?: number }) => ({
+      name: category.name || 'Unknown',
+      checked: false
+    }))
+
+    console.log('🔍 [ALL PRODUCTS] Available categories for filter:', availableCategories.value.map(c => c.name))
+  } catch (error) {
+    console.error('🔴 [ALL PRODUCTS] Error fetching categories:', error)
+    // Fallback: get categories from current products if API fails
+    const categories = new Set<string>()
+    productStore.products.forEach(product => {
+      if (product.categoryName && product.categoryName !== 'Unknown') {
+        categories.add(product.categoryName)
+      }
+    })
+    availableCategories.value = Array.from(categories).map(name => ({
+      name,
+      checked: false
+    }))
+  }
+}
 
 /**
  * Returns products filtered by:
@@ -228,6 +252,9 @@ const breadcrumbs = computed(() => [
 // =======================
 
 onMounted(async () => {
+  // Fetch all catalog categories for the filter (independent of current products)
+  await fetchAllCategories()
+
   // Ensure categories are loaded for category filter
   if (categoriesStore.categories.length === 0) {
     await categoriesStore.fetchCategories()
