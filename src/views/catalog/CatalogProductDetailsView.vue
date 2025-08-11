@@ -655,11 +655,18 @@ const addToWishlist = async () => {
   console.log('🟡 [CATALOG PRODUCT DETAILS] Add to Wishlist clicked for product:', currentProduct.value?.id)
   if (!isAuthenticated.value) {
     console.log('🔴 [CATALOG PRODUCT DETAILS] User not authenticated')
-    alert('Please log in to add products to your wishlist')
+    toast.error('Please log in to add products to your wishlist', {
+      title: 'Authentication Required',
+      duration: 4000,
+    })
     return
   }
   if (!currentProduct.value?.id) {
     console.log('🔴 [CATALOG PRODUCT DETAILS] No product ID found')
+    toast.error('No product ID found. Please refresh and try again.', {
+      title: 'Wishlist Error',
+      duration: 4000,
+    })
     return
   }
   wishlistLoading.value = true
@@ -667,7 +674,11 @@ const addToWishlist = async () => {
     const productId = currentProduct.value.id
     const isCurrentlyInWishlist = wishlistStore.isProductInWishlist(productId)
     if (isCurrentlyInWishlist) {
-      alert('This product is already in your wishlist!')
+      toast.info('This product is already in your wishlist!', {
+        title: 'Already in Wishlist',
+        icon: 'hi-heart',
+        duration: 3000,
+      })
       return
     }
     console.log('🟡 [CATALOG PRODUCT DETAILS] Adding to wishlist...')
@@ -686,10 +697,17 @@ const addToWishlist = async () => {
     }
     await wishlistStore.addProductToWishlist(productId, productData)
     console.log('🟢 [CATALOG PRODUCT DETAILS] Product added to wishlist successfully')
-    alert('Product added to your wishlist!')
+    toast.success('Product added to your wishlist!', {
+      title: 'Wishlist Updated',
+      icon: 'hi-heart',
+      duration: 3000,
+    })
   } catch (error) {
     console.error('🔴 [CATALOG PRODUCT DETAILS] Error adding to wishlist:', error)
-    alert('Failed to add product to wishlist. Please try again.')
+    toast.error('Failed to add product to wishlist. Please try again.', {
+      title: 'Wishlist Error',
+      duration: 5000,
+    })
   } finally {
     wishlistLoading.value = false
   }
