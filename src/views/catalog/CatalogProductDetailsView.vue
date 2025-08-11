@@ -1,4 +1,29 @@
 <script setup lang="ts">
+// === Details Section Collapsing ===
+const detailsCollapsed = ref(false)
+const toggleDetails = () => (detailsCollapsed.value = !detailsCollapsed.value)
+
+// === Reviews Section Collapsing ===
+const reviewsCollapsed = ref(false)
+const toggleReviews = () => (reviewsCollapsed.value = !reviewsCollapsed.value)
+
+// === Related Products Section Collapsing ===
+const relatedCollapsed = ref(false)
+const toggleRelated = () => (relatedCollapsed.value = !relatedCollapsed.value)
+
+// === Image & Variant Selection ===
+const selectImage = (index: number) => {
+  selectedImageIndex.value = index
+}
+const selectColor = (color: string) => {
+  selectedColor.value = color
+  const imageIndex = productImages.value.findIndex(img => img.includes(color.toLowerCase()))
+  if (imageIndex !== -1) selectedImageIndex.value = imageIndex
+}
+const selectStorage = (size: string) => {
+  selectedStorage.value = size
+}
+
 import { ref, onMounted, computed } from 'vue'
 import { useProductStore } from '@/stores/products'
 import { useWishlistStore } from '@/stores/wishlistStore'
@@ -8,6 +33,8 @@ import { useReviewsStore } from '@/stores/reviews'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
+import axios from 'axios'
+import { useToast } from '@/composables/useToast'
 
 // === Interfaces ===
 interface ProductVariant {
@@ -22,12 +49,10 @@ interface ProductVariant {
     product: { href: string }
   }
 }
-
 interface ProductVariantsResponse {
   _embedded?: { productVariants: ProductVariant[] }
   productVariants?: ProductVariant[]
 }
-
 interface BackendProduct {
   id: number
   name: string
@@ -67,7 +92,6 @@ interface BackendProduct {
     wishlists?: { href: string }
   }
 }
-
 interface Product {
   id: number
   name: string
@@ -100,7 +124,6 @@ interface Product {
     colors?: string[]
   }
 }
-
 interface Props {
   categoryName: string
   productId: string
@@ -114,6 +137,7 @@ const authStore = useAuthStore()
 const userCartStore = useUserCartStore()
 const reviewsStore = useReviewsStore()
 const { t } = useI18n()
+const toast = useToast()
 
 // === Reactive refs ===
 const { isAuthenticated, user } = storeToRefs(authStore)
@@ -175,9 +199,7 @@ const imageMap: Record<string, string[]> = {
     '/images/placeholder-tablet-blue.png',
   ],
 }
-
 const defaultImages = ['/images/placeholder-phone-red.webp']
-
 const productImages = computed(() => {
   const category = currentProduct.value?.category?.toLowerCase() || ''
   return imageMap[category] || imageMap[category.replace(/s$/, '')] || defaultImages
@@ -185,51 +207,40 @@ const productImages = computed(() => {
 
 // === Computed ===
 const currentProduct = computed(() => product.value || mockProduct)
-
 const finalPrice = computed(() => currentProduct.value?.basePrice || mockProduct.basePrice)
 const discountPrice = computed(() => finalPrice.value + 100)
-
 const currentImage = computed(() => {
   return productImages.value[selectedImageIndex.value] || currentProduct.value?.image || mockProduct.image
 })
-
 const availableColors = computed(() => {
   const colors = [...new Set(productVariants.value.map(v => v.color))]
   return colors.length > 0 ? colors : (currentProduct.value?.specifications?.colors || [])
 })
-
 const availableSizes = computed(() => {
   return [...new Set(productVariants.value.map(v => v.size))]
 })
-
 const currentVariant = computed(() => {
   if (selectedColor.value && selectedStorage.value) {
     return productVariants.value.find(v => v.color === selectedColor.value && v.size === selectedStorage.value) || null
   }
   return selectedVariant.value
 })
-
 const currentStock = computed(() => {
   return currentVariant.value?.stock || currentProduct.value?.totalStock || 0
 })
-
 const isInStock = computed(() => currentStock.value > 0)
-
 const hasMobileComputeSpecs = computed(() => {
   const specs = currentProduct.value?.specifications
   return !!(specs?.screenSize || specs?.cpu || specs?.ram || specs?.storage || specs?.camera || specs?.battery || specs?.os)
 })
-
 const hasInputControlSpecs = computed(() => {
   const specs = currentProduct.value?.specifications
   return !!(specs?.dpi || specs?.pollingRate || specs?.switchType || specs?.programmableButtons !== undefined || specs?.ergonomic !== undefined)
 })
-
 const isMobileComputeCategory = computed(() => {
   const cat = currentProduct.value?.category?.toLowerCase()
   return cat ? ['smartphones', 'tablets', 'laptops', 'handhelds', 'computers', 'phones'].includes(cat) : false
 })
-
 const isInputControlCategory = computed(() => {
   const cat = currentProduct.value?.category?.toLowerCase()
   return cat ? ['mice', 'keyboards', 'controllers', 'gaming'].includes(cat) : false
@@ -248,7 +259,6 @@ const breadcrumbs = computed(() => {
 
 // === Methods ===
 const formatPrice = (price: number) => `$${price.toLocaleString()}`
-
 const getColorClass = (color: string) => {
   const colorMap: Record<string, string> = {
     Red: 'bg-red-500', White: 'bg-gray-100', Black: 'bg-gray-900', Blue: 'bg-blue-500',
@@ -256,28 +266,23 @@ const getColorClass = (color: string) => {
   }
   return colorMap[color] || 'bg-gray-400'
 }
-
 const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
-
 const getProductImage = (productName: string, category?: string): string => {
   const cat = category?.toLowerCase() || currentProduct.value?.category?.toLowerCase()
   if (cat === 'smartphones' || cat === 'phones') return '/images/placeholder-phone-red.webp'
   if (cat === 'tablets') return '/images/placeholder-tablet-red.webp'
-
   const productImageMap: Record<string, string> = {
     iphone: '/images/Iphone-14-pro-Gold.png',
     samsung: '/images/Galaxy-Z-Mobile.png',
     apple: '/images/Iphone-14-pro-Gold.png',
     realme: '/images/placeholder-phone-red.webp',
   }
-
   const lowerName = productName.toLowerCase()
   for (const [key, path] of Object.entries(productImageMap)) {
     if (lowerName.includes(key)) return path
   }
   return '/images/placeholder-phone-red.webp'
 }
-
 const getColorOptions = (): string[] => {
   return currentProduct.value?.category === 'Smartphones'
     ? ['Red', 'White', 'Black', 'Blue']
@@ -296,17 +301,8 @@ const displayedDescription = computed(() => {
 })
 const toggleDescription = () => (showFullDescription.value = !showFullDescription.value)
 
-// === Section Collapsing ===
-const detailsCollapsed = ref(false)
-const reviewsCollapsed = ref(false)
-const relatedCollapsed = ref(false)
-const toggleDetails = () => (detailsCollapsed.value = !detailsCollapsed.value)
-const toggleReviews = () => (reviewsCollapsed.value = !reviewsCollapsed.value)
-const toggleRelated = () => (relatedCollapsed.value = !relatedCollapsed.value)
-
 // === Reviews ===
 const { productReviews, productReviewsLoading, productReviewsError, fetchProductReviews } = reviewsStore
-
 const reviewsToShow = ref(3)
 const showAllReviews = ref(false)
 const displayedReviews = computed(() =>
@@ -314,11 +310,9 @@ const displayedReviews = computed(() =>
 )
 const hasMoreReviews = computed(() => productReviews.value.length > reviewsToShow.value)
 const toggleShowAllReviews = () => (showAllReviews.value = !showAllReviews.value)
-
 const reviewStats = computed(() => {
   const reviews = productReviews.value
   const totalReviews = reviews.length
-
   if (totalReviews === 0) {
     return {
       averageRating: 0,
@@ -327,81 +321,265 @@ const reviewStats = computed(() => {
       good: 0,
       average: 0,
       belowAverage: 0,
-      poor: 0
+      poor: 0,
     }
   }
-
   const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
   const excellent = reviews.filter(r => r.rating === 5).length
   const good = reviews.filter(r => r.rating === 4).length
   const averageCount = reviews.filter(r => r.rating === 3).length
   const belowAverage = reviews.filter(r => r.rating === 2).length
   const poor = reviews.filter(r => r.rating === 1).length
-
   return {
-    averageRating: Math.round(averageRating * 10) / 10,
+    averageRating,
     totalReviews,
     excellent,
     good,
     average: averageCount,
     belowAverage,
-    poor
+    poor,
   }
 })
 
-// === Image & Variant Selection ===
-const selectImage = (index: number) => {
-  selectedImageIndex.value = index
+// --- Review Modal State ---
+const showReviewModal = ref(false)
+const reviewRating = ref(0)
+const reviewComment = ref('')
+const reviewSubmitting = ref(false)
+const reviewErrors = ref<{ rating?: string; comment?: string; submit?: string }>({})
+
+const closeReviewModal = () => {
+  showReviewModal.value = false
+  reviewRating.value = 0
+  reviewComment.value = ''
+  reviewErrors.value = {}
 }
 
-const selectColor = (color: string) => {
-  selectedColor.value = color
-  const imageIndex = productImages.value.findIndex(img => img.includes(color.toLowerCase()))
-  if (imageIndex !== -1) selectedImageIndex.value = imageIndex
+const validateReview = () => {
+  const errors: { rating?: string; comment?: string } = {}
+  if (!reviewRating.value || reviewRating.value < 1 || reviewRating.value > 5) {
+    errors.rating = 'Please select a rating between 1 and 5.'
+  }
+  if (!reviewComment.value.trim()) {
+    errors.comment = 'Comment is required.'
+  } else if (reviewComment.value.length > 1000) {
+    errors.comment = 'Comment must be at most 1000 characters.'
+  }
+  return errors
+}
 
-  if (selectedStorage.value) {
-    selectedVariant.value = productVariants.value.find(v => v.color === color && v.size === selectedStorage.value) || null
+const submitReview = async () => {
+  reviewErrors.value = validateReview()
+  if (Object.keys(reviewErrors.value).length > 0) return
+
+  reviewSubmitting.value = true
+  reviewErrors.value.submit = ''
+
+  // Show loading toast
+  const loadingToast = toast.loading('Submitting your review...')
+
+  try {
+    // Check authentication first
+    if (!isAuthenticated.value) {
+      const errorMessage = 'You must be logged in to submit a review.'
+      console.error('Review submission failed:', errorMessage)
+      reviewErrors.value.submit = errorMessage
+      loadingToast.error(errorMessage, {
+        title: 'Authentication Required',
+        duration: 5000,
+      })
+      reviewSubmitting.value = false
+      return
+    }
+
+    // Use productId from props and userId from store
+    const productId = parseInt(props.productId)
+    const userId = user.value?.id
+
+    console.log('Authentication check passed')
+    console.log('Props productId (raw):', props.productId)
+    console.log('Parsed productId:', productId)
+    console.log('User from store:', user.value)
+    console.log('User ID:', userId)
+
+    if (isNaN(productId) || !productId) {
+      const errorMessage = 'Invalid product ID. Please refresh the page and try again.'
+      console.error('Review submission failed:', errorMessage, 'Raw productId:', props.productId)
+      reviewErrors.value.submit = errorMessage
+      loadingToast.error(errorMessage)
+      reviewSubmitting.value = false
+      return
+    }
+
+    if (!userId) {
+      const errorMessage = 'User information is missing. Please log out and log in again.'
+      console.error('Review submission failed:', errorMessage)
+      reviewErrors.value.submit = errorMessage
+      loadingToast.error(errorMessage)
+      reviewSubmitting.value = false
+      return
+    }
+
+    const reviewPayload = {
+      rating: reviewRating.value,
+      comment: reviewComment.value.trim(),
+      productId,
+      userId,
+    }
+
+    console.log('Making API request to:', 'http://localhost:8080/api/reviews')
+    console.log('Request payload:', reviewPayload)
+    console.log('Request headers will include:', {
+      'Content-Type': 'application/json'
+    })
+
+    const response = await axios.post('http://localhost:8080/api/reviews', reviewPayload, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      timeout: 10000, // 10 second timeout
+    })
+
+    console.log('Review submission successful!')
+    console.log('Response status:', response.status)
+    console.log('Response data:', response.data)
+
+    // Show success toast
+    loadingToast.success('Review submitted successfully!', {
+      title: 'Thank you for your feedback',
+      duration: 4000,
+    })
+
+    // Optionally, refresh reviews list here
+    if (typeof fetchProductReviews === 'function') {
+      console.log('Refreshing product reviews...')
+      await fetchProductReviews(productId)
+    } else {
+      console.log('fetchProductReviews function not available, skipping refresh')
+    }
+
+    closeReviewModal()
+
+  } catch (err) {
+    console.error('Review submission error:', err)
+
+    let errorMessage = 'Failed to submit review. Please try again.'
+    let errorTitle = 'Review Submission Failed'
+
+    if (axios.isAxiosError(err)) {
+      // Handle Axios errors
+      if (err.response) {
+        console.error('Server responded with error:')
+        console.error('Status:', err.response.status)
+        console.error('Data:', err.response.data)
+        console.error('Headers:', err.response.headers)
+
+        switch (err.response.status) {
+          case 400:
+            errorMessage = err.response.data?.message || 'Invalid review data. Please check your input.'
+            errorTitle = 'Invalid Data'
+            break
+          case 401:
+            errorMessage = 'You are not authorized to submit reviews. Please log in again.'
+            errorTitle = 'Authorization Required'
+            break
+          case 403:
+            errorMessage = 'You do not have permission to submit reviews.'
+            errorTitle = 'Permission Denied'
+            break
+          case 404:
+            errorMessage = 'Product not found or review endpoint unavailable.'
+            errorTitle = 'Resource Not Found'
+            break
+          case 409:
+            errorMessage = 'You have already reviewed this product.'
+            errorTitle = 'Duplicate Review'
+            break
+          case 500:
+            errorMessage = 'Server error. Please try again later.'
+            errorTitle = 'Server Error'
+            break
+          default:
+            errorMessage = err.response.data?.message || `Server error (${err.response.status})`
+        }
+      } else if (err.request) {
+        console.error('No response received:', err.request)
+        errorMessage = 'Unable to connect to the server. Please check your internet connection.'
+        errorTitle = 'Connection Error'
+      } else {
+        console.error('Request setup error:', err.message)
+        errorMessage = 'An unexpected error occurred while setting up the request.'
+        errorTitle = 'Request Error'
+      }
+    } else {
+      console.error('Non-Axios error:', err)
+      errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.'
+    }
+
+    reviewErrors.value.submit = errorMessage
+    loadingToast.error(errorMessage, {
+      title: errorTitle,
+      duration: 8000, // Longer duration for errors
+    })
+
+  } finally {
+    reviewSubmitting.value = false
   }
 }
 
-const selectStorage = (size: string) => {
-  selectedStorage.value = size
-  if (selectedColor.value) {
-    selectedVariant.value = productVariants.value.find(v => v.color === selectedColor.value && v.size === size) || null
+// Debug helper function (available in browser console as window.debugReview)
+const debugReviewSubmission = () => {
+  console.log('=== REVIEW SUBMISSION DEBUG INFO ===')
+  console.log('Props:', props)
+  console.log('Product ID (raw):', props.productId)
+  console.log('Product ID (parsed):', parseInt(props.productId))
+  console.log('Is Authenticated:', isAuthenticated.value)
+  console.log('Current User:', user.value)
+  console.log('User ID:', user.value?.id)
+  console.log('Review Rating:', reviewRating.value)
+  console.log('Review Comment:', reviewComment.value)
+  console.log('Review Errors:', reviewErrors.value)
+  console.log('Review Submitting:', reviewSubmitting.value)
+  console.log('Show Review Modal:', showReviewModal.value)
+
+  const testPayload = {
+    rating: reviewRating.value || 5,
+    comment: reviewComment.value || 'Test review',
+    productId: parseInt(props.productId),
+    userId: user.value?.id,
   }
+  console.log('Test payload would be:', testPayload)
+  console.log('===================================')
 }
 
-// === Cart & Wishlist ===
+// Expose debug function to window for console access
+if (typeof window !== 'undefined') {
+  ;(window as Window & typeof globalThis & { debugReview?: () => void }).debugReview = debugReviewSubmission
+}
+
+// === Cart Functionality ===
+const wishlistLoading = ref(false)
+const cartLoading = ref(false)
 const addToCart = async () => {
-  console.log('🟡 [CATALOG PRODUCT DETAILS] Add to Cart clicked')
-
-  // Check if user is authenticated
   if (!isAuthenticated.value) {
-    console.log('🔴 [CATALOG PRODUCT DETAILS] User not authenticated')
     alert('Please log in to add products to your cart')
     return
   }
-
-  // Check if product is in stock
   if (!isInStock.value) {
-    console.log('🔴 [CATALOG PRODUCT DETAILS] Product out of stock')
     alert('This item is currently out of stock')
     return
   }
-
   // Check if variant is selected (for products with variants)
   if (availableColors.value.length > 0 && !selectedColor.value) {
     console.log('🔴 [CATALOG PRODUCT DETAILS] No color selected')
     alert('Please select a color')
     return
   }
-
   if (availableSizes.value.length > 0 && !selectedStorage.value) {
     console.log('🔴 [CATALOG PRODUCT DETAILS] No storage/size selected')
     alert('Please select a storage option')
     return
   }
-
   // Get the product variant ID
   const productVariantId = currentVariant.value?.id
   if (!productVariantId) {
@@ -409,9 +587,7 @@ const addToCart = async () => {
     alert('Please select a product variant')
     return
   }
-
   cartLoading.value = true
-
   try {
     console.log('🟡 [CATALOG PRODUCT DETAILS] Adding to cart:', {
       productVariantId,
@@ -419,16 +595,13 @@ const addToCart = async () => {
       size: selectedStorage.value,
       sku: currentVariant.value?.sku
     })
-
     // Ensure cart is loaded
     if (!userCartStore.cart && user.value?.id) {
       console.log('🟡 [CATALOG PRODUCT DETAILS] Loading user cart first...')
       await userCartStore.fetchUserCart(user.value.id)
     }
-
     // Add product to cart
     const result = await userCartStore.addProductToCart(productVariantId)
-
     if (result.success) {
       console.log('🟢 [CATALOG PRODUCT DETAILS] Product added to cart successfully')
       alert('Product added to your cart!')
@@ -444,34 +617,25 @@ const addToCart = async () => {
   }
 }
 
-const wishlistLoading = ref(false)
-const cartLoading = ref(false)
-
 const addToWishlist = async () => {
   console.log('🟡 [CATALOG PRODUCT DETAILS] Add to Wishlist clicked for product:', currentProduct.value?.id)
-
   if (!isAuthenticated.value) {
     console.log('🔴 [CATALOG PRODUCT DETAILS] User not authenticated')
     alert('Please log in to add products to your wishlist')
     return
   }
-
   if (!currentProduct.value?.id) {
     console.log('🔴 [CATALOG PRODUCT DETAILS] No product ID found')
     return
   }
-
   wishlistLoading.value = true
-
   try {
     const productId = currentProduct.value.id
     const isCurrentlyInWishlist = wishlistStore.isProductInWishlist(productId)
-
     if (isCurrentlyInWishlist) {
       alert('This product is already in your wishlist!')
       return
     }
-
     console.log('🟡 [CATALOG PRODUCT DETAILS] Adding to wishlist...')
     const productData = {
       name: currentProduct.value.name,
@@ -487,7 +651,6 @@ const addToWishlist = async () => {
       imageUrl: currentProduct.value.image || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
     }
     await wishlistStore.addProductToWishlist(productId, productData)
-
     console.log('🟢 [CATALOG PRODUCT DETAILS] Product added to wishlist successfully')
     alert('Product added to your wishlist!')
   } catch (error) {
@@ -503,9 +666,7 @@ onMounted(async () => {
   try {
     const productId = parseInt(props.productId)
     if (!productId || isNaN(productId)) throw new Error('Invalid product ID')
-
     const backendProduct = await productStore.fetchProductById(productId) as BackendProduct
-
     product.value = {
       id: backendProduct.id,
       name: backendProduct.name,
@@ -538,20 +699,15 @@ onMounted(async () => {
         colors: getColorOptions(),
       },
     }
-
     selectedColor.value = availableColors.value[0] || ''
     selectedStorage.value = ''
-
     await fetchProductVariants(productId)
-
     // Fetch product reviews
     await fetchProductReviews(productId)
-
     // Initialize wishlist if user is authenticated
     if (isAuthenticated.value && user.value?.id) {
       console.log('🟣 [CATALOG PRODUCT DETAILS] Initializing wishlist for user:', user.value.id)
       await wishlistStore.fetchUserWishlist(user.value.id)
-
       // Also initialize cart for authenticated user
       console.log('🟣 [CATALOG PRODUCT DETAILS] Initializing cart for user:', user.value.id)
       await userCartStore.fetchUserCart(user.value.id)
@@ -570,12 +726,9 @@ const fetchProductVariants = async (productId: number) => {
   try {
     const res = await fetch(`http://localhost:8080/api/products/${productId}/productVariants`)
     if (!res.ok) throw new Error('Failed to fetch variants')
-
     const data: ProductVariantsResponse = await res.json()
     const variants = data._embedded?.productVariants || data.productVariants || []
-
     productVariants.value = variants
-
     if (variants.length > 0) {
       if (!selectedColor.value) selectedColor.value = variants[0].color
       if (!selectedStorage.value) selectedStorage.value = variants[0].size
@@ -707,7 +860,7 @@ const fetchProductVariants = async (productId: number) => {
           <div v-else-if="isMobileComputeCategory && currentProduct.specifications?.storage" class="space-y-3">
             <span class="font-srProDisplay text-sm font-medium text-gray-700">Storage:</span>
             <div class="px-6 py-3 border border-gray-300 rounded-[8px] font-srProDisplay text-sm font-medium text-gray-700 bg-gray-50">
-              {{ currentProduct.specifications.storage }}
+              {{ currentProduct.specifications?.storage ?? '' }}
             </div>
           </div>
 
@@ -723,7 +876,7 @@ const fetchProductVariants = async (productId: number) => {
               </span>
             </div>
             <div v-if="currentVariant" class="text-xs text-gray-500">
-              SKU: {{ currentVariant.sku }}
+              SKU: {{ currentVariant?.sku ?? '' }}
             </div>
           </div>
 
@@ -731,10 +884,10 @@ const fetchProductVariants = async (productId: number) => {
           <div v-if="product" class="space-y-3 p-4 bg-yellow-50 border border-yellow-200 rounded">
             <h3 class="font-bold text-sm">🔍 DEBUG: Product & Variant Data (REMOVE LATER)</h3>
             <div class="text-xs space-y-1">
-              <p><strong>Category:</strong> {{ product.category }}</p>
+              <p><strong>Category:</strong> {{ product?.category ?? '' }}</p>
               <p><strong>Is Mobile/Compute:</strong> {{ isMobileComputeCategory }}</p>
               <p><strong>Is Input/Control:</strong> {{ isInputControlCategory }}</p>
-              <p><strong>Has Specifications:</strong> {{ !!product.specifications }}</p>
+              <p><strong>Has Specifications:</strong> {{ !!product?.specifications }}</p>
               <p><strong>Available Colors:</strong> {{ availableColors.join(', ') }}</p>
               <p><strong>Available Sizes:</strong> {{ availableSizes.join(', ') }}</p>
               <p><strong>Selected Color:</strong> {{ selectedColor }}</p>
@@ -748,7 +901,7 @@ const fetchProductVariants = async (productId: number) => {
 
 
           <!-- Product Specifications - Mobile & Compute Template -->
-          <div v-if="isMobileComputeCategory" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div v-if="isMobileComputeCategory && currentProduct.specifications" class="grid grid-cols-2 md:grid-cols-3 gap-3">
             <!-- Screen Size -->
             <div v-if="currentProduct.specifications?.screenSize"
                  class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
@@ -758,7 +911,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">Screen size</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.screenSize }}
+                  {{ currentProduct.specifications?.screenSize ?? '' }}
                 </p>
               </div>
             </div>
@@ -772,7 +925,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">CPU</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.cpu }}
+                  {{ currentProduct.specifications?.cpu ?? '' }}
                 </p>
               </div>
             </div>
@@ -786,7 +939,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">GPU</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.gpu }}
+                  {{ currentProduct.specifications?.gpu ?? '' }}
                 </p>
               </div>
             </div>
@@ -800,7 +953,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">RAM</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.ram }}GB
+                  {{ currentProduct.specifications && currentProduct.specifications.ram ? currentProduct.specifications.ram + 'GB' : '' }}
                 </p>
               </div>
             </div>
@@ -814,7 +967,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">Refresh Rate</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.refreshRate }}Hz
+                  {{ currentProduct.specifications && currentProduct.specifications.refreshRate ? currentProduct.specifications.refreshRate + 'Hz' : '' }}
                 </p>
               </div>
             </div>
@@ -828,7 +981,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">Camera</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.camera }}
+                  {{ currentProduct.specifications?.camera ?? '' }}
                 </p>
               </div>
             </div>
@@ -842,7 +995,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">Front Camera</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.frontCamera }}
+                  {{ currentProduct.specifications?.frontCamera ?? '' }}
                 </p>
               </div>
             </div>
@@ -856,7 +1009,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">Battery</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.battery }}
+                  {{ currentProduct.specifications?.battery ?? '' }}
                 </p>
               </div>
             </div>
@@ -870,14 +1023,14 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">OS</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.os }}
+                  {{ currentProduct.specifications?.os ?? '' }}
                 </p>
               </div>
             </div>
           </div>
 
           <!-- Product Specifications - Input & Control Template -->
-          <div v-else-if="isInputControlCategory" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div v-else-if="isInputControlCategory && currentProduct.specifications" class="grid grid-cols-2 md:grid-cols-3 gap-3">
             <!-- DPI -->
             <div v-if="currentProduct.specifications?.dpi"
                  class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
@@ -887,7 +1040,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">DPI</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.dpi }}
+                  {{ currentProduct.specifications?.dpi ?? '' }}
                 </p>
               </div>
             </div>
@@ -901,7 +1054,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">Polling Rate</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.pollingRate }}Hz
+                  {{ currentProduct.specifications && currentProduct.specifications.pollingRate ? currentProduct.specifications.pollingRate + 'Hz' : '' }}
                 </p>
               </div>
             </div>
@@ -915,7 +1068,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">Switch Type</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.switchType }}
+                  {{ currentProduct.specifications?.switchType ?? '' }}
                 </p>
               </div>
             </div>
@@ -929,7 +1082,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">Backlighting</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.backlighting }}
+                  {{ currentProduct.specifications?.backlighting ?? '' }}
                 </p>
               </div>
             </div>
@@ -943,7 +1096,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">Programmable</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.programmableButtons ? 'Yes' : 'No' }}
+                  {{ currentProduct.specifications && currentProduct.specifications.programmableButtons !== undefined ? (currentProduct.specifications.programmableButtons ? 'Yes' : 'No') : '' }}
                 </p>
               </div>
             </div>
@@ -957,7 +1110,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">Battery Life</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.batteryLife }}
+                  {{ currentProduct.specifications?.batteryLife ?? '' }}
                 </p>
               </div>
             </div>
@@ -971,7 +1124,7 @@ const fetchProductVariants = async (productId: number) => {
               <div>
                 <p class="text-xs text-gray-500">Ergonomic</p>
                 <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications.ergonomic ? 'Yes' : 'No' }}
+                  {{ currentProduct.specifications && currentProduct.specifications.ergonomic !== undefined ? (currentProduct.specifications.ergonomic ? 'Yes' : 'No') : '' }}
                 </p>
               </div>
             </div>
@@ -1317,7 +1470,7 @@ const fetchProductVariants = async (productId: number) => {
             <div v-if="!productReviewsLoading && productReviews.length > 0" class="flex items-start gap-12 mb-8">
               <!-- Overall Rating -->
               <div class="text-center space-x-3 bg-[#F4F4F4] rounded-[25px] w-auto h-auto p-8">
-                <div class="text-6xl font-bold mb-2">{{ reviewStats.averageRating }}</div>
+                <div class="text-6xl font-bold mb-2">{{ Number(reviewStats.averageRating).toFixed(Number(reviewStats.averageRating) % 1 === 0 ? 0 : 1) }}</div>
                 <div class="text-gray-400 text-sm mb-2">
                   of {{ reviewStats.totalReviews }} reviews
                 </div>
@@ -1409,12 +1562,69 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Leave Comment Button -->
             <div class="mb-8">
-              <input
-                type="text"
-                placeholder="Leave Comment"
-                class="w-full border border-gray-200 rounded-[7px] px-4 py-4 text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all"
-              />
+              <button
+                @click="showReviewModal = true"
+                class="w-full border border-gray-200 rounded-[7px] px-4 py-4 text-gray-700 text-base font-medium bg-white hover:bg-gray-50 transition-all focus:outline-none focus:ring-2 focus:ring-gray-200"
+              >
+                Leave Comment
+              </button>
             </div>
+
+            <!-- Review Modal -->
+            <transition name="fade-details">
+              <div v-if="showReviewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75">
+                <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative">
+                  <button @click="closeReviewModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600" aria-label="Close">
+                    <v-icon name="hi-x" scale="1.2" />
+                  </button>
+                  <h3 class="text-xl font-semibold mb-4">Leave a Review</h3>
+                  <form @submit.prevent="submitReview">
+                    <div class="mb-4">
+                      <label class="block text-gray-700 font-medium mb-2">Rating</label>
+                      <div class="flex gap-2">
+                        <button
+                          v-for="star in 5"
+                          :key="star"
+                          type="button"
+                          @click="reviewRating = star"
+                          :aria-label="`Set rating to ${star}`"
+                          class="focus:outline-none"
+                        >
+                          <v-icon
+                            :name="star <= reviewRating ? 'bi-star-fill' : 'bi-star'"
+                            :class="star <= reviewRating ? 'text-yellow-400' : 'text-gray-300'"
+                            scale="1.5"
+                          />
+                        </button>
+                      </div>
+                      <div v-if="reviewErrors.rating" class="text-red-500 text-sm mt-1">{{ reviewErrors.rating }}</div>
+                    </div>
+                    <div class="mb-4">
+                      <label class="block text-gray-700 font-medium mb-2">Comment</label>
+                      <textarea
+                        v-model="reviewComment"
+                        maxlength="1000"
+                        rows="5"
+                        class="w-full border border-gray-200 rounded-[7px] px-4 py-2 text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all resize-none"
+                        placeholder="Share your experience..."
+                      ></textarea>
+                      <div class="flex justify-between text-xs text-gray-400 mt-1">
+                        <span>{{ reviewComment.length }}/1000</span>
+                        <span v-if="reviewErrors.comment" class="text-red-500">{{ reviewErrors.comment }}</span>
+                      </div>
+                    </div>
+                    <div class="flex justify-end gap-2 mt-6">
+                      <button type="button" @click="closeReviewModal" class="px-4 py-2 rounded bg-gray-100 text-gray-700 font-medium hover:bg-gray-200">Cancel</button>
+                      <button type="submit" :disabled="reviewSubmitting" class="px-6 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                        <span v-if="reviewSubmitting">Submitting...</span>
+                        <span v-else>Submit Review</span>
+                      </button>
+                    </div>
+                    <div v-if="reviewErrors.submit" class="text-red-500 text-sm mt-4 text-center">{{ reviewErrors.submit }}</div>
+                  </form>
+                </div>
+              </div>
+            </transition>
 
             <!-- Loading State for Reviews -->
             <div v-if="productReviewsLoading" class="flex justify-center items-center py-8">
