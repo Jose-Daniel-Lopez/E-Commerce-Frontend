@@ -228,17 +228,6 @@ watch(() => props.modelValue, (newValue) => {
           style="z-index: 1;"
         />
       </div>
-
-      <!-- Value Display (Optional) -->
-      <div class="flex justify-between items-center mt-3 text-xs text-gray-500">
-        <span>{{ formatValue(min) }}</span>
-        <div class="flex items-center space-x-2">
-          <span class="font-medium text-black">{{ formatValue(modelValue[0]) }}</span>
-          <span>-</span>
-          <span class="font-medium text-black">{{ formatValue(modelValue[1]) }}</span>
-        </div>
-        <span>{{ formatValue(max) }}</span>
-      </div>
     </div>
   </div>
 </template>
