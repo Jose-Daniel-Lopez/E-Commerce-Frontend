@@ -41,7 +41,6 @@ const sortBy = ref('name')
 const brandSearchQuery = ref('')
 
 // Filters
-const priceRange = ref({ min: 0, max: 5000 })
 const collapsedFilters = ref({
   price: false,
   brand: false,
@@ -50,6 +49,15 @@ const collapsedFilters = ref({
 // Category Display
 const categoryDisplayName = ref('')
 const actualCategoryName = ref('')
+
+// Price Range (consolidated)
+const minValue = 0
+const maxValue = 5000
+const priceRange = ref<[number, number]>([0, 5000])
+const draggingProgress = ref(false)
+let dragStartX = 0
+let initialMin = 0
+let initialMax = 0
 
 // =======================
 // 🧮 COMPUTED PROPERTIES
@@ -60,10 +68,10 @@ const filteredProducts = computed(() => {
   let filtered = [...productStore.products]
 
   // Price filter
-  if (priceRange.value.min > 0 || priceRange.value.max < 5000) {
+  if (priceRange.value[0] > 0 || priceRange.value[1] < 5000) {
     filtered = filtered.filter(
       (product) =>
-        product.basePrice >= priceRange.value.min && product.basePrice <= priceRange.value.max
+        product.basePrice >= priceRange.value[0] && product.basePrice <= priceRange.value[1]
     )
   }
 
@@ -128,6 +136,14 @@ const breadcrumbs = computed(() => [
   { label: 'catalog.title', to: '/catalog' },
   { label: categoryDisplayName.value },
 ])
+
+// Price range slider computed properties
+const progressLeft = computed(() =>
+  ((priceRange.value[0] - minValue) / (maxValue - minValue)) * 100
+)
+const progressRight = computed(() =>
+  100 - ((priceRange.value[1] - minValue) / (maxValue - minValue)) * 100
+)
 
 // =======================
 // 🛠️ UTILITY FUNCTIONS
@@ -239,13 +255,13 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
 }
 
 const hasActiveFilters = () => {
-  const priceFilterActive = priceRange.value.min > 0 || priceRange.value.max < 5000
+  const priceFilterActive = priceRange.value[0] > 0 || priceRange.value[1] < 5000
   const brandFilterActive = productStore.brands.some((brand) => brand.checked)
   return priceFilterActive || brandFilterActive
 }
 
 const clearAllFilters = () => {
-  priceRange.value = { min: 0, max: 5000 }
+  priceRange.value = [0, 5000]
   productStore.brands.forEach((brand) => (brand.checked = false))
   currentPage.value = 1
 }
@@ -253,6 +269,72 @@ const clearAllFilters = () => {
 const clearBrandFilters = () => {
   productStore.brands.forEach((brand) => (brand.checked = false))
   currentPage.value = 1
+}
+
+const activeSlider = ref<'min' | 'max' | null>(null)
+
+// Price range slider methods
+function updateMin(e: Event) {
+  activeSlider.value = 'min'
+  const val = Number((e.target as HTMLInputElement).value)
+  if (val > priceRange.value[1]) {
+    priceRange.value = [priceRange.value[1], priceRange.value[1]]
+  } else {
+    priceRange.value = [val, priceRange.value[1]]
+  }
+  // Reset active state after a delay
+  setTimeout(() => {
+    activeSlider.value = null
+  }, 100)
+}
+
+function updateMax(e: Event) {
+  activeSlider.value = 'max'
+  const val = Number((e.target as HTMLInputElement).value)
+  if (val < priceRange.value[0]) {
+    priceRange.value = [priceRange.value[0], priceRange.value[0]]
+  } else {
+    priceRange.value = [priceRange.value[0], val]
+  }
+  // Reset active state after a delay
+  setTimeout(() => {
+    activeSlider.value = null
+  }, 100)
+}
+
+function startDragProgress(e: MouseEvent) {
+  draggingProgress.value = true
+  dragStartX = e.clientX
+  initialMin = priceRange.value[0]
+  initialMax = priceRange.value[1]
+  window.addEventListener('mousemove', onDragProgress)
+  window.addEventListener('mouseup', stopDragProgress)
+}
+
+function onDragProgress(e: MouseEvent) {
+  if (!draggingProgress.value) return
+  const slider = (e.target as HTMLElement).closest('.slider')
+  if (!slider) return
+  const sliderWidth = slider.clientWidth
+  const delta = ((e.clientX - dragStartX) / sliderWidth) * (maxValue - minValue)
+  const rangeWidth = priceRange.value[1] - priceRange.value[0]
+  let newMin = initialMin + delta
+  let newMax = initialMax + delta
+  if (newMin < minValue) {
+    newMin = minValue
+    newMax = newMin + rangeWidth
+  }
+  if (newMax > maxValue) {
+    newMax = maxValue
+    newMin = newMax - rangeWidth
+  }
+  priceRange.value = [Math.round(newMin), Math.round(newMax)]
+}
+
+function stopDragProgress() {
+  draggingProgress.value = false
+  window.removeEventListener('mousemove', onDragProgress)
+  window.removeEventListener('mouseup', stopDragProgress)
 }
 
 // =======================
@@ -295,19 +377,6 @@ onMounted(async () => {
     }
   }
 })
-
-// =======================
-// 🔁 PRICE RANGE HELPERS
-// =======================
-function updateMin(e: any) {
-  const val = Number(e.target.value)
-  priceRange.value.min = Math.min(val, priceRange.value.max - 50)
-}
-
-function updateMax(e: any) {
-  const val = Number(e.target.value)
-  priceRange.value.max = Math.max(val, priceRange.value.min + 50)
-}
 </script>
 
 <template>
@@ -388,7 +457,7 @@ function updateMax(e: any) {
                 <div class="flex-1">
                   <label class="text-xs font-srProDisplay text-gray-500 mt-1 block mb-2">From</label>
                   <input
-                    v-model.number="priceRange.min"
+                    v-model.number="priceRange[0]"
                     type="number"
                     placeholder="0"
                     class="w-full px-2 py-2 text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -398,7 +467,7 @@ function updateMax(e: any) {
                 <div class="flex-1">
                   <label class="text-xs text-right font-srProDisplay text-gray-500 mt-1 block mb-2">To</label>
                   <input
-                    v-model.number="priceRange.max"
+                    v-model.number="priceRange[1]"
                     type="number"
                     placeholder="5000"
                     class="w-full py-2 text-right text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -406,37 +475,41 @@ function updateMax(e: any) {
                 </div>
               </div>
 
+
               <!-- Dual Range Slider -->
-              <div class="relative px-2">
-                <div class="relative h-1 bg-gray-300 rounded-full">
+              <div class="relative px-2 slider-container">
+
+                <!-- Slider -->
+                <div class="slider relative h-1 bg-gray-300 rounded-full">
+                  <!-- Progress bar that shows the selected range -->
                   <div
-                    class="absolute h-1 bg-black rounded-full"
-                    :style="{
-                      left: (priceRange.min / 5000) * 100 + '%',
-                      width: ((priceRange.max - priceRange.min) / 5000) * 100 + '%',
-                    }"
+                    class="absolute h-1 bg-black rounded-full progress cursor-pointer"
+                    :style="{ left: progressLeft + '%', right: progressRight + '%' }"
+                    @mousedown="startDragProgress"
                   ></div>
 
+                  <!-- Min range input -->
                   <input
-                    :value="priceRange.min"
-                    @input="updateMin($event)"
                     type="range"
-                    min="0"
-                    max="5000"
+                    :min="minValue"
+                    :max="maxValue"
                     step="50"
+                    :value="priceRange[0]"
+                    @input="updateMin"
                     class="absolute w-full h-1 appearance-none bg-transparent cursor-pointer slider-thumb-min"
-                    style="z-index: 3;"
+                    style="z-index: 2;"
                   />
 
+                  <!-- Max range input -->
                   <input
-                    :value="priceRange.max"
-                    @input="updateMax($event)"
                     type="range"
-                    min="0"
-                    max="5000"
+                    :min="minValue"
+                    :max="maxValue"
                     step="50"
+                    :value="priceRange[1]"
+                    @input="updateMax"
                     class="absolute w-full h-1 appearance-none bg-transparent cursor-pointer slider-thumb-max"
-                    style="z-index: 4;"
+                    style="z-index: 1;"
                   />
                 </div>
               </div>
@@ -796,8 +869,15 @@ button:focus {
   background-repeat: no-repeat;
 }
 
-.slider-thumb-min::-webkit-slider-thumb,
-.slider-thumb-max::-webkit-slider-thumb {
+/* FIXED DUAL RANGE SLIDER STYLES */
+
+/* Min slider styles - higher z-index when its value is closer to current mouse position */
+.slider-thumb-min {
+  pointer-events: none;
+}
+
+.slider-thumb-min::-webkit-slider-thumb {
+  pointer-events: all;
   -webkit-appearance: none;
   width: 16px;
   height: 16px;
@@ -806,23 +886,78 @@ button:focus {
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   border: 2px solid #fff;
+  position: relative;
+  z-index: 10;
 }
-.slider-thumb-min::-moz-range-thumb,
+
+.slider-thumb-min::-moz-range-thumb {
+  pointer-events: all;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #000;
+  cursor: pointer;
+  border: 2px solid #fff;
+  z-index: 10;
+}
+
+/* Max slider styles */
+.slider-thumb-max {
+  pointer-events: none;
+}
+
+.slider-thumb-max::-webkit-slider-thumb {
+  pointer-events: all;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #000;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  border: 2px solid #fff;
+  position: relative;
+  z-index: 10;
+}
+
 .slider-thumb-max::-moz-range-thumb {
+  pointer-events: all;
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background: #000;
   cursor: pointer;
   border: 2px solid #fff;
+  z-index: 10;
 }
-.slider-thumb-min::-ms-thumb,
-.slider-thumb-max::-ms-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #000;
-  cursor: pointer;
-  border: 2px solid #fff;
+
+/* Hide the slider tracks */
+.slider-thumb-min::-webkit-slider-track,
+.slider-thumb-max::-webkit-slider-track {
+  background: transparent;
+  border: none;
+}
+
+.slider-thumb-min::-moz-range-track,
+.slider-thumb-max::-moz-range-track {
+  background: transparent;
+  border: none;
+}
+
+/* Progress bar */
+.progress {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Dynamic z-index based on thumb positions */
+.slider-thumb-min.active {
+  z-index: 3 !important;
+}
+
+.slider-thumb-max.active {
+  z-index: 3 !important;
 }
 </style>
