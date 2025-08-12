@@ -17,7 +17,7 @@ const selectImage = (index: number) => {
 }
 const selectColor = (color: string) => {
   selectedColor.value = color
-  const imageIndex = productImages.value.findIndex(img => img.includes(color.toLowerCase()))
+  const imageIndex = productImages.value.findIndex(img => typeof img === 'string' && img.includes(color.toLowerCase()))
   if (imageIndex !== -1) selectedImageIndex.value = imageIndex
 }
 const selectStorage = (size: string) => {
@@ -43,6 +43,7 @@ interface ProductVariant {
   color: string
   stock: number
   sku: string
+  imageUrl?: string
   _links?: {
     self: { href: string }
     productVariant: { href: string }
@@ -184,25 +185,17 @@ const mockProduct: Product = {
   },
 }
 
-// === Image Mapping ===
-const imageMap: Record<string, string[]> = {
-  smartphones: [
-    '/images/placeholder-phone-red.webp',
-    '/images/placeholder-phone-white.webp',
-    '/images/placeholder-phone-black.webp',
-    '/images/placeholder-phone-blue.webp',
-  ],
-  tablets: [
-    '/images/placeholder-tablet-red.png',
-    '/images/placeholder-tablet-white.png',
-    '/images/placeholder-tablet-black.png',
-    '/images/placeholder-tablet-blue.png',
-  ],
-}
-const defaultImages = ['/images/placeholder-phone-red.webp']
+// === Product Images from Variants ===
 const productImages = computed(() => {
-  const category = currentProduct.value?.category?.toLowerCase() || ''
-  return imageMap[category] || imageMap[category.replace(/s$/, '')] || defaultImages
+  // Prefer variant images if available
+  if (productVariants.value.length > 0) {
+    // Only include valid image URLs
+    return productVariants.value
+      .map(v => v.imageUrl)
+      .filter(url => typeof url === 'string' && url.length > 0)
+  }
+  // Fallback to product image or default
+  return currentProduct.value?.image ? [currentProduct.value.image] : ['/images/placeholder-phone-red.webp']
 })
 
 // === Computed ===
@@ -886,7 +879,6 @@ const fetchProductVariants = async (productId: number) => {
                 :title="color"
               ></button>
             </div>
-            <span v-if="selectedColor" class="text-sm text-gray-600">{{ selectedColor }}</span>
           </div>
 
           <!-- Size/Storage Selection -->
