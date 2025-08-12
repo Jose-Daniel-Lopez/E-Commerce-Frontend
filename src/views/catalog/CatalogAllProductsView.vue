@@ -12,6 +12,7 @@ import DualRangeSlider from '@/components/shared/DualRangeSlider.vue'
 import { storeToRefs } from 'pinia'
 import api from '@/lib/axios'
 
+
 const router = useRouter()
 const productStore = useProductStore()
 const categoriesStore = useCategoriesStore()
@@ -20,9 +21,11 @@ const wishlistStore = useWishlistStore()
 const { user } = storeToRefs(authStore)
 const { wishlistLoading } = storeToRefs(wishlistStore)
 
+
 // =======================
 // 📦 State
 // =======================
+
 
 /**
  * Current page number for server-side pagination.
@@ -30,15 +33,18 @@ const { wishlistLoading } = storeToRefs(wishlistStore)
  */
 const currentPage = ref(1)
 
+
 /**
  * Sort order for products.
  * Options: name, name-desc, price-low, price-high, rating.
  */
 const sortBy = ref('name')
 
+
 // =======================
 // 🔍 Search States
 // =======================
+
 
 /**
  * Search query for filtering brand options in the sidebar.
@@ -46,9 +52,11 @@ const sortBy = ref('name')
  */
 const brandSearchQuery = ref('')
 
+
 // =======================
 // 🧱 Filter Collapse States
 // =======================
+
 
 /**
  * Tracks which filter sections are collapsed.
@@ -60,14 +68,17 @@ const collapsedFilters = ref({
   category: false,
 })
 
+
 // Price Range (consolidated)
 const minValue = 0
 const maxValue = 5000
 const priceRange = ref<[number, number]>([0, 5000])
 
+
 // =======================
 // 🧮 Computed Properties
 // =======================
+
 
 /**
  * Number of items to display per page.
@@ -75,11 +86,13 @@ const priceRange = ref<[number, number]>([0, 5000])
  */
 const itemsPerPage = 20
 
+
 /**
  * Available categories for the category filter.
  * Populated from the full catalog categories, not just current page products.
  */
 const availableCategories = ref<{ name: string; checked: boolean }[]>([])
+
 
 /**
  * Fetches all categories from the backend catalog.
@@ -90,12 +103,15 @@ const fetchAllCategories = async () => {
     const response = await api.get('/categories')
     const categories = response.data._embedded?.categories || response.data || []
 
+
     console.log('🔍 [ALL PRODUCTS] Fetched categories from /categories endpoint:', categories.length)
+
 
     availableCategories.value = categories.map((category: { name?: string; id?: number }) => ({
       name: category.name || 'Unknown',
       checked: false
     }))
+
 
     console.log('🔍 [ALL PRODUCTS] Available categories for filter:', availableCategories.value.map(c => c.name))
   } catch (error) {
@@ -114,6 +130,7 @@ const fetchAllCategories = async () => {
   }
 }
 
+
 /**
  * Returns products filtered by:
  * - Price range
@@ -124,6 +141,14 @@ const fetchAllCategories = async () => {
 const filteredProducts = computed(() => {
   let filtered = [...productStore.products]
 
+  // Price filter
+  if (priceRange.value[0] > 0 || priceRange.value[1] < 5000) {
+    filtered = filtered.filter(
+      (product) =>
+        product.basePrice >= priceRange.value[0] && product.basePrice <= priceRange.value[1]
+    )
+  }
+
   // Brand filter
   const selectedBrands = productStore.brands
     .filter((brand) => brand.checked)
@@ -131,6 +156,7 @@ const filteredProducts = computed(() => {
   if (selectedBrands.length > 0) {
     filtered = filtered.filter((product) => selectedBrands.includes(product.brand))
   }
+
 
   // Category filter
   const selectedCategories = availableCategories.value
@@ -141,6 +167,7 @@ const filteredProducts = computed(() => {
       product.categoryName && selectedCategories.includes(product.categoryName)
     )
   }
+
 
   // Sort products
   switch (sortBy.value) {
@@ -163,8 +190,10 @@ const filteredProducts = computed(() => {
       break
   }
 
+
   return filtered
 })
+
 
 /**
  * Paginates the filtered product list using server-side pagination
@@ -175,10 +204,12 @@ const paginatedProducts = computed(() => {
   return filteredProducts.value
 })
 
+
 /**
  * Total number of pages based on server pagination info.
  */
 const totalPages = computed(() => productStore.pagination.totalPages || 1)
+
 
 /**
  * Filters brand list based on search query with fuzzy matching.
@@ -187,6 +218,7 @@ const totalPages = computed(() => productStore.pagination.totalPages || 1)
 const filteredBrands = computed(() => {
   const query = brandSearchQuery.value?.trim().toLowerCase()
   if (!query || query.length < 2) return productStore.brands
+
 
   return productStore.brands
     .map((brand) => {
@@ -203,6 +235,7 @@ const filteredBrands = computed(() => {
     .map(({ brand }) => brand)
 })
 
+
 /**
  * Breadcrumb navigation path.
  * Shows the path to all products view.
@@ -212,24 +245,29 @@ const breadcrumbs = computed(() => [
   { label: 'All Products' },
 ])
 
+
 // =======================
 // 🧪 Lifecycle & Effects
 // =======================
 
+
 onMounted(async () => {
   // Fetch all catalog categories for the filter (independent of current products)
   await fetchAllCategories()
+
 
   // Ensure categories are loaded for category filter
   if (categoriesStore.categories.length === 0) {
     await categoriesStore.fetchCategories()
   }
 
+
   // Load initial data: all products, brands, and wishlist
   await Promise.all([
     productStore.fetchAllProducts(currentPage.value, itemsPerPage), // Use 1-indexed page
     productStore.fetchBrands(),
   ])
+
 
   // Load user wishlist if authenticated
   if (authStore.user?.id) {
@@ -242,9 +280,11 @@ onMounted(async () => {
   }
 })
 
+
 // =======================
 // ⚙️ Methods
 // =======================
+
 
 /**
  * Formats a price number into a localized currency string.
@@ -254,6 +294,7 @@ const formatPrice = (price: number) => {
   return `$${price}`
 }
 
+
 /**
  * Toggles product favorite status using the wishlist API.
  * Handles authentication, adds/removes from wishlist, and shows feedback.
@@ -261,12 +302,14 @@ const formatPrice = (price: number) => {
 const toggleFavorite = async (productId: number) => {
   console.log('🔵 [ALL PRODUCTS] toggleFavorite called for product:', productId)
 
+
   // Check if user is authenticated
   if (!user.value || !user.value.id) {
     console.error('🔴 [ALL PRODUCTS] User not authenticated')
     alert('Please log in to add products to your wishlist')
     return
   }
+
 
   // Find the product to get its data
   const product = productStore.products.find(p => p.id === productId)
@@ -276,6 +319,7 @@ const toggleFavorite = async (productId: number) => {
     return
   }
 
+
   try {
     // Ensure wishlist is loaded
     if (!wishlistStore.wishlistId) {
@@ -283,11 +327,14 @@ const toggleFavorite = async (productId: number) => {
       await wishlistStore.fetchUserWishlist(user.value.id)
     }
 
+
     const isCurrentlyInWishlist = wishlistStore.isProductInWishlist(productId)
     console.log('🟡 [ALL PRODUCTS] Product in wishlist before action:', isCurrentlyInWishlist)
 
+
     if (!isCurrentlyInWishlist) {
       console.log('🟡 [ALL PRODUCTS] Adding product to wishlist...')
+
 
       const productData = {
         name: product.name,
@@ -299,6 +346,7 @@ const toggleFavorite = async (productId: number) => {
         imageUrl: product.imageUrl || undefined,
       }
 
+
       await wishlistStore.addProductToWishlist(productId, productData)
       console.log('✅ [ALL PRODUCTS] Product added to wishlist')
     } else {
@@ -307,9 +355,11 @@ const toggleFavorite = async (productId: number) => {
       console.log('✅ [ALL PRODUCTS] Product removed from wishlist')
     }
 
+
     // Verify the state change
     const isInWishlistAfter = wishlistStore.isProductInWishlist(productId)
     console.log('🟡 [ALL PRODUCTS] Product in wishlist after action:', isInWishlistAfter)
+
 
   } catch (error) {
     console.error('🔴 [ALL PRODUCTS] Error toggling favorite:', error)
@@ -317,12 +367,14 @@ const toggleFavorite = async (productId: number) => {
   }
 }
 
+
 /**
  * Navigates to the product details page.
  * Scrolls to top after navigation.
  */
 const goToProductDetails = (productId: number) => {
   console.log('🟢 [ALL PRODUCTS] goToProductDetails called with productId:', productId)
+
 
   // Find the product to get its category for the route
   const product = productStore.products.find(p => p.id === productId)
@@ -332,6 +384,7 @@ const goToProductDetails = (productId: number) => {
     .replace(/--+/g, '-')
     .replace(/^-+/, '')
     .replace(/-+$/, '') || 'unknown'
+
 
   router
     .push({
@@ -349,12 +402,14 @@ const goToProductDetails = (productId: number) => {
     })
 }
 
+
 /**
  * Shortcut to go directly to product details when "Buy Now" is clicked.
  */
 const buyNow = (productId: number) => {
   goToProductDetails(productId)
 }
+
 
 /**
  * Navigates to a specific page with server-side pagination.
@@ -364,11 +419,13 @@ const buyNow = (productId: number) => {
 const goToPage = async (page: number) => {
   console.log('🔵 [ALL PRODUCTS] goToPage called with page:', page, 'totalPages:', totalPages.value)
 
+
   if (page >= 1 && page <= totalPages.value) {
     console.log('🔵 [ALL PRODUCTS] Setting currentPage to:', page, 'and fetching data...')
     currentPage.value = page
     // Backend expects 1-indexed pagination, so pass the page as-is
     await productStore.fetchAllProducts(currentPage.value, itemsPerPage)
+
 
     // Ensure currentPage is synced with backend response
     // Backend returns 1-indexed page numbers, so use as-is
@@ -382,6 +439,7 @@ const goToPage = async (page: number) => {
   }
 }
 
+
 /**
  * Toggles the visibility of a filter section.
  */
@@ -389,24 +447,29 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
   collapsedFilters.value[filterName] = !collapsedFilters.value[filterName]
 }
 
+
 /**
  * Checks if any filters are currently active.
  * Used to show/hide "Clear All" buttons.
  */
 const hasActiveFilters = () => {
+  const priceFilterActive = priceRange.value[0] > 0 || priceRange.value[1] < 5000
   const brandFilterActive = productStore.brands.some((brand) => brand.checked)
   const categoryFilterActive = availableCategories.value.some((category) => category.checked)
-  return brandFilterActive || categoryFilterActive
+  return priceFilterActive || brandFilterActive || categoryFilterActive
 }
+
 
 /**
  * Clears all applied filters and resets pagination.
  */
 const clearAllFilters = () => {
+  priceRange.value = [0, 5000]
   productStore.brands.forEach((brand) => (brand.checked = false))
   availableCategories.value.forEach((category) => (category.checked = false))
   currentPage.value = 1
 }
+
 
 /**
  * Clears only brand filters.
@@ -416,6 +479,7 @@ const clearBrandFilters = () => {
   currentPage.value = 1
 }
 
+
 /**
  * Clears only category filters.
  */
@@ -424,20 +488,30 @@ const clearCategoryFilters = () => {
   currentPage.value = 1
 }
 
+
 // Reset to page 1 only when user actively changes filters
 watch(sortBy, () => {
   currentPage.value = 1
 })
+
 
 // Watch for changes in brand filter selections (not the array itself)
 watch(() => productStore.brands.map(b => b.checked), () => {
   currentPage.value = 1
 }, { deep: true })
 
+
 // Watch for changes in category filter selections (not the array itself)
 watch(() => availableCategories.value.map(c => c.checked), () => {
   currentPage.value = 1
 }, { deep: true })
+
+
+// Watch for changes in price range
+watch(priceRange, () => {
+  currentPage.value = 1
+}, { deep: true })
+
 
 // Sync currentPage with backend pagination state
 // This ensures the UI pagination buttons show the correct active state
@@ -451,6 +525,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
   }
 })
 </script>
+
 
 <template>
   <div class="min-h-screen">
@@ -657,9 +732,9 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           <div v-if="hasActiveFilters()" class="mb-6 p-4 bg-gray-50 rounded-lg">
             <h4 class="font-srProDisplay text-sm font-semibold text-gray-800 mb-3">Active Filters</h4>
             <div class="space-y-2">
-              <div v-if="priceRange.min > 0 || priceRange.max < 5000" class="flex items-center justify-between text-sm">
+              <div v-if="priceRange[0] > 0 || priceRange[1] < 5000" class="flex items-center justify-between text-sm">
                 <span class="text-gray-600">Price:</span>
-                <span class="font-medium">${{ priceRange.min }} - ${{ priceRange.max }}</span>
+                <span class="font-medium">${{ priceRange[0] }} - ${{ priceRange[1] }}</span>
               </div>
               <div v-if="productStore.brands.some(brand => brand.checked)" class="flex items-center justify-between text-sm">
                 <span class="text-gray-600">Brands:</span>
