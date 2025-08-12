@@ -8,6 +8,7 @@ import { useWishlistStore } from '@/stores/wishlistStore'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+import DualRangeSlider from '@/components/shared/DualRangeSlider.vue'
 import { storeToRefs } from 'pinia'
 import api from '@/lib/axios'
 
@@ -28,12 +29,6 @@ const { wishlistLoading } = storeToRefs(wishlistStore)
  * 1-indexed for better UX (vs. 0-indexed).
  */
 const currentPage = ref(1)
-
-/**
- * Price range filter bounds (in EUR or local currency).
- * Default: full range from 0 to 5000.
- */
-const priceRange = ref({ min: 0, max: 5000 })
 
 /**
  * Sort order for products.
@@ -65,32 +60,10 @@ const collapsedFilters = ref({
   category: false,
 })
 
-// =======================
-// 🔁 Watchers
-// =======================
-
-// Ensure price range stays valid
-watch(
-  () => priceRange.value.min,
-  (newMin: number) => {
-    if (newMin > priceRange.value.max) {
-      priceRange.value.min = priceRange.value.max
-    } else if (newMin < 0) {
-      priceRange.value.min = 0
-    }
-  }
-)
-
-watch(
-  () => priceRange.value.max,
-  (newMax: number) => {
-    if (newMax < priceRange.value.min) {
-      priceRange.value.max = priceRange.value.min
-    } else if (newMax > 5000) {
-      priceRange.value.max = 5000
-    }
-  }
-)
+// Price Range (consolidated)
+const minValue = 0
+const maxValue = 5000
+const priceRange = ref<[number, number]>([0, 5000])
 
 // =======================
 // 🧮 Computed Properties
@@ -150,14 +123,6 @@ const fetchAllCategories = async () => {
  */
 const filteredProducts = computed(() => {
   let filtered = [...productStore.products]
-
-  // Price filter
-  if (priceRange.value.min > 0 || priceRange.value.max < 5000) {
-    filtered = filtered.filter(
-      (product) =>
-        product.basePrice >= priceRange.value.min && product.basePrice <= priceRange.value.max
-    )
-  }
 
   // Brand filter
   const selectedBrands = productStore.brands
@@ -429,17 +394,15 @@ const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
  * Used to show/hide "Clear All" buttons.
  */
 const hasActiveFilters = () => {
-  const priceFilterActive = priceRange.value.min > 0 || priceRange.value.max < 5000
   const brandFilterActive = productStore.brands.some((brand) => brand.checked)
   const categoryFilterActive = availableCategories.value.some((category) => category.checked)
-  return priceFilterActive || brandFilterActive || categoryFilterActive
+  return brandFilterActive || categoryFilterActive
 }
 
 /**
  * Clears all applied filters and resets pagination.
  */
 const clearAllFilters = () => {
-  priceRange.value = { min: 0, max: 5000 }
   productStore.brands.forEach((brand) => (brand.checked = false))
   availableCategories.value.forEach((category) => (category.checked = false))
   currentPage.value = 1
@@ -462,10 +425,6 @@ const clearCategoryFilters = () => {
 }
 
 // Reset to page 1 only when user actively changes filters
-watch(priceRange, () => {
-  currentPage.value = 1
-}, { deep: true })
-
 watch(sortBy, () => {
   currentPage.value = 1
 })
@@ -564,55 +523,15 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
               v-show="!collapsedFilters.price"
               class="flex flex-col space-y-4 transition-all duration-200"
             >
-              <div class="flex items-center space-x-4">
-                <div class="flex-1">
-                  <label class="text-xs font-srProDisplay text-gray-500 mt-1 block mb-2">From</label>
-                  <input
-                    v-model.number="priceRange.min"
-                    type="number"
-                    placeholder="0"
-                    class="w-full px-2 py-2 text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <span class="text-gray-200 font-srProDisplay mt-6"> — </span>
-                <div class="flex-1">
-                  <label class="text-xs text-right font-srProDisplay text-gray-500 mt-1 block mb-2">To</label>
-                  <input
-                    v-model.number="priceRange.max"
-                    type="number"
-                    placeholder="5000"
-                    class="w-full py-2 text-right text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              <!-- Dual Range Slider -->
-              <div class="relative px-2">
-                <div class="relative h-1 bg-gray-300 rounded-full">
-                  <div
-                    class="absolute h-1 bg-black rounded-full"
-                    :style="{
-                      left: (priceRange.min / 5000) * 100 + '%',
-                      width: ((priceRange.max - priceRange.min) / 5000) * 100 + '%',
-                    }"
-                  ></div>
-                  <input
-                    v-model.number="priceRange.min"
-                    type="range"
-                    :min="0"
-                    :max="5000"
-                    step="50"
-                    class="absolute w-full h-1 appearance-none bg-transparent pointer-events-none slider-thumb-min"
-                  />
-                  <input
-                    v-model.number="priceRange.max"
-                    type="range"
-                    :min="0"
-                    :max="5000"
-                    step="50"
-                    class="absolute w-full h-1 appearance-none bg-transparent pointer-events-none slider-thumb-max"
-                  />
-                </div>
+              <div v-show="!collapsedFilters.price" class="flex flex-col space-y-4 transition-all duration-200">
+              <!-- Dual Range Slider Component -->
+              <DualRangeSlider
+                :min="minValue"
+                :max="maxValue"
+                :step="50"
+                v-model="priceRange"
+                :format-value="(value) => `$${value}`"
+              />
               </div>
             </div>
           </div>
