@@ -9,6 +9,7 @@ import { useWishlistStore } from '@/stores/wishlistStore'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+import DualRangeSlider from '@/components/shared/DualRangeSlider.vue'
 import { storeToRefs } from 'pinia'
 
 // =======================
@@ -54,10 +55,6 @@ const actualCategoryName = ref('')
 const minValue = 0
 const maxValue = 5000
 const priceRange = ref<[number, number]>([0, 5000])
-const draggingProgress = ref(false)
-let dragStartX = 0
-let initialMin = 0
-let initialMax = 0
 
 // =======================
 // 🧮 COMPUTED PROPERTIES
@@ -136,14 +133,6 @@ const breadcrumbs = computed(() => [
   { label: 'catalog.title', to: '/catalog' },
   { label: categoryDisplayName.value },
 ])
-
-// Price range slider computed properties
-const progressLeft = computed(() =>
-  ((priceRange.value[0] - minValue) / (maxValue - minValue)) * 100
-)
-const progressRight = computed(() =>
-  100 - ((priceRange.value[1] - minValue) / (maxValue - minValue)) * 100
-)
 
 // =======================
 // 🛠️ UTILITY FUNCTIONS
@@ -271,72 +260,6 @@ const clearBrandFilters = () => {
   currentPage.value = 1
 }
 
-const activeSlider = ref<'min' | 'max' | null>(null)
-
-// Price range slider methods
-function updateMin(e: Event) {
-  activeSlider.value = 'min'
-  const val = Number((e.target as HTMLInputElement).value)
-  if (val > priceRange.value[1]) {
-    priceRange.value = [priceRange.value[1], priceRange.value[1]]
-  } else {
-    priceRange.value = [val, priceRange.value[1]]
-  }
-  // Reset active state after a delay
-  setTimeout(() => {
-    activeSlider.value = null
-  }, 100)
-}
-
-function updateMax(e: Event) {
-  activeSlider.value = 'max'
-  const val = Number((e.target as HTMLInputElement).value)
-  if (val < priceRange.value[0]) {
-    priceRange.value = [priceRange.value[0], priceRange.value[0]]
-  } else {
-    priceRange.value = [priceRange.value[0], val]
-  }
-  // Reset active state after a delay
-  setTimeout(() => {
-    activeSlider.value = null
-  }, 100)
-}
-
-function startDragProgress(e: MouseEvent) {
-  draggingProgress.value = true
-  dragStartX = e.clientX
-  initialMin = priceRange.value[0]
-  initialMax = priceRange.value[1]
-  window.addEventListener('mousemove', onDragProgress)
-  window.addEventListener('mouseup', stopDragProgress)
-}
-
-function onDragProgress(e: MouseEvent) {
-  if (!draggingProgress.value) return
-  const slider = (e.target as HTMLElement).closest('.slider')
-  if (!slider) return
-  const sliderWidth = slider.clientWidth
-  const delta = ((e.clientX - dragStartX) / sliderWidth) * (maxValue - minValue)
-  const rangeWidth = priceRange.value[1] - priceRange.value[0]
-  let newMin = initialMin + delta
-  let newMax = initialMax + delta
-  if (newMin < minValue) {
-    newMin = minValue
-    newMax = newMin + rangeWidth
-  }
-  if (newMax > maxValue) {
-    newMax = maxValue
-    newMin = newMax - rangeWidth
-  }
-  priceRange.value = [Math.round(newMin), Math.round(newMax)]
-}
-
-function stopDragProgress() {
-  draggingProgress.value = false
-  window.removeEventListener('mousemove', onDragProgress)
-  window.removeEventListener('mouseup', stopDragProgress)
-}
-
 // =======================
 // 🔁 WATCHERS
 // =======================
@@ -407,7 +330,7 @@ onMounted(async () => {
             <div><b>Items Per Page:</b> {{ itemsPerPage }}</div>
             <div><b>Filtered Products:</b> {{ filteredProducts.length }}</div>
             <div><b>Brands (checked):</b> {{ productStore.brands.filter(b => b.checked).map(b => b.name).join(', ') }}</div>
-            <div><b>Price Range:</b> ${{ priceRange.min }} - ${{ priceRange.max }}</div>
+            <div><b>Price Range:</b> ${{ priceRange[0] }} - ${{ priceRange[1] }}</div>
             <div><b>Sort By:</b> {{ sortBy }}</div>
             <div><b>Category:</b> {{ actualCategoryName }}</div>
             <div><b>Category Display:</b> {{ categoryDisplayName }}</div>
@@ -453,66 +376,14 @@ onMounted(async () => {
               </button>
             </div>
             <div v-show="!collapsedFilters.price" class="flex flex-col space-y-4 transition-all duration-200">
-              <div class="flex items-center space-x-4">
-                <div class="flex-1">
-                  <label class="text-xs font-srProDisplay text-gray-500 mt-1 block mb-2">From</label>
-                  <input
-                    v-model.number="priceRange[0]"
-                    type="number"
-                    placeholder="0"
-                    class="w-full px-2 py-2 text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <span class="text-gray-200 font-srProDisplay mt-6"> — </span>
-                <div class="flex-1">
-                  <label class="text-xs text-right font-srProDisplay text-gray-500 mt-1 block mb-2">To</label>
-                  <input
-                    v-model.number="priceRange[1]"
-                    type="number"
-                    placeholder="5000"
-                    class="w-full py-2 text-right text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-
-              <!-- Dual Range Slider -->
-              <div class="relative px-2 slider-container">
-
-                <!-- Slider -->
-                <div class="slider relative h-1 bg-gray-300 rounded-full">
-                  <!-- Progress bar that shows the selected range -->
-                  <div
-                    class="absolute h-1 bg-black rounded-full progress cursor-pointer"
-                    :style="{ left: progressLeft + '%', right: progressRight + '%' }"
-                    @mousedown="startDragProgress"
-                  ></div>
-
-                  <!-- Min range input -->
-                  <input
-                    type="range"
-                    :min="minValue"
-                    :max="maxValue"
-                    step="50"
-                    :value="priceRange[0]"
-                    @input="updateMin"
-                    class="absolute w-full h-1 appearance-none bg-transparent cursor-pointer slider-thumb-min"
-                    style="z-index: 2;"
-                  />
-
-                  <!-- Max range input -->
-                  <input
-                    type="range"
-                    :min="minValue"
-                    :max="maxValue"
-                    step="50"
-                    :value="priceRange[1]"
-                    @input="updateMax"
-                    class="absolute w-full h-1 appearance-none bg-transparent cursor-pointer slider-thumb-max"
-                    style="z-index: 1;"
-                  />
-                </div>
-              </div>
+              <!-- Dual Range Slider Component -->
+              <DualRangeSlider
+                :min="minValue"
+                :max="maxValue"
+                :step="50"
+                v-model="priceRange"
+                :format-value="(value) => `$${value}`"
+              />
             </div>
           </div>
 
@@ -583,9 +454,9 @@ onMounted(async () => {
           <div v-if="hasActiveFilters()" class="mb-6 p-4 bg-gray-50 rounded-lg">
             <h4 class="font-srProDisplay text-sm font-semibold text-gray-800 mb-3">Active Filters</h4>
             <div class="space-y-2">
-              <div v-if="priceRange.min > 0 || priceRange.max < 5000" class="flex items-center justify-between text-sm">
+              <div v-if="priceRange[0] > 0 || priceRange[1] < 5000" class="flex items-center justify-between text-sm">
                 <span class="text-gray-600">Price:</span>
-                <span class="font-medium">${{ priceRange.min }} - ${{ priceRange.max }}</span>
+                <span class="font-medium">${{ priceRange[0] }} - ${{ priceRange[1] }}</span>
               </div>
               <div v-if="productStore.brands.some(brand => brand.checked)" class="flex items-center justify-between text-sm">
                 <span class="text-gray-600">Brands:</span>
@@ -867,97 +738,5 @@ button:focus {
   background-size: 8px 8px;
   background-position: center;
   background-repeat: no-repeat;
-}
-
-/* FIXED DUAL RANGE SLIDER STYLES */
-
-/* Min slider styles - higher z-index when its value is closer to current mouse position */
-.slider-thumb-min {
-  pointer-events: none;
-}
-
-.slider-thumb-min::-webkit-slider-thumb {
-  pointer-events: all;
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #000;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-  border: 2px solid #fff;
-  position: relative;
-  z-index: 10;
-}
-
-.slider-thumb-min::-moz-range-thumb {
-  pointer-events: all;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #000;
-  cursor: pointer;
-  border: 2px solid #fff;
-  z-index: 10;
-}
-
-/* Max slider styles */
-.slider-thumb-max {
-  pointer-events: none;
-}
-
-.slider-thumb-max::-webkit-slider-thumb {
-  pointer-events: all;
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #000;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-  border: 2px solid #fff;
-  position: relative;
-  z-index: 10;
-}
-
-.slider-thumb-max::-moz-range-thumb {
-  pointer-events: all;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #000;
-  cursor: pointer;
-  border: 2px solid #fff;
-  z-index: 10;
-}
-
-/* Hide the slider tracks */
-.slider-thumb-min::-webkit-slider-track,
-.slider-thumb-max::-webkit-slider-track {
-  background: transparent;
-  border: none;
-}
-
-.slider-thumb-min::-moz-range-track,
-.slider-thumb-max::-moz-range-track {
-  background: transparent;
-  border: none;
-}
-
-/* Progress bar */
-.progress {
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-
-/* Dynamic z-index based on thumb positions */
-.slider-thumb-min.active {
-  z-index: 3 !important;
-}
-
-.slider-thumb-max.active {
-  z-index: 3 !important;
 }
 </style>

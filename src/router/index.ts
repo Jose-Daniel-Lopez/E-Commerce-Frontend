@@ -177,6 +177,12 @@ const router = createRouter({
       name: 'toastDemo',
       component: () => import('../views/testing/ToastDemo.vue'),
       meta: { title: 'Toast Demo' }
+    },
+    {
+      path: '/slider-demo',
+      name: 'sliderDemo',
+      component: () => import('../views/testing/DualRangeSliderTest.vue'),
+      meta: { title: 'Slider Demo' }
     }
   ]
 })
