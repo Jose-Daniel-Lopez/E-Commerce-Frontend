@@ -80,20 +80,33 @@
                   </div>
                 </div>
                 <div class="flex items-center relative overflow-visible">
-                  <!-- Date picker for Schedule option -->
-                  <div v-if="method.id === '3' && selectedShippingId === '3'" class="relative overflow-visible">
-                    <DatePicker v-model="selectedScheduleDate" />
-                  </div>
-                  <!-- Regular estimated delivery for other options -->
+                  <!-- Show estimated delivery or "Select Date" for schedule -->
                   <span
-                    v-else
                     class="font-srProDisplay text-[#232340] text-base whitespace-nowrap"
                   >
-                    {{ method.estimatedDelivery }}
+                    {{ method.id === '3' && selectedShippingId === '3' && selectedScheduleDate
+                        ? selectedScheduleDate
+                        : method.estimatedDelivery }}
                   </span>
                 </div>
               </div>
             </label>
+          </div>
+        </div>
+
+        <!-- DatePicker Section - Outside of shipping methods loop for better mobile UX -->
+        <div
+          v-if="selectedShippingId === '3'"
+          class="mt-8 p-6 bg-[#F7F7F7] rounded-xl"
+        >
+          <h3 class="font-srProDisplay text-base font-semibold text-black mb-4">
+            Select your preferred delivery date
+          </h3>
+          <div class="w-full">
+            <DatePicker
+              v-model="selectedScheduleDate"
+              class="w-full min-h-[300px] sm:min-h-[350px]"
+            />
           </div>
         </div>
       </section>
@@ -196,6 +209,14 @@ function goNext() {
 </script>
 
 <style scoped>
+/* Responsive DatePicker popover fix */
+/* DatePicker below Schedule option, full width on mobile */
+.date-picker-popover {
+  width: 100%;
+  max-width: 100vw;
+  min-width: 0;
+  overflow-x: auto;
+}
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition:
