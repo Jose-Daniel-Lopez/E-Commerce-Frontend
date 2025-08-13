@@ -869,30 +869,31 @@ const fetchProductVariants = async (productId: number) => {
         <!-- Left Column - Product Images -->
         <div class="space-y-4">
           <!-- Main Product Image -->
-          <div class="bg-gray-50 rounded-lg p-8 flex items-center justify-center h-[500px]">
+          <div class="w-full h-[400px] lg:h-[500px] flex items-center justify-center bg-gray-100 rounded-2xl overflow-hidden">
             <img
               :src="currentImage"
               :alt="currentProduct.name"
-              class="h-[500px] w-[400px] object-contain"
+              class="w-full h-full object-cover rounded-2xl product-image-hover"
             />
           </div>
 
           <!-- Image Thumbnails -->
-          <div class="flex space-x-2 overflow-x-auto">
+          <div v-if="productImages.length > 1" class="flex space-x-2 mt-2 overflow-x-auto">
             <button
-              v-for="(image, index) in productImages"
-              :key="index"
-              @click="selectImage(index)"
+              v-for="(img, idx) in productImages"
+              :key="idx"
+              @click="selectImage(idx)"
               :class="[
-                'flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden',
-                selectedImageIndex === index ? 'border-black' : 'border-gray-200',
+                'border rounded-lg overflow-hidden focus:outline-none',
+                selectedImageIndex === idx ? 'border-black' : 'border-gray-200'
               ]"
+              style="width: 64px; height: 64px;"
             >
               <img
-                :src="image"
-                :alt="`Product view ${index + 1}`"
+                :src="typeof img === 'string' ? img : img.imageUrl"
+                :alt="`Product view ${idx + 1}`"
                 class="w-full h-full object-cover transition-opacity duration-200"
-                :style="selectedImageIndex === index ? '' : 'opacity: 0.4;'"
+                :style="selectedImageIndex === idx ? '' : 'opacity: 0.4;'"
               />
             </button>
           </div>
