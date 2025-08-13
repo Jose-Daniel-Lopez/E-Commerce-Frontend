@@ -27,16 +27,6 @@
       >
         Search
       </button>
-
-      <!-- Clear Button -->
-      <button
-        v-if="searchQuery.trim()"
-        @click="clearSearch"
-        type="button"
-        class="p-1 text-gray-400 hover:text-gray-600 transition-colors"
-      >
-        <v-icon name="fa-times" scale="0.9" />
-      </button>
     </div>
 
     <!-- Enhanced Search Suggestions Component -->
