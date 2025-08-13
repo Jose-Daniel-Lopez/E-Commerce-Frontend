@@ -115,6 +115,8 @@ addIcons(
   AllIcons.HiCreditCard,
   AllIcons.SiContactlesspayment,
   AllIcons.MdAddcircle,
+  AllIcons.BiApple,
+  AllIcons.BiPaypal,
 
   // ====== Address & Shipping ======
   AllIcons.HiLocationMarker,
