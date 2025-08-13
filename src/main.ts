@@ -52,6 +52,7 @@ addIcons(
   AllIcons.HiTrash,
   AllIcons.HiX,
   AllIcons.HiXCircle,
+  AllIcons.FaTimes,         // FontAwesome X/close icon
   AllIcons.HiCheck,
   AllIcons.HiCheckCircle,
   AllIcons.HiExclamationCircle,
@@ -62,12 +63,16 @@ addIcons(
   // ====== Review Stars ======
   AllIcons.BiStarFill,
   AllIcons.BiStar,
+  AllIcons.FaStar,          // FontAwesome solid star
+  AllIcons.FaRegularStar,   // FontAwesome outlined star
 
   // ====== E-commerce & Shopping ======
   AllIcons.BiShop,
   AllIcons.HiShoppingBag,
   AllIcons.HiShoppingCart,
   AllIcons.HiHeart,
+  AllIcons.FaHeart,         // FontAwesome solid heart
+  AllIcons.FaRegularHeart,  // FontAwesome outlined heart (fa-heart-o)
   AllIcons.HiTruck,
   AllIcons.HiGift,
   AllIcons.RiCoupon2Line,
@@ -98,7 +103,7 @@ addIcons(
   AllIcons.BiMouse,          // Mice
   AllIcons.GiConsoleController, // Controllers (gamepads)
 
-  // ====== Form & Input Controls ======
+  // ====== Forms & Inputs ======
   AllIcons.HiSearch,
   AllIcons.FaSearch,
   AllIcons.HiPlus,
@@ -109,6 +114,7 @@ addIcons(
   AllIcons.HiColorSwatch,
   AllIcons.IoResize,
   AllIcons.RiSeparator,
+  AllIcons.FaRegularClock,  // FontAwesome outlined clock (fa-clock-o)
 
   // ====== Payment & Checkout ======
   AllIcons.FaCreditCard,

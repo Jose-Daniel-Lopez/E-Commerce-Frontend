@@ -52,7 +52,11 @@
       <!-- No Results -->
       <div v-else-if="!loading && products.length === 0" class="text-center py-12">
         <div class="max-w-md mx-auto">
-          <v-icon name="fa-search" scale="3" class="text-gray-300 mb-4" />
+          <div class="flex justify-center mb-4">
+            <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
           <h3 class="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
           <p class="text-gray-600 mb-6">
             <span v-if="searchQuery">
@@ -83,7 +87,7 @@
           <div
             v-for="product in products"
             :key="product.id"
-            class="group relative bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-shadow"
+            class="group relative bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-shadow h-[420px] flex flex-col"
           >
             <!-- Product Image -->
             <div class="relative overflow-hidden rounded-t-lg bg-gray-100 aspect-square">
@@ -98,10 +102,27 @@
               <button
                 @click="toggleFavorite(product.id)"
                 :disabled="wishlistLoading"
-                class="absolute top-3 right-3 p-2 bg-white/80 hover:bg-white rounded-full shadow-sm transition-colors"
-                :class="{ 'text-red-500': isProductInWishlist(product.id), 'text-gray-400 hover:text-red-500': !isProductInWishlist(product.id) }"
+                class="absolute top-3 right-3 w-6 h-6 text-gray-600 hover:text-red-600 transition-colors disabled:opacity-50"
+                type="button"
+                aria-label="Toggle favorite"
               >
-                <v-icon :name="isProductInWishlist(product.id) ? 'fa-heart' : 'fa-heart-o'" scale="1.1" />
+                <svg
+                  v-if="!isProductInWishlist(product.id)"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  class="w-6 h-6"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                <svg
+                  v-else
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  class="w-6 h-6 text-red-600"
+                >
+                  <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
               </button>
 
               <!-- Stock Badge -->
@@ -114,45 +135,49 @@
             </div>
 
             <!-- Product Info -->
-            <div class="p-4">
-              <div class="mb-2">
+            <div class="p-4 flex flex-col flex-1 justify-center">
+              <!-- Title and Brand (fixed height area) -->
+              <div class="mb-3 h-[70px] flex flex-col justify-center">
                 <h3
                   @click="goToProductDetails(product.id)"
-                  class="font-medium text-gray-900 line-clamp-2 cursor-pointer hover:text-black transition-colors"
+                  class="font-medium text-gray-900 line-clamp-2 cursor-pointer hover:text-black transition-colors text-center"
                 >
                   {{ product.name }}
                 </h3>
-                <p class="text-sm text-gray-500">{{ product.brand }}</p>
+                <p class="text-sm text-gray-500 text-center truncate mt-1">{{ product.brand }}</p>
               </div>
 
               <!-- Price -->
-              <div class="mb-3">
+              <div class="mb-3 text-center">
                 <span class="text-lg font-bold text-gray-900">
                   {{ formatPrice(product.basePrice) }}
                 </span>
               </div>
 
               <!-- Rating -->
-              <div v-if="product.rating && product.rating > 0" class="flex items-center mb-3">
+              <div v-if="product.rating && product.rating > 0" class="flex items-center justify-center mb-3">
                 <div class="flex items-center">
-                  <v-icon
-                    v-for="star in 5"
-                    :key="star"
-                    name="fa-star"
-                    scale="0.8"
-                    :class="star <= product.rating ? 'text-yellow-400' : 'text-gray-200'"
-                  />
+                  <template v-for="i in 5" :key="i">
+                    <svg
+                      class="w-4 h-4"
+                      :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
+                    </svg>
+                  </template>
+                  <span class="ml-2 text-sm text-gray-500">{{ (product.rating ?? 0).toFixed(1) }}</span>
                 </div>
-                <span class="ml-2 text-sm text-gray-500">
-                  {{ product.rating.toFixed(1) }}
-                </span>
               </div>
+              <!-- Placeholder for products without rating to maintain layout -->
+              <div v-else class="mb-3 h-[20px]"></div>
 
-              <!-- Action Buttons -->
-              <div class="flex gap-2">
+              <!-- Action Buttons (centered) -->
+              <div class="flex justify-center">
                 <button
                   @click="goToProductDetails(product.id)"
-                  class="flex-1 px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+                  class="w-full py-2 bg-black text-white text-xs sm:text-sm font-medium rounded hover:bg-gray-800 transition-colors mt-auto"
                   :disabled="product.totalStock === 0"
                 >
                   {{ product.totalStock === 0 ? 'Out of Stock' : 'View Details' }}
