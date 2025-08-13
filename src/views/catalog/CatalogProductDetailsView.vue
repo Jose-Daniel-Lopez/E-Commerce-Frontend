@@ -589,32 +589,56 @@ const wishlistLoading = ref(false)
 const cartLoading = ref(false)
 const addToCart = async () => {
   if (!isAuthenticated.value) {
-    alert('Please log in to add products to your cart')
+    toast.error('Please log in to add products to your cart', {
+      title: 'Authentication Required',
+      icon: 'hi-user',
+      duration: 4000,
+    })
     return
   }
   if (!isInStock.value) {
-    alert('This item is currently out of stock')
+    toast.warning('This item is currently out of stock', {
+      title: 'Out of Stock',
+      icon: 'hi-exclamation-triangle',
+      duration: 4000,
+    })
     return
   }
   // Check if variant is selected (for products with variants)
   if (availableColors.value.length > 0 && !selectedColor.value) {
     console.log('🔴 [CATALOG PRODUCT DETAILS] No color selected')
-    alert('Please select a color')
+    toast.warning('Please select a color to continue', {
+      title: 'Selection Required',
+      icon: 'hi-color-swatch',
+      duration: 3000,
+    })
     return
   }
   if (availableSizes.value.length > 0 && !selectedStorage.value) {
     console.log('🔴 [CATALOG PRODUCT DETAILS] No storage/size selected')
-    alert('Please select a storage option')
+    toast.warning('Please select a storage option to continue', {
+      title: 'Selection Required',
+      icon: 'hi-database',
+      duration: 3000,
+    })
     return
   }
   // Get the product variant ID
   const productVariantId = currentVariant.value?.id
   if (!productVariantId) {
     console.log('🔴 [CATALOG PRODUCT DETAILS] No product variant selected')
-    alert('Please select a product variant')
+    toast.error('Please select a product variant', {
+      title: 'Invalid Selection',
+      duration: 4000,
+    })
     return
   }
+
   cartLoading.value = true
+
+  // Show loading toast
+  const loadingToast = toast.loading('Adding to cart...')
+
   try {
     console.log('🟡 [CATALOG PRODUCT DETAILS] Adding to cart:', {
       productVariantId,
@@ -622,23 +646,52 @@ const addToCart = async () => {
       size: selectedStorage.value,
       sku: currentVariant.value?.sku
     })
+
     // Ensure cart is loaded
     if (!userCartStore.cart && user.value?.id) {
       console.log('🟡 [CATALOG PRODUCT DETAILS] Loading user cart first...')
       await userCartStore.fetchUserCart(user.value.id)
     }
+
     // Add product to cart
     const result = await userCartStore.addProductToCart(productVariantId)
+
     if (result.success) {
       console.log('🟢 [CATALOG PRODUCT DETAILS] Product added to cart successfully')
-      alert('Product added to your cart!')
+
+      loadingToast.success('Product added to your cart!', {
+        title: 'Added Successfully',
+        icon: 'hi-shopping-cart',
+        duration: 4000,
+        action: {
+          label: 'View Cart',
+          handler: () => {
+            // Navigate to cart - you might need to adjust this route
+            window.location.href = '/cart'
+          },
+        },
+      })
     } else {
       console.error('🔴 [CATALOG PRODUCT DETAILS] Failed to add to cart:', result.error)
-      alert(`Failed to add to cart: ${result.error}`)
+      loadingToast.error(`Failed to add to cart: ${result.error}`, {
+        title: 'Cart Error',
+        icon: 'hi-exclamation-circle',
+        duration: 6000,
+      })
     }
   } catch (error) {
     console.error('🔴 [CATALOG PRODUCT DETAILS] Error adding to cart:', error)
-    alert('Failed to add product to cart. Please try again.')
+    const errorMessage = error instanceof Error ? error.message : 'Failed to add product to cart. Please try again.'
+
+    loadingToast.error(errorMessage, {
+      title: 'Cart Error',
+      icon: 'hi-exclamation-circle',
+      duration: 6000,
+      action: {
+        label: 'Retry',
+        handler: () => addToCart(),
+      },
+    })
   } finally {
     cartLoading.value = false
   }
