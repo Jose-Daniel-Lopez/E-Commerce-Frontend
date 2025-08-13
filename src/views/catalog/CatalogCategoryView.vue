@@ -647,13 +647,13 @@ onMounted(async () => {
             <div
               v-for="product in paginatedProducts"
               :key="product.id"
-              class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-4 lg:py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] lg:px-4"
+              class="relative h-auto rounded-lg bg-[#f6f6f6] px-4 py-4 duration-300 hover:scale-[1.01] hover:shadow-md md:h-[410px] lg:px-4"
             >
-              <div class="absolute top-3 lg:top-4 right-3 lg:right-4 z-10">
+              <div class="absolute top-3 right-3 z-10">
                 <button
                   @click="toggleFavorite(product.id)"
                   :disabled="wishlistLoading"
-                  class="w-8 h-8 lg:w-6 lg:h-6 text-gray-600 hover:text-red-600 transition-colors disabled:opacity-50 flex items-center justify-center"
+                  class="w-8 h-8 text-gray-600 hover:text-red-600 transition-colors disabled:opacity-50 flex items-center justify-center"
                   type="button"
                   aria-label="Toggle favorite"
                 >
@@ -677,21 +677,21 @@ onMounted(async () => {
                 </button>
               </div>
               <div class="flex flex-col h-full">
-                <div class="flex items-center justify-center mb-4 lg:mb-6">
-                  <div class="h-[80px] w-[80px] sm:h-[104px] sm:w-[104px] md:h-[160px] md:w-[160px]">
+                <div class="flex items-center justify-center mb-3">
+                  <div class="h-[140px] w-full">
                     <img
                       :src="product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp'"
                       :alt="product.name"
-                      class="w-full h-full object-contain"
+                      class="w-full h-full object-cover rounded-md"
                       loading="lazy"
                     />
                   </div>
                 </div>
-                <div class="flex flex-col flex-1 gap-4 lg:gap-6">
-                  <div class="flex flex-col gap-3 lg:gap-4">
-                    <div class="h-[60px] sm:h-[75px] lg:h-[50px]">
-                      <a href="#" @click.prevent="console.log('🔵 [CATALOG] Product name clicked:', product.id); goToProductDetails(product.id)" class="block cursor-pointer">
-                        <h3 class="text-center font-srProDisplay text-sm sm:text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2">
+                <div class="flex flex-col flex-1 gap-3">
+                  <div class="flex flex-col gap-2">
+                    <div class="h-[48px]">
+                      <a href="#" @click.prevent="goToProductDetails(product.id)" class="block cursor-pointer">
+                        <h3 class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2">
                           {{ product.name }}
                         </h3>
                       </a>
@@ -700,25 +700,25 @@ onMounted(async () => {
                       <span class="flex items-center">
                         <template v-for="i in 5" :key="i">
                           <svg
-                            class="w-4 h-4 lg:w-5 lg:h-5"
+                            class="w-4 h-4"
                             :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 0 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
                           </svg>
                         </template>
                         <span class="ml-2 text-xs text-gray-500">{{ (product.rating ?? 0).toFixed(1) }}</span>
                       </span>
                     </div>
                     <div class="flex justify-center items-center gap-2">
-                      <span class="font-figtree text-lg lg:text-xl font-semibold">{{ formatPrice(product.basePrice) }}</span>
+                      <span class="font-figtree text-lg font-semibold">{{ formatPrice(product.basePrice) }}</span>
                     </div>
                   </div>
-                  <div class="flex items-center justify-center mt-auto">
+                  <div class="flex items-center justify-center mt-6 pt-2">
                     <button
-                      @click="console.log('🔵 [CATALOG] Buy Now clicked:', product.id); buyNow(product.id)"
-                      class="w-full max-w-[183px] h-[44px] lg:h-[48px] bg-black text-white text-sm font-medium rounded hover:bg-[#1a1a1a] transition-colors"
+                      @click="buyNow(product.id)"
+                      class="w-full max-w-[160px] h-[40px] bg-black text-white text-sm font-medium rounded hover:bg-[#1a1a1a] transition-colors"
                     >
                       Buy Now
                     </button>

@@ -753,50 +753,52 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
               </div>
 
               <div class="flex flex-col h-full">
-                <div class="flex items-center justify-center mb-3 mt-6">
-                  <div class="h-20 w-20 sm:h-24 sm:w-24">
+                <div class="flex items-center justify-center mb-3">
+                  <div class="h-[140px] w-full">
                     <img
                       :src="product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp'"
                       :alt="product.name"
-                      class="w-full h-full object-contain"
+                      class="w-full h-full object-cover rounded-md"
                       loading="lazy"
                     />
                   </div>
                 </div>
-
-                <div class="flex flex-col flex-1">
-                  <a href="#" @click.prevent="goToProductDetails(product.id)" class="block cursor-pointer mb-2">
-                    <h3 class="text-center font-srProDisplay text-xs sm:text-sm font-medium hover:text-indigo-600 transition-colors line-clamp-2 min-h-[32px]">
-                      {{ product.name }}
-                    </h3>
-                  </a>
-
-                  <div class="flex justify-center items-center gap-1 mb-2">
-                    <span class="flex items-center">
-                      <template v-for="i in 5" :key="i">
-                        <svg
-                          class="w-3 h-3 sm:w-4 sm:h-4"
-                          :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
-                        </svg>
-                      </template>
-                      <span class="ml-1 text-xs text-gray-500">{{ (product.rating ?? 0).toFixed(1) }}</span>
-                    </span>
+                <div class="flex flex-col flex-1 gap-3">
+                  <div class="flex flex-col gap-2">
+                    <div class="h-[48px]">
+                      <a href="#" @click.prevent="goToProductDetails(product.id)" class="block cursor-pointer">
+                        <h3 class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2">
+                          {{ product.name }}
+                        </h3>
+                      </a>
+                    </div>
+                    <div class="flex justify-center items-center gap-2 mb-1">
+                      <span class="flex items-center">
+                        <template v-for="i in 5" :key="i">
+                          <svg
+                            class="w-4 h-4"
+                            :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 0 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
+                          </svg>
+                        </template>
+                        <span class="ml-2 text-xs text-gray-500">{{ (product.rating ?? 0).toFixed(1) }}</span>
+                      </span>
+                    </div>
+                    <div class="flex justify-center items-center gap-2">
+                      <span class="font-figtree text-lg font-semibold">{{ formatPrice(product.basePrice) }}</span>
+                    </div>
                   </div>
-
-                  <div class="text-center mb-3">
-                    <span class="font-figtree text-sm sm:text-base font-semibold">{{ formatPrice(product.basePrice) }}</span>
+                  <div class="flex items-center justify-center mt-auto pt-2">
+                    <button
+                      @click="buyNow(product.id)"
+                      class="w-full max-w-[160px] h-[40px] bg-black text-white text-sm font-medium rounded hover:bg-[#1a1a1a] transition-colors"
+                    >
+                      Buy Now
+                    </button>
                   </div>
-
-                  <button
-                    @click="buyNow(product.id)"
-                    class="w-full py-2 bg-black text-white text-xs sm:text-sm font-medium rounded hover:bg-gray-800 transition-colors mt-auto"
-                  >
-                    Buy Now
-                  </button>
                 </div>
               </div>
             </div>
