@@ -21,6 +21,7 @@ export interface Product {
   description: string
   basePrice: number
   totalStock: number
+  imageUrl?: string // Added for avatar support
   category?: {
     id: number
     name: string
@@ -120,6 +121,16 @@ export const useUserCartStore = defineStore('userCart', () => {
               const productUrl = item.productVariant._links.product.href
               const productResponse = await api.get(productUrl)
               item.product = productResponse.data
+              // Assign imageUrl for avatar display
+              if (productResponse.data?.imageUrl) {
+                if (item.product) {
+                  item.product.imageUrl = productResponse.data.imageUrl
+                }
+              } else {
+                if (item.product) {
+                  item.product.imageUrl = 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp'
+                }
+              }
             }
 
             return item

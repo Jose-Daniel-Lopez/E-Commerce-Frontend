@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center gap-6 py-8">
     <img
-      :src="getProductImage(item.product?.name)"
+      :src="item.product?.imageUrl || getProductImage(item.product?.name)"
       :alt="item.product?.name"
       class="w-24 h-24 object-contain rounded-lg bg-gray-50"
     />
@@ -33,13 +33,17 @@
 <script setup lang="ts">
 import QuantityButton from '@/components/cart/QuantityButton.vue'
 
+
+interface Product {
+  name: string
+  basePrice: number
+  imageUrl?: string
+}
+
 interface CartItem {
   id: number
   quantity: number
-  product?: {
-    name: string
-    basePrice: number
-  }
+  product?: Product
   productVariant?: {
     sku: string
   }
