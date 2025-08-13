@@ -64,7 +64,7 @@
                   <div class="flex items-center gap-3">
                     <div class="w-16 h-16 rounded-lg flex items-center justify-center relative">
                       <img
-                        :src="getProductImage(item.product?.name)"
+                        :src="item.product?.imageUrl || getProductImage(item.product?.name)"
                         :alt="item.product?.name"
                         class="w-12 h-12 object-contain"
                       />
