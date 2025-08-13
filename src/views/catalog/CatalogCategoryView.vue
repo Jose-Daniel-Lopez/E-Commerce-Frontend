@@ -41,6 +41,10 @@ const currentPage = ref(1)
 const sortBy = ref('name')
 const brandSearchQuery = ref('')
 
+// Mobile-specific state
+const showMobileFilters = ref(false)
+const showMobileSorting = ref(false)
+
 // Filters
 const collapsedFilters = ref({
   price: false,
@@ -236,6 +240,10 @@ const buyNow = (productId: number) => {
 const goToPage = (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page
+    // Scroll to top on mobile for better UX
+    if (window.innerWidth < 768) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }
 }
 
@@ -253,11 +261,28 @@ const clearAllFilters = () => {
   priceRange.value = [0, 5000]
   productStore.brands.forEach((brand) => (brand.checked = false))
   currentPage.value = 1
+  showMobileFilters.value = false // Close mobile filters after clearing
 }
 
 const clearBrandFilters = () => {
   productStore.brands.forEach((brand) => (brand.checked = false))
   currentPage.value = 1
+}
+
+// Mobile-specific methods
+const openMobileFilters = () => {
+  showMobileFilters.value = true
+  document.body.style.overflow = 'hidden' // Prevent background scrolling
+}
+
+const closeMobileFilters = () => {
+  showMobileFilters.value = false
+  document.body.style.overflow = ''
+}
+
+const applyMobileFilters = () => {
+  currentPage.value = 1
+  closeMobileFilters()
 }
 
 // =======================
@@ -311,17 +336,17 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Debug Panel -->
-    <div class="fixed bottom-4 right-4 z-50 max-w-[420px] w-full">
-      <div class="bg-yellow-50 border border-yellow-300 rounded-lg shadow-lg p-4">
+    <!-- Debug Panel - Mobile optimized -->
+    <div class="fixed bottom-4 right-4 z-50 max-w-[300px] sm:max-w-[420px] w-full">
+      <div class="bg-yellow-50 border border-yellow-300 rounded-lg shadow-lg p-3 sm:p-4">
         <div class="flex items-center justify-between mb-2">
-          <span class="font-bold text-yellow-800 text-sm">🛠️ Debug Panel</span>
+          <span class="font-bold text-yellow-800 text-xs sm:text-sm">🛠️ Debug Panel</span>
           <button @click="showDebug = !showDebug" class="text-xs text-yellow-700 underline focus:outline-none">
             {{ showDebug ? 'Hide' : 'Show' }}
           </button>
         </div>
         <transition name="fade-debug">
-          <div v-show="showDebug" class="text-xs text-yellow-900 space-y-2">
+          <div v-show="showDebug" class="text-xs text-yellow-900 space-y-2 max-h-40 overflow-y-auto">
             <div><b>User:</b> {{ user }}</div>
             <div><b>Wishlist ID:</b> {{ wishlistStore.wishlistId }}</div>
             <div><b>Wishlist Count:</b> {{ wishlistProducts.length }}</div>
@@ -345,10 +370,72 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
+      <!-- Mobile Header with Filter/Sort buttons -->
+      <div class="lg:hidden mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h1 class="font-srProDisplay text-lg sm:text-xl font-semibold text-black">{{ categoryDisplayName }}</h1>
+            <p class="font-srProDisplay text-sm text-gray-600">{{ filteredProducts.length }} products found</p>
+          </div>
+        </div>
+
+        <!-- Mobile Filter/Sort Controls -->
+        <div class="flex gap-3">
+          <button
+            @click="openMobileFilters"
+            class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 min-h-[48px]"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            Filters
+            <span v-if="hasActiveFilters()" class="ml-1 bg-black text-white text-xs rounded-full px-2 py-0.5">
+              Active
+            </span>
+          </button>
+
+          <button
+            @click="showMobileSorting = !showMobileSorting"
+            class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 min-h-[48px]"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5v6m0 0V9a2 2 0 012-2h4a2 2 0 012 2v2M8 11l4 4 4-4" />
+            </svg>
+            Sort
+          </button>
+        </div>
+
+        <!-- Mobile Sort Dropdown -->
+        <div v-if="showMobileSorting" class="mt-3 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+          <button
+            v-for="option in [
+              { value: 'name', label: 'Name A-Z' },
+              { value: 'name-desc', label: 'Name Z-A' },
+              { value: 'price-low', label: 'Price: Low to High' },
+              { value: 'price-high', label: 'Price: High to Low' },
+              { value: 'rating', label: 'By rating' }
+            ]"
+            :key="option.value"
+            @click="sortBy = option.value; showMobileSorting = false"
+            :class="[
+              'w-full px-4 py-3 text-left text-sm hover:bg-gray-50 transition-colors min-h-[48px] flex items-center',
+              sortBy === option.value ? 'bg-gray-100 font-medium' : ''
+            ]"
+          >
+            {{ option.label }}
+            <svg v-if="sortBy === option.value" class="w-5 h-5 ml-auto text-black" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Desktop and Mobile Layout -->
       <div class="flex gap-8">
-        <!-- Sidebar Filters -->
-        <div class="w-64 flex-shrink-0">
+        <!-- Desktop Sidebar Filters -->
+        <div class="hidden lg:block w-64 flex-shrink-0">
           <!-- Price Filter -->
           <div class="mb-6">
             <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
@@ -494,8 +581,8 @@ onMounted(async () => {
 
         <!-- Main Content -->
         <div class="flex-1">
-          <!-- Header -->
-          <div class="flex items-center justify-between mb-6">
+          <!-- Desktop Header -->
+          <div class="hidden lg:flex items-center justify-between mb-6">
             <div>
               <h1 class="font-srProDisplay text-xl font-semibold text-black">{{ categoryDisplayName }}</h1>
               <p class="font-srProDisplay text-gray-600">{{ filteredProducts.length }} products found</p>
@@ -555,18 +642,18 @@ onMounted(async () => {
             </button>
           </div>
 
-          <!-- Products Grid -->
-          <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <!-- Products Grid - Mobile optimized -->
+          <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-8">
             <div
               v-for="product in paginatedProducts"
               :key="product.id"
-              class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4"
+              class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-4 lg:py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] lg:px-4"
             >
-              <div class="absolute top-4 right-4 z-10">
+              <div class="absolute top-3 lg:top-4 right-3 lg:right-4 z-10">
                 <button
                   @click="toggleFavorite(product.id)"
                   :disabled="wishlistLoading"
-                  class="w-6 h-6 text-gray-600 hover:text-red-600 transition-colors disabled:opacity-50"
+                  class="w-8 h-8 lg:w-6 lg:h-6 text-gray-600 hover:text-red-600 transition-colors disabled:opacity-50 flex items-center justify-center"
                   type="button"
                   aria-label="Toggle favorite"
                 >
@@ -590,8 +677,8 @@ onMounted(async () => {
                 </button>
               </div>
               <div class="flex flex-col h-full">
-                <div class="flex items-center justify-center mb-6">
-                  <div class="h-[104px] w-[104px] md:h-[160px] md:w-[160px]">
+                <div class="flex items-center justify-center mb-4 lg:mb-6">
+                  <div class="h-[80px] w-[80px] sm:h-[104px] sm:w-[104px] md:h-[160px] md:w-[160px]">
                     <img
                       :src="product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp'"
                       :alt="product.name"
@@ -600,11 +687,11 @@ onMounted(async () => {
                     />
                   </div>
                 </div>
-                <div class="flex flex-col flex-1 gap-6">
-                  <div class="flex flex-col gap-4">
-                    <div class="h-[75px] sm:h-[50px]">
+                <div class="flex flex-col flex-1 gap-4 lg:gap-6">
+                  <div class="flex flex-col gap-3 lg:gap-4">
+                    <div class="h-[60px] sm:h-[75px] lg:h-[50px]">
                       <a href="#" @click.prevent="console.log('🔵 [CATALOG] Product name clicked:', product.id); goToProductDetails(product.id)" class="block cursor-pointer">
-                        <h3 class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2">
+                        <h3 class="text-center font-srProDisplay text-sm sm:text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2">
                           {{ product.name }}
                         </h3>
                       </a>
@@ -613,7 +700,7 @@ onMounted(async () => {
                       <span class="flex items-center">
                         <template v-for="i in 5" :key="i">
                           <svg
-                            class="w-5 h-5"
+                            class="w-4 h-4 lg:w-5 lg:h-5"
                             :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'"
                             fill="currentColor"
                             viewBox="0 0 20 20"
@@ -625,13 +712,13 @@ onMounted(async () => {
                       </span>
                     </div>
                     <div class="flex justify-center items-center gap-2">
-                      <span class="font-figtree text-xl font-semibold">{{ formatPrice(product.basePrice) }}</span>
+                      <span class="font-figtree text-lg lg:text-xl font-semibold">{{ formatPrice(product.basePrice) }}</span>
                     </div>
                   </div>
                   <div class="flex items-center justify-center mt-auto">
                     <button
                       @click="console.log('🔵 [CATALOG] Buy Now clicked:', product.id); buyNow(product.id)"
-                      class="w-[183px] h-[48px] bg-black text-white text-sm font-medium rounded hover:bg-[#1a1a1a] transition-colors"
+                      class="w-full max-w-[183px] h-[44px] lg:h-[48px] bg-black text-white text-sm font-medium rounded hover:bg-[#1a1a1a] transition-colors"
                     >
                       Buy Now
                     </button>
@@ -641,38 +728,230 @@ onMounted(async () => {
             </div>
           </div>
 
-          <!-- Pagination -->
-          <div v-if="totalPages > 1" class="flex items-center justify-center space-x-2">
+          <!-- Mobile-optimized Pagination -->
+          <div v-if="totalPages > 1" class="flex items-center justify-center space-x-1 lg:space-x-2">
             <button
               @click="goToPage(currentPage - 1)"
               :disabled="currentPage === 1"
-              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="p-2 lg:p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
               </svg>
             </button>
-            <button
-              v-for="page in Math.min(totalPages, 5)"
-              :key="page"
-              @click="goToPage(page)"
-              :class="[
-                'px-3 py-2 rounded-md text-sm font-medium',
-                page === currentPage ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-100',
-              ]"
-            >
-              {{ page }}
-            </button>
+
+            <!-- Show fewer page numbers on mobile -->
+            <template v-if="totalPages <= 5">
+              <button
+                v-for="page in totalPages"
+                :key="page"
+                @click="goToPage(page)"
+                :class="[
+                  'px-3 py-2 rounded-md text-sm font-medium min-w-[44px] min-h-[44px] flex items-center justify-center',
+                  page === currentPage ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-100',
+                ]"
+              >
+                {{ page }}
+              </button>
+            </template>
+
+            <template v-else>
+              <button
+                v-if="currentPage > 2"
+                @click="goToPage(1)"
+                class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 min-w-[44px] min-h-[44px] flex items-center justify-center"
+              >
+                1
+              </button>
+              <span v-if="currentPage > 3" class="px-2 py-2 text-gray-500">...</span>
+
+              <button
+                v-for="page in [currentPage - 1, currentPage, currentPage + 1].filter(p => p > 0 && p <= totalPages)"
+                :key="page"
+                @click="goToPage(page)"
+                :class="[
+                  'px-3 py-2 rounded-md text-sm font-medium min-w-[44px] min-h-[44px] flex items-center justify-center',
+                  page === currentPage ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-100',
+                ]"
+              >
+                {{ page }}
+              </button>
+
+              <span v-if="currentPage < totalPages - 2" class="px-2 py-2 text-gray-500">...</span>
+              <button
+                v-if="currentPage < totalPages - 1"
+                @click="goToPage(totalPages)"
+                class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 min-w-[44px] min-h-[44px] flex items-center justify-center"
+              >
+                {{ totalPages }}
+              </button>
+            </template>
+
             <button
               @click="goToPage(currentPage + 1)"
               :disabled="currentPage === totalPages"
-              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="p-2 lg:p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Filters Modal -->
+    <div
+      v-if="showMobileFilters"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden"
+      @click="closeMobileFilters"
+    >
+      <div
+        class="bg-white h-full w-full max-w-sm ml-auto flex flex-col overflow-hidden"
+        @click.stop
+      >
+        <!-- Header -->
+        <div class="flex items-center justify-between p-4 border-b border-gray-200">
+          <h2 class="text-lg font-semibold text-gray-900">Filters</h2>
+          <button
+            @click="closeMobileFilters"
+            class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Filters Content -->
+        <div class="flex-1 overflow-y-auto p-4">
+          <!-- Price Filter -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-srProDisplay text-lg font-semibold text-black">Price</h3>
+              <button
+                @click="toggleFilter('price')"
+                class="p-1 hover:bg-gray-100 rounded transition-colors"
+                type="button"
+              >
+                <svg
+                  class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                  :class="{ 'rotate-180': collapsedFilters.price }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+            <div v-show="!collapsedFilters.price" class="flex flex-col space-y-4">
+              <DualRangeSlider
+                :min="minValue"
+                :max="maxValue"
+                :step="50"
+                v-model="priceRange"
+                :format-value="(value) => `$${value}`"
+              />
+            </div>
+          </div>
+
+          <!-- Brand Filter -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-srProDisplay text-lg font-semibold text-black">Brand</h3>
+              <div class="flex items-center space-x-2">
+                <button
+                  v-if="productStore.brands.some(brand => brand.checked)"
+                  @click="clearBrandFilters"
+                  class="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                  type="button"
+                >
+                  Clear
+                </button>
+                <button
+                  @click="toggleFilter('brand')"
+                  class="p-1 hover:bg-gray-100 rounded transition-colors"
+                  type="button"
+                >
+                  <svg
+                    class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                    :class="{ 'rotate-180': collapsedFilters.brand }"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div v-show="!collapsedFilters.brand">
+              <div class="flex items-center justify-start gap-2 bg-[#f5f5f5] p-3 rounded-lg mb-4">
+                <v-icon name="fa-search" scale="1.2" class="text-gray-400" />
+                <input
+                  v-model="brandSearchQuery"
+                  class="w-full bg-[#f5f5f5] p-0.5 font-srProDisplay text-sm font-medium text-black outline-none"
+                  type="search"
+                  placeholder="Search brands"
+                />
+              </div>
+              <div class="space-y-4 max-h-64 overflow-y-auto">
+                <div v-for="brand in filteredBrands" :key="brand.name" class="flex items-center">
+                  <input
+                    :id="'mobile-brand-' + brand.name"
+                    type="checkbox"
+                    v-model="brand.checked"
+                    class="w-5 h-5 accent-black rounded"
+                  />
+                  <label :for="'mobile-brand-' + brand.name" class="ml-3 flex-1 text-sm font-srProDisplay text-gray-900 py-2">
+                    {{ brand.name }}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Filters -->
+          <div v-if="hasActiveFilters()" class="mb-6 p-4 bg-gray-50 rounded-lg">
+            <h4 class="font-srProDisplay text-sm font-semibold text-gray-800 mb-3">Active Filters</h4>
+            <div class="space-y-2">
+              <div v-if="priceRange[0] > 0 || priceRange[1] < 5000" class="flex items-center justify-between text-sm">
+                <span class="text-gray-600">Price:</span>
+                <span class="font-medium">${{ priceRange[0] }} - ${{ priceRange[1] }}</span>
+              </div>
+              <div v-if="productStore.brands.some(brand => brand.checked)" class="text-sm">
+                <span class="text-gray-600">Brands:</span>
+                <div class="mt-1 flex flex-wrap gap-1">
+                  <span
+                    v-for="brand in productStore.brands.filter(brand => brand.checked)"
+                    :key="brand.name"
+                    class="inline-block bg-black text-white text-xs px-2 py-1 rounded"
+                  >
+                    {{ brand.name }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="p-4 border-t border-gray-200 space-y-3">
+          <button
+            v-if="hasActiveFilters()"
+            @click="clearAllFilters"
+            class="w-full py-3 text-center text-sm text-red-600 hover:text-red-800 transition-colors border border-red-200 rounded-lg hover:bg-red-50"
+          >
+            Clear All Filters
+          </button>
+          <button
+            @click="applyMobileFilters"
+            class="w-full py-4 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            Show {{ filteredProducts.length }} Results
+          </button>
         </div>
       </div>
     </div>
@@ -738,5 +1017,10 @@ button:focus {
   background-size: 8px 8px;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+/* Mobile overlay scroll prevention */
+body.modal-open {
+  overflow: hidden;
 }
 </style>

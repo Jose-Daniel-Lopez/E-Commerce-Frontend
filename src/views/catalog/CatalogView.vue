@@ -17,6 +17,10 @@ const categoryTypes = ref<
   Array<{ name: string; originalName: string; count: number; checked: boolean }>
 >([])
 
+// Mobile-specific state
+const showMobileFilters = ref(false)
+const showMobileSorting = ref(false)
+
 // Filter collapse states
 const collapsedFilters = ref({
   search: false,
@@ -76,6 +80,23 @@ const totalPages = computed(() => Math.ceil(filteredCategories.value.length / it
 
 // Breadcrumbs for navigation (reactivo y traducido)
 const breadcrumbs = computed(() => [{ label: 'catalog.title', to: '/catalog' }])
+
+// Check if any filters are active
+const hasActiveFilters = () => {
+  const searchActive = searchQuery.value.trim().length > 0
+  const typeFiltersActive = categoryTypes.value.some((type) => type.checked)
+  return searchActive || typeFiltersActive
+}
+
+// Clear all filters
+const clearAllFilters = () => {
+  searchQuery.value = ''
+  categoryTypes.value.forEach((type) => {
+    type.checked = false
+  })
+  currentPage.value = 1
+  showMobileFilters.value = false
+}
 
 // Translate category name using i18n, supporting both accented and unaccented keys
 const removeAccents = (str: string) =>
@@ -292,6 +313,10 @@ const viewCategoryProducts = (categoryId: number) => {
 
 const goToPage = (page: number) => {
   currentPage.value = page
+  // Scroll to top on mobile for better UX
+  if (window.innerWidth < 768) {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 }
 
 const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
@@ -302,6 +327,22 @@ const clearTypeFilters = () => {
   categoryTypes.value.forEach((type) => {
     type.checked = false
   })
+}
+
+// Mobile-specific methods
+const openMobileFilters = () => {
+  showMobileFilters.value = true
+  document.body.style.overflow = 'hidden'
+}
+
+const closeMobileFilters = () => {
+  showMobileFilters.value = false
+  document.body.style.overflow = ''
+}
+
+const applyMobileFilters = () => {
+  currentPage.value = 1
+  closeMobileFilters()
 }
 
 // Watch for search changes to reset pagination
@@ -328,9 +369,282 @@ watch(
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex gap-8">
-        <!-- Sidebar Filters -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
+      <!-- Mobile: Single Column Layout -->
+      <div class="lg:hidden">
+        <!-- Mobile Header -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h1 class="font-srProDisplay text-lg sm:text-xl font-semibold text-black">
+                {{ t('catalog.title') }}
+              </h1>
+              <p class="font-srProDisplay text-sm text-gray-600">
+                {{ t('catalog.categoriesFound', { count: filteredCategories.length }) }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Mobile Filter/Sort Controls -->
+          <div class="flex gap-3 mb-4">
+            <button
+              @click="showMobileFilters = !showMobileFilters"
+              :class="[
+                'flex-1 flex items-center justify-center gap-2 px-4 py-3 border rounded-lg text-sm font-medium transition-colors min-h-[48px]',
+                showMobileFilters ? 'bg-black text-white border-black' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              ]"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              Filters
+              <span v-if="hasActiveFilters()" class="ml-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
+                Active
+              </span>
+            </button>
+
+            <button
+              @click="showMobileSorting = !showMobileSorting"
+              class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 min-h-[48px]"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5v6m0 0V9a2 2 0 012-2h4a2 2 0 012 2v2M8 11l4 4 4-4" />
+              </svg>
+              Sort
+            </button>
+          </div>
+
+          <!-- Mobile Collapsible Filters -->
+          <div v-if="showMobileFilters" class="bg-gray-50 rounded-lg p-4 mb-4 space-y-6">
+            <!-- Search Filter -->
+            <div>
+              <h3 class="font-srProDisplay text-base font-semibold text-black mb-3">{{ t('catalog.searchCategories') }}</h3>
+              <div class="flex items-center gap-2 bg-white p-3 rounded-lg">
+                <v-icon name="fa-search" scale="1" class="text-gray-400" />
+                <input
+                  v-model="searchQuery"
+                  class="flex-1 bg-transparent text-sm outline-none"
+                  type="search"
+                  :placeholder="t('catalog.searchPlaceholder')"
+                />
+              </div>
+            </div>
+
+            <!-- Category Types Filter -->
+            <div v-if="categoryTypes.length > 0">
+              <h3 class="font-srProDisplay text-base font-semibold text-black mb-3">{{ t('catalog.types') }}</h3>
+              <div class="grid grid-cols-1 gap-3 max-h-48 overflow-y-auto">
+                <label
+                  v-for="type in categoryTypes.slice(0, 12)"
+                  :key="type.name"
+                  class="flex items-center justify-between gap-2 bg-white p-3 rounded text-sm cursor-pointer hover:bg-gray-100 transition-colors"
+                >
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      v-model="type.checked"
+                      class="w-4 h-4 accent-black rounded"
+                    />
+                    <span class="font-medium">{{ type.name }}</span>
+                  </div>
+                  <span class="text-xs text-gray-500 font-medium">{{ type.count }}</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Clear Filters -->
+            <div v-if="hasActiveFilters()" class="flex gap-3">
+              <button
+                @click="clearAllFilters"
+                class="flex-1 py-2 text-sm text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+              >
+                Clear All
+              </button>
+              <button
+                @click="showMobileFilters = false"
+                class="flex-1 py-2 bg-black text-white text-sm rounded-lg hover:bg-gray-800 transition-colors"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Sort Dropdown -->
+          <div v-if="showMobileSorting" class="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden mb-4">
+            <button
+              v-for="option in [
+                { value: 'name', label: t('catalog.sort.nameAZ') },
+                { value: 'name-desc', label: t('catalog.sort.nameZA') },
+                { value: 'products-high', label: t('catalog.sort.mostProducts') },
+                { value: 'products-low', label: t('catalog.sort.leastProducts') }
+              ]"
+              :key="option.value"
+              @click="sortBy = option.value; showMobileSorting = false"
+              :class="[
+                'w-full px-4 py-3 text-left text-sm hover:bg-gray-50 transition-colors min-h-[48px] flex items-center',
+                sortBy === option.value ? 'bg-gray-100 font-medium' : ''
+              ]"
+            >
+              {{ option.label }}
+              <svg v-if="sortBy === option.value" class="w-5 h-5 ml-auto text-black" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Categories Grid -->
+        <div class="w-full">
+          <!-- Loading State -->
+          <div v-if="categoriesStore.loading" class="flex justify-center items-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
+            <span class="ml-3 text-gray-600">{{ t('shop.loadingCategories') }}</span>
+          </div>
+
+          <!-- Error State -->
+          <div
+            v-else-if="categoriesStore.error"
+            class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2 mb-8"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <span>{{ categoriesStore.error }}</span>
+          </div>
+
+          <!-- Empty State -->
+          <div v-else-if="filteredCategories.length === 0" class="text-center py-12">
+            <div class="flex justify-center mb-4">
+              <div class="bg-gray-100 p-6 rounded-full">
+                <svg
+                  class="w-12 h-12 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  />
+                </svg>
+              </div>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ t('catalog.noCategoriesFound') }}</h3>
+            <p class="text-gray-600 mb-4">{{ t('catalog.noCategoriesMatch') }}</p>
+            <button
+              v-if="hasActiveFilters()"
+              @click="clearAllFilters"
+              class="bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors"
+            >
+              Clear All Filters
+            </button>
+          </div>
+
+          <!-- Categories Grid -->
+          <div v-else class="grid grid-cols-2 gap-4 mb-8">
+            <div
+              v-for="category in translatedPaginatedCategories"
+              :key="category.id"
+              class="relative bg-[#f6f6f6] rounded-lg p-3 hover:shadow-md transition-shadow flex flex-col"
+            >
+              <div class="flex flex-col h-full">
+                <!-- Category Image/Icon -->
+                <div class="flex items-center justify-center mb-3">
+                  <div
+                    class="h-[80px] w-[80px] sm:h-[100px] sm:w-[100px] bg-white rounded-xl flex items-center justify-center shadow-sm overflow-hidden relative"
+                  >
+                    <!-- Imagen principal con candidates -->
+                    <img
+                      v-if="category.imageCandidates"
+                      :src="category.imageCandidates[0]"
+                      :alt="`Imagen de ${category.name}`"
+                      class="object-contain w-full h-full transition-transform duration-300 hover:scale-105"
+                      loading="lazy"
+                      @error="handleImageError"
+                    />
+
+                    <!-- Fallback icon con mejor diseño -->
+                    <div
+                      v-else
+                      class="w-[60px] h-[60px] sm:w-[80px] sm:h-[80px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center"
+                    >
+                      <svg
+                        class="w-8 h-8 sm:w-12 sm:h-12 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="1.5"
+                          d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 10H6L5 9z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Category Name -->
+                <div class="flex-1 flex flex-col items-center justify-center text-center mb-3">
+                  <h3 class="font-srProDisplay text-sm sm:text-base font-semibold text-black mb-1 line-clamp-2">
+                    {{ category.name }}
+                  </h3>
+                  <p class="text-xs sm:text-sm text-gray-600">
+                    {{ categoriesStore.getProductCount(category.id) }} {{ t('shop.product' + (categoriesStore.getProductCount(category.id) === 1 ? '' : 's')) }}
+                  </p>
+                </div>
+
+                <!-- View Button -->
+                <button
+                  @click="viewCategoryProducts(category.id)"
+                  class="w-full bg-black text-white py-2 px-3 rounded-md font-srProDisplay text-xs sm:text-sm font-medium hover:bg-gray-800 transition-colors"
+                >
+                  {{ t('catalog.viewProducts') }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Pagination -->
+          <div v-if="totalPages > 1" class="flex items-center justify-center space-x-1">
+            <button
+              @click="goToPage(currentPage - 1)"
+              :disabled="currentPage === 1"
+              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed min-w-[44px] min-h-[44px] flex items-center justify-center"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            <span class="px-4 py-2 text-sm text-gray-600">
+              {{ currentPage }} of {{ totalPages }}
+            </span>
+
+            <button
+              @click="goToPage(currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed min-w-[44px] min-h-[44px] flex items-center justify-center"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop: Two Column Layout -->
+      <div class="hidden lg:flex gap-8">
+        <!-- Desktop Sidebar Filters -->
         <div class="w-64 flex-shrink-0">
           <!-- Search Filter -->
           <div class="mb-6">
@@ -381,7 +695,7 @@ watch(
                   @click="clearTypeFilters"
                   class="text-xs text-gray-500 hover:text-gray-700 transition-colors"
                   type="button"
-                  title="{{ t('catalog.clearFilters') }}"
+                  :title="t('catalog.clearFilters')"
                 >
                   {{ t('catalog.clearFilters') }}
                 </button>
@@ -451,7 +765,7 @@ watch(
           </div>
         </div>
 
-        <!-- Main Content -->
+        <!-- Desktop Main Content -->
         <div class="flex-1">
           <!-- Header with category count and sorting -->
           <div class="flex items-center justify-between mb-6">
@@ -733,5 +1047,13 @@ svg:focus {
 
 .fade-in {
   animation: fadeIn 0.5s ease-out;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 </style>

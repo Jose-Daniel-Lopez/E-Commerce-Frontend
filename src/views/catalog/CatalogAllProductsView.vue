@@ -12,7 +12,6 @@ import DualRangeSlider from '@/components/shared/DualRangeSlider.vue'
 import { storeToRefs } from 'pinia'
 import api from '@/lib/axios'
 
-
 const router = useRouter()
 const productStore = useProductStore()
 const categoriesStore = useCategoriesStore()
@@ -21,11 +20,9 @@ const wishlistStore = useWishlistStore()
 const { user } = storeToRefs(authStore)
 const { wishlistLoading } = storeToRefs(wishlistStore)
 
-
 // =======================
 // 📦 State
 // =======================
-
 
 /**
  * Current page number for server-side pagination.
@@ -33,18 +30,19 @@ const { wishlistLoading } = storeToRefs(wishlistStore)
  */
 const currentPage = ref(1)
 
-
 /**
  * Sort order for products.
  * Options: name, name-desc, price-low, price-high, rating.
  */
 const sortBy = ref('name')
 
+// Mobile-specific state
+const showMobileFilters = ref(false)
+const showMobileSorting = ref(false)
 
 // =======================
 // 🔍 Search States
 // =======================
-
 
 /**
  * Search query for filtering brand options in the sidebar.
@@ -52,11 +50,9 @@ const sortBy = ref('name')
  */
 const brandSearchQuery = ref('')
 
-
 // =======================
 // 🧱 Filter Collapse States
 // =======================
-
 
 /**
  * Tracks which filter sections are collapsed.
@@ -68,17 +64,14 @@ const collapsedFilters = ref({
   category: false,
 })
 
-
 // Price Range (consolidated)
 const minValue = 0
 const maxValue = 5000
 const priceRange = ref<[number, number]>([0, 5000])
 
-
 // =======================
 // 🧮 Computed Properties
 // =======================
-
 
 /**
  * Number of items to display per page.
@@ -86,13 +79,11 @@ const priceRange = ref<[number, number]>([0, 5000])
  */
 const itemsPerPage = 20
 
-
 /**
  * Available categories for the category filter.
  * Populated from the full catalog categories, not just current page products.
  */
 const availableCategories = ref<{ name: string; checked: boolean }[]>([])
-
 
 /**
  * Fetches all categories from the backend catalog.
@@ -103,15 +94,12 @@ const fetchAllCategories = async () => {
     const response = await api.get('/categories')
     const categories = response.data._embedded?.categories || response.data || []
 
-
     console.log('🔍 [ALL PRODUCTS] Fetched categories from /categories endpoint:', categories.length)
-
 
     availableCategories.value = categories.map((category: { name?: string; id?: number }) => ({
       name: category.name || 'Unknown',
       checked: false
     }))
-
 
     console.log('🔍 [ALL PRODUCTS] Available categories for filter:', availableCategories.value.map(c => c.name))
   } catch (error) {
@@ -129,7 +117,6 @@ const fetchAllCategories = async () => {
     }))
   }
 }
-
 
 /**
  * Returns products filtered by:
@@ -157,7 +144,6 @@ const filteredProducts = computed(() => {
     filtered = filtered.filter((product) => selectedBrands.includes(product.brand))
   }
 
-
   // Category filter
   const selectedCategories = availableCategories.value
     .filter((category) => category.checked)
@@ -167,7 +153,6 @@ const filteredProducts = computed(() => {
       product.categoryName && selectedCategories.includes(product.categoryName)
     )
   }
-
 
   // Sort products
   switch (sortBy.value) {
@@ -190,10 +175,8 @@ const filteredProducts = computed(() => {
       break
   }
 
-
   return filtered
 })
-
 
 /**
  * Paginates the filtered product list using server-side pagination
@@ -204,12 +187,10 @@ const paginatedProducts = computed(() => {
   return filteredProducts.value
 })
 
-
 /**
  * Total number of pages based on server pagination info.
  */
 const totalPages = computed(() => productStore.pagination.totalPages || 1)
-
 
 /**
  * Filters brand list based on search query with fuzzy matching.
@@ -218,7 +199,6 @@ const totalPages = computed(() => productStore.pagination.totalPages || 1)
 const filteredBrands = computed(() => {
   const query = brandSearchQuery.value?.trim().toLowerCase()
   if (!query || query.length < 2) return productStore.brands
-
 
   return productStore.brands
     .map((brand) => {
@@ -235,7 +215,6 @@ const filteredBrands = computed(() => {
     .map(({ brand }) => brand)
 })
 
-
 /**
  * Breadcrumb navigation path.
  * Shows the path to all products view.
@@ -245,29 +224,24 @@ const breadcrumbs = computed(() => [
   { label: 'All Products' },
 ])
 
-
 // =======================
 // 🧪 Lifecycle & Effects
 // =======================
 
-
 onMounted(async () => {
   // Fetch all catalog categories for the filter (independent of current products)
   await fetchAllCategories()
-
 
   // Ensure categories are loaded for category filter
   if (categoriesStore.categories.length === 0) {
     await categoriesStore.fetchCategories()
   }
 
-
   // Load initial data: all products, brands, and wishlist
   await Promise.all([
     productStore.fetchAllProducts(currentPage.value, itemsPerPage), // Use 1-indexed page
     productStore.fetchBrands(),
   ])
-
 
   // Load user wishlist if authenticated
   if (authStore.user?.id) {
@@ -280,11 +254,9 @@ onMounted(async () => {
   }
 })
 
-
 // =======================
 // ⚙️ Methods
 // =======================
-
 
 /**
  * Formats a price number into a localized currency string.
@@ -294,7 +266,6 @@ const formatPrice = (price: number) => {
   return `$${price}`
 }
 
-
 /**
  * Toggles product favorite status using the wishlist API.
  * Handles authentication, adds/removes from wishlist, and shows feedback.
@@ -302,14 +273,12 @@ const formatPrice = (price: number) => {
 const toggleFavorite = async (productId: number) => {
   console.log('🔵 [ALL PRODUCTS] toggleFavorite called for product:', productId)
 
-
   // Check if user is authenticated
   if (!user.value || !user.value.id) {
     console.error('🔴 [ALL PRODUCTS] User not authenticated')
     alert('Please log in to add products to your wishlist')
     return
   }
-
 
   // Find the product to get its data
   const product = productStore.products.find(p => p.id === productId)
@@ -319,7 +288,6 @@ const toggleFavorite = async (productId: number) => {
     return
   }
 
-
   try {
     // Ensure wishlist is loaded
     if (!wishlistStore.wishlistId) {
@@ -327,14 +295,11 @@ const toggleFavorite = async (productId: number) => {
       await wishlistStore.fetchUserWishlist(user.value.id)
     }
 
-
     const isCurrentlyInWishlist = wishlistStore.isProductInWishlist(productId)
     console.log('🟡 [ALL PRODUCTS] Product in wishlist before action:', isCurrentlyInWishlist)
 
-
     if (!isCurrentlyInWishlist) {
       console.log('🟡 [ALL PRODUCTS] Adding product to wishlist...')
-
 
       const productData = {
         name: product.name,
@@ -346,7 +311,6 @@ const toggleFavorite = async (productId: number) => {
         imageUrl: product.imageUrl || undefined,
       }
 
-
       await wishlistStore.addProductToWishlist(productId, productData)
       console.log('✅ [ALL PRODUCTS] Product added to wishlist')
     } else {
@@ -355,11 +319,9 @@ const toggleFavorite = async (productId: number) => {
       console.log('✅ [ALL PRODUCTS] Product removed from wishlist')
     }
 
-
     // Verify the state change
     const isInWishlistAfter = wishlistStore.isProductInWishlist(productId)
     console.log('🟡 [ALL PRODUCTS] Product in wishlist after action:', isInWishlistAfter)
-
 
   } catch (error) {
     console.error('🔴 [ALL PRODUCTS] Error toggling favorite:', error)
@@ -367,14 +329,12 @@ const toggleFavorite = async (productId: number) => {
   }
 }
 
-
 /**
  * Navigates to the product details page.
  * Scrolls to top after navigation.
  */
 const goToProductDetails = (productId: number) => {
   console.log('🟢 [ALL PRODUCTS] goToProductDetails called with productId:', productId)
-
 
   // Find the product to get its category for the route
   const product = productStore.products.find(p => p.id === productId)
@@ -384,7 +344,6 @@ const goToProductDetails = (productId: number) => {
     .replace(/--+/g, '-')
     .replace(/^-+/, '')
     .replace(/-+$/, '') || 'unknown'
-
 
   router
     .push({
@@ -402,14 +361,12 @@ const goToProductDetails = (productId: number) => {
     })
 }
 
-
 /**
  * Shortcut to go directly to product details when "Buy Now" is clicked.
  */
 const buyNow = (productId: number) => {
   goToProductDetails(productId)
 }
-
 
 /**
  * Navigates to a specific page with server-side pagination.
@@ -419,13 +376,11 @@ const buyNow = (productId: number) => {
 const goToPage = async (page: number) => {
   console.log('🔵 [ALL PRODUCTS] goToPage called with page:', page, 'totalPages:', totalPages.value)
 
-
   if (page >= 1 && page <= totalPages.value) {
     console.log('🔵 [ALL PRODUCTS] Setting currentPage to:', page, 'and fetching data...')
     currentPage.value = page
     // Backend expects 1-indexed pagination, so pass the page as-is
     await productStore.fetchAllProducts(currentPage.value, itemsPerPage)
-
 
     // Ensure currentPage is synced with backend response
     // Backend returns 1-indexed page numbers, so use as-is
@@ -434,11 +389,15 @@ const goToPage = async (page: number) => {
       currentPage.value = backendPage
     }
     console.log('🔵 [ALL PRODUCTS] Page navigation complete. Backend page:', backendPage, 'Frontend currentPage:', currentPage.value)
+
+    // Scroll to top on mobile for better UX
+    if (window.innerWidth < 768) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   } else {
     console.warn('🔴 [ALL PRODUCTS] Invalid page requested:', page, 'valid range: 1 -', totalPages.value)
   }
 }
-
 
 /**
  * Toggles the visibility of a filter section.
@@ -446,7 +405,6 @@ const goToPage = async (page: number) => {
 const toggleFilter = (filterName: keyof typeof collapsedFilters.value) => {
   collapsedFilters.value[filterName] = !collapsedFilters.value[filterName]
 }
-
 
 /**
  * Checks if any filters are currently active.
@@ -459,7 +417,6 @@ const hasActiveFilters = () => {
   return priceFilterActive || brandFilterActive || categoryFilterActive
 }
 
-
 /**
  * Clears all applied filters and resets pagination.
  */
@@ -468,8 +425,8 @@ const clearAllFilters = () => {
   productStore.brands.forEach((brand) => (brand.checked = false))
   availableCategories.value.forEach((category) => (category.checked = false))
   currentPage.value = 1
+  showMobileFilters.value = false // Close mobile filters after clearing
 }
-
 
 /**
  * Clears only brand filters.
@@ -479,7 +436,6 @@ const clearBrandFilters = () => {
   currentPage.value = 1
 }
 
-
 /**
  * Clears only category filters.
  */
@@ -488,30 +444,41 @@ const clearCategoryFilters = () => {
   currentPage.value = 1
 }
 
+// Mobile-specific methods
+const openMobileFilters = () => {
+  showMobileFilters.value = true
+  document.body.style.overflow = 'hidden' // Prevent background scrolling
+}
+
+const closeMobileFilters = () => {
+  showMobileFilters.value = false
+  document.body.style.overflow = ''
+}
+
+const applyMobileFilters = () => {
+  currentPage.value = 1
+  closeMobileFilters()
+}
 
 // Reset to page 1 only when user actively changes filters
 watch(sortBy, () => {
   currentPage.value = 1
 })
 
-
 // Watch for changes in brand filter selections (not the array itself)
 watch(() => productStore.brands.map(b => b.checked), () => {
   currentPage.value = 1
 }, { deep: true })
-
 
 // Watch for changes in category filter selections (not the array itself)
 watch(() => availableCategories.value.map(c => c.checked), () => {
   currentPage.value = 1
 }, { deep: true })
 
-
 // Watch for changes in price range
 watch(priceRange, () => {
   currentPage.value = 1
 }, { deep: true })
-
 
 // Sync currentPage with backend pagination state
 // This ensures the UI pagination buttons show the correct active state
@@ -526,7 +493,6 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
 })
 </script>
 
-
 <template>
   <div class="min-h-screen">
     <!-- Breadcrumb -->
@@ -536,17 +502,17 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
       </div>
     </div>
 
-    <!-- Debug Panel -->
-    <div class="fixed bottom-4 right-4 z-50 max-w-[420px] w-full">
-      <div class="bg-yellow-50 border border-yellow-300 rounded-lg shadow-lg p-4">
+    <!-- Debug Panel - Mobile optimized -->
+    <div class="fixed bottom-4 right-4 z-50 max-w-[300px] sm:max-w-[420px] w-full">
+      <div class="bg-yellow-50 border border-yellow-300 rounded-lg shadow-lg p-3 sm:p-4">
         <div class="flex items-center justify-between mb-2">
-          <span class="font-bold text-yellow-800 text-sm">🛠️ All Products Debug</span>
+          <span class="font-bold text-yellow-800 text-xs sm:text-sm">🛠️ All Products Debug</span>
           <button @click="showDebug = !showDebug" class="text-xs text-yellow-700 underline focus:outline-none">
             {{ showDebug ? 'Hide' : 'Show' }}
           </button>
         </div>
         <transition name="fade-debug">
-          <div v-show="showDebug" class="text-xs text-yellow-900 space-y-2">
+          <div v-show="showDebug" class="text-xs text-yellow-900 space-y-2 max-h-40 overflow-y-auto">
             <div><b>User:</b> {{ user?.username || 'Not logged in' }}</div>
             <div><b>Total Products:</b> {{ productStore.products.length }}</div>
             <div><b>Filtered Products:</b> {{ filteredProducts.length }}</div>
@@ -556,17 +522,318 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
             <div><b>Active Brands:</b> {{ productStore.brands.filter(b => b.checked).length }}</div>
             <div><b>Active Categories:</b> {{ availableCategories.filter(c => c.checked).length }}</div>
             <div><b>Current Page:</b> {{ currentPage }} / {{ totalPages }}</div>
-            <div><b>Items Per Page:</b> {{ itemsPerPage }}</div>
-            <div><b>Price Range:</b> ${{ priceRange.min }} - ${{ priceRange.max }}</div>
-            <div><b>Sort By:</b> {{ sortBy }}</div>
           </div>
         </transition>
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex gap-8">
-        <!-- Sidebar Filters -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
+      <!-- Mobile: Single Column Layout -->
+      <div class="lg:hidden">
+        <!-- Mobile Header -->
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h1 class="font-srProDisplay text-lg sm:text-xl font-semibold text-black">All Products</h1>
+              <p class="font-srProDisplay text-sm text-gray-600">{{ productStore.pagination.totalElements || filteredProducts.length }} products found</p>
+            </div>
+          </div>
+
+          <!-- Mobile Filter/Sort Controls -->
+          <div class="flex gap-3 mb-4">
+            <button
+              @click="showMobileFilters = !showMobileFilters"
+              :class="[
+                'flex-1 flex items-center justify-center gap-2 px-4 py-3 border rounded-lg text-sm font-medium transition-colors min-h-[48px]',
+                showMobileFilters ? 'bg-black text-white border-black' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+              ]"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              Filters
+              <span v-if="hasActiveFilters()" class="ml-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
+                Active
+              </span>
+            </button>
+
+            <button
+              @click="showMobileSorting = !showMobileSorting"
+              class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 min-h-[48px]"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5v6m0 0V9a2 2 0 012-2h4a2 2 0 012 2v2M8 11l4 4 4-4" />
+              </svg>
+              Sort
+            </button>
+          </div>
+
+          <!-- Mobile Collapsible Filters -->
+          <div v-if="showMobileFilters" class="bg-gray-50 rounded-lg p-4 mb-4 space-y-6">
+            <!-- Price Filter -->
+            <div>
+              <h3 class="font-srProDisplay text-base font-semibold text-black mb-3">Price Range</h3>
+              <DualRangeSlider
+                :min="minValue"
+                :max="maxValue"
+                :step="50"
+                v-model="priceRange"
+                :format-value="(value) => `$${value}`"
+              />
+            </div>
+
+            <!-- Category Filter -->
+            <div v-if="availableCategories.length > 0">
+              <h3 class="font-srProDisplay text-base font-semibold text-black mb-3">Categories</h3>
+              <div class="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto">
+                <label
+                  v-for="category in availableCategories.slice(0, 12)"
+                  :key="category.name"
+                  class="flex items-center gap-2 bg-white p-2 rounded text-sm cursor-pointer hover:bg-gray-100 transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    v-model="category.checked"
+                    class="w-4 h-4 accent-black rounded"
+                  />
+                  <span class="truncate">{{ category.name }}</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Brand Filter -->
+            <div>
+              <h3 class="font-srProDisplay text-base font-semibold text-black mb-3">Brands</h3>
+              <div class="flex items-center gap-2 bg-white p-3 rounded-lg mb-3">
+                <v-icon name="fa-search" scale="1" class="text-gray-400" />
+                <input
+                  v-model="brandSearchQuery"
+                  class="flex-1 bg-transparent text-sm outline-none"
+                  type="search"
+                  placeholder="Search brands"
+                />
+              </div>
+              <div class="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto">
+                <label
+                  v-for="brand in filteredBrands.slice(0, 10)"
+                  :key="brand.name"
+                  class="flex items-center gap-2 bg-white p-2 rounded text-sm cursor-pointer hover:bg-gray-100 transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    v-model="brand.checked"
+                    class="w-4 h-4 accent-black rounded"
+                  />
+                  <span class="truncate">{{ brand.name }}</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Clear Filters -->
+            <div v-if="hasActiveFilters()" class="flex gap-3">
+              <button
+                @click="clearAllFilters"
+                class="flex-1 py-2 text-sm text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+              >
+                Clear All
+              </button>
+              <button
+                @click="showMobileFilters = false"
+                class="flex-1 py-2 bg-black text-white text-sm rounded-lg hover:bg-gray-800 transition-colors"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Sort Dropdown -->
+          <div v-if="showMobileSorting" class="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden mb-4">
+            <button
+              v-for="option in [
+                { value: 'name', label: 'Name A-Z' },
+                { value: 'name-desc', label: 'Name Z-A' },
+                { value: 'price-low', label: 'Price: Low to High' },
+                { value: 'price-high', label: 'Price: High to Low' },
+                { value: 'rating', label: 'By rating' }
+              ]"
+              :key="option.value"
+              @click="sortBy = option.value; showMobileSorting = false"
+              :class="[
+                'w-full px-4 py-3 text-left text-sm hover:bg-gray-50 transition-colors min-h-[48px] flex items-center',
+                sortBy === option.value ? 'bg-gray-100 font-medium' : ''
+              ]"
+            >
+              {{ option.label }}
+              <svg v-if="sortBy === option.value" class="w-5 h-5 ml-auto text-black" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Products Grid -->
+        <div class="w-full">
+          <!-- Loading State -->
+          <div v-if="productStore.loading" class="flex justify-center items-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
+            <span class="ml-3 text-gray-600">Loading products...</span>
+          </div>
+
+          <!-- Error State -->
+          <div v-else-if="productStore.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2 mb-8">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            <span>{{ productStore.error }}</span>
+          </div>
+
+          <!-- Empty State -->
+          <div v-else-if="filteredProducts.length === 0" class="text-center py-12">
+            <div class="flex justify-center mb-4">
+              <div class="bg-gray-100 p-6 rounded-full">
+                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
+            <p class="text-gray-600 mb-4">
+              {{ hasActiveFilters() ? 'No products match your current filters' : 'No products found in this category' }}
+            </p>
+            <button
+              v-if="hasActiveFilters()"
+              @click="clearAllFilters"
+              class="bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors"
+            >
+              Clear All Filters
+            </button>
+          </div>
+
+          <!-- Products Grid -->
+          <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+            <div
+              v-for="product in paginatedProducts"
+              :key="product.id"
+              class="relative bg-[#f6f6f6] rounded-lg p-3 hover:shadow-md transition-shadow"
+            >
+              <!-- Category Badge -->
+              <div
+                v-if="product.categoryName && product.categoryName !== 'Unknown'"
+                class="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 rounded-full z-10 max-w-[80px] truncate"
+              >
+                {{ product.categoryName }}
+              </div>
+
+              <div class="absolute top-2 right-2 z-10">
+                <button
+                  @click="toggleFavorite(product.id)"
+                  :disabled="wishlistLoading"
+                  class="w-8 h-8 text-gray-600 hover:text-red-600 transition-colors disabled:opacity-50 flex items-center justify-center"
+                  type="button"
+                >
+                  <svg
+                    v-if="!wishlistStore.isProductInWishlist(product.id)"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    class="w-5 h-5"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                  <svg
+                    v-else
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    class="w-5 h-5 text-red-600"
+                  >
+                    <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                </button>
+              </div>
+
+              <div class="flex flex-col h-full">
+                <div class="flex items-center justify-center mb-3 mt-6">
+                  <div class="h-20 w-20 sm:h-24 sm:w-24">
+                    <img
+                      :src="product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp'"
+                      :alt="product.name"
+                      class="w-full h-full object-contain"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+
+                <div class="flex flex-col flex-1">
+                  <a href="#" @click.prevent="goToProductDetails(product.id)" class="block cursor-pointer mb-2">
+                    <h3 class="text-center font-srProDisplay text-xs sm:text-sm font-medium hover:text-indigo-600 transition-colors line-clamp-2 min-h-[32px]">
+                      {{ product.name }}
+                    </h3>
+                  </a>
+
+                  <div class="flex justify-center items-center gap-1 mb-2">
+                    <span class="flex items-center">
+                      <template v-for="i in 5" :key="i">
+                        <svg
+                          class="w-3 h-3 sm:w-4 sm:h-4"
+                          :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
+                        </svg>
+                      </template>
+                      <span class="ml-1 text-xs text-gray-500">{{ (product.rating ?? 0).toFixed(1) }}</span>
+                    </span>
+                  </div>
+
+                  <div class="text-center mb-3">
+                    <span class="font-figtree text-sm sm:text-base font-semibold">{{ formatPrice(product.basePrice) }}</span>
+                  </div>
+
+                  <button
+                    @click="buyNow(product.id)"
+                    class="w-full py-2 bg-black text-white text-xs sm:text-sm font-medium rounded hover:bg-gray-800 transition-colors mt-auto"
+                  >
+                    Buy Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Pagination -->
+          <div v-if="totalPages > 1" class="flex items-center justify-center space-x-1">
+            <button
+              @click="goToPage(currentPage - 1)"
+              :disabled="currentPage === 1"
+              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed min-w-[44px] min-h-[44px] flex items-center justify-center"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+            </button>
+
+            <span class="px-4 py-2 text-sm text-gray-600">
+              {{ currentPage }} of {{ totalPages }}
+            </span>
+
+            <button
+              @click="goToPage(currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed min-w-[44px] min-h-[44px] flex items-center justify-center"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop: Two Column Layout -->
+      <div class="hidden lg:flex gap-8">
+        <!-- Desktop Sidebar Filters -->
         <div class="w-64 flex-shrink-0">
           <!-- Price Filter -->
           <div class="mb-6">
@@ -774,7 +1041,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
         </div>
 
-        <!-- Main Content -->
+        <!-- Desktop Main Content -->
         <div class="flex-1">
           <!-- Header -->
           <div class="flex items-center justify-between mb-6">

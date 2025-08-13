@@ -1489,308 +1489,405 @@ const fetchProductVariants = async (productId: number) => {
     </section>
 
     <!-- Reviews Section -->
-    <section class="w-full flex justify-center bg-white py-24">
-      <div class="w-full max-w-[1640px] bg-white rounded-2xl px-8 py-10">
-        <div class="flex items-center justify-between mb-2">
-          <h2 class="text-2xl font-semibold mb-8">Reviews</h2>
-          <button
-            @click="toggleReviews"
-            class="p-1 hover:bg-gray-100 rounded transition-colors"
-            type="button"
-            aria-label="Toggle reviews section"
-          >
-            <v-icon
-              name="hi-chevron-down"
-              class="w-5 h-5 text-gray-600 transition-transform duration-200"
-              :class="{ 'rotate-180': reviewsCollapsed }"
-              scale="1.2"
-            />
-          </button>
-        </div>
+<section class="w-full flex justify-center bg-white py-12 lg:py-24">
+  <div class="w-full max-w-[1640px] bg-white rounded-2xl px-4 lg:px-8 py-6 lg:py-10">
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="text-xl lg:text-2xl font-semibold mb-4 lg:mb-8">Reviews</h2>
+      <button
+        @click="toggleReviews"
+        class="p-2 hover:bg-gray-100 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+        type="button"
+        aria-label="Toggle reviews section"
+      >
+        <v-icon
+          name="hi-chevron-down"
+          class="w-5 h-5 text-gray-600 transition-transform duration-200"
+          :class="{ 'rotate-180': reviewsCollapsed }"
+          scale="1.2"
+        />
+      </button>
+    </div>
 
-        <transition name="fade-reviews">
-          <div v-show="!reviewsCollapsed">
-            <!-- Reviews Stats -->
-            <div v-if="!productReviewsLoading && productReviews.length > 0" class="flex items-start gap-12 mb-8">
-              <!-- Overall Rating -->
-              <div class="text-center space-x-3 bg-[#F4F4F4] rounded-[25px] w-auto h-auto p-8">
-                <div class="text-6xl font-bold mb-2">{{ Number(reviewStats.averageRating).toFixed(Number(reviewStats.averageRating) % 1 === 0 ? 0 : 1) }}</div>
-                <div class="text-gray-400 text-sm mb-2">
-                  of {{ reviewStats.totalReviews }} reviews
-                </div>
-                <div class="flex justify-center">
-                  <div class="flex">
-                    <v-icon
-                      v-for="star in 5"
-                      :key="star"
-                      :name="
-                        star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'
-                      "
-                      :class="
-                        star <= Math.floor(reviewStats.averageRating)
-                          ? 'text-yellow-400'
-                          : 'text-gray-300'
-                      "
-                      scale="1.2"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <!-- Rating Breakdown -->
-              <div class="flex-1 max-w-7xl">
-                <div class="space-y-2">
-                  <div class="flex items-center gap-4">
-                    <span class="text-lg text-gray-600 w-30">Excellent</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                      <div
-                        class="bg-yellow-400 h-1.5 rounded-full"
-                        :style="{
-                          width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
-                        }"
-                      ></div>
-                    </div>
-                    <span class="text-sm text-gray-400 w-8">{{ reviewStats.excellent }}</span>
-                  </div>
-                  <div class="flex items-center gap-4">
-                    <span class="text-lg text-gray-600 w-30">Good</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                      <div
-                        class="bg-yellow-400 h-1.5 rounded-full"
-                        :style="{
-                          width: (reviewStats.good / reviewStats.totalReviews) * 100 + '%',
-                        }"
-                      ></div>
-                    </div>
-                    <span class="text-sm text-gray-400 w-8">{{ reviewStats.good }}</span>
-                  </div>
-                  <div class="flex items-center gap-4">
-                    <span class="text-lg text-gray-600 w-30">Average</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                      <div
-                        class="bg-yellow-400 h-1.5 rounded-full"
-                        :style="{
-                          width: (reviewStats.average / reviewStats.totalReviews) * 100 + '%',
-                        }"
-                      ></div>
-                    </div>
-                    <span class="text-sm text-gray-400 w-8">{{ reviewStats.average }}</span>
-                  </div>
-                  <div class="flex items-center gap-4">
-                    <span class="text-lg text-gray-600 w-30">Below Average</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                      <div
-                        class="bg-yellow-400 h-1.5 rounded-full"
-                        :style="{
-                          width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
-                        }"
-                      ></div>
-                    </div>
-                    <span class="text-sm text-gray-400 w-8">{{ reviewStats.belowAverage }}</span>
-                  </div>
-                  <div class="flex items-center gap-4">
-                    <span class="text-lg text-gray-600 w-30">Poor</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                      <div
-                        class="bg-yellow-400 h-1.5 rounded-full"
-                        :style="{
-                          width: (reviewStats.poor / reviewStats.totalReviews) * 100 + '%',
-                        }"
-                      ></div>
-                    </div>
-                    <span class="text-sm text-gray-400 w-8">{{ reviewStats.poor }}</span>
-                  </div>
-                </div>
-              </div>
+    <transition name="fade-reviews">
+      <div v-show="!reviewsCollapsed">
+        <!-- Mobile Reviews Stats -->
+        <div v-if="!productReviewsLoading && productReviews.length > 0" class="lg:hidden mb-6">
+          <!-- Overall Rating - Mobile -->
+          <div class="text-center bg-[#F4F4F4] rounded-2xl p-6 mb-6">
+            <div class="text-4xl font-bold mb-2">{{ Number(reviewStats.averageRating).toFixed(Number(reviewStats.averageRating) % 1 === 0 ? 0 : 1) }}</div>
+            <div class="text-gray-400 text-sm mb-3">
+              of {{ reviewStats.totalReviews }} reviews
             </div>
-
-            <!-- Leave Comment Button -->
-            <div class="mb-8">
-              <button
-                @click="showReviewModal = true"
-                class="w-full border border-gray-200 rounded-[7px] px-4 py-4 text-gray-700 text-base font-medium bg-white hover:bg-gray-50 transition-all focus:outline-none focus:ring-2 focus:ring-gray-200"
-              >
-                Leave Comment
-              </button>
-            </div>
-
-            <!-- Review Modal -->
-            <transition name="fade-details">
-              <div v-if="showReviewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75">
-                <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative">
-                  <button @click="closeReviewModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600" aria-label="Close">
-                    <v-icon name="hi-x" scale="1.2" />
-                  </button>
-                  <h3 class="text-xl font-semibold mb-4">Leave a Review</h3>
-                  <form @submit.prevent="submitReview">
-                    <div class="mb-4">
-                      <label class="block text-gray-700 font-medium mb-2">Rating</label>
-                      <div class="flex gap-2">
-                        <button
-                          v-for="star in 5"
-                          :key="star"
-                          type="button"
-                          @click="reviewRating = star"
-                          :aria-label="`Set rating to ${star}`"
-                          class="focus:outline-none"
-                        >
-                          <v-icon
-                            :name="star <= reviewRating ? 'bi-star-fill' : 'bi-star'"
-                            :class="star <= reviewRating ? 'text-yellow-400' : 'text-gray-300'"
-                            scale="1.5"
-                          />
-                        </button>
-                      </div>
-                      <div v-if="reviewErrors.rating" class="text-red-500 text-sm mt-1">{{ reviewErrors.rating }}</div>
-                    </div>
-                    <div class="mb-4">
-                      <label class="block text-gray-700 font-medium mb-2">Comment</label>
-                      <textarea
-                        v-model="reviewComment"
-                        maxlength="1000"
-                        rows="5"
-                        class="w-full border border-gray-200 rounded-[7px] px-4 py-2 text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all resize-none"
-                        placeholder="Share your experience..."
-                      ></textarea>
-                      <div class="flex justify-between text-xs text-gray-400 mt-1">
-                        <span>{{ reviewComment.length }}/1000</span>
-                        <span v-if="reviewErrors.comment" class="text-red-500">{{ reviewErrors.comment }}</span>
-                      </div>
-                    </div>
-                    <div class="flex justify-end gap-2 mt-6">
-                      <button
-                        type="button"
-                        @click="closeReviewModal"
-                        :class="[
-                          'flex-1 border border-gray-300 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
-                          'text-gray-700 hover:bg-gray-50'
-                        ]"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        :disabled="reviewSubmitting"
-                        :class="[
-                          'flex-1 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
-                          !reviewSubmitting
-                            ? 'bg-black text-white hover:bg-gray-800'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        ]"
-                      >
-                        <span v-if="reviewSubmitting">Submitting...</span>
-                        <span v-else>Submit Review</span>
-                      </button>
-                    </div>
-                    <div v-if="reviewErrors.submit" class="text-red-500 text-sm mt-4 text-center">{{ reviewErrors.submit }}</div>
-                  </form>
-                </div>
-              </div>
-            </transition>
-
-            <!-- Loading State for Reviews -->
-            <div v-if="productReviewsLoading" class="flex justify-center items-center py-8">
-              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-              <span class="ml-3 text-gray-600">Loading reviews...</span>
-            </div>
-
-            <!-- Error State for Reviews -->
-            <div v-else-if="productReviewsError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-              {{ productReviewsError }}
-            </div>
-
-            <!-- No Reviews State -->
-            <div v-else-if="productReviews.length === 0" class="text-center py-8">
-              <div class="text-gray-500 text-lg">No reviews yet</div>
-              <div class="text-gray-400 text-sm mt-2">Be the first to leave a review!</div>
-            </div>
-
-            <!-- Individual Reviews with View More/Less and Fade -->
-            <div v-else class="space-y-6 relative">
-              <div
-                :class="[
-                  'transition-all duration-300 overflow-hidden',
-                  showAllReviews ? '' : 'max-h-[600px]',
-                ]"
-                style="position: relative"
-              >
-                <div
-                  :style="
-                    showAllReviews
-                      ? ''
-                      : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
+            <div class="flex justify-center">
+              <div class="flex">
+                <v-icon
+                  v-for="star in 5"
+                  :key="star"
+                  :name="
+                    star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'
                   "
-                >
-                  <div v-for="review in displayedReviews" :key="review.id" class="relative mb-6">
-                    <div
-                      class="flex items-start gap-4 bg-[#F4F4F4] rounded-[10px] w-auto h-auto p-8"
-                    >
-                      <!-- Avatar -->
-                      <div class="w-12 h-12 flex-shrink-0">
-                        <img
-                          v-if="review.userAvatar"
-                          :src="review.userAvatar"
-                          :alt="`${review.userName || 'User'} avatar`"
-                          class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-lg avatar-hover"
-                          @error="handleAvatarError"
-                        />
-                        <div
-                          v-else
-                          class="w-12 h-12 bg-gradient-to-br rounded-full flex items-center justify-center shadow-lg avatar-hover"
-                          :class="`bg-gradient-to-br ${getAvatarColor(review.userName || 'Anonymous')} ${review.userAvatar ? 'hidden' : ''}`"
-                        >
-                          <span class="text-white text-sm font-semibold">{{
-                            getUserInitials(review.userName || 'Anonymous')
-                          }}</span>
-                        </div>
-                      </div>
-
-                      <!-- Review Content -->
-                      <div class="flex-1">
-                        <div class="flex items-center justify-between mb-1">
-                          <h4 class="font-medium text-gray-900">{{ review.userName || 'Anonymous' }}</h4>
-                          <span class="text-sm text-gray-500">{{ review.date }}</span>
-                        </div>
-
-                        <!-- Star Rating -->
-                        <div class="flex mb-2">
-                          <v-icon
-                            v-for="star in 5"
-                            :key="star"
-                            :name="star <= review.rating ? 'bi-star-fill' : 'bi-star'"
-                            :class="star <= review.rating ? 'text-yellow-400' : 'text-gray-300'"
-                            scale="1.2"
-                          />
-                        </div>
-
-                        <!-- Comment -->
-                        <p class="text-gray-700 leading-relaxed">{{ review.comment }}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Fade overlay when not showing all reviews -->
-                <div
-                  v-if="!showAllReviews && hasMoreReviews"
-                  class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"
-                ></div>
-              </div>
-              <div v-if="hasMoreReviews" class="flex justify-center mt-6">
-                <button
-                  @click="toggleShowAllReviews"
-                  class="flex items-center justify-center gap-2 px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                >
-                  <span>{{ showAllReviews ? 'View Less' : 'View More' }}</span>
-                  <v-icon v-if="!showAllReviews" name="hi-chevron-down" class="h-5 w-5" scale="1.2" />
-                  <v-icon v-else name="hi-chevron-up" class="h-5 w-5" scale="1.2" />
-                </button>
+                  :class="
+                    star <= Math.floor(reviewStats.averageRating)
+                      ? 'text-yellow-400'
+                      : 'text-gray-300'
+                  "
+                  scale="1.1"
+                />
               </div>
             </div>
           </div>
+
+          <!-- Rating Breakdown - Mobile -->
+          <div class="bg-gray-50 rounded-2xl p-4">
+            <h3 class="text-base font-semibold mb-4">Rating Breakdown</h3>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-600 w-20 flex-shrink-0">Excellent</span>
+                <div class="flex-1 bg-gray-200 rounded-full h-2">
+                  <div
+                    class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                    :style="{
+                      width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
+                    }"
+                  ></div>
+                </div>
+                <span class="text-xs text-gray-400 w-6 text-right">{{ reviewStats.excellent }}</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-600 w-20 flex-shrink-0">Good</span>
+                <div class="flex-1 bg-gray-200 rounded-full h-2">
+                  <div
+                    class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                    :style="{
+                      width: (reviewStats.good / reviewStats.totalReviews) * 100 + '%',
+                    }"
+                  ></div>
+                </div>
+                <span class="text-xs text-gray-400 w-6 text-right">{{ reviewStats.good }}</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-600 w-20 flex-shrink-0">Average</span>
+                <div class="flex-1 bg-gray-200 rounded-full h-2">
+                  <div
+                    class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                    :style="{
+                      width: (reviewStats.average / reviewStats.totalReviews) * 100 + '%',
+                    }"
+                  ></div>
+                </div>
+                <span class="text-xs text-gray-400 w-6 text-right">{{ reviewStats.average }}</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-600 w-20 flex-shrink-0">Below Avg</span>
+                <div class="flex-1 bg-gray-200 rounded-full h-2">
+                  <div
+                    class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                    :style="{
+                      width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
+                    }"
+                  ></div>
+                </div>
+                <span class="text-xs text-gray-400 w-6 text-right">{{ reviewStats.belowAverage }}</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-600 w-20 flex-shrink-0">Poor</span>
+                <div class="flex-1 bg-gray-200 rounded-full h-2">
+                  <div
+                    class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                    :style="{
+                      width: (reviewStats.poor / reviewStats.totalReviews) * 100 + '%',
+                    }"
+                  ></div>
+                </div>
+                <span class="text-xs text-gray-400 w-6 text-right">{{ reviewStats.poor }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop Reviews Stats -->
+        <div v-if="!productReviewsLoading && productReviews.length > 0" class="hidden lg:flex items-start gap-12 mb-8">
+          <!-- Overall Rating -->
+          <div class="text-center space-x-3 bg-[#F4F4F4] rounded-[25px] w-auto h-auto p-8">
+            <div class="text-6xl font-bold mb-2">{{ Number(reviewStats.averageRating).toFixed(Number(reviewStats.averageRating) % 1 === 0 ? 0 : 1) }}</div>
+            <div class="text-gray-400 text-sm mb-2">
+              of {{ reviewStats.totalReviews }} reviews
+            </div>
+            <div class="flex justify-center">
+              <div class="flex">
+                <v-icon
+                  v-for="star in 5"
+                  :key="star"
+                  :name="
+                    star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'
+                  "
+                  :class="
+                    star <= Math.floor(reviewStats.averageRating)
+                      ? 'text-yellow-400'
+                      : 'text-gray-300'
+                  "
+                  scale="1.2"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Rating Breakdown -->
+          <div class="flex-1 max-w-7xl">
+            <div class="space-y-2">
+              <div class="flex items-center gap-4">
+                <span class="text-lg text-gray-600 w-30">Excellent</span>
+                <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                  <div
+                    class="bg-yellow-400 h-1.5 rounded-full"
+                    :style="{
+                      width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
+                    }"
+                  ></div>
+                </div>
+                <span class="text-sm text-gray-400 w-8">{{ reviewStats.excellent }}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-lg text-gray-600 w-30">Good</span>
+                <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                  <div
+                    class="bg-yellow-400 h-1.5 rounded-full"
+                    :style="{
+                      width: (reviewStats.good / reviewStats.totalReviews) * 100 + '%',
+                    }"
+                  ></div>
+                </div>
+                <span class="text-sm text-gray-400 w-8">{{ reviewStats.good }}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-lg text-gray-600 w-30">Average</span>
+                <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                  <div
+                    class="bg-yellow-400 h-1.5 rounded-full"
+                    :style="{
+                      width: (reviewStats.average / reviewStats.totalReviews) * 100 + '%',
+                    }"
+                  ></div>
+                </div>
+                <span class="text-sm text-gray-400 w-8">{{ reviewStats.average }}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-lg text-gray-600 w-30">Below Average</span>
+                <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                  <div
+                    class="bg-yellow-400 h-1.5 rounded-full"
+                    :style="{
+                      width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
+                    }"
+                  ></div>
+                </div>
+                <span class="text-sm text-gray-400 w-8">{{ reviewStats.belowAverage }}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-lg text-gray-600 w-30">Poor</span>
+                <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                  <div
+                    class="bg-yellow-400 h-1.5 rounded-full"
+                    :style="{
+                      width: (reviewStats.poor / reviewStats.totalReviews) * 100 + '%',
+                    }"
+                  ></div>
+                </div>
+                <span class="text-sm text-gray-400 w-8">{{ reviewStats.poor }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leave Comment Button -->
+        <div class="mb-8">
+          <button
+            @click="showReviewModal = true"
+            class="w-full border border-gray-200 rounded-[7px] px-4 py-4 text-gray-700 text-base font-medium bg-white hover:bg-gray-50 transition-all focus:outline-none focus:ring-2 focus:ring-gray-200 min-h-[48px]"
+          >
+            Leave Comment
+          </button>
+        </div>
+
+        <!-- Review Modal -->
+        <transition name="fade-details">
+          <div v-if="showReviewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4">
+            <div class="bg-white rounded-xl shadow-lg p-6 lg:p-8 w-full max-w-md relative max-h-[90vh] overflow-y-auto">
+              <button @click="closeReviewModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Close">
+                <v-icon name="hi-x" scale="1.2" />
+              </button>
+              <h3 class="text-lg lg:text-xl font-semibold mb-4 pr-8">Leave a Review</h3>
+              <form @submit.prevent="submitReview">
+                <div class="mb-4">
+                  <label class="block text-gray-700 font-medium mb-2">Rating</label>
+                  <div class="flex gap-2">
+                    <button
+                      v-for="star in 5"
+                      :key="star"
+                      type="button"
+                      @click="reviewRating = star"
+                      :aria-label="`Set rating to ${star}`"
+                      class="focus:outline-none min-w-[44px] min-h-[44px] flex items-center justify-center"
+                    >
+                      <v-icon
+                        :name="star <= reviewRating ? 'bi-star-fill' : 'bi-star'"
+                        :class="star <= reviewRating ? 'text-yellow-400' : 'text-gray-300'"
+                        scale="1.5"
+                      />
+                    </button>
+                  </div>
+                  <div v-if="reviewErrors.rating" class="text-red-500 text-sm mt-1">{{ reviewErrors.rating }}</div>
+                </div>
+                <div class="mb-4">
+                  <label class="block text-gray-700 font-medium mb-2">Comment</label>
+                  <textarea
+                    v-model="reviewComment"
+                    maxlength="1000"
+                    rows="5"
+                    class="w-full border border-gray-200 rounded-[7px] px-4 py-3 text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all resize-none"
+                    placeholder="Share your experience..."
+                  ></textarea>
+                  <div class="flex justify-between text-xs text-gray-400 mt-1">
+                    <span>{{ reviewComment.length }}/1000</span>
+                    <span v-if="reviewErrors.comment" class="text-red-500">{{ reviewErrors.comment }}</span>
+                  </div>
+                </div>
+                <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6">
+                  <button
+                    type="button"
+                    @click="closeReviewModal"
+                    :class="[
+                      'flex-1 border border-gray-300 py-3 lg:py-4 px-4 lg:px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors min-h-[48px]',
+                      'text-gray-700 hover:bg-gray-50'
+                    ]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    :disabled="reviewSubmitting"
+                    :class="[
+                      'flex-1 py-3 lg:py-4 px-4 lg:px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors min-h-[48px]',
+                      !reviewSubmitting
+                        ? 'bg-black text-white hover:bg-gray-800'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    ]"
+                  >
+                    <span v-if="reviewSubmitting">Submitting...</span>
+                    <span v-else>Submit Review</span>
+                  </button>
+                </div>
+                <div v-if="reviewErrors.submit" class="text-red-500 text-sm mt-4 text-center">{{ reviewErrors.submit }}</div>
+              </form>
+            </div>
+          </div>
         </transition>
+
+        <!-- Loading State for Reviews -->
+        <div v-if="productReviewsLoading" class="flex justify-center items-center py-8">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <span class="ml-3 text-gray-600">Loading reviews...</span>
+        </div>
+
+        <!-- Error State for Reviews -->
+        <div v-else-if="productReviewsError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {{ productReviewsError }}
+        </div>
+
+        <!-- No Reviews State -->
+        <div v-else-if="productReviews.length === 0" class="text-center py-8">
+          <div class="text-gray-500 text-lg">No reviews yet</div>
+          <div class="text-gray-400 text-sm mt-2">Be the first to leave a review!</div>
+        </div>
+
+        <!-- Individual Reviews with View More/Less and Fade -->
+        <div v-else class="space-y-4 lg:space-y-6 relative">
+          <div
+            :class="[
+              'transition-all duration-300 overflow-hidden',
+              showAllReviews ? '' : 'max-h-[400px] lg:max-h-[600px]',
+            ]"
+            style="position: relative"
+          >
+            <div
+              :style="
+                showAllReviews
+                  ? ''
+                  : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
+              "
+            >
+              <div v-for="review in displayedReviews" :key="review.id" class="relative mb-4 lg:mb-6">
+                <div
+                  class="flex items-start gap-3 lg:gap-4 bg-[#F4F4F4] rounded-[10px] w-auto h-auto p-4 lg:p-8"
+                >
+                  <!-- Avatar -->
+                  <div class="w-10 h-10 lg:w-12 lg:h-12 flex-shrink-0">
+                    <img
+                      v-if="review.userAvatar"
+                      :src="review.userAvatar"
+                      :alt="`${review.userName || 'User'} avatar`"
+                      class="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover border-2 border-white shadow-lg avatar-hover"
+                      @error="handleAvatarError"
+                    />
+                    <div
+                      v-else
+                      class="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br rounded-full flex items-center justify-center shadow-lg avatar-hover"
+                      :class="`bg-gradient-to-br ${getAvatarColor(review.userName || 'Anonymous')} ${review.userAvatar ? 'hidden' : ''}`"
+                    >
+                      <span class="text-white text-xs lg:text-sm font-semibold">{{
+                        getUserInitials(review.userName || 'Anonymous')
+                      }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Review Content -->
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                      <h4 class="font-medium text-gray-900 text-sm lg:text-base">{{ review.userName || 'Anonymous' }}</h4>
+                      <span class="text-xs lg:text-sm text-gray-500">{{ review.date }}</span>
+                    </div>
+
+                    <!-- Star Rating -->
+                    <div class="flex mb-2">
+                      <v-icon
+                        v-for="star in 5"
+                        :key="star"
+                        :name="star <= review.rating ? 'bi-star-fill' : 'bi-star'"
+                        :class="star <= review.rating ? 'text-yellow-400' : 'text-gray-300'"
+                        scale="1.0"
+                        class="lg:scale-110"
+                      />
+                    </div>
+
+                    <!-- Comment -->
+                    <p class="text-gray-700 leading-relaxed text-sm lg:text-base">{{ review.comment }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fade overlay when not showing all reviews -->
+            <div
+              v-if="!showAllReviews && hasMoreReviews"
+              class="absolute bottom-0 left-0 w-full h-24 lg:h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"
+            ></div>
+          </div>
+          <div v-if="hasMoreReviews" class="flex justify-center mt-6">
+            <button
+              @click="toggleShowAllReviews"
+              class="flex items-center justify-center gap-2 px-6 lg:px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 min-h-[48px]"
+            >
+              <span>{{ showAllReviews ? 'View Less' : 'View More' }}</span>
+              <v-icon v-if="!showAllReviews" name="hi-chevron-down" class="h-5 w-5" scale="1.2" />
+              <v-icon v-else name="hi-chevron-up" class="h-5 w-5" scale="1.2" />
+            </button>
+          </div>
+        </div>
       </div>
-    </section>
+    </transition>
+  </div>
+</section>
+
 
     <!-- Related Products Section -->
     <section class="w-full flex justify-center bg-[#fafbfc] py-32">
