@@ -682,6 +682,7 @@ export const useProductStore = defineStore('product', () => {
 
   /**
    * Filters products by name or description (case-insensitive).
+   * @deprecated Use searchProductsAPI for server-side search instead
    */
   const searchProducts = (searchTerm: string) => {
     if (!searchTerm.trim()) return products.value
@@ -691,6 +692,203 @@ export const useProductStore = defineStore('product', () => {
         product.name.toLowerCase().includes(term) ||
         product.description.toLowerCase().includes(term),
     )
+  }
+
+  /**
+   * Searches products using the backend search API.
+   * Supports searching across product names, brands, descriptions, and category names.
+   *
+   * @param searchTerm - The search query
+   * @param page - Page number (0-indexed)
+   * @param size - Number of items per page
+   * @param sort - Sort criteria (e.g., 'name,asc', 'basePrice,desc')
+   */
+  const searchProductsAPI = async (searchTerm: string, page = 0, size = 20, sort = 'name,asc') => {
+    loading.value = true
+    error.value = ''
+    try {
+      const response = await api.get('/products/search', {
+        params: {
+          q: searchTerm.trim(),
+          page,
+          size,
+          sort
+        },
+      })
+      const data = response.data
+      const rawProducts = data._embedded ? data._embedded.products : data.content
+
+      console.log('🔍 [searchProductsAPI] Raw response structure:', {
+        searchTerm,
+        hasEmbedded: !!data._embedded,
+        hasContent: !!data.content,
+        rawProductsLength: rawProducts?.length || 0,
+        totalElements: data.page?.totalElements || data.totalElements || 0,
+      })
+
+      // Transform backend data and fetch category names for each product
+      const transformedProducts = await Promise.all((rawProducts || []).map(async (product: BackendProductResponse, index: number) => {
+        if (!product.id) {
+          console.warn(`🔍 [searchProductsAPI] Product at index ${index} missing ID:`, product.name)
+        }
+
+        // Fetch category name for the product if it has category link
+        let categoryName = 'Unknown'
+        try {
+          if (product.id) {
+            const categoryResponse = await api.get(`/products/${product.id}/category`)
+            categoryName = categoryResponse.data?.name || 'Unknown'
+          }
+        } catch (err) {
+          console.warn(`Could not fetch category for product ${product.id}:`, err)
+        }
+
+        return {
+          id: product.id ?? index + 1,
+          name: product.name ?? 'Unknown Product',
+          description: product.description ?? '',
+          brand: product.brand ?? 'Unknown',
+          isFeatured: product.isFeatured ?? false,
+          imageUrl: product.imageUrl ?? 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+          basePrice: product.basePrice ?? 0,
+          totalStock: product.totalStock ?? 10,
+          cpu: product.cpu ?? '',
+          memory: product.memory ?? '',
+          camera: product.camera ?? '',
+          createdAt: product.createdAt ?? new Date().toISOString(),
+          rating: typeof product.rating === 'number' ? product.rating : 0,
+          categoryName, // Add category name for filtering
+        }
+      }))
+
+      console.log('🔍 [searchProductsAPI] Transformed search results:',
+        transformedProducts.map((p: Product & { categoryName?: string }) => ({ id: p.id, name: p.name, category: p.categoryName }))
+      )
+
+      products.value = transformedProducts
+      currentCategoryId.value = null // Reset category context for search results
+
+      // Update pagination state from response
+      pagination.value = {
+        page: data.page?.number || data.number || page,
+        size: data.page?.size || data.size || size,
+        totalElements: data.page?.totalElements || data.totalElements || 0,
+        totalPages: data.page?.totalPages || data.totalPages || 0,
+        first: data.page?.first || data.first || true,
+        last: data.page?.last || data.last || true,
+        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0,
+      }
+
+      console.log('🔍 [searchProductsAPI] Updated pagination state:', pagination.value)
+      return transformedProducts
+    } catch (err) {
+      console.error('Error searching products:', err)
+      error.value = 'Error al buscar productos'
+      return []
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
+   * Advanced search using the backend advanced search API.
+   * Allows searching by specific criteria like name, category, brand.
+   *
+   * @param params - Search parameters
+   * @param page - Page number (0-indexed)
+   * @param size - Number of items per page
+   * @param sort - Sort criteria
+   */
+  const advancedSearchProductsAPI = async (
+    params: { name?: string; category?: string; brand?: string },
+    page = 0,
+    size = 20,
+    sort = 'name,asc'
+  ) => {
+    loading.value = true
+    error.value = ''
+    try {
+      const searchParams = new URLSearchParams()
+      if (params.name) searchParams.append('name', params.name)
+      if (params.category) searchParams.append('category', params.category)
+      if (params.brand) searchParams.append('brand', params.brand)
+      searchParams.append('page', page.toString())
+      searchParams.append('size', size.toString())
+      searchParams.append('sort', sort)
+
+      const response = await api.get(`/products/search/advanced?${searchParams}`)
+      const data = response.data
+      const rawProducts = data._embedded ? data._embedded.products : data.content
+
+      console.log('🔍 [advancedSearchProductsAPI] Raw response structure:', {
+        params,
+        hasEmbedded: !!data._embedded,
+        hasContent: !!data.content,
+        rawProductsLength: rawProducts?.length || 0,
+        totalElements: data.page?.totalElements || data.totalElements || 0,
+      })
+
+      // Transform backend data similar to other methods
+      const transformedProducts = await Promise.all((rawProducts || []).map(async (product: BackendProductResponse, index: number) => {
+        if (!product.id) {
+          console.warn(`🔍 [advancedSearchProductsAPI] Product at index ${index} missing ID:`, product.name)
+        }
+
+        // Fetch category name for the product if it has category link
+        let categoryName = 'Unknown'
+        try {
+          if (product.id) {
+            const categoryResponse = await api.get(`/products/${product.id}/category`)
+            categoryName = categoryResponse.data?.name || 'Unknown'
+          }
+        } catch (err) {
+          console.warn(`Could not fetch category for product ${product.id}:`, err)
+        }
+
+        return {
+          id: product.id ?? index + 1,
+          name: product.name ?? 'Unknown Product',
+          description: product.description ?? '',
+          brand: product.brand ?? 'Unknown',
+          isFeatured: product.isFeatured ?? false,
+          imageUrl: product.imageUrl ?? 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
+          basePrice: product.basePrice ?? 0,
+          totalStock: product.totalStock ?? 10,
+          cpu: product.cpu ?? '',
+          memory: product.memory ?? '',
+          camera: product.camera ?? '',
+          createdAt: product.createdAt ?? new Date().toISOString(),
+          rating: typeof product.rating === 'number' ? product.rating : 0,
+          categoryName, // Add category name for filtering
+        }
+      }))
+
+      console.log('🔍 [advancedSearchProductsAPI] Transformed advanced search results:',
+        transformedProducts.map((p: Product & { categoryName?: string }) => ({ id: p.id, name: p.name, category: p.categoryName }))
+      )
+
+      products.value = transformedProducts
+      currentCategoryId.value = null // Reset category context for search results
+
+      // Update pagination state from response
+      pagination.value = {
+        page: data.page?.number || data.number || page,
+        size: data.page?.size || data.size || size,
+        totalElements: data.page?.totalElements || data.totalElements || 0,
+        totalPages: data.page?.totalPages || data.totalPages || 0,
+        first: data.page?.first || data.first || true,
+        last: data.page?.last || data.last || true,
+        numberOfElements: data.page?.numberOfElements || data.numberOfElements || 0,
+      }
+
+      return transformedProducts
+    } catch (err) {
+      console.error('Error performing advanced search:', err)
+      error.value = 'Error en búsqueda avanzada'
+      return []
+    } finally {
+      loading.value = false
+    }
   }
 
   /**
@@ -842,6 +1040,8 @@ export const useProductStore = defineStore('product', () => {
     updateProduct,
     getProductById,
     searchProducts,
+    searchProductsAPI,
+    advancedSearchProductsAPI,
     filterProductsByPrice,
     filterProductsByStock,
     clearProducts,
