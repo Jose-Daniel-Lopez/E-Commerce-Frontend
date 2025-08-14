@@ -61,8 +61,7 @@
         </div>
       </div>
       <!-- Submit Button -->
-      <button type="submit"
-        :class="[buttonPrimaryClasses, 'w-full font-srProDisplay font-medium py-4 rounded-md']">
+      <button type="submit" :class="[buttonPrimaryClasses, 'w-full font-srProDisplay font-medium py-4 rounded-md']">
         {{ t('contact.form.submit') }}
       </button>
     </form>
