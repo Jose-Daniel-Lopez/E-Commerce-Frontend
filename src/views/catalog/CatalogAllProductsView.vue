@@ -11,6 +11,7 @@ import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import DualRangeSlider from '@/components/shared/DualRangeSlider.vue'
 import { storeToRefs } from 'pinia'
 import api from '@/lib/axios'
+import { useThemeClasses } from '@/composables/useThemeClasses'
 
 const router = useRouter()
 const productStore = useProductStore()
@@ -19,6 +20,23 @@ const authStore = useAuthStore()
 const wishlistStore = useWishlistStore()
 const { user } = storeToRefs(authStore)
 const { wishlistLoading } = storeToRefs(wishlistStore)
+
+// Theme classes
+const {
+  pageBackgroundClasses,
+  textClasses,
+  textSecondaryClasses,
+  catalogFilterTitleClasses,
+  catalogMobileFilterClasses,
+  catalogSortSelectClasses,
+  catalogDebugPanelClasses,
+  catalogDebugTextClasses,
+  catalogPaginationButtonClasses,
+  catalogCheckboxClasses,
+  catalogFilterLabelClasses,
+  catalogClearFilterClasses,
+  catalogFilterSummaryClasses,
+} = useThemeClasses()
 
 // =======================
 // 📦 State
@@ -444,22 +462,6 @@ const clearCategoryFilters = () => {
   currentPage.value = 1
 }
 
-// Mobile-specific methods
-const openMobileFilters = () => {
-  showMobileFilters.value = true
-  document.body.style.overflow = 'hidden' // Prevent background scrolling
-}
-
-const closeMobileFilters = () => {
-  showMobileFilters.value = false
-  document.body.style.overflow = ''
-}
-
-const applyMobileFilters = () => {
-  currentPage.value = 1
-  closeMobileFilters()
-}
-
 // Reset to page 1 only when user actively changes filters
 watch(sortBy, () => {
   currentPage.value = 1
@@ -494,25 +496,25 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
 </script>
 
 <template>
-  <div class="min-h-screen">
+  <div :class="['min-h-screen', pageBackgroundClasses]">
     <!-- Breadcrumb -->
-    <div class="pt-[85px] lg:pt-0 bg-white">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div :class="['pt-[85px] lg:pt-0', pageBackgroundClasses]">
+      <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <BreadcrumbNav :breadcrumbs="breadcrumbs" />
       </div>
     </div>
 
     <!-- Debug Panel - Mobile optimized -->
     <div class="fixed bottom-4 right-4 z-50 max-w-[300px] sm:max-w-[420px] w-full">
-      <div class="bg-yellow-50 border border-yellow-300 rounded-lg shadow-lg p-3 sm:p-4">
+      <div :class="catalogDebugPanelClasses">
         <div class="flex items-center justify-between mb-2">
-          <span class="font-bold text-yellow-800 text-xs sm:text-sm">🛠️ All Products Debug</span>
-          <button @click="showDebug = !showDebug" class="text-xs text-yellow-700 underline focus:outline-none">
+          <span class="text-xs font-bold text-yellow-800 dark:text-yellow-200 sm:text-sm">🛠️ All Products Debug</span>
+          <button @click="showDebug = !showDebug" class="text-xs text-yellow-700 underline dark:text-yellow-300 focus:outline-none">
             {{ showDebug ? 'Hide' : 'Show' }}
           </button>
         </div>
         <transition name="fade-debug">
-          <div v-show="showDebug" class="text-xs text-yellow-900 space-y-2 max-h-40 overflow-y-auto">
+          <div v-show="showDebug" :class="catalogDebugTextClasses">
             <div><b>User:</b> {{ user?.username || 'Not logged in' }}</div>
             <div><b>Total Products:</b> {{ productStore.products.length }}</div>
             <div><b>Filtered Products:</b> {{ filteredProducts.length }}</div>
@@ -527,15 +529,15 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
+    <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-8">
       <!-- Mobile: Single Column Layout -->
       <div class="lg:hidden">
         <!-- Mobile Header -->
         <div class="mb-6">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h1 class="font-srProDisplay text-lg sm:text-xl font-semibold text-black">All Products</h1>
-              <p class="font-srProDisplay text-sm text-gray-600">{{ productStore.pagination.totalElements || filteredProducts.length }} products found</p>
+              <h1 :class="['font-srProDisplay text-lg sm:text-xl font-semibold', textClasses]">All Products</h1>
+              <p :class="['font-srProDisplay text-sm', textSecondaryClasses]">{{ productStore.pagination.totalElements || filteredProducts.length }} products found</p>
             </div>
           </div>
 
@@ -545,7 +547,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
               @click="showMobileFilters = !showMobileFilters"
               :class="[
                 'flex-1 flex items-center justify-center gap-2 px-4 py-3 border rounded-lg text-sm font-medium transition-colors min-h-[48px]',
-                showMobileFilters ? 'bg-black text-white border-black' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                showMobileFilters ? 'bg-black dark:bg-white text-white dark:text-black border-black dark:border-white' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
               ]"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -559,7 +561,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
 
             <button
               @click="showMobileSorting = !showMobileSorting"
-              class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 min-h-[48px]"
+              class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 min-h-[48px] transition-colors duration-200"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
@@ -570,10 +572,10 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Mobile Collapsible Filters -->
-          <div v-if="showMobileFilters" class="bg-gray-50 rounded-lg p-4 mb-4 space-y-6">
+          <div v-if="showMobileFilters" :class="catalogMobileFilterClasses">
             <!-- Price Filter -->
             <div>
-              <h3 class="font-srProDisplay text-base font-semibold text-black mb-3">Price Range</h3>
+              <h3 :class="['font-srProDisplay text-base font-semibold mb-3', textClasses]">Price Range</h3>
               <DualRangeSlider
                 :min="minValue"
                 :max="maxValue"
@@ -585,47 +587,47 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
 
             <!-- Category Filter -->
             <div v-if="availableCategories.length > 0">
-              <h3 class="font-srProDisplay text-base font-semibold text-black mb-3">Categories</h3>
-              <div class="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto">
+              <h3 :class="['font-srProDisplay text-base font-semibold mb-3', textClasses]">Categories</h3>
+              <div class="grid grid-cols-2 gap-3 overflow-y-auto max-h-48">
                 <label
                   v-for="category in availableCategories.slice(0, 12)"
                   :key="category.name"
-                  class="flex items-center gap-2 bg-white p-2 rounded text-sm cursor-pointer hover:bg-gray-100 transition-colors"
+                  class="flex items-center gap-2 p-2 text-sm transition-colors bg-white border border-gray-200 rounded cursor-pointer dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
                 >
                   <input
                     type="checkbox"
                     v-model="category.checked"
-                    class="w-4 h-4 accent-black rounded"
+                    :class="catalogCheckboxClasses"
                   />
-                  <span class="truncate">{{ category.name }}</span>
+                  <span :class="['truncate', catalogFilterLabelClasses]">{{ category.name }}</span>
                 </label>
               </div>
             </div>
 
             <!-- Brand Filter -->
             <div>
-              <h3 class="font-srProDisplay text-base font-semibold text-black mb-3">Brands</h3>
-              <div class="flex items-center gap-2 bg-white p-3 rounded-lg mb-3">
-                <v-icon name="fa-search" scale="1" class="text-gray-400" />
+              <h3 :class="['font-srProDisplay text-base font-semibold mb-3', textClasses]">Brands</h3>
+              <div class="flex items-center gap-2 p-3 mb-3 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                <v-icon name="fa-search" scale="1" :class="['text-gray-400 dark:text-gray-300']" />
                 <input
                   v-model="brandSearchQuery"
-                  class="flex-1 bg-transparent text-sm outline-none"
+                  :class="['flex-1 bg-transparent text-sm outline-none', textClasses, 'placeholder-gray-500 dark:placeholder-gray-300']"
                   type="search"
                   placeholder="Search brands"
                 />
               </div>
-              <div class="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto">
+              <div class="grid grid-cols-2 gap-3 overflow-y-auto max-h-48">
                 <label
                   v-for="brand in filteredBrands.slice(0, 10)"
                   :key="brand.name"
-                  class="flex items-center gap-2 bg-white p-2 rounded text-sm cursor-pointer hover:bg-gray-100 transition-colors"
+                  class="flex items-center gap-2 p-2 text-sm transition-colors bg-white border border-gray-200 rounded cursor-pointer dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
                 >
                   <input
                     type="checkbox"
                     v-model="brand.checked"
-                    class="w-4 h-4 accent-black rounded"
+                    :class="catalogCheckboxClasses"
                   />
-                  <span class="truncate">{{ brand.name }}</span>
+                  <span :class="['truncate', catalogFilterLabelClasses]">{{ brand.name }}</span>
                 </label>
               </div>
             </div>
@@ -634,13 +636,13 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
             <div v-if="hasActiveFilters()" class="flex gap-3">
               <button
                 @click="clearAllFilters"
-                class="flex-1 py-2 text-sm text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+                class="flex-1 py-2 text-sm text-red-600 transition-colors border border-red-200 rounded-lg hover:bg-red-50"
               >
                 Clear All
               </button>
               <button
                 @click="showMobileFilters = false"
-                class="flex-1 py-2 bg-black text-white text-sm rounded-lg hover:bg-gray-800 transition-colors"
+                class="flex-1 py-2 text-sm text-white transition-colors bg-black rounded-lg hover:bg-gray-800"
               >
                 Apply Filters
               </button>
@@ -648,7 +650,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Mobile Sort Dropdown -->
-          <div v-if="showMobileSorting" class="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden mb-4">
+          <div v-if="showMobileSorting" class="mb-4 overflow-hidden bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-600">
             <button
               v-for="option in [
                 { value: 'name', label: 'Name A-Z' },
@@ -660,12 +662,13 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
               :key="option.value"
               @click="sortBy = option.value; showMobileSorting = false"
               :class="[
-                'w-full px-4 py-3 text-left text-sm hover:bg-gray-50 transition-colors min-h-[48px] flex items-center',
-                sortBy === option.value ? 'bg-gray-100 font-medium' : ''
+                'w-full px-4 py-3 text-left text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors min-h-[48px] flex items-center',
+                sortBy === option.value ? 'bg-gray-100 dark:bg-gray-700 font-medium' : '',
+                textClasses
               ]"
             >
               {{ option.label }}
-              <svg v-if="sortBy === option.value" class="w-5 h-5 ml-auto text-black" fill="currentColor" viewBox="0 0 20 20">
+              <svg v-if="sortBy === option.value" class="w-5 h-5 ml-auto text-black dark:text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
               </svg>
             </button>
@@ -675,13 +678,13 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
         <!-- Mobile Products Grid -->
         <div class="w-full">
           <!-- Loading State -->
-          <div v-if="productStore.loading" class="flex justify-center items-center py-12">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-            <span class="ml-3 text-gray-600">Loading products...</span>
+          <div v-if="productStore.loading" class="flex items-center justify-center py-12">
+            <div class="w-12 h-12 border-b-2 rounded-full animate-spin border-emerald-500"></div>
+            <span :class="['ml-3', textSecondaryClasses]">Loading products...</span>
           </div>
 
           <!-- Error State -->
-          <div v-else-if="productStore.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2 mb-8">
+          <div v-else-if="productStore.error" :class="['border border-red-400 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2 mb-8 bg-red-100 dark:bg-red-900/20']">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
             </svg>
@@ -689,47 +692,47 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Empty State -->
-          <div v-else-if="filteredProducts.length === 0" class="text-center py-12">
+          <div v-else-if="filteredProducts.length === 0" class="py-12 text-center">
             <div class="flex justify-center mb-4">
-              <div class="bg-gray-100 p-6 rounded-full">
-                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="p-6 bg-gray-100 rounded-full dark:bg-gray-800">
+                <svg :class="['w-12 h-12 text-gray-400 dark:text-gray-500']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
               </div>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
-            <p class="text-gray-600 mb-4">
+            <h3 :class="['text-xl font-semibold mb-2', textClasses]">No products found</h3>
+            <p :class="['mb-4', textSecondaryClasses]">
               {{ hasActiveFilters() ? 'No products match your current filters' : 'No products found in this category' }}
             </p>
             <button
               v-if="hasActiveFilters()"
               @click="clearAllFilters"
-              class="bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors"
+              class="px-4 py-2 text-sm font-medium text-white transition-colors bg-black rounded-md dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
             >
               Clear All Filters
             </button>
           </div>
 
           <!-- Products Grid -->
-          <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+          <div v-else class="grid grid-cols-2 gap-4 mb-8 sm:grid-cols-3">
             <div
               v-for="product in paginatedProducts"
               :key="product.id"
-              class="relative bg-[#f6f6f6] rounded-lg p-3 hover:shadow-md transition-shadow"
+              :class="['relative rounded-lg p-3 hover:shadow-md transition-shadow', 'bg-gray-100 dark:bg-gray-800']"
             >
               <!-- Category Badge -->
               <div
                 v-if="product.categoryName && product.categoryName !== 'Unknown'"
-                class="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 rounded-full z-10 max-w-[80px] truncate"
+                class="absolute top-2 left-2 bg-black dark:bg-white text-white dark:text-black text-xs px-2 py-1 rounded-full z-10 max-w-[80px] truncate"
               >
                 {{ product.categoryName }}
               </div>
 
-              <div class="absolute top-2 right-2 z-10">
+              <div class="absolute z-10 top-2 right-2">
                 <button
                   @click="toggleFavorite(product.id)"
                   :disabled="wishlistLoading"
-                  class="w-8 h-8 text-gray-600 hover:text-red-600 transition-colors disabled:opacity-50 flex items-center justify-center"
+                  class="flex items-center justify-center w-8 h-8 text-gray-600 transition-colors hover:text-red-600 disabled:opacity-50"
                   type="button"
                 >
                   <svg
@@ -758,7 +761,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                     <img
                       :src="product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp'"
                       :alt="product.name"
-                      class="w-full h-full object-cover rounded-md"
+                      class="object-cover w-full h-full rounded-md"
                       loading="lazy"
                     />
                   </div>
@@ -767,12 +770,12 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                   <div class="flex flex-col gap-2">
                     <div class="h-[48px]">
                       <a href="#" @click.prevent="goToProductDetails(product.id)" class="block cursor-pointer">
-                        <h3 class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2">
+                        <h3 class="text-base font-medium text-center transition-colors font-srProDisplay hover:text-indigo-600 line-clamp-2">
                           {{ product.name }}
                         </h3>
                       </a>
                     </div>
-                    <div class="flex justify-center items-center gap-2 mb-1">
+                    <div class="flex items-center justify-center gap-2 mb-1">
                       <span class="flex items-center">
                         <template v-for="i in 5" :key="i">
                           <svg
@@ -787,11 +790,11 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                         <span class="ml-2 text-xs text-gray-500">{{ (product.rating ?? 0).toFixed(1) }}</span>
                       </span>
                     </div>
-                    <div class="flex justify-center items-center gap-2">
-                      <span class="font-figtree text-lg font-semibold">{{ formatPrice(product.basePrice) }}</span>
+                    <div class="flex items-center justify-center gap-2">
+                      <span class="text-lg font-semibold font-figtree">{{ formatPrice(product.basePrice) }}</span>
                     </div>
                   </div>
-                  <div class="flex items-center justify-center mt-auto pt-2">
+                  <div class="flex items-center justify-center pt-2 mt-auto">
                     <button
                       @click="buyNow(product.id)"
                       class="w-full max-w-[160px] h-[40px] bg-black text-white text-sm font-medium rounded hover:bg-[#1a1a1a] transition-colors"
@@ -834,21 +837,21 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
       </div>
 
       <!-- Desktop: Two Column Layout -->
-      <div class="hidden lg:flex gap-8">
+      <div class="hidden gap-8 lg:flex">
         <!-- Desktop Sidebar Filters -->
-        <div class="w-64 flex-shrink-0">
+        <div class="flex-shrink-0 w-64">
           <!-- Price Filter -->
           <div class="mb-6">
-            <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
-              <h3 class="font-srProDisplay text-lg font-semibold text-black">Price</h3>
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-200 dark:border-gray-600">
+              <h3 :class="catalogFilterTitleClasses">Price</h3>
               <button
                 @click="toggleFilter('price')"
-                class="p-1 hover:bg-gray-100 rounded transition-colors"
+                class="p-1 transition-colors rounded hover:bg-gray-100 dark:hover:bg-gray-700"
                 type="button"
                 aria-label="Toggle price filter"
               >
                 <svg
-                  class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                  class="w-4 h-4 text-gray-600 transition-transform duration-200 dark:text-gray-300"
                   :class="{ 'rotate-180': collapsedFilters.price }"
                   fill="none"
                   stroke="currentColor"
@@ -882,13 +885,13 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
 
           <!-- Category Filter -->
           <div class="mb-6" v-if="availableCategories.length > 0">
-            <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
-              <h3 class="font-srProDisplay text-lg font-semibold text-black">Categories</h3>
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-200 dark:border-gray-600">
+              <h3 :class="catalogFilterTitleClasses">Categories</h3>
               <div class="flex items-center space-x-2">
                 <button
                   v-if="availableCategories.some(category => category.checked)"
                   @click="clearCategoryFilters"
-                  class="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                  :class="catalogClearFilterClasses"
                   type="button"
                   title="Clear category filters"
                 >
@@ -896,12 +899,12 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                 </button>
                 <button
                   @click="toggleFilter('category')"
-                  class="p-1 hover:bg-gray-100 rounded transition-colors"
+                  class="p-1 transition-colors rounded hover:bg-gray-100 dark:hover:bg-gray-700"
                   type="button"
                   aria-label="Toggle category filter"
                 >
                   <svg
-                    class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                    class="w-4 h-4 text-gray-600 transition-transform duration-200 dark:text-gray-300"
                     :class="{ 'rotate-180': collapsedFilters.category }"
                     fill="none"
                     stroke="currentColor"
@@ -918,16 +921,16 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
               </div>
             </div>
             <div v-show="!collapsedFilters.category" class="transition-all duration-200">
-              <div class="space-y-3 max-h-64 overflow-y-auto">
+              <div class="space-y-3 overflow-y-auto max-h-64">
                 <div v-for="category in availableCategories" :key="category.name" class="flex items-center">
                   <input
                     :id="'category-' + category.name"
                     type="checkbox"
                     v-model="category.checked"
-                    class="custom-checkbox focus:ring-1 focus:ring-gray-400"
+                    class="custom-checkbox focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-300"
                   />
-                  <label :for="'category-' + category.name" class="ml-3 flex-1 flex items-center justify-between">
-                    <span class="text-sm font-srProDisplay text-gray-1000">{{ category.name }}</span>
+                  <label :for="'category-' + category.name" class="flex items-center justify-between flex-1 ml-3">
+                    <span :class="catalogFilterLabelClasses">{{ category.name }}</span>
                   </label>
                 </div>
               </div>
@@ -936,13 +939,13 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
 
           <!-- Brand Filter -->
           <div class="mb-6">
-            <div class="flex items-center justify-between border-b border-[#EBEBEB] mb-4 pb-3">
-              <h3 class="font-srProDisplay text-lg font-semibold text-black">Brand</h3>
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-200 dark:border-gray-600">
+              <h3 :class="catalogFilterTitleClasses">Brand</h3>
               <div class="flex items-center space-x-2">
                 <button
                   v-if="productStore.brands.some(brand => brand.checked)"
                   @click="clearBrandFilters"
-                  class="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                  :class="catalogClearFilterClasses"
                   type="button"
                   title="Clear brand filters"
                 >
@@ -950,12 +953,12 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                 </button>
                 <button
                   @click="toggleFilter('brand')"
-                  class="p-1 hover:bg-gray-100 rounded transition-colors"
+                  class="p-1 transition-colors rounded hover:bg-gray-100 dark:hover:bg-gray-700"
                   type="button"
                   aria-label="Toggle brand filter"
                 >
                   <svg
-                    class="w-4 h-4 text-gray-600 transition-transform duration-200"
+                    class="w-4 h-4 text-gray-600 transition-transform duration-200 dark:text-gray-300"
                     :class="{ 'rotate-180': collapsedFilters.brand }"
                     fill="none"
                     stroke="currentColor"
@@ -972,25 +975,25 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
               </div>
             </div>
             <div v-show="!collapsedFilters.brand" class="transition-all duration-200">
-              <div class="flex items-center justify-start gap-2 bg-[#f5f5f5] p-3 rounded-lg mb-4">
-                <v-icon name="fa-search" scale="1.2" class="text-gray-400" />
+              <div class="flex items-center justify-start gap-2 p-3 mb-4 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                <v-icon name="fa-search" scale="1.2" class="text-gray-400 dark:text-gray-300" />
                 <input
                   v-model="brandSearchQuery"
-                  class="w-full bg-[#f5f5f5] p-0.5 font-srProDisplay text-sm font-medium text-black outline-none"
+                  :class="['w-full p-0.5 font-srProDisplay text-sm font-medium outline-none bg-transparent', textClasses, 'placeholder-gray-500 dark:placeholder-gray-300']"
                   type="search"
                   placeholder="Search"
                 />
               </div>
-              <div class="space-y-3 max-h-64 overflow-y-auto">
+              <div class="space-y-3 overflow-y-auto max-h-64">
                 <div v-for="brand in filteredBrands" :key="brand.name" class="flex items-center">
                   <input
                     :id="'brand-' + brand.name"
                     type="checkbox"
                     v-model="brand.checked"
-                    class="custom-checkbox focus:ring-1 focus:ring-gray-400"
+                    class="custom-checkbox focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-300"
                   />
-                  <label :for="'brand-' + brand.name" class="ml-3 flex-1 flex items-center justify-between">
-                    <span class="text-sm font-srProDisplay text-gray-1000">{{ brand.name }}</span>
+                  <label :for="'brand-' + brand.name" class="flex items-center justify-between flex-1 ml-3">
+                    <span :class="catalogFilterLabelClasses">{{ brand.name }}</span>
                   </label>
                 </div>
               </div>
@@ -998,25 +1001,25 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Active Filters Summary -->
-          <div v-if="hasActiveFilters()" class="mb-6 p-4 bg-gray-50 rounded-lg">
-            <h4 class="font-srProDisplay text-sm font-semibold text-gray-800 mb-3">Active Filters</h4>
+          <div v-if="hasActiveFilters()" :class="['mb-6', catalogFilterSummaryClasses]">
+            <h4 :class="['font-srProDisplay text-sm font-semibold mb-3', textClasses]">Active Filters</h4>
             <div class="space-y-2">
               <div v-if="priceRange[0] > 0 || priceRange[1] < 5000" class="flex items-center justify-between text-sm">
-                <span class="text-gray-600">Price:</span>
-                <span class="font-medium">${{ priceRange[0] }} - ${{ priceRange[1] }}</span>
+                <span :class="textSecondaryClasses">Price:</span>
+                <span :class="['font-medium', textClasses]">${{ priceRange[0] }} - ${{ priceRange[1] }}</span>
               </div>
               <div v-if="productStore.brands.some(brand => brand.checked)" class="flex items-center justify-between text-sm">
-                <span class="text-gray-600">Brands:</span>
-                <span class="font-medium">{{ productStore.brands.filter(brand => brand.checked).map(brand => brand.name).join(', ') }}</span>
+                <span :class="textSecondaryClasses">Brands:</span>
+                <span :class="['font-medium', textClasses]">{{ productStore.brands.filter(brand => brand.checked).map(brand => brand.name).join(', ') }}</span>
               </div>
               <div v-if="availableCategories.some(category => category.checked)" class="flex items-center justify-between text-sm">
-                <span class="text-gray-600">Categories:</span>
-                <span class="font-medium">{{ availableCategories.filter(category => category.checked).map(category => category.name).join(', ') }}</span>
+                <span :class="textSecondaryClasses">Categories:</span>
+                <span :class="['font-medium', textClasses]">{{ availableCategories.filter(category => category.checked).map(category => category.name).join(', ') }}</span>
               </div>
             </div>
             <button
               @click="clearAllFilters"
-              class="mt-3 text-xs text-red-600 hover:text-red-800 transition-colors underline"
+              class="mt-3 text-xs text-red-600 underline transition-colors dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
               type="button"
             >
               Clear All Filters
@@ -1024,20 +1027,20 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Quick Stats -->
-          <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-            <h4 class="font-srProDisplay text-sm font-semibold text-gray-800 mb-2">Summary</h4>
+          <div :class="['mb-6', catalogFilterSummaryClasses]">
+            <h4 :class="['font-srProDisplay text-sm font-semibold mb-2', textClasses]">Summary</h4>
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
-                <span class="text-gray-600">Total Products:</span>
-                <span class="font-medium">{{ productStore.pagination.totalElements || productStore.products.length }}</span>
+                <span :class="textSecondaryClasses">Total Products:</span>
+                <span :class="['font-medium', textClasses]">{{ productStore.pagination.totalElements || productStore.products.length }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-600">Filtered Results:</span>
-                <span class="font-medium">{{ filteredProducts.length }}</span>
+                <span :class="textSecondaryClasses">Filtered Results:</span>
+                <span :class="['font-medium', textClasses]">{{ filteredProducts.length }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-600">Current Page:</span>
-                <span class="font-medium">{{ currentPage }} of {{ totalPages }}</span>
+                <span :class="textSecondaryClasses">Current Page:</span>
+                <span :class="['font-medium', textClasses]">{{ currentPage }} of {{ totalPages }}</span>
               </div>
             </div>
           </div>
@@ -1048,19 +1051,19 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           <!-- Header -->
           <div class="flex items-center justify-between mb-6">
             <div>
-              <h1 class="font-srProDisplay text-xl font-semibold text-black">All Products</h1>
-              <p class="font-srProDisplay text-gray-600">{{ productStore.pagination.totalElements || filteredProducts.length }} products found</p>
+              <h1 :class="['font-srProDisplay text-xl font-semibold', textClasses]">All Products</h1>
+              <p :class="['font-srProDisplay', textSecondaryClasses]">{{ productStore.pagination.totalElements || filteredProducts.length }} products found</p>
             </div>
             <div class="flex items-center space-x-4">
               <button
                 v-if="hasActiveFilters()"
                 @click="clearAllFilters"
-                class="text-sm text-gray-500 hover:text-gray-700 transition-colors underline"
+                :class="['text-sm transition-colors underline', textSecondaryClasses]"
                 type="button"
               >
                 Clear All Filters
               </button>
-              <select v-model="sortBy" class="font-srProDisplay border border-[#EBEBEB] rounded-md w-70 px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-gray-500">
+              <select v-model="sortBy" :class="catalogSortSelectClasses">
                 <option value="name">Name A-Z</option>
                 <option value="name-desc">Name Z-A</option>
                 <option value="price-low">Price: Low to High</option>
@@ -1071,13 +1074,13 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Loading State -->
-          <div v-if="productStore.loading" class="flex justify-center items-center py-12">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-            <span class="ml-3 text-gray-600">Loading products...</span>
+          <div v-if="productStore.loading" class="flex items-center justify-center py-12">
+            <div class="w-12 h-12 border-b-2 rounded-full animate-spin border-emerald-500"></div>
+            <span :class="['ml-3', textSecondaryClasses]">Loading products...</span>
           </div>
 
           <!-- Error State -->
-          <div v-else-if="productStore.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2 mb-8">
+          <div v-else-if="productStore.error" :class="['border border-red-400 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg text-center flex items-center justify-center space-x-2 mb-8 bg-red-100 dark:bg-red-900/20']">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
             </svg>
@@ -1085,46 +1088,46 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Empty State -->
-          <div v-else-if="filteredProducts.length === 0" class="text-center py-12">
+          <div v-else-if="filteredProducts.length === 0" class="py-12 text-center">
             <div class="flex justify-center mb-4">
-              <div class="bg-gray-100 p-6 rounded-full">
-                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="p-6 bg-gray-100 rounded-full dark:bg-gray-800">
+                <svg :class="['w-12 h-12 text-gray-400 dark:text-gray-500']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
               </div>
             </div>
-            <h3 class="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
-            <p class="text-gray-600">
+            <h3 :class="['text-xl font-semibold mb-2', textClasses]">No products found</h3>
+            <p :class="textSecondaryClasses">
               {{ hasActiveFilters() ? 'No products match your current filters' : 'No products found in this category' }}
             </p>
             <button
               v-if="hasActiveFilters()"
               @click="clearAllFilters"
-              class="mt-4 bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition-colors"
+              class="px-4 py-2 mt-4 text-sm font-medium text-white transition-colors bg-black rounded-md dark:bg-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
             >
               Clear All Filters
             </button>
           </div>
 
           <!-- Products Grid -->
-          <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div v-else class="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-3">
             <div
               v-for="product in paginatedProducts"
               :key="product.id"
-              class="relative h-auto rounded-[9px] bg-[#f6f6f6] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4"
+              :class="['relative h-auto rounded-lg px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md dark:hover:shadow-gray-900/30 md:h-[435px] md:px-4 transition-all', 'bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-600']"
             >
               <!-- Category Badge -->
               <div
                 v-if="product.categoryName && product.categoryName !== 'Unknown'"
-                class="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 rounded-full z-10"
+                class="absolute z-10 px-2 py-1 text-xs text-white bg-black rounded-full top-2 left-2 dark:bg-white dark:text-black"
               >
                 {{ product.categoryName }}
               </div>
-              <div class="absolute top-4 right-4 z-10">
+              <div class="absolute z-10 top-4 right-4">
                 <button
                   @click="toggleFavorite(product.id)"
                   :disabled="wishlistLoading"
-                  class="w-6 h-6 text-gray-600 hover:text-red-600 transition-colors disabled:opacity-50"
+                  class="w-6 h-6 text-gray-600 transition-colors hover:text-red-600 disabled:opacity-50"
                   type="button"
                   aria-label="Toggle favorite"
                 >
@@ -1153,7 +1156,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                     <img
                       :src="product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp'"
                       :alt="product.name"
-                      class="w-full h-full object-contain"
+                      class="object-contain w-full h-full"
                       loading="lazy"
                     />
                   </div>
@@ -1162,28 +1165,28 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                   <div class="flex flex-col gap-4">
                     <div class="h-[75px] sm:h-[50px]">
                       <a href="#" @click.prevent="goToProductDetails(product.id)" class="block cursor-pointer">
-                        <h3 class="text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2">
+                        <h3 :class="['text-center font-srProDisplay text-base font-medium hover:text-indigo-600 transition-colors line-clamp-2', textClasses]">
                           {{ product.name }}
                         </h3>
                       </a>
                     </div>
-                    <div class="flex justify-center items-center gap-2 mb-1">
+                    <div class="flex items-center justify-center gap-2 mb-1">
                       <span class="flex items-center">
                         <template v-for="i in 5" :key="i">
                           <svg
                             class="w-5 h-5"
-                            :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'"
+                            :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
                           </svg>
                         </template>
-                        <span class="ml-2 text-xs text-gray-500">{{ (product.rating ?? 0).toFixed(1) }}</span>
+                        <span :class="['ml-2 text-xs', textSecondaryClasses]">{{ (product.rating ?? 0).toFixed(1) }}</span>
                       </span>
                     </div>
-                    <div class="flex justify-center items-center gap-2">
-                      <span class="font-figtree text-xl font-semibold">{{ formatPrice(product.basePrice) }}</span>
+                    <div class="flex items-center justify-center gap-2">
+                      <span :class="['font-figtree text-xl font-semibold', textClasses]">{{ formatPrice(product.basePrice) }}</span>
                     </div>
                   </div>
                   <div class="flex items-center justify-center mt-auto">
@@ -1204,9 +1207,9 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
             <button
               @click="goToPage(currentPage - 1)"
               :disabled="currentPage === 1"
-              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="p-2 transition-colors duration-200 bg-white border border-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-600 dark:bg-gray-800"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg :class="['w-5 h-5', textSecondaryClasses]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
               </svg>
             </button>
@@ -1215,8 +1218,8 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
               :key="page"
               @click="goToPage(page)"
               :class="[
-                'px-3 py-2 rounded-md text-sm font-medium',
-                page === currentPage ? 'bg-black text-white' : 'text-gray-700 hover:bg-gray-100',
+                'px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200',
+                page === currentPage ? 'bg-black dark:bg-white text-white dark:text-black' : catalogPaginationButtonClasses,
               ]"
             >
               {{ page }}
@@ -1224,9 +1227,9 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
             <button
               @click="goToPage(currentPage + 1)"
               :disabled="currentPage === totalPages"
-              class="p-2 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="p-2 transition-colors duration-200 bg-white border border-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-600 dark:bg-gray-800"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg :class="['w-5 h-5', textSecondaryClasses]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
               </svg>
             </button>
