@@ -185,6 +185,46 @@ export const useThemeClasses = () => {
   "transition-colors hover:text-orange-400 text-gray-300 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200"
   )
 
+  // Classes for page background
+  const pageBackgroundClasses = computed(() =>
+    'bg-white dark:bg-gray-900 text-black dark:text-white transition-colors duration-200'
+  )
+
+  // Classes for form inputs
+  const formInputClasses = computed(() =>
+    'w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-300 focus:outline-none focus:border-black dark:focus:border-white transition-colors duration-200'
+  )
+
+  // Classes for form labels
+  const formLabelClasses = computed(() =>
+    'block font-srProDisplay text-sm font-medium text-black dark:text-white mb-2'
+  )
+
+  // Classes for FAQ buttons
+  const faqButtonClasses = computed(() =>
+    'w-full px-6 py-4 text-left font-srProDisplay font-medium text-black dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 flex items-center justify-between bg-gray-50 dark:bg-gray-800'
+  )
+
+  // Classes for FAQ content
+  const faqContentClasses = computed(() =>
+    'px-6 pb-4 py-4 bg-white dark:bg-gray-900'
+  )
+
+  // Classes for info cards (contact information blocks)
+  const infoCardClasses = computed(() =>
+    'bg-white dark:bg-gray-900 rounded-lg p-6 h-full border border-gray-100 dark:border-gray-700 transition-colors duration-200'
+  )
+
+  // Classes for icon backgrounds in info cards
+  const iconBackgroundClasses = computed(() =>
+    'w-12 h-12 bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors duration-200'
+  )
+
+  // Classes for dividers/borders
+  const dividerClasses = computed(() =>
+    'border-gray-200 dark:border-gray-700'
+  )
+
   return {
     cardClasses,
     textClasses,
@@ -221,6 +261,14 @@ export const useThemeClasses = () => {
     iconColorClasses,
     interactiveIconClasses,
     priceTextClasses,
-    footerLinkClasses
+    footerLinkClasses,
+    pageBackgroundClasses,
+    formInputClasses,
+    formLabelClasses,
+    faqButtonClasses,
+    faqContentClasses,
+    infoCardClasses,
+    iconBackgroundClasses,
+    dividerClasses
   }
 }
