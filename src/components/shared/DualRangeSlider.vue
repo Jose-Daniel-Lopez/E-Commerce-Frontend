@@ -158,7 +158,7 @@ watch(() => props.modelValue, (newValue) => {
     <!-- Value Inputs -->
     <div class="flex items-center space-x-4 mb-6">
       <div class="flex-1">
-        <label class="text-xs font-srProDisplay text-gray-500 mt-1 block mb-2">From</label>
+        <label class="text-xs font-srProDisplay text-gray-500 dark:text-gray-400 mt-1 block mb-2">From</label>
         <input
           :value="modelValue[0]"
           @input="updateMin"
@@ -168,12 +168,12 @@ watch(() => props.modelValue, (newValue) => {
           :step="step"
           :disabled="disabled"
           placeholder="0"
-          class="w-full px-2 py-2 text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full px-2 py-2 text-[14px] border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
         />
       </div>
-      <span class="text-gray-200 font-srProDisplay mt-6"> — </span>
+      <span class="text-gray-200 dark:text-gray-400 font-srProDisplay mt-6"> — </span>
       <div class="flex-1">
-        <label class="text-xs text-right font-srProDisplay text-gray-500 mt-1 block mb-2">To</label>
+        <label class="text-xs text-right font-srProDisplay text-gray-500 dark:text-gray-400 mt-1 block mb-2">To</label>
         <input
           :value="modelValue[1]"
           @input="updateMax"
@@ -183,7 +183,7 @@ watch(() => props.modelValue, (newValue) => {
           :step="step"
           :disabled="disabled"
           :placeholder="max.toString()"
-          class="w-full py-2 text-right text-[14px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full py-2 text-right text-[14px] border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
         />
       </div>
     </div>
@@ -191,10 +191,10 @@ watch(() => props.modelValue, (newValue) => {
     <!-- Dual Range Slider -->
     <div class="relative px-2 dual-range-slider" :class="{ 'opacity-50 pointer-events-none': disabled }">
       <!-- Slider Track -->
-      <div class="slider relative h-1 bg-gray-300 rounded-full">
+      <div class="slider relative h-1 bg-gray-300 dark:bg-gray-600 rounded-full transition-colors duration-200">
         <!-- Progress bar that shows the selected range -->
         <div
-          class="absolute h-1 bg-black rounded-full progress"
+          class="absolute h-1 bg-black dark:bg-white rounded-full progress transition-colors duration-200"
           :class="{ 'cursor-pointer': !disabled }"
           :style="{ left: progressLeft + '%', right: progressRight + '%' }"
           @mousedown="startDragProgress"
@@ -254,6 +254,14 @@ watch(() => props.modelValue, (newValue) => {
   z-index: 10;
 }
 
+@media (prefers-color-scheme: dark) {
+  .slider-thumb-min::-webkit-slider-thumb {
+    background: #fff;
+    border: 2px solid #374151;
+    box-shadow: 0 1px 3px rgba(255, 255, 255, 0.15);
+  }
+}
+
 .slider-thumb-min::-moz-range-thumb {
   pointer-events: all;
   width: 16px;
@@ -288,6 +296,14 @@ watch(() => props.modelValue, (newValue) => {
   border: 2px solid #fff;
   position: relative;
   z-index: 10;
+}
+
+@media (prefers-color-scheme: dark) {
+  .slider-thumb-max::-webkit-slider-thumb {
+    background: #fff;
+    border: 2px solid #374151;
+    box-shadow: 0 1px 3px rgba(255, 255, 255, 0.15);
+  }
 }
 
 .slider-thumb-max::-moz-range-thumb {
@@ -335,6 +351,12 @@ watch(() => props.modelValue, (newValue) => {
 
 .progress:hover:not(.disabled) {
   background-color: #333;
+}
+
+@media (prefers-color-scheme: dark) {
+  .progress:hover:not(.disabled) {
+    background-color: #e5e7eb;
+  }
 }
 
 /* Dynamic z-index for active thumbs */
