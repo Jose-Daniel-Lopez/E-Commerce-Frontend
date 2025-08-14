@@ -104,8 +104,6 @@
     "productAddToCart": "Añadir al carrito",
     "productAddedToCart": "Añadido al carrito",
     "productOutOfStock": "Sin stock",
-    "product": "producto",
-    "products": "productos",
     "empty": {
       "title": "No hay categorías disponibles",
       "description": "No se encontraron categorías para mostrar."

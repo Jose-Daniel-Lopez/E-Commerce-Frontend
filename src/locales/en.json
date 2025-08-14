@@ -125,8 +125,6 @@
     "productAddToCart": "Add to Cart",
     "productAddedToCart": "Added to cart",
     "productOutOfStock": "Out of stock",
-    "product": "product",
-    "products": "products",
     "empty": {
       "title": "No categories available",
       "description": "No categories found to display."
