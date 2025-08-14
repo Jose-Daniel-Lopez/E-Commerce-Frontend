@@ -927,7 +927,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                     :id="'category-' + category.name"
                     type="checkbox"
                     v-model="category.checked"
-                    class="custom-checkbox focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-300"
+                    :class="catalogCheckboxClasses"
                   />
                   <label :for="'category-' + category.name" class="flex items-center justify-between flex-1 ml-3">
                     <span :class="catalogFilterLabelClasses">{{ category.name }}</span>
@@ -990,7 +990,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                     :id="'brand-' + brand.name"
                     type="checkbox"
                     v-model="brand.checked"
-                    class="custom-checkbox focus:ring-1 focus:ring-gray-400 dark:focus:ring-gray-300"
+                    :class="catalogCheckboxClasses"
                   />
                   <label :for="'brand-' + brand.name" class="flex items-center justify-between flex-1 ml-3">
                     <span :class="catalogFilterLabelClasses">{{ brand.name }}</span>
@@ -1280,27 +1280,4 @@ button:focus {
   background: #222;
 }
 
-/* Custom checkbox styling */
-.custom-checkbox {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 3px;
-  background-color: white;
-  cursor: pointer;
-  position: relative;
-}
-.custom-checkbox:hover {
-  border-color: #9ca3af;
-}
-.custom-checkbox:checked {
-  background-color: #000;
-  border-color: #000;
-  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M13.854 3.646L6.354 11.146a.5.5 0 01-.708 0L2.146 7.646a.5.5 0 11.708-.708L6 10.293l7.146-7.147a.5.5 0 01.708.708z'/%3e%3c/svg%3e");
-  background-size: 8px 8px;
-  background-position: center;
-  background-repeat: no-repeat;
-}
 </style>
