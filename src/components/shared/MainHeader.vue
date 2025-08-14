@@ -25,7 +25,7 @@
           :class="`fixed top-[81px] z-50 flex h-screen w-[250px] flex-col items-start justify-start gap-0 bg-[#f1f1f1] p-2 font-srProDisplay text-base font-medium text-black *:w-full lg:static lg:h-auto lg:w-auto lg:flex-row lg:items-center lg:justify-center lg:gap-3 lg:bg-transparent lg:p-0 lg:text-gray-400 *:lg:text-center ${showMobileMenu} duration-500 ease-linear lg:duration-0`"
         >
           <li
-            class="active block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
+            class="block p-3 duration-300 active hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
           >
             <router-link to="/">{{ $t('nav.home') }}</router-link>
           </li>
@@ -55,15 +55,15 @@
               @click.stop
             >
               <div class="py-3">
-                <div class="max-h-80 overflow-y-auto categories-scroll">
+                <div class="overflow-y-auto max-h-80 categories-scroll">
                   <div
                     v-for="category in categories"
                     :key="category.name"
                     @click="selectCategory(category)"
-                    class="group flex items-center px-4 py-3 text-sm font-srProDisplay text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 cursor-pointer transition-all duration-200 border-l-4 border-transparent hover:border-gray-700"
+                    class="flex items-center px-4 py-3 text-sm text-gray-700 transition-all duration-200 border-l-4 border-transparent cursor-pointer group font-srProDisplay hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:border-gray-700"
                   >
                     <span
-                      class="flex-1 group-hover:text-gray-800 group-hover:font-medium transition-all duration-200"
+                      class="flex-1 transition-all duration-200 group-hover:text-gray-800 group-hover:font-medium"
                       >{{ category.name }}</span
                     >
                   </div>
@@ -89,6 +89,17 @@
 
       <!-- icons start -->
       <div class="flex items-center gap-3">
+        <!-- DEBUG: TEMP: Theme Switcher for testing -->
+        <select
+          v-model="selectedTheme"
+          @change="themeStore.setTheme(selectedTheme)"
+          class="px-2 py-1 text-sm text-gray-700 transition-colors duration-200 bg-white border border-gray-300 rounded dark:bg-gray-900 dark:text-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          style="min-width: 90px;"
+        >
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="system">System</option>
+        </select>
         <IconMenu
           @update-mobile-menu="setShowMobileMenu"
           @update-search-bar="setPositionSearchBar"
@@ -100,6 +111,14 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { useThemeStore } from '@/stores/theme'
+// ...existing code...
+
+// Theme store for temporary theme switcher
+const themeStore = useThemeStore()
+const { selectedTheme } = storeToRefs(themeStore)
+if (themeStore.initializeTheme) themeStore.initializeTheme()
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Wrapper from './Wrapper.vue'
