@@ -286,6 +286,81 @@ export const useThemeClasses = () => {
       'font-srProDisplay text-3xl font-medium text-center mb-12 text-black dark:text-white transition-colors duration-200',
   )
 
+  // Classes for catalog filter sections
+  const catalogFilterSectionClasses = computed(
+    () => 'bg-white dark:bg-gray-800 rounded-lg p-4 mb-6 border border-gray-200 dark:border-gray-600 transition-colors duration-200',
+  )
+
+  // Classes for catalog filter headers
+  const catalogFilterHeaderClasses = computed(
+    () => 'flex items-center justify-between border-b border-gray-200 dark:border-gray-600 mb-4 pb-3',
+  )
+
+  // Classes for catalog filter titles
+  const catalogFilterTitleClasses = computed(
+    () => 'font-srProDisplay text-lg font-semibold text-black dark:text-white transition-colors duration-200',
+  )
+
+  // Classes for catalog search inputs
+  const catalogSearchInputClasses = computed(
+    () => 'w-full bg-gray-100 dark:bg-gray-700 p-2 font-srProDisplay text-sm font-medium text-black dark:text-white outline-none rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-200 placeholder-gray-500 dark:placeholder-gray-300',
+  )
+
+  // Classes for catalog product cards
+  const catalogProductCardClasses = computed(
+    () => 'relative h-auto rounded-lg bg-gray-100 dark:bg-gray-800 px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md dark:hover:shadow-gray-900/30 border border-gray-200 dark:border-gray-600 transition-all duration-200',
+  )
+
+  // Classes for catalog mobile filter controls
+  const catalogMobileFilterClasses = computed(
+    () => 'bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-4 space-y-6 border border-gray-200 dark:border-gray-600 transition-colors duration-200',
+  )
+
+  // Classes for catalog sort select
+  const catalogSortSelectClasses = computed(
+    () => 'font-srProDisplay border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2.5 bg-white dark:bg-gray-800 text-black dark:text-white focus:outline-none focus:ring-1 focus:ring-gray-500 dark:focus:ring-gray-400 transition-colors duration-200',
+  )
+
+  // Classes for catalog debug panel
+  const catalogDebugPanelClasses = computed(
+    () => 'bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-600/50 rounded-lg shadow-lg p-3 sm:p-4',
+  )
+
+  // Classes for catalog debug text
+  const catalogDebugTextClasses = computed(
+    () => 'text-xs text-yellow-900 dark:text-yellow-100 space-y-2 max-h-40 overflow-y-auto',
+  )
+
+  // Classes for catalog pagination buttons
+  const catalogPaginationButtonClasses = computed(
+    () => 'px-3 py-2 rounded-md text-sm font-medium bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600 transition-colors duration-200',
+  )
+
+  // Classes for catalog pagination active button
+  const catalogPaginationActiveClasses = computed(
+    () => 'px-3 py-2 rounded-md text-sm font-medium bg-black dark:bg-white text-white dark:text-black',
+  )
+
+  // Classes for catalog checkbox inputs
+  const catalogCheckboxClasses = computed(
+    () => 'w-4 h-4 accent-black dark:accent-white rounded transition-colors duration-200',
+  )
+
+  // Classes for catalog filter labels
+  const catalogFilterLabelClasses = computed(
+    () => 'text-sm font-srProDisplay text-gray-900 dark:text-gray-100 transition-colors duration-200',
+  )
+
+  // Classes for catalog clear filter buttons
+  const catalogClearFilterClasses = computed(
+    () => 'text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200',
+  )
+
+  // Classes for catalog filter summary sections
+  const catalogFilterSummaryClasses = computed(
+    () => 'p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-200',
+  )
+
   return {
     cardClasses,
     textClasses,
@@ -344,5 +419,20 @@ export const useThemeClasses = () => {
     ctaTitleClasses,
     ctaDescriptionClasses,
     sectionTitleClasses,
+    catalogFilterSectionClasses,
+    catalogFilterHeaderClasses,
+    catalogFilterTitleClasses,
+    catalogSearchInputClasses,
+    catalogProductCardClasses,
+    catalogMobileFilterClasses,
+    catalogSortSelectClasses,
+    catalogDebugPanelClasses,
+    catalogDebugTextClasses,
+    catalogPaginationButtonClasses,
+    catalogPaginationActiveClasses,
+    catalogCheckboxClasses,
+    catalogFilterLabelClasses,
+    catalogClearFilterClasses,
+    catalogFilterSummaryClasses,
   }
 }
