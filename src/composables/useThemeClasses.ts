@@ -211,6 +211,81 @@ export const useThemeClasses = () => {
   // Classes for dividers/borders
   const dividerClasses = computed(() => 'border-gray-200 dark:border-gray-700')
 
+  // Classes for hero section titles
+  const heroTitleClasses = computed(
+    () =>
+      'font-srProDisplay text-5xl font-medium mb-6 text-black dark:text-white transition-colors duration-200',
+  )
+
+  // Classes for hero section descriptions
+  const heroDescriptionClasses = computed(
+    () =>
+      'font-srProDisplay text-lg text-gray-500 dark:text-gray-300 mb-8 leading-relaxed transition-colors duration-200',
+  )
+
+  // Classes for value cards in about page
+  const aboutValueCardClasses = computed(
+    () => 'text-center p-6 bg-white dark:bg-gray-800 rounded-lg transition-colors duration-200',
+  )
+
+  // Classes for value card icons background
+  const aboutValueIconBgClasses = computed(
+    () =>
+      'w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center transition-colors duration-200',
+  )
+
+  // Classes for value card icons
+  const aboutValueIconClasses = computed(
+    () => 'w-8 h-8 text-black dark:text-white transition-colors duration-200',
+  )
+
+  // Classes for value card titles
+  const aboutValueTitleClasses = computed(
+    () =>
+      'font-srProDisplay text-xl font-medium mb-3 text-black dark:text-white transition-colors duration-200',
+  )
+
+  // Classes for featured product cards
+  const featuredProductCardClasses = computed(
+    () =>
+      'bg-gray-100 dark:bg-gray-800 rounded-[15px] p-8 text-center hover:shadow-lg dark:hover:shadow-gray-900/30 transition-all duration-300',
+  )
+
+  // Classes for featured product titles
+  const featuredProductTitleClasses = computed(
+    () =>
+      'font-srProDisplay text-lg font-medium mb-2 text-black dark:text-white transition-colors duration-200',
+  )
+
+  // Classes for featured product descriptions
+  const featuredProductDescriptionClasses = computed(
+    () =>
+      'font-srProDisplay text-gray-500 dark:text-gray-300 text-sm transition-colors duration-200',
+  )
+
+  // Classes for CTA section
+  const ctaSectionClasses = computed(
+    () =>
+      'max-w-4xl mx-auto text-center bg-gray-800 dark:bg-gray-700 rounded-[15px] p-12 transition-colors duration-200',
+  )
+
+  // Classes for CTA titles
+  const ctaTitleClasses = computed(
+    () => 'font-srProDisplay text-3xl font-medium mb-4 text-white transition-colors duration-200',
+  )
+
+  // Classes for CTA descriptions
+  const ctaDescriptionClasses = computed(
+    () =>
+      'font-srProDisplay text-gray-300 dark:text-gray-200 mb-8 leading-relaxed transition-colors duration-200',
+  )
+
+  // Classes for section titles
+  const sectionTitleClasses = computed(
+    () =>
+      'font-srProDisplay text-3xl font-medium text-center mb-12 text-black dark:text-white transition-colors duration-200',
+  )
+
   return {
     cardClasses,
     textClasses,
@@ -256,5 +331,18 @@ export const useThemeClasses = () => {
     infoCardClasses,
     iconBackgroundClasses,
     dividerClasses,
+    heroTitleClasses,
+    heroDescriptionClasses,
+    aboutValueCardClasses,
+    aboutValueIconBgClasses,
+    aboutValueIconClasses,
+    aboutValueTitleClasses,
+    featuredProductCardClasses,
+    featuredProductTitleClasses,
+    featuredProductDescriptionClasses,
+    ctaSectionClasses,
+    ctaTitleClasses,
+    ctaDescriptionClasses,
+    sectionTitleClasses,
   }
 }
