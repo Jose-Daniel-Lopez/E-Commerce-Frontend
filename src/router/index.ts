@@ -52,6 +52,28 @@ const router = createRouter({
     },
 
     // ========================
+    // Policy Routes (Terms, Privacy, Refund & Return)
+    // ========================
+    {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('../views/home/TermsView.vue'),
+      meta: { title: 'Terms & Conditions' }
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('../views/home/PrivacyView.vue'),
+      meta: { title: 'Privacy Policy' }
+    },
+    {
+      path: '/refund',
+      name: 'refund',
+      component: () => import('../views/home/RefundView.vue'),
+      meta: { title: 'Refund & Return Policy' }
+    },
+
+    // ========================
     // Product Catalog & Details
     // ========================
     {

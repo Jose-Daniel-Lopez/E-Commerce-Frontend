@@ -27,13 +27,13 @@
                 <router-link to="#" :class="footerLinkClasses">Payment Method</router-link>
               </li>
               <li>
-                <router-link to="#" :class="footerLinkClasses">Terms & Conditions</router-link>
+                <router-link :to="{ name: 'terms' }" :class="footerLinkClasses">Terms & Conditions</router-link>
               </li>
               <li>
-                <router-link to="#" :class="footerLinkClasses">Privacy Policy</router-link>
+                <router-link :to="{ name: 'privacy' }" :class="footerLinkClasses">Privacy Policy</router-link>
               </li>
               <li>
-                <router-link to="#" :class="footerLinkClasses">Refund & Return Policy</router-link>
+                <router-link :to="{ name: 'refund' }" :class="footerLinkClasses">Refund & Return Policy</router-link>
               </li>
               <li>
                 <router-link to="#" :class="footerLinkClasses">About Us</router-link>
