@@ -199,7 +199,7 @@ export const useThemeClasses = () => {
   // Classes for info cards (contact information blocks)
   const infoCardClasses = computed(
     () =>
-      'bg-white dark:bg-gray-900 rounded-lg p-6 h-full border border-gray-100 dark:border-gray-700 transition-colors duration-200',
+      'bg-white dark:bg-gray-900 rounded-lg p-6 h-full transition-colors duration-200',
   )
 
   // Classes for icon backgrounds in info cards

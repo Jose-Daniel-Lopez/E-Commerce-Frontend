@@ -1,5 +1,5 @@
 <template>
-  <div :class="cardClasses">
+  <div :class="[cardClasses, 'border-0']">
     <h2 :class="['font-srProDisplay text-xl font-semibold mb-6 transition-colors duration-200', textClasses]">
       {{ t('contact.form.title') }}
     </h2>
