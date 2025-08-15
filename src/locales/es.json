@@ -211,6 +211,15 @@
   "home": {
     "title": "Inicio"
   },
+  "refund": {
+    "title": "Política de Reembolsos y Devoluciones"
+  },
+  "terms": {
+    "title": "Términos y Condiciones"
+  },
+  "privacy": {
+    "title": "Política de Privacidad"
+  },
   "smartphones": {
     "title": "Smartphones"
   },

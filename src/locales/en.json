@@ -211,6 +211,15 @@
   "home": {
     "title": "Home"
   },
+  "refund": {
+    "title": "Refund & Return Policy"
+  },
+  "terms": {
+    "title": "Terms & Conditions"
+  },
+  "privacy": {
+    "title": "Privacy Policy"
+  },
   "smartphones": {
     "title": "Smartphones"
   },
