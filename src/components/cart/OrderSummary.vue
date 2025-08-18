@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white border border-[#EBEBEB] rounded-[10px] p-6 py-16 h-full">
+  <div class="bg-background border border-border rounded-[10px] p-6 py-16 h-full">
     <!-- Section header for order summary -->
     <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">
       Order Summary
@@ -31,7 +31,7 @@
             type="text"
             v-model="localDiscountCode"
             :class="[
-              'w-full px-4 py-5 border border-[#EBEBEB] rounded-[7px] bg-[#FAFAFA] font-srProDisplay text-black placeholder-[#999999] focus:outline-none focus:border-black focus:ring-2 focus:ring-black/20 transition-all duration-200 pr-28',
+              'w-full px-4 py-5 border border-border rounded-[7px] bg-surface font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border focus:ring-2 focus:ring-black/20 transition-all duration-200 pr-28',
               couponEffect ? 'ring-2 ring-green-400' : '',
             ]"
             placeholder="Code"
@@ -49,7 +49,7 @@
     </form>
 
     <!-- Order Summary Details -->
-    <div class="my-6 border-t border-[#EBEBEB] pt-4 space-y-2">
+  <div class="my-6 border-t border-border pt-4 space-y-2">
       <div class="flex justify-between font-srProDisplay font-semibold">
         <span>Subtotal</span>
         <span>{{ formatPrice(subtotal) }}</span>

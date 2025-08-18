@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center text-[#666] py-16 animate-fadeInUp">
+  <div class="text-center text-muted py-16 animate-fadeInUp">
     <img
       src="/public/images/Favorites.png"
       alt="Wishlist"
@@ -8,7 +8,7 @@
     <h2 class="font-srProDisplay text-xl font-semibold mb-2">
       {{ emptyTitle }}
     </h2>
-    <p class="font-srProDisplay text-[#999] text-sm mb-6">
+  <p class="font-srProDisplay text-muted text-sm mb-6">
       {{ emptyDescription }}
     </p>
     <button

@@ -6,18 +6,16 @@
         <div class="flex items-center gap-8 w-full max-w-3xl">
           <!-- Step 1: Address -->
           <div class="flex flex-1 items-center justify-center">
-            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-[#F3F3F3] mr-3">
-              <v-icon name="md-locationon" scale="1.5" fill="#BDBDBD" />
+            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-surface mr-3">
+              <v-icon name="md-locationon" scale="1.5" class="text-muted" />
             </span>
             <div class="flex flex-col items-start">
-              <span class="font-srProDisplay text-xs text-[#BDBDBD]">Step 1</span>
-              <span class="font-srProDisplay text-base font-semibold text-[#BDBDBD] mt-0.5"
-                >Address</span
-              >
+              <span class="font-srProDisplay text-xs text-muted">Step 1</span>
+              <span class="font-srProDisplay text-base font-semibold text-muted mt-0.5">Address</span>
             </div>
           </div>
           <!-- Line -->
-          <div class="flex-1 h-0.5 bg-[#E5E5E5] mx-2"></div>
+          <div class="flex-1 h-0.5 bg-border mx-2"></div>
           <!-- Step 2: Shipping -->
           <div class="flex flex-1 items-center justify-center">
             <span class="w-12 h-12 flex items-center justify-center rounded-full bg-primary mr-3">
@@ -31,17 +29,15 @@
             </div>
           </div>
           <!-- Line -->
-          <div class="flex-1 h-0.5 bg-[#E5E5E5] mx-2"></div>
+          <div class="flex-1 h-0.5 bg-border mx-2"></div>
           <!-- Step 3: Payment -->
           <div class="flex flex-1 items-center justify-center">
-            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-[#F3F3F3] mr-3">
-              <v-icon name="si-contactlesspayment" scale="2" fill="#BDBDBD" />
+            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-surface mr-3">
+              <v-icon name="si-contactlesspayment" scale="2" class="text-muted" />
             </span>
             <div class="flex flex-col items-start">
-              <span class="font-srProDisplay text-xs text-[#BDBDBD]">Step 3</span>
-              <span class="font-srProDisplay text-base font-semibold text-[#BDBDBD] mt-0.5"
-                >Payment</span
-              >
+              <span class="font-srProDisplay text-xs text-muted">Step 3</span>
+              <span class="font-srProDisplay text-base font-semibold text-muted mt-0.5">Payment</span>
             </div>
           </div>
         </div>
@@ -67,47 +63,28 @@
               <div class="flex flex-1 items-center justify-between w-full">
                 <div class="flex-1">
                   <div class="flex items-center gap-2 mb-1">
-                    <span class="font-srProDisplay text-base font-semibold text-foreground">{{
-                      method.name
-                    }}</span>
-                    <span
-                      class="ml-2 px-2 py-0.5 rounded bg-primary text-primary-foreground text-xs font-srProDisplay font-semibold"
-                      >{{ userCartStore.formatPrice(method.price) }}</span
-                    >
+                    <span class="font-srProDisplay text-base font-semibold text-foreground">{{ method.name }}</span>
+                    <span class="ml-2 px-2 py-0.5 rounded bg-primary text-primary-foreground text-xs font-srProDisplay font-semibold">{{ userCartStore.formatPrice(method.price) }}</span>
                   </div>
-                  <div class="font-srProDisplay text-foreground text-base mb-2">
-                    {{ method.description }}
-                  </div>
+                  <div class="font-srProDisplay text-foreground text-base mb-2">{{ method.description }}</div>
                 </div>
                 <div class="flex items-center relative overflow-visible">
                   <!-- Show estimated delivery or "Select Date" for schedule -->
-                  <span
-                    class="font-srProDisplay text-foreground text-base whitespace-nowrap"
-                  >
-                    {{ method.id === '3' && selectedShippingId === '3' && selectedScheduleDate
-                        ? selectedScheduleDate
-                        : method.estimatedDelivery }}
+                  <span class="font-srProDisplay text-foreground text-base whitespace-nowrap">
+                    {{ method.id === '3' && selectedShippingId === '3' && selectedScheduleDate ? selectedScheduleDate : method.estimatedDelivery }}
                   </span>
                 </div>
               </div>
             </label>
           </div>
         </div>
-                                    <span class="w-12 h-12 flex items-center justify-center rounded-full bg-[#F3F3F3] mr-3">
+
         <!-- DatePicker Section - Outside of shipping methods loop for better mobile UX -->
-        <div
-          v-if="selectedShippingId === '3'"
-          class="mt-8 p-6 bg-surface rounded-xl"
-        >
-          <h3 class="font-srProDisplay text-base font-semibold text-foreground mb-4">
-            Select your preferred delivery date
-          </h3>
+        <div v-if="selectedShippingId === '3'" class="mt-8 p-6 bg-surface rounded-xl">
+          <h3 class="font-srProDisplay text-base font-semibold text-foreground mb-4">Select your preferred delivery date</h3>
           <div class="w-full">
-            <DatePicker
-              v-model="selectedScheduleDate"
-              class="w-full min-h-[300px] sm:min-h-[350px]"
-            />
-                                    <span class="w-12 h-12 flex items-center justify-center rounded-full bg-background mr-3">
+            <DatePicker v-model="selectedScheduleDate" class="w-full min-h-[300px] sm:min-h-[350px]" />
+          </div>
         </div>
       </section>
 

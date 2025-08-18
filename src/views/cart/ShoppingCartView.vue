@@ -33,7 +33,7 @@
             </div>
 
             <!-- Render cart items when available -->
-            <div v-else class="divide-y divide-[#EBEBEB]">
+            <div v-else class="divide-y divide-border">
               <CartItem
                 v-for="item in userCartStore.cartItems"
                 :key="item.id"

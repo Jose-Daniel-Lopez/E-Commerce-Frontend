@@ -6,8 +6,8 @@
         <div class="flex items-center gap-4 lg:gap-8 w-full max-w-3xl px-4 lg:px-0">
           <!-- Step 1: Address -->
           <div class="flex flex-1 items-center justify-center">
-            <span class="w-8 h-8 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-[#F3F3F3] mr-2 lg:mr-3">
-              <v-icon name="md-locationon" :scale="1" fill="#BDBDBD" class="lg:scale-150" />
+            <span class="w-8 h-8 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-surface mr-2 lg:mr-3">
+              <v-icon name="md-locationon" :scale="1" class="lg:scale-150 text-muted" />
             </span>
             <div class="flex flex-col items-start">
               <span class="font-srProDisplay text-xs text-[#BDBDBD] hidden sm:block">Step 1</span>
@@ -17,11 +17,11 @@
             </div>
           </div>
           <!-- Line -->
-          <div class="flex-1 h-0.5 bg-[#E5E5E5] mx-1 lg:mx-2"></div>
+          <div class="flex-1 h-0.5 bg-border mx-1 lg:mx-2"></div>
           <!-- Step 2: Shipping -->
           <div class="flex flex-1 items-center justify-center">
-            <span class="w-8 h-8 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-[#F3F3F3] mr-2 lg:mr-3">
-              <v-icon name="md-localshipping" :scale="1" fill="#BDBDBD" class="lg:scale-150" />
+            <span class="w-8 h-8 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-surface mr-2 lg:mr-3">
+              <v-icon name="md-localshipping" :scale="1" class="lg:scale-150 text-muted" />
             </span>
             <div class="flex flex-col items-start">
               <span class="font-srProDisplay text-xs text-[#BDBDBD] hidden sm:block">Step 2</span>
@@ -34,8 +34,8 @@
           <div class="flex-1 h-0.5 bg-[#E5E5E5] mx-1 lg:mx-2"></div>
           <!-- Step 3: Payment -->
           <div class="flex flex-1 items-center justify-center">
-            <span class="w-8 h-8 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-black mr-2 lg:mr-3">
-              <v-icon name="si-contactlesspayment" :scale="1.5" fill="white" class="lg:scale-200" />
+            <span class="w-8 h-8 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-primary mr-2 lg:mr-3">
+              <v-icon name="si-contactlesspayment" :scale="1.5" class="lg:scale-200 text-primary-foreground" />
             </span>
             <div class="flex flex-col items-start">
               <span class="font-srProDisplay text-xs text-black hidden sm:block">Step 3</span>
@@ -52,7 +52,7 @@
         <!-- Payment Section - Shows first on mobile -->
         <div class="flex-1 order-2 lg:order-2">
           <section>
-            <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">{{ $t('checkout.payment') }}</h2>
+            <h2 class="font-srProDisplay text-lg font-semibold text-foreground mb-6">{{ $t('checkout.payment') }}</h2>
 
             <!-- Payment Method Tabs - Mobile optimized -->
             <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-8">
@@ -64,7 +64,7 @@
                   'px-4 py-3 sm:py-2 rounded-md font-srProDisplay text-sm font-medium transition-colors min-h-[44px]',
                   selectedPaymentMethod === method.id
                     ? 'bg-primary text-primary-foreground'
-                    : 'bg-white text-[#666] border border-[#E5E5E5] hover:border-black',
+                    : 'bg-surface text-muted border border-border hover:border-border',
                 ]"
               >
                 {{ method.name }}
@@ -91,9 +91,7 @@
               <form @submit.prevent="processPayment" class="space-y-4">
                 <!-- Cardholder Name -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-black mb-2"
-                    >Cardholder Name</label
-                  >
+                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Cardholder Name</label>
                   <input
                     v-model="paymentForm.cardholderName"
                     type="text"
@@ -103,16 +101,14 @@
                     @input="
                       paymentForm.cardholderName = paymentForm.cardholderName.replace(/\d/g, '')
                     "
-                    class="w-full px-4 py-4 lg:py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-base lg:text-sm text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
+                    class="w-full px-4 py-4 lg:py-3 border border-border rounded-md bg-background font-srProDisplay text-base lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
                     placeholder="Enter cardholder name"
                   />
                 </div>
 
                 <!-- Card Number -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-black mb-2"
-                    >Card Number</label
-                  >
+                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Card Number</label>
                   <input
                     v-model="paymentForm.cardNumber"
                     type="text"
@@ -121,7 +117,7 @@
                     @focus="focusedField = 'number'"
                     @blur="focusedField = ''"
                     @input="formatCardNumber"
-                    class="w-full px-4 py-4 lg:py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-base lg:text-sm text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
+                    class="w-full px-4 py-4 lg:py-3 border border-border rounded-md bg-background font-srProDisplay text-base lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
                     placeholder="1234 5678 9012 3456"
                   />
                 </div>
@@ -129,9 +125,7 @@
                 <!-- Exp Date and CVV -->
                 <div class="flex gap-4">
                   <div class="flex-1">
-                    <label class="block font-srProDisplay text-sm font-medium text-black mb-2"
-                      >Exp Date</label
-                    >
+                    <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Exp Date</label>
                     <input
                       v-model="paymentForm.expDate"
                       type="text"
@@ -140,14 +134,12 @@
                       @focus="focusedField = 'expiry'"
                       @blur="focusedField = ''"
                       @input="formatExpDate"
-                      class="w-full px-4 py-4 lg:py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-base lg:text-sm text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
+                      class="w-full px-4 py-4 lg:py-3 border border-border rounded-md bg-background font-srProDisplay text-base lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
                       placeholder="MM/YY"
                     />
                   </div>
                   <div class="flex-1">
-                    <label class="block font-srProDisplay text-sm font-medium text-black mb-2"
-                      >CVV</label
-                    >
+                    <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">CVV</label>
                     <input
                       v-model="paymentForm.cvv"
                       type="text"
@@ -155,7 +147,7 @@
                       maxlength="3"
                       @focus="focusedField = 'cvv'"
                       @blur="focusedField = ''"
-                      class="w-full px-4 py-4 lg:py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-base lg:text-sm text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
+                      class="w-full px-4 py-4 lg:py-3 border border-border rounded-md bg-background font-srProDisplay text-base lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
                       placeholder="123"
                     />
                   </div>
@@ -167,11 +159,9 @@
                     v-model="paymentForm.sameAsBilling"
                     type="checkbox"
                     id="sameAsBilling"
-                    class="w-5 h-5 lg:w-4 lg:h-4 accent-black"
+                    class="w-5 h-5 lg:w-4 lg:h-4 accent-primary"
                   />
-                  <label for="sameAsBilling" class="font-srProDisplay text-sm text-black">
-                    Same as billing address
-                  </label>
+                  <label for="sameAsBilling" class="font-srProDisplay text-sm text-foreground">Same as billing address</label>
                 </div>
               </form>
             </div>
@@ -201,16 +191,16 @@
 
         <!-- Summary Section - Shows second on mobile -->
         <div class="flex-1 order-1 lg:order-1">
-          <div class="border border-[#E5E5E5] rounded-[10px] p-4 lg:p-8">
+          <div class="border border-border rounded-[10px] p-4 lg:p-8">
             <section>
-              <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">{{ $t('checkout.summary') }}</h2>
+              <h2 class="font-srProDisplay text-lg font-semibold text-foreground mb-6">{{ $t('checkout.summary') }}</h2>
 
               <!-- Products - Mobile optimized -->
               <div class="space-y-3 lg:space-y-4 mb-6 lg:mb-8">
                 <div
                   v-for="item in cartItems"
                   :key="item.id"
-                  class="flex items-center p-3 lg:p-2 rounded-[13px] justify-between bg-[#F7F7F7]"
+                  class="flex items-center p-3 lg:p-2 rounded-[13px] justify-between bg-surface"
                 >
                   <div class="flex items-center gap-3">
                     <div class="w-12 h-12 lg:w-16 lg:h-16 rounded-lg flex items-center justify-center relative">
@@ -225,11 +215,11 @@
                         >x{{ item.quantity }}</span
                       >
                     </div>
-                    <span class="font-srProDisplay text-sm lg:text-base text-black line-clamp-2">{{
+                    <span class="font-srProDisplay text-sm lg:text-base text-foreground line-clamp-2">{{
                       item.product?.name
                     }}</span>
                   </div>
-                  <span class="font-srProDisplay text-sm lg:text-base font-semibold text-black whitespace-nowrap ml-2">{{
+                  <span class="font-srProDisplay text-sm lg:text-base font-semibold text-foreground whitespace-nowrap ml-2">{{
                     userCartStore.formatPrice((item.product?.basePrice || 0) * item.quantity)
                   }}</span>
                 </div>
@@ -237,25 +227,20 @@
 
               <!-- Address -->
               <div class="mb-4 lg:mb-6">
-                <h3 class="font-srProDisplay text-base font-semibold text-black mb-2">{{ $t('checkout.address') }}</h3>
+                  <h3 class="font-srProDisplay text-base font-semibold text-foreground mb-2">{{ $t('checkout.address') }}</h3>
                 <div v-if="selectedAddress" class="flex flex-col gap-1">
-                  <span class="font-srProDisplay text-sm text-black">{{
+                  <span class="font-srProDisplay text-sm text-foreground">{{
                     selectedAddress.street
                   }}</span>
-                  <span class="font-srProDisplay text-sm text-black"
-                    >{{ selectedAddress.city }}, {{ selectedAddress.state }}
-                    {{ selectedAddress.zipCode }}</span
-                  >
-                  <span class="font-srProDisplay text-sm text-black">{{
-                    selectedAddress.country
-                  }}</span>
+                  <span class="font-srProDisplay text-sm text-foreground">{{ selectedAddress.city }}, {{ selectedAddress.state }} {{ selectedAddress.zipCode }}</span>
+                  <span class="font-srProDisplay text-sm text-foreground">{{ selectedAddress.country }}</span>
                   <span
                     v-if="selectedAddress.addressType"
                     class="font-srProDisplay text-xs text-white bg-black rounded px-2 py-0.5 w-fit mt-1"
                     >{{ selectedAddress.addressType }}</span
                   >
                 </div>
-                <p v-else class="font-srProDisplay text-gray-400 text-sm">{{ $t('checkout.noAddress') }}</p>
+                <p v-else class="font-srProDisplay text-muted text-sm">{{ $t('checkout.noAddress') }}</p>
               </div>
 
               <!-- Shipment method -->
@@ -264,15 +249,10 @@
                   {{ $t('checkout.shipmentMethod') }}
                 </h3>
                 <div v-if="selectedShipping" class="space-y-1">
-                  <p class="font-srProDisplay text-[#232340] text-sm">
+                  <p class="font-srProDisplay text-foreground text-sm">
                     {{ selectedShipping.name }}
                   </p>
-                  <p
-                    v-if="selectedShipping.id === '3' && selectedShipping.selectedDate"
-                    class="font-srProDisplay text-[#666] text-xs"
-                  >
-                    Scheduled for: {{ selectedShipping.selectedDate }}
-                  </p>
+                  <p v-if="selectedShipping.id === '3' && selectedShipping.selectedDate" class="font-srProDisplay text-muted text-xs">Scheduled for: {{ selectedShipping.selectedDate }}</p>
                 </div>
                 <p v-else class="font-srProDisplay text-gray-400 text-sm">
                   {{ $t('checkout.noShipping') }}
@@ -280,32 +260,22 @@
               </div>
 
               <!-- Order Summary -->
-              <div class="space-y-3 pt-4 border-t border-[#E5E5E5]">
+                <div class="space-y-3 pt-4 border-t border-border">
                 <div class="flex justify-between">
-                  <span class="font-srProDisplay text-base font-semibold text-black">{{ $t('checkout.subtotal') }}</span>
-                  <span class="font-srProDisplay text-base font-semibold text-black">{{
-                    userCartStore.formatPrice(subtotal)
-                  }}</span>
+                  <span class="font-srProDisplay text-base font-semibold text-foreground">{{ $t('checkout.subtotal') }}</span>
+                  <span class="font-srProDisplay text-base font-semibold text-foreground">{{ userCartStore.formatPrice(subtotal) }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-srProDisplay text-base text-gray-700">{{ $t('checkout.estimatedTax') }}</span>
-                  <span class="font-srProDisplay text-base text-gray-700">{{
-                    userCartStore.formatPrice(estimatedTax)
-                  }}</span>
+                  <span class="font-srProDisplay text-base text-muted">{{ $t('checkout.estimatedTax') }}</span>
+                  <span class="font-srProDisplay text-base text-muted">{{ userCartStore.formatPrice(estimatedTax) }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-srProDisplay text-base text-gray-700">
-                    {{ $t('checkout.estimatedShipping') }}
-                  </span>
-                  <span class="font-srProDisplay text-base text-gray-700">{{
-                    userCartStore.formatPrice(shippingCost)
-                  }}</span>
+                  <span class="font-srProDisplay text-base text-muted">{{ $t('checkout.estimatedShipping') }}</span>
+                  <span class="font-srProDisplay text-base text-muted">{{ userCartStore.formatPrice(shippingCost) }}</span>
                 </div>
-                <div class="flex justify-between pt-3 border-t border-[#E5E5E5]">
-                  <span class="font-srProDisplay text-lg font-bold text-black">{{ $t('checkout.total') }}</span>
-                  <span class="font-srProDisplay text-lg font-bold text-black">{{
-                    userCartStore.formatPrice(total)
-                  }}</span>
+                <div class="flex justify-between pt-3 border-t border-border">
+                  <span class="font-srProDisplay text-lg font-bold text-foreground">{{ $t('checkout.total') }}</span>
+                  <span class="font-srProDisplay text-lg font-bold text-foreground">{{ userCartStore.formatPrice(total) }}</span>
                 </div>
               </div>
             </section>

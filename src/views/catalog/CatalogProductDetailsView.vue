@@ -1003,7 +1003,7 @@ const fetchProductVariants = async (productId: number) => {
             class="grid grid-cols-2 gap-3 md:grid-cols-3">
             <!-- Screen Size -->
             <div v-if="currentProduct.specifications?.screenSize"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10">
                 <v-icon name="io-resize" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
@@ -1017,7 +1017,7 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- CPU -->
             <div v-if="currentProduct.specifications?.cpu"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
                 <v-icon name="hi-solid-chip" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
@@ -1031,7 +1031,7 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- GPU -->
             <div v-if="currentProduct.specifications?.gpu"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
                 <v-icon name="hi-chip" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
@@ -1045,7 +1045,7 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- RAM -->
             <div v-if="currentProduct.specifications?.ram"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
                 <v-icon name="hi-cube" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
@@ -1060,7 +1060,7 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Refresh Rate -->
             <div v-if="currentProduct.specifications?.refreshRate"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
                 <v-icon name="hi-refresh" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
@@ -1075,7 +1075,7 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Camera -->
             <div v-if="currentProduct.specifications?.camera"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
                 <v-icon name="bi-camera" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
@@ -1089,7 +1089,7 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Front Camera -->
             <div v-if="currentProduct.specifications?.frontCamera"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
                 <v-icon name="io-camera-reverse-outline" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
@@ -1103,7 +1103,7 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Battery -->
             <div v-if="currentProduct.specifications?.battery"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
                 <v-icon name="gi-battery-75" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
@@ -1302,7 +1302,7 @@ const fetchProductVariants = async (productId: number) => {
 
           <!-- Delivery Info -->
           <div class="grid grid-cols-1 gap-4 pt-4 md:grid-cols-3">
-            <div class="flex items-center bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] p-3">
+            <div class="flex items-center bg-surface dark:bg-gray-700 rounded-[8px] p-3">
               <div class="w-[50px] h-[50px] flex items-center justify-center text-gray-600 dark:text-gray-300 mr-4">
                 <v-icon name="hi-truck" scale="1.2" />
               </div>
@@ -1311,7 +1311,7 @@ const fetchProductVariants = async (productId: number) => {
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">1-2 day</p>
               </div>
             </div>
-            <div class="flex items-center bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] p-3">
+            <div class="flex items-center bg-surface dark:bg-gray-700 rounded-[8px] p-3">
               <div class="w-[50px] h-[50px] flex items-center justify-center text-gray-600 dark:text-gray-300 mr-4">
                 <v-icon name="bi-shop" scale="1.2" />
               </div>
@@ -1320,7 +1320,7 @@ const fetchProductVariants = async (productId: number) => {
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">Today</p>
               </div>
             </div>
-            <div class="flex items-center bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] p-3">
+            <div class="flex items-center bg-surface dark:bg-gray-700 rounded-[8px] p-3">
               <div class="w-[50px] h-[50px] flex items-center justify-center text-gray-600 dark:text-gray-300 mr-4">
                 <v-icon name="hi-badge-check" scale="1.2" />
               </div>
@@ -1558,7 +1558,7 @@ const fetchProductVariants = async (productId: number) => {
             <!-- Mobile Reviews Stats -->
             <div v-if="!productReviewsLoading && productReviews.length > 0" class="mb-6 lg:hidden">
               <!-- Overall Rating - Mobile -->
-              <div class="text-center bg-[#F4F4F4] dark:bg-gray-700 rounded-2xl p-6 mb-6">
+              <div class="text-center bg-surface dark:bg-gray-700 rounded-2xl p-6 mb-6">
                 <div :class="['text-4xl font-bold mb-2', textClasses]">{{
                   Number(reviewStats.averageRating).toFixed(Number(reviewStats.averageRating) % 1 === 0 ? 0 : 1) }}
                 </div>
@@ -1633,7 +1633,7 @@ const fetchProductVariants = async (productId: number) => {
             <div v-if="!productReviewsLoading && productReviews.length > 0"
               class="items-start hidden gap-12 mb-8 lg:flex">
               <!-- Overall Rating -->
-              <div class="text-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[25px] w-auto h-auto p-8">
+              <div class="text-center space-x-3 bg-surface dark:bg-gray-700 rounded-[25px] w-auto h-auto p-8">
                 <div :class="['mb-2 text-6xl font-bold', textClasses]">{{
                   Number(reviewStats.averageRating).toFixed(Number(reviewStats.averageRating) % 1 === 0 ? 0 : 1) }}
                 </div>

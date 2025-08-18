@@ -1,13 +1,13 @@
 <template>
   <div class="relative search-container">
     <div
-      class="flex items-center justify-start gap-2 bg-[#f5f5f5] p-4 shadow-md lg:rounded-lg lg:shadow-none"
+      class="flex items-center justify-start gap-2 bg-surface p-4 shadow-md lg:rounded-lg lg:shadow-none"
     >
       <v-icon name="fa-search" scale="1.2" class="text-gray-400" />
       <form @submit.prevent="performSearch" class="flex-1">
         <input
           v-model="searchQuery"
-          class="w-full bg-[#f5f5f5] p-0.5 font-srProDisplay text-sm font-medium text-black outline-none"
+          class="w-full bg-surface p-0.5 font-srProDisplay text-sm font-medium text-foreground outline-none"
           type="search"
           id="search"
           placeholder="Search products, brands, categories..."

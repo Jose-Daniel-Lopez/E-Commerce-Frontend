@@ -17,25 +17,23 @@
             </div>
           </div>
           <!-- Line -->
-          <div class="flex-1 h-0.5 bg-[#E5E5E5] mx-2"></div>
+          <div class="flex-1 h-0.5 bg-border mx-2"></div>
           <!-- Step 2: Shipping -->
           <div class="flex flex-1 items-center justify-center">
-            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-[#F3F3F3] mr-3">
-              <v-icon name="md-localshipping" scale="1.5" fill="#BDBDBD" />
+            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-surface mr-3">
+              <v-icon name="md-localshipping" scale="1.5" class="text-muted" />
             </span>
             <div class="flex flex-col items-start">
-              <span class="font-srProDisplay text-xs text-[#BDBDBD]">Step 2</span>
-              <span class="font-srProDisplay text-base font-semibold text-[#BDBDBD] mt-0.5"
-                >Shipping</span
-              >
+              <span class="font-srProDisplay text-xs text-muted">Step 2</span>
+              <span class="font-srProDisplay text-base font-semibold text-muted mt-0.5">Shipping</span>
             </div>
           </div>
           <!-- Line -->
-          <div class="flex-1 h-0.5 bg-[#E5E5E5] mx-2"></div>
+          <div class="flex-1 h-0.5 bg-border mx-2"></div>
           <!-- Step 3: Payment -->
           <div class="flex flex-1 items-center justify-center">
-            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-[#F3F3F3] mr-3">
-              <v-icon name="si-contactlesspayment" scale="2" fill="#BDBDBD" />
+            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-surface mr-3">
+              <v-icon name="si-contactlesspayment" scale="2" class="text-muted" />
             </span>
             <div class="flex flex-col items-start">
               <span class="font-srProDisplay text-xs text-[#BDBDBD]">Step 3</span>
@@ -49,7 +47,7 @@
 
       <!-- Select Address -->
       <section class="max-w-5xl mx-auto">
-        <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">{{ $t('checkout.selectAddress') }}</h2>
+  <h2 class="font-srProDisplay text-lg font-semibold text-foreground mb-6">{{ $t('checkout.selectAddress') }}</h2>
 
         <!-- Loading State -->
         <div v-if="shippingAddressStore.loading" class="text-center py-8">
@@ -75,7 +73,7 @@
           <div
             v-for="address in addresses"
             :key="address.id"
-            class="bg-[#F7F7F7] rounded-xl p-6 flex items-center justify-between"
+            class="bg-surface rounded-xl p-6 flex items-center justify-between"
           >
             <label class="flex items-start gap-4 cursor-pointer flex-1">
               <input
@@ -84,11 +82,11 @@
                 :value="address.id"
                 v-model="selectedAddressId"
                 @change="onAddressSelected(address)"
-                class="accent-black w-5 h-5 mt-1"
+                class="accent-primary w-5 h-5 mt-1"
               />
               <div>
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="font-srProDisplay text-base font-semibold text-black">{{
+                  <span class="font-srProDisplay text-base font-semibold text-foreground">{{
                     address.title
                   }}</span>
                   <span
@@ -96,18 +94,18 @@
                     >{{ getAddressTypeLabel(address.addressType) }}</span
                   >
                 </div>
-                <div class="font-srProDisplay text-[#232340] text-base">
+                <div class="font-srProDisplay text-foreground text-base">
                   {{ address.street }}
                 </div>
-                <div class="font-srProDisplay text-[#232340] text-base">
+                <div class="font-srProDisplay text-foreground text-base">
                   {{ `${address.city}, ${address.state} ${address.zipCode}` }}
                 </div>
-                <div class="font-srProDisplay text-[#232340] text-base">{{ address.country }}</div>
+                <div class="font-srProDisplay text-foreground text-base">{{ address.country }}</div>
               </div>
             </label>
             <div class="flex items-center gap-4 ml-4">
               <button
-                class="text-xl text-black hover:text-[#666]"
+                class="text-xl text-foreground hover:text-muted"
                 @click="editAddress(address)"
                 :disabled="!!editingAddress"
               >
@@ -124,7 +122,7 @@
                 </svg>
               </button>
               <button
-                class="text-2xl text-black hover:text-[#666]"
+                class="text-2xl text-foreground hover:text-muted"
                 @click="confirmRemoveAddress(address)"
                 :disabled="deletingAddress"
               >
@@ -136,10 +134,10 @@
 
         <!-- No Addresses State -->
         <div v-else class="text-center py-12">
-          <div class="bg-gray-50 rounded-lg p-8">
-            <v-icon name="md-locationon" scale="3" fill="#9CA3AF" class="mb-4" />
-            <h3 class="text-lg font-semibold text-gray-700 mb-2">No addresses found</h3>
-            <p class="text-gray-600 mb-4">Add your first shipping address to continue</p>
+          <div class="bg-surface rounded-lg p-8">
+            <v-icon name="md-locationon" scale="3" class="text-muted mb-4" />
+            <h3 class="text-lg font-semibold text-muted mb-2">No addresses found</h3>
+            <p class="text-muted mb-4">Add your first shipping address to continue</p>
           </div>
         </div>
 
@@ -219,13 +217,13 @@
               </svg>
             </div>
           </div>
-          <span class="font-srProDisplay text-gray-700 text-black mt-2">Add New Address</span>
+          <span class="font-srProDisplay text-muted mt-2">Add New Address</span>
 
           <!-- Add/Edit Address Form -->
           <transition name="fade-slide">
             <div
               v-if="showAddForm || editingAddress"
-              class="w-full max-w-lg mt-8 bg-white border border-[#EBEBEB] rounded-lg p-8 shadow z-20"
+              class="w-full max-w-lg mt-8 bg-background border border-border rounded-lg p-8 shadow z-20"
             >
               <h3 class="font-srProDisplay text-lg font-semibold mb-4">
                 {{ editingAddress ? 'Edit Address' : 'Add New Address' }}
@@ -234,27 +232,24 @@
               <form @submit.prevent="submitAddressForm" class="space-y-4">
                 <!-- Title -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-black mb-2"
-                    >Title</label
-                  >
+                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Title</label>
+
                   <input
                     v-model="addressForm.title"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
+                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
                     placeholder="e.g. Home, Work, etc."
                   />
                 </div>
 
                 <!-- Type -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-black mb-2"
-                    >Type</label
-                  >
+                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Type</label>
                   <select
                     v-model="addressForm.addressType"
                     required
-                    class="w-full px-4 py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black focus:outline-none focus:border-black transition-colors duration-200"
+                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground focus:outline-none focus:border-border transition-colors duration-200"
                   >
                     <option value="" disabled>Select type</option>
                     <option value="HOME">Home</option>
@@ -265,80 +260,70 @@
 
                 <!-- Street Address -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-black mb-2"
-                    >Street Address</label
-                  >
+                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Street Address</label>
                   <input
                     v-model="addressForm.street"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
+                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
                     placeholder="Street name and number"
                   />
                 </div>
 
                 <!-- City -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-black mb-2"
-                    >City</label
-                  >
+                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">City</label>
                   <input
                     v-model="addressForm.city"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
+                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
                     placeholder="City"
                   />
                 </div>
 
                 <!-- State -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-black mb-2"
-                    >State</label
-                  >
+                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">State</label>
                   <input
                     v-model="addressForm.state"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
+                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
                     placeholder="State or Province"
                   />
                 </div>
 
                 <!-- Zip Code -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-black mb-2"
-                    >Zip Code</label
-                  >
+                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Zip Code</label>
                   <input
                     v-model="addressForm.zipCode"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
+                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
                     placeholder="Zip or Postal Code"
                   />
                 </div>
 
                 <!-- Country -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-black mb-2"
-                    >Country</label
-                  >
+                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Country</label>
                   <input
                     v-model="addressForm.country"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black placeholder-[#999999] focus:outline-none focus:border-black transition-colors duration-200"
+                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
                     placeholder="Country"
                   />
                 </div>
 
                 <!-- Actions -->
-                <div class="flex gap-2 justify-end pt-4 border-t border-[#EBEBEB] mt-6">
+                <div class="flex gap-2 justify-end pt-4 border-t border-border mt-6">
                   <button
                     type="button"
                     @click="cancelAddressForm"
-                    class="px-4 py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 font-srProDisplay"
+                    class="px-4 py-2 rounded bg-surface text-muted hover:bg-surface/90 font-srProDisplay"
                     :disabled="formSubmitting"
                   >
                     Cancel
@@ -361,13 +346,13 @@
       <!-- Navigation Buttons -->
       <div class="flex justify-end gap-4 max-w-5xl mx-auto mt-8">
         <button
-          class="px-22 py-5 border border-black rounded-[6px] font-srProDisplay text-black bg-white hover:bg-gray-50 transition"
+          class="px-22 py-5 border border-border rounded-[6px] font-srProDisplay text-foreground bg-background hover:bg-surface transition"
           @click="goBack"
         >
           Back
         </button>
         <button
-          class="px-22 py-5 rounded-[6px] font-srProDisplay text-white bg-black hover:bg-[#232340] transition"
+          class="px-22 py-5 rounded-[6px] font-srProDisplay text-primary-foreground bg-primary hover:opacity-95 transition"
           @click="goNext"
           :disabled="!selectedAddressId"
         >

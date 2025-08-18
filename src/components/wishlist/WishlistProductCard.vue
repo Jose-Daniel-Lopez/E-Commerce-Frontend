@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white border border-[#EBEBEB] rounded-xl p-6 flex flex-col shadow-sm hover:shadow-lg transition cursor-pointer animate-fadeInUp"
+    class="bg-background border border-border rounded-xl p-6 flex flex-col shadow-sm hover:shadow-lg transition cursor-pointer animate-fadeInUp"
     @click="$emit('goToProduct', product.id)"
   >
     <img

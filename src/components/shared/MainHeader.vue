@@ -23,7 +23,7 @@
       <!-- Navigation start -->
       <div class="px-1 lg:w-[383px]">
         <ul
-          :class="`fixed top-[81px] z-50 flex h-screen w-[250px] flex-col items-start justify-start gap-0 bg-[#f1f1f1] p-2 font-srProDisplay text-base font-medium text-black *:w-full lg:static lg:h-auto lg:w-auto lg:flex-row lg:items-center lg:justify-center lg:gap-3 lg:bg-transparent lg:p-0 lg:text-gray-400 *:lg:text-center ${showMobileMenu} duration-500 ease-linear lg:duration-0`"
+          :class="`fixed top-[81px] z-50 flex h-screen w-[250px] flex-col items-start justify-start gap-0 bg-surface p-2 font-srProDisplay text-base font-medium text-foreground *:w-full lg:static lg:h-auto lg:w-auto lg:flex-row lg:items-center lg:justify-center lg:gap-3 lg:bg-transparent lg:p-0 lg:text-muted *:lg:text-center ${showMobileMenu} duration-500 ease-linear lg:duration-0`"
         >
           <li
             class="block p-3 duration-300 active hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"

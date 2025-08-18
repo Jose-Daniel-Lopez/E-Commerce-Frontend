@@ -61,7 +61,7 @@
   --color-primary: #3b82f6; /* Blue-500 - bright but not glowing */
   --color-secondary: #818cf8; /* Indigo-400 */
   --color-accent: #93c5fd; /* Light blue accent */
-  --color-background: #0f172a; /* Deep navy-blue (softer than pure black) */
+  --color-background: #0e1522; /* User-requested dark background */
   --color-text: #f1f5f9; /* Slate-100 - clean white-blue tone */
   --color-border: #334155; /* Gray-700 */
   --color-success: #10b981; /* Same as light (consistent feedback) */
@@ -87,9 +87,9 @@
   --color-muted-foreground: #64748b; /* Slate-500 */
 
   /* Sub-navigation */
-  --subnav-bg: #1e293b; /* Match surface-bg for consistency */
+  --subnav-bg: #243146; /* User-requested dark subnav */
   --subnav-hover: #334155;
 
   /* Header */
-  --header-bg: #1e293b; /* Unified with subnav and surfaces */
+  --header-bg: #192132; /* User-requested dark header */
 }
