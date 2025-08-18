@@ -189,6 +189,8 @@
   },
   "catalog": {
     "title": "Catálogo",
+    "category": "categoría",
+    "categories": "categorías",
     "searchCategories": "Buscar Categorías",
     "searchPlaceholder": "Buscar",
     "categoriesFound": "{count} categorías encontradas",
