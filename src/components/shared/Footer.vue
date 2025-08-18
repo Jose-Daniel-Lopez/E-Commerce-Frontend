@@ -5,7 +5,7 @@
         class="flex h-auto w-full flex-col items-center justify-start gap-8 md:flex-row md:items-start lg:h-[216px] lg:justify-between">
         <div class="basis-auto text-center md:text-left lg:basis-[384px]">
           <router-link to="/" class="flex justify-center md:justify-start">
-            <img :src="logoSrc" alt="logo" class="w-20 h-auto mb-4 transition-transform duration-200 hover:scale-105 invert" />
+            <img :src="logoSrc" alt="logo" class="w-20 h-auto mb-4 transition-transform duration-200 hover:scale-105" />
           </router-link>
           <div class="w-[295px] xl:w-full">
             <p class="text-base font-semibold font-srProDisplay">Location</p>
