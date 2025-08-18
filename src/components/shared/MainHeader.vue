@@ -6,8 +6,8 @@
     <Wrapper class="flex h-[82px] items-center justify-between py-4 md:gap-3 xl:gap-8">
       <!-- logo start -->
       <div class="flex items-center justify-center lg:justify-start">
-        <router-link to="/">
-          <img src="/images/logo-full.webp" alt="logo" class="w-[180px] h-auto" />
+          <router-link to="/">
+          <img :src="logoSrc" alt="logo" class="w-[180px] h-auto" />
         </router-link>
       </div>
       <!-- logo end -->
@@ -120,7 +120,7 @@ import { useThemeStore } from '@/stores/theme'
 const themeStore = useThemeStore()
 const { selectedTheme } = storeToRefs(themeStore)
 if (themeStore.initializeTheme) themeStore.initializeTheme()
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Wrapper from './Wrapper.vue'
 import HeaderSearch from './HeaderSearch.vue'
@@ -131,6 +131,14 @@ const showMobileMenu = ref('left-[-300px]')
 const positionSearchBar = ref('invisible opacity-0 top-[100px]')
 const show = ref('lg:translate-y-0')
 const lastScrollY = ref(0)
+
+// Computed logo source — uses theme store selection, system preference, or document dark class
+const logoSrc = computed(() => {
+  const theme = selectedTheme?.value ?? 'light'
+  const systemPrefersDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  const darkActive = document.documentElement.classList.contains('dark') || theme === 'dark' || (theme === 'system' && systemPrefersDark)
+  return darkActive ? '/images/logo-full-white.webp' : '/images/logo-full.webp'
+})
 
 // Categories dropdown state
 const showCategoriesDropdown = ref(false)

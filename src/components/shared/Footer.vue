@@ -1,12 +1,11 @@
 <template>
-  <footer class="mb-[66px] h-auto w-full bg-background text-foreground sm:mb-0 lg:h-[464px] transition-colors duration-200">
+  <footer class="mb-[66px] h-auto w-full dark:bg-gray-800 text-foreground sm:mb-0 lg:h-[464px] transition-colors duration-200">
     <Wrapper class="flex h-auto flex-col gap-8 py-12 md:gap-6 md:px-[64px] lg:py-[104px]">
       <div
         class="flex h-auto w-full flex-col items-center justify-start gap-8 md:flex-row md:items-start lg:h-[216px] lg:justify-between">
         <div class="basis-auto text-center md:text-left lg:basis-[384px]">
           <router-link to="/" class="flex justify-center md:justify-start">
-            <img src="/images/logo-full.webp" alt="logo"
-              class="w-20 h-auto mb-4 transition-transform duration-200 hover:scale-105 invert" />
+            <img :src="logoSrc" alt="logo" class="w-20 h-auto mb-4 transition-transform duration-200 hover:scale-105 invert" />
           </router-link>
           <div class="w-[295px] xl:w-full">
             <p class="text-base font-semibold font-srProDisplay">Location</p>
@@ -72,6 +71,9 @@
 <script setup lang="ts">
 import Wrapper from './Wrapper.vue'
 import { useThemeClasses } from '@/composables/useThemeClasses'
+import { useThemeStore } from '@/stores/theme'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 import SocialIcons from './SocialIcons.vue'
 
 const links = [
@@ -89,6 +91,16 @@ defineOptions({
 const {
   footerLinkClasses
 } = useThemeClasses()
+
+// Theme-aware logo for footer
+const themeStore = useThemeStore()
+const { selectedTheme } = storeToRefs(themeStore)
+const logoSrc = computed(() => {
+  const theme = selectedTheme?.value ?? 'light'
+  const systemPrefersDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  const darkActive = document.documentElement.classList.contains('dark') || theme === 'dark' || (theme === 'system' && systemPrefersDark)
+  return darkActive ? '/images/logo-full-white.webp' : '/images/logo-full.webp'
+})
 </script>
 
 <style scoped>
