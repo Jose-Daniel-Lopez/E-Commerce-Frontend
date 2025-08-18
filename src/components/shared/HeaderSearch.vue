@@ -22,7 +22,7 @@
         v-if="searchQuery.trim() || isInputFocused"
         @click="performSearch"
         type="button"
-        class="px-3 py-1 text-sm bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+  class="px-3 py-1 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-95 transition-colors"
         :disabled="!searchQuery.trim()"
       >
         Search

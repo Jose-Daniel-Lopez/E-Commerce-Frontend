@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-white text-black min-h-screen">
+  <div class="pt-[85px] lg:pt-0 bg-background text-foreground min-h-screen">
     <Wrapper class="py-20 max-w-[1300px] mx-auto">
       <!-- Stepper - Mobile optimized -->
       <div class="flex items-center justify-center mb-12 lg:mb-20">
@@ -63,7 +63,7 @@
                 :class="[
                   'px-4 py-3 sm:py-2 rounded-md font-srProDisplay text-sm font-medium transition-colors min-h-[44px]',
                   selectedPaymentMethod === method.id
-                    ? 'bg-black text-white'
+                    ? 'bg-primary text-primary-foreground'
                     : 'bg-white text-[#666] border border-[#E5E5E5] hover:border-black',
                 ]"
               >

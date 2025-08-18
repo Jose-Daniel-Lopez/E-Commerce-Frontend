@@ -125,7 +125,7 @@ export default defineComponent({
         const isDark = document.documentElement.classList.contains('dark')
         if (isDark) {
           // Dark mode gradient
-          styles.backgroundImage = `linear-gradient(${data.gradientPosition as string}, #1f2937, #111827)`
+          styles.backgroundImage = `linear-gradient(${data.gradientPosition as string}, #1f2937, #0e1522)`
         } else {
           // Light mode gradient (original)
           styles.backgroundImage = this.bgGradient(data)

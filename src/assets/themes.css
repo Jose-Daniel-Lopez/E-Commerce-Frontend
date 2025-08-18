@@ -1,0 +1,86 @@
+/*
+  themes.css
+  Centralized color palette and theme variables.
+*/
+
+
+/* =========================
+   Light Theme (Default)
+   ========================= */
+:root {
+  /* Brand / UI colors */
+  --color-primary: #000000;
+  --color-secondary: #333333;
+  --color-accent: #666666;
+  --color-background: #ffffff;
+  --color-text: #000000;
+  --color-border: #e5e7eb;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* E-commerce specific */
+  --color-cart: #ff6b6b;
+  --color-favorite: #ff6b6b;
+  --color-discount: #ff4757;
+  --color-price: #2ed573;
+
+  /* Typography */
+  --font-figtree: 'Figtree', sans-serif;
+  --font-srProDisplay: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Utility colors — pair with Tailwind classes */
+  --color-primary-foreground: #ffffff; /* ensures readable text over primary */
+  --color-secondary-foreground: #ffffff;
+  --color-muted: #666666;
+  --color-muted-foreground: #999999;
+  --color-input-border: #ebebeb;
+  --color-input-background: rgba(255, 255, 255, 0.5);
+
+  /* Custom breakpoints */
+  --breakpoint-xs: 420px;
+
+  /* Sub-navigation */
+  --subnav-bg: #2e2e2e;
+  --subnav-hover: #404040;
+
+  /* Header */
+  --header-bg: #ffffff;
+}
+
+
+/* =========================
+   Dark Theme Overrides
+   ========================= */
+.dark,
+[data-theme="dark"] {
+  /* Brand / UI colors */
+  --color-primary: #ffffff;
+  --color-secondary: #f3f4f6;
+  --color-accent: #d1d5db;
+  --color-background: #0e1522; /* base dark background */
+  --color-text: #f9fafb;
+  --color-border: #374151;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+
+  /* E-commerce specific */
+  --color-cart: #ff7675;
+  --color-favorite: #ff7675;
+  --color-discount: #fd79a8;
+  --color-price: #00b894;
+
+  /* Ensure legible text against light primary */
+  --color-primary-foreground: #000000;
+
+  /* Neutral surface backgrounds for cards/panels */
+  --surface-bg: #1f2937;
+
+  /* Sub-navigation */
+  --subnav-bg: #243146; /* refined darker tone */
+  --subnav-hover: #2f3f53;
+
+  /* Header */
+  --header-bg: #192132; /* matches dark subnav tone */
+}

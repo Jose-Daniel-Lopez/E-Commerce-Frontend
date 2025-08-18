@@ -93,7 +93,7 @@
             </label>
           </div>
         </div>
-
+                                    <span class="w-12 h-12 flex items-center justify-center rounded-full bg-[#F3F3F3] mr-3">
         <!-- DatePicker Section - Outside of shipping methods loop for better mobile UX -->
         <div
           v-if="selectedShippingId === '3'"
@@ -107,7 +107,7 @@
               v-model="selectedScheduleDate"
               class="w-full min-h-[300px] sm:min-h-[350px]"
             />
-          </div>
+                                    <span class="w-12 h-12 flex items-center justify-center rounded-full bg-background mr-3">
         </div>
       </section>
 

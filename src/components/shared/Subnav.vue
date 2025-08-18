@@ -1,10 +1,13 @@
 <template>
-  <nav class="w-full h-14 bg-[#2E2E2E] flex items-center">
+  <nav class="w-full h-14 flex items-center" :style="{ background: 'var(--subnav-bg)' }">
     <div class="flex items-center h-full w-full">
       <template v-for="(category, idx) in categories" :key="category.slug">
         <div
-          class="flex items-center justify-center flex-1 h-full px-1 cursor-pointer hover:bg-[#404040] transition-colors"
+          class="flex items-center justify-center flex-1 h-full px-1 cursor-pointer transition-colors"
           @click="navigateToCategory(category.slug)"
+          @mouseover="hover = idx"
+          @mouseleave="hover = null"
+          :style="hover === idx ? { background: 'var(--subnav-hover)' } : { background: 'transparent' }"
         >
           <div class="flex flex-col items-center gap-0.5">
             <v-icon
@@ -23,6 +26,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { ref } from 'vue'
 
 interface CategoryNav {
   name: string
@@ -30,9 +34,14 @@ interface CategoryNav {
   slug: string
 }
 
-const props = defineProps<{ categories: CategoryNav[] }>()
+// Destructure to avoid unused prop diagnostics
+const { categories } = defineProps<{ categories: CategoryNav[] }>()
+
+// Component name to satisfy multi-word rule
+defineOptions({ name: 'AppSubnav' })
 
 const router = useRouter()
+const hover = ref<number | null>(null)
 const navigateToCategory = (categorySlug: string) => {
   router.push(`/catalog/${categorySlug}`)
 }

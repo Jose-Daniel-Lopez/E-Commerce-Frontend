@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap');
 @import 'tailwindcss';
+@import './themes.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -15,9 +16,10 @@
   transition: none !important;
 }
 
-/* Tailwind theme configuration */
-@theme {
-  /* Main e-commerce colors */
+/* Tailwind theme configuration (moved out of @theme to top-level) */
+
+/* Main e-commerce colors (defaults; override in themes.css) */
+:root {
   --color-primary: #000000;
   --color-secondary: #333333;
   --color-accent: #666666;
@@ -34,52 +36,19 @@
   --color-discount: #ff4757;
   --color-price: #2ed573;
 
-  /* Font variables */
-  --font-figtree: 'Figtree', sans-serif;
-  --font-srProDisplay: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
-
-  /* Semantic color utilities for Tailwind */
-  --color-primary-foreground: #ffffff;
-  --color-secondary-foreground: #ffffff;
-  --color-muted: #666666;
-  --color-muted-foreground: #999999;
-  --color-input-border: #ebebeb;
-  --color-input-background: rgba(255, 255, 255, 0.5);
-
-  /* Custom breakpoint */
-  --breakpoint-xs: 420px;
+  /* Sub-navigation colors (can be overridden in dark mode) */
+  --subnav-bg: #2e2e2e;
+  --subnav-hover: #404040;
 }
 
+/* Tailwind theme configuration is centralized in themes.css */
 @layer base {
   /* CSS variables for compatibility */
   :root {
     --background: var(--color-background);
     --foreground: var(--color-text);
-    --font-figtree: 'Figtree', sans-serif;
-    --font-srProDisplay: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-
-  @variant dark {
-    --color-primary: #ffffff;
-    --color-secondary: #f3f4f6;
-    --color-accent: #d1d5db;
-    --color-background: #111827;
-    --color-text: #f9fafb;
-    --color-border: #374151;
-    --color-success: #34d399;
-    --color-warning: #fbbf24;
-    --color-error: #f87171;
-
-    /* E-commerce specific colors for dark mode */
-    --color-cart: #ff7675;
-    --color-favorite: #ff7675;
-    --color-discount: #fd79a8;
-    --color-price: #00b894;
-  }
-
-  /* Reset and base configuration */
-  * {
-    box-sizing: border-box;
+    --font-figtree: var(--font-figtree);
+    --font-srProDisplay: var(--font-srProDisplay);
   }
 
   html {
@@ -187,6 +156,15 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Variable-backed color utilities so components don't hardcode colors */
+  .bg-background { background: var(--background) !important; }
+  .text-foreground { color: var(--foreground) !important; }
+  .bg-surface { background: var(--surface-bg, var(--color-background)) !important; }
+  .text-primary-foreground { color: var(--color-primary-foreground, var(--color-text)) !important; }
+  .bg-subnav { background: var(--subnav-bg) !important; }
+  .bg-subnav-hover { background: var(--subnav-hover) !important; }
+  .bg-header { background: var(--header-bg) !important; }
 
   /* Override Tailwind's min-h-screen to prevent conflicts */
   .min-h-screen {

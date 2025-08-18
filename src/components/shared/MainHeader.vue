@@ -1,6 +1,7 @@
 <template>
   <header
-    :class="`fixed z-50 h-[82px] w-full bg-white shadow-md lg:sticky lg:left-0 lg:top-0 lg:transition-transform lg:duration-300 ${show}`"
+  :class="`fixed z-50 h-[82px] w-full shadow-md lg:sticky lg:left-0 lg:top-0 lg:transition-transform lg:duration-300 ${show}`"
+  :style="{ background: 'var(--header-bg)' }"
   >
     <Wrapper class="flex h-[82px] items-center justify-between py-4 md:gap-3 xl:gap-8">
       <!-- logo start -->
@@ -241,7 +242,7 @@ svg:focus {
 }
 
 .categories-scroll::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #1f2937, #111827);
+  background: linear-gradient(to bottom, #1f2937, #0e1522);
 }
 
 /* Smooth transitions for dropdown */

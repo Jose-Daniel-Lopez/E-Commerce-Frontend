@@ -13,7 +13,7 @@
     </p>
     <button
       @click="$emit('goToCatalog')"
-      class="px-6 py-3 bg-black text-white rounded-xl font-srProDisplay hover:bg-gray-900 transition"
+  class="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-srProDisplay hover:opacity-95 transition"
     >
       {{ catalogButtonText }}
     </button>

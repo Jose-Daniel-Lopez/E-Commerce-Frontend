@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-white text-black min-h-screen">
+  <div class="pt-[85px] lg:pt-0 bg-background text-foreground min-h-screen">
     <Wrapper class="py-20 max-w-[1300px] mx-auto">
       <!-- Stepper -->
       <div class="flex items-center justify-center mb-20">
@@ -92,7 +92,7 @@
                     address.title
                   }}</span>
                   <span
-                    class="ml-2 px-2 py-0.5 rounded bg-black text-white text-xs font-srProDisplay font-semibold"
+                    class="ml-2 px-2 py-0.5 rounded bg-primary text-primary-foreground text-xs font-srProDisplay font-semibold"
                     >{{ getAddressTypeLabel(address.addressType) }}</span
                   >
                 </div>
@@ -345,7 +345,7 @@
                   </button>
                   <button
                     type="submit"
-                    class="px-4 py-2 rounded bg-black text-white hover:bg-[#232340] font-srProDisplay flex items-center gap-2"
+                    class="px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-95 font-srProDisplay flex items-center gap-2"
                     :disabled="formSubmitting"
                   >
                     <div v-if="formSubmitting" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

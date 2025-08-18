@@ -39,7 +39,7 @@
           <button
             type="button"
             @click="handleApplyDiscount"
-            class="absolute top-1/2 right-4 -translate-y-1/2 px-6 border border-black rounded-[6px] bg-white text-black font-srProDisplay transition-colors duration-200 hover:bg-gray-100 active:bg-gray-200 focus:outline-none text-base cursor-pointer"
+            class="absolute top-1/2 right-4 -translate-y-1/2 px-6 border border-black rounded-[6px] bg-background text-foreground font-srProDisplay transition-colors duration-200 hover:bg-gray-100 active:bg-gray-200 focus:outline-none text-base cursor-pointer"
             style="height: 32px; min-width: 75px"
           >
             Apply
@@ -72,7 +72,7 @@
     <button
       @click="$emit('checkout')"
       :disabled="props.isCartEmpty"
-      class="w-full bg-black text-white font-srProDisplay font-medium py-4 rounded-md hover:bg-gray-800 transition-colors duration-200 mt-4 cursor-pointer"
+  class="w-full bg-primary text-primary-foreground font-srProDisplay font-medium py-4 rounded-md hover:opacity-95 transition-colors duration-200 mt-4 cursor-pointer"
       :class="{ 'opacity-50 cursor-not-allowed': props.isCartEmpty }"
     >
       Checkout
