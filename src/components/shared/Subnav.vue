@@ -1,24 +1,25 @@
 <template>
-  <nav class="w-full h-14 flex items-center" :style="{ background: 'var(--subnav-bg)' }">
-    <div class="flex items-center h-full w-full">
+  <nav class="flex items-center w-full border-b h-14" :style="{ background: 'var(--subnav-bg)' }">
+    <div class="flex items-center w-full h-full">
       <template v-for="(category, idx) in categories" :key="category.slug">
-        <div
-          class="flex items-center justify-center flex-1 h-full px-1 cursor-pointer transition-colors"
-          @click="navigateToCategory(category.slug)"
-          @mouseover="hover = idx"
-          @mouseleave="hover = null"
-          :style="hover === idx ? { background: 'var(--subnav-hover)' } : { background: 'transparent' }"
-        >
+        <div class="flex items-center justify-center flex-1 h-full px-1 transition-colors cursor-pointer"
+          @click="navigateToCategory(category.slug)" @mouseover="hover = idx" @mouseleave="hover = null"
+          :style="hover === idx ? { background: 'var(--subnav-hover)' } : { background: 'transparent' }">
           <div class="flex flex-col items-center gap-0.5">
-            <v-icon
-              :name="category.icon || 'hi-cube'"
-              scale="1.4"
-              class="opacity-50 pt-1 pb-0.5 text-white"
-            />
-            <span class="text-white text-sm opacity-50 font-medium">{{ category.name }}</span>
+            <v-icon :name="category.icon || 'hi-cube'" scale="1.4" :class="[
+              'pt-1 pb-0.5',
+              hover === idx ? 'opacity-100' : 'opacity-60',
+              'text-gray-700 dark:text-white'
+            ]" />
+            <span :class="[
+              'text-sm font-medium',
+              hover === idx ? 'opacity-100' : 'opacity-70',
+              'text-gray-700 dark:text-white'
+            ]">{{ category.name }}</span>
           </div>
         </div>
-        <div v-if="idx < categories.length - 1" class="h-6 w-px bg-white opacity-20"></div>
+        <div v-if="idx < categories.length - 1"
+          :class="['h-6 w-px', hover === idx ? 'bg-gray-400' : 'bg-gray-300', 'dark:bg-white/20']"></div>
       </template>
     </div>
   </nav>
@@ -50,5 +51,15 @@ const navigateToCategory = (categorySlug: string) => {
 <style scoped>
 .font-medium {
   font-weight: 500;
+}
+
+nav {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  nav {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
 }
 </style>
