@@ -35,6 +35,7 @@ import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import axios from 'axios'
 import { useToast } from '@/composables/useToast'
+import { useThemeClasses } from '@/composables/useThemeClasses'
 
 // === Interfaces ===
 interface ProductVariant {
@@ -139,6 +140,16 @@ const userCartStore = useUserCartStore()
 const reviewsStore = useReviewsStore()
 const { t } = useI18n()
 const toast = useToast()
+
+// === Theme Classes ===
+const {
+  cardClasses,
+  textClasses,
+  textSecondaryClasses,
+  textMutedClasses,
+  buttonPrimaryClasses,
+  pageBackgroundClasses
+} = useThemeClasses()
 
 // === Reactive refs ===
 const { isAuthenticated, user } = storeToRefs(authStore)
@@ -581,7 +592,7 @@ const debugReviewSubmission = () => {
 
 // Expose debug function to window for console access
 if (typeof window !== 'undefined') {
-  ;(window as Window & typeof globalThis & { debugReview?: () => void }).debugReview = debugReviewSubmission
+  ; (window as Window & typeof globalThis & { debugReview?: () => void }).debugReview = debugReviewSubmission
 }
 
 // === Cart Functionality ===
@@ -842,59 +853,54 @@ const fetchProductVariants = async (productId: number) => {
 </script>
 
 <template>
-  <div class="min-h-screen">
+  <div :class="['min-h-screen', pageBackgroundClasses]">
     <!-- Breadcrumb -->
-    <div class="pt-[85px] lg:pt-0 bg-white">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <div :class="['pt-[85px] lg:pt-0', cardClasses]">
+      <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <BreadcrumbNav :breadcrumbs="breadcrumbs" />
       </div>
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="flex justify-center items-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
-      <span class="ml-3 text-gray-600">Cargando producto...</span>
+    <div v-if="loading" :class="['flex justify-center items-center py-12', pageBackgroundClasses]">
+      <div
+        :class="['animate-spin rounded-full h-12 w-12 border-b-2', textClasses.includes('dark:text-white') ? 'border-black dark:border-white' : 'border-black']">
+      </div>
+      <span :class="['ml-3', textSecondaryClasses]">Cargando producto...</span>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center">
+    <div v-else-if="error" :class="['max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8', pageBackgroundClasses]">
+      <div
+        class="px-4 py-3 text-center text-red-700 bg-red-100 border border-red-400 rounded-lg dark:bg-red-900 dark:border-red-600 dark:text-red-200">
         <span>{{ error }}</span>
       </div>
     </div>
 
     <!-- Product Details -->
-    <div v-else class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div v-else :class="['max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8', pageBackgroundClasses]">
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <!-- Left Column - Product Images -->
         <div class="space-y-4">
           <!-- Main Product Image -->
-          <div class="w-full h-[400px] lg:h-[500px] flex items-center justify-center bg-gray-100 rounded-2xl overflow-hidden">
-            <img
-              :src="currentImage"
-              :alt="currentProduct.name"
-              class="w-full h-full object-cover rounded-2xl product-image-hover"
-            />
+          <div
+            class="w-full h-[400px] lg:h-[500px] flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden">
+            <img :src="currentImage" :alt="currentProduct.name"
+              class="object-cover w-full h-full rounded-2xl product-image-hover" />
           </div>
 
           <!-- Image Thumbnails -->
-          <div v-if="productImages.length > 1" class="flex space-x-2 mt-2 overflow-x-auto">
-            <button
-              v-for="(img, idx) in productImages"
-              :key="idx"
-              @click="selectImage(idx)"
-              :class="[
-                'border rounded-lg overflow-hidden focus:outline-none',
-                selectedImageIndex === idx ? 'border-black' : 'border-gray-200'
-              ]"
-              style="width: 64px; height: 64px;"
-            >
+          <div v-if="productImages.length > 1" class="flex mt-2 space-x-2 overflow-x-auto">
+            <button v-for="(img, idx) in productImages" :key="idx" @click="selectImage(idx)" :class="[
+              'border rounded-lg overflow-hidden focus:outline-none transition-colors duration-200',
+              selectedImageIndex === idx
+                ? 'border-black dark:border-white'
+                : 'border-gray-200 dark:border-gray-600'
+            ]" style="width: 64px; height: 64px;">
               <img
-                :src="typeof img === 'string' ? img : img.imageUrl"
-                :alt="`Product view ${idx + 1}`"
-                class="w-full h-full object-cover transition-opacity duration-200"
-                :style="selectedImageIndex === idx ? '' : 'opacity: 0.4;'"
-              />
+                :src="img && typeof img === 'string' ? img : (img as any)?.imageUrl || '/images/placeholder-phone-red.webp'"
+                :alt="`Product view ${idx + 1}`" class="object-cover w-full h-full transition-opacity duration-200"
+                :style="selectedImageIndex === idx ? '' : 'opacity: 0.4;'" />
             </button>
           </div>
         </div>
@@ -903,15 +909,15 @@ const fetchProductVariants = async (productId: number) => {
         <div class="space-y-6">
           <!-- Product Title and Price -->
           <div>
-            <h1 class="font-srProDisplay text-4xl font-bold text-black mb-4">
+            <h1 :class="['font-srProDisplay text-4xl font-bold mb-4', textClasses]">
               {{ currentProduct.name }}
             </h1>
 
-            <div class="flex items-center space-x-3 mb-4">
-              <span class="font-srProDisplay text-3xl font-semibold text-gray-700">
+            <div class="flex items-center mb-4 space-x-3">
+              <span :class="['font-srProDisplay text-3xl font-semibold', textSecondaryClasses]">
                 {{ formatPrice(finalPrice) }}
               </span>
-              <span class="font-srProDisplay text-xl text-gray-400 line-through">
+              <span :class="['font-srProDisplay text-xl line-through', textMutedClasses]">
                 {{ formatPrice(discountPrice) }}
               </span>
             </div>
@@ -919,36 +925,27 @@ const fetchProductVariants = async (productId: number) => {
 
           <!-- Color Selection -->
           <div v-if="availableColors.length > 0" class="flex items-center gap-4">
-            <span class="font-srProDisplay text-sm font-medium text-gray-700">Select color:</span>
+            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">Select color:</span>
             <div class="flex space-x-3">
-              <button
-                v-for="color in availableColors"
-                :key="color"
-                @click="selectColor(color)"
-                :class="[
-                  'w-8 h-8 rounded-full border-2 transition-all',
-                  selectedColor === color ? 'border-black ring-2 ring-gray-300' : 'border-gray-300',
-                  getColorClass(color),
-                ]"
-                :title="color"
-              ></button>
+              <button v-for="color in availableColors" :key="color" @click="selectColor(color)" :class="[
+                'w-8 h-8 rounded-full border-2 transition-all',
+                selectedColor === color
+                  ? 'border-black dark:border-white ring-2 ring-gray-300 dark:ring-gray-600'
+                  : 'border-gray-300 dark:border-gray-600',
+                getColorClass(color),
+              ]" :title="color"></button>
             </div>
           </div>
 
           <!-- Size/Storage Selection -->
           <div v-if="availableSizes.length > 0" class="space-y-3">
             <div class="flex flex-wrap gap-3">
-              <button
-                v-for="size in availableSizes"
-                :key="size"
-                @click="selectStorage(size)"
-                :class="[
-                  'px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium transition-all',
-                  selectedStorage === size
-                    ? 'border-black bg-black text-white'
-                    : 'border-gray-300 text-gray-700 bg-gray-50 hover:bg-gray-100'
-                ]"
-              >
+              <button v-for="size in availableSizes" :key="size" @click="selectStorage(size)" :class="[
+                'px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium transition-all',
+                selectedStorage === size
+                  ? 'border-black dark:border-white bg-black dark:bg-white text-white dark:text-black'
+                  : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
+              ]">
                 {{ size }}
               </button>
             </div>
@@ -956,8 +953,9 @@ const fetchProductVariants = async (productId: number) => {
 
           <!-- Storage Display (for Mobile & Compute) - fallback for when no variants -->
           <div v-else-if="isMobileComputeCategory && currentProduct.specifications?.storage" class="space-y-3">
-            <span class="font-srProDisplay text-sm font-medium text-gray-700">Storage:</span>
-            <div class="px-6 py-3 border border-gray-300 rounded-[8px] font-srProDisplay text-sm font-medium text-gray-700 bg-gray-50">
+            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">Storage:</span>
+            <div
+              :class="['px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium', 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700', textSecondaryClasses]">
               {{ currentProduct.specifications?.storage ?? '' }}
             </div>
           </div>
@@ -965,23 +963,25 @@ const fetchProductVariants = async (productId: number) => {
           <!-- Stock Information -->
           <div v-if="currentVariant || productVariants.length > 0" class="space-y-2">
             <div class="flex items-center gap-2">
-              <span class="font-srProDisplay text-sm font-medium text-gray-700">Stock:</span>
+              <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">Stock:</span>
               <span :class="[
                 'font-srProDisplay text-sm font-semibold',
-                isInStock ? 'text-green-600' : 'text-red-600'
+                isInStock ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
               ]">
                 {{ isInStock ? `${currentStock} available` : 'Out of stock' }}
               </span>
             </div>
-            <div v-if="currentVariant" class="text-xs text-gray-500">
+            <div v-if="currentVariant" :class="['text-xs', textMutedClasses]">
               SKU: {{ currentVariant?.sku ?? '' }}
             </div>
           </div>
 
           <!-- DEBUG: Raw product data -->
-          <div v-if="product" class="space-y-3 p-4 bg-yellow-50 border border-yellow-200 rounded">
-            <h3 class="font-bold text-sm">🔍 DEBUG: Product & Variant Data (REMOVE LATER)</h3>
-            <div class="text-xs space-y-1">
+          <div v-if="product"
+            class="p-4 space-y-3 border border-yellow-200 rounded bg-yellow-50 dark:bg-yellow-900 dark:border-yellow-700">
+            <h3 class="text-sm font-bold text-yellow-800 dark:text-yellow-200">🔍 DEBUG: Product & Variant Data (REMOVE
+              LATER)</h3>
+            <div class="space-y-1 text-xs text-yellow-700 dark:text-yellow-300">
               <p><strong>Category:</strong> {{ product?.category ?? '' }}</p>
               <p><strong>Is Mobile/Compute:</strong> {{ isMobileComputeCategory }}</p>
               <p><strong>Is Input/Control:</strong> {{ isInputControlCategory }}</p>
@@ -999,16 +999,17 @@ const fetchProductVariants = async (productId: number) => {
 
 
           <!-- Product Specifications - Mobile & Compute Template -->
-          <div v-if="isMobileComputeCategory && currentProduct.specifications" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div v-if="isMobileComputeCategory && currentProduct.specifications"
+            class="grid grid-cols-2 gap-3 md:grid-cols-3">
             <!-- Screen Size -->
             <div v-if="currentProduct.specifications?.screenSize"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 flex items-center justify-center">
-                <v-icon name="io-resize" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10">
+                <v-icon name="io-resize" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Screen size</p>
-                <p class="font-srProDisplay text-sm font-semibold">
+                <p :class="['text-xs', textMutedClasses]">Screen size</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.screenSize ?? '' }}
                 </p>
               </div>
@@ -1016,13 +1017,13 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- CPU -->
             <div v-if="currentProduct.specifications?.cpu"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="hi-solid-chip" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="hi-solid-chip" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">CPU</p>
-                <p class="font-srProDisplay text-sm font-semibold">
+                <p :class="['text-xs', textMutedClasses]">CPU</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.cpu ?? '' }}
                 </p>
               </div>
@@ -1030,13 +1031,13 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- GPU -->
             <div v-if="currentProduct.specifications?.gpu"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="hi-chip" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="hi-chip" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">GPU</p>
-                <p class="font-srProDisplay text-sm font-semibold">
+                <p :class="['text-xs', textMutedClasses]">GPU</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.gpu ?? '' }}
                 </p>
               </div>
@@ -1044,41 +1045,43 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- RAM -->
             <div v-if="currentProduct.specifications?.ram"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="hi-cube" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="hi-cube" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">RAM</p>
-                <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications && currentProduct.specifications.ram ? currentProduct.specifications.ram + 'GB' : '' }}
+                <p :class="['text-xs', textMutedClasses]">RAM</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
+                  {{ currentProduct.specifications && currentProduct.specifications.ram ?
+                    currentProduct.specifications.ram + 'GB' : '' }}
                 </p>
               </div>
             </div>
 
             <!-- Refresh Rate -->
             <div v-if="currentProduct.specifications?.refreshRate"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="hi-refresh" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="hi-refresh" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Refresh Rate</p>
-                <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications && currentProduct.specifications.refreshRate ? currentProduct.specifications.refreshRate + 'Hz' : '' }}
+                <p :class="['text-xs', textMutedClasses]">Refresh Rate</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
+                  {{ currentProduct.specifications && currentProduct.specifications.refreshRate ?
+                    currentProduct.specifications.refreshRate + 'Hz' : '' }}
                 </p>
               </div>
             </div>
 
             <!-- Camera -->
             <div v-if="currentProduct.specifications?.camera"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="bi-camera" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="bi-camera" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Camera</p>
-                <p class="font-srProDisplay text-sm font-semibold">
+                <p :class="['text-xs', textMutedClasses]">Camera</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.camera ?? '' }}
                 </p>
               </div>
@@ -1086,13 +1089,13 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Front Camera -->
             <div v-if="currentProduct.specifications?.frontCamera"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="io-camera-reverse-outline" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="io-camera-reverse-outline" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Front Camera</p>
-                <p class="font-srProDisplay text-sm font-semibold">
+                <p :class="['text-xs', textMutedClasses]">Front Camera</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.frontCamera ?? '' }}
                 </p>
               </div>
@@ -1100,13 +1103,13 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Battery -->
             <div v-if="currentProduct.specifications?.battery"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="gi-battery-75" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="gi-battery-75" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Battery</p>
-                <p class="font-srProDisplay text-sm font-semibold">
+                <p :class="['text-xs', textMutedClasses]">Battery</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.battery ?? '' }}
                 </p>
               </div>
@@ -1114,13 +1117,13 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Operating System -->
             <div v-if="currentProduct.specifications?.os"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="io-settings" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="io-settings" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">OS</p>
-                <p class="font-srProDisplay text-sm font-semibold">
+                <p :class="['text-xs', textMutedClasses]">OS</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.os ?? '' }}
                 </p>
               </div>
@@ -1128,16 +1131,17 @@ const fetchProductVariants = async (productId: number) => {
           </div>
 
           <!-- Product Specifications - Input & Control Template -->
-          <div v-else-if="isInputControlCategory && currentProduct.specifications" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div v-else-if="isInputControlCategory && currentProduct.specifications"
+            class="grid grid-cols-2 gap-3 md:grid-cols-3">
             <!-- DPI -->
             <div v-if="currentProduct.specifications?.dpi"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="io-locate" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="io-locate" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">DPI</p>
-                <p class="font-srProDisplay text-sm font-semibold">
+                <p :class="['text-xs', textMutedClasses]">DPI</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.dpi ?? '' }}
                 </p>
               </div>
@@ -1145,27 +1149,28 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Polling Rate -->
             <div v-if="currentProduct.specifications?.pollingRate"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="hi-lightning-bolt" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="hi-lightning-bolt" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Polling Rate</p>
-                <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications && currentProduct.specifications.pollingRate ? currentProduct.specifications.pollingRate + 'Hz' : '' }}
+                <p :class="['text-xs', textMutedClasses]">Polling Rate</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
+                  {{ currentProduct.specifications && currentProduct.specifications.pollingRate ?
+                    currentProduct.specifications.pollingRate + 'Hz' : '' }}
                 </p>
               </div>
             </div>
 
             <!-- Switch Type -->
             <div v-if="currentProduct.specifications?.switchType"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="io-keypad" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="io-keypad" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Switch Type</p>
-                <p class="font-srProDisplay text-sm font-semibold">
+                <p :class="['text-xs', textMutedClasses]">Switch Type</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.switchType ?? '' }}
                 </p>
               </div>
@@ -1173,13 +1178,13 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Backlighting -->
             <div v-if="currentProduct.specifications?.backlighting"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="io-bulb" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="io-bulb" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Backlighting</p>
-                <p class="font-srProDisplay text-sm font-semibold">
+                <p :class="['text-xs', textMutedClasses]">Backlighting</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.backlighting ?? '' }}
                 </p>
               </div>
@@ -1187,27 +1192,28 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Programmable Buttons -->
             <div v-if="currentProduct.specifications?.programmableButtons !== undefined"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="io-options" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="io-options" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Programmable</p>
-                <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications && currentProduct.specifications.programmableButtons !== undefined ? (currentProduct.specifications.programmableButtons ? 'Yes' : 'No') : '' }}
+                <p :class="['text-xs', textMutedClasses]">Programmable</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
+                  {{ currentProduct.specifications && currentProduct.specifications.programmableButtons !== undefined ?
+                    (currentProduct.specifications.programmableButtons ? 'Yes' : 'No') : '' }}
                 </p>
               </div>
             </div>
 
             <!-- Battery Life -->
             <div v-if="currentProduct.specifications?.batteryLife"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="gi-battery-75" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="gi-battery-75" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Battery Life</p>
-                <p class="font-srProDisplay text-sm font-semibold">
+                <p :class="['text-xs', textMutedClasses]">Battery Life</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.batteryLife ?? '' }}
                 </p>
               </div>
@@ -1215,14 +1221,15 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Ergonomic -->
             <div v-if="currentProduct.specifications?.ergonomic !== undefined"
-                 class="flex items-center space-x-3 bg-[#F4F4F4] rounded-[8px] w-auto h-auto p-3">
-              <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                <v-icon name="io-hand-left" scale="1.2" class="text-gray-600" />
+              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
+                <v-icon name="io-hand-left" scale="1.2" class="text-gray-600 dark:text-gray-300" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Ergonomic</p>
-                <p class="font-srProDisplay text-sm font-semibold">
-                  {{ currentProduct.specifications && currentProduct.specifications.ergonomic !== undefined ? (currentProduct.specifications.ergonomic ? 'Yes' : 'No') : '' }}
+                <p :class="['text-xs', textMutedClasses]">Ergonomic</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
+                  {{ currentProduct.specifications && currentProduct.specifications.ergonomic !== undefined ?
+                    (currentProduct.specifications.ergonomic ? 'Yes' : 'No') : '' }}
                 </p>
               </div>
             </div>
@@ -1230,32 +1237,27 @@ const fetchProductVariants = async (productId: number) => {
 
           <!-- Product Description -->
           <div class="space-y-3">
-            <p class="font-srProDisplay text-gray-700 leading-relaxed">
+            <p :class="['font-srProDisplay leading-relaxed', textSecondaryClasses]">
               {{ displayedDescription }}
             </p>
-            <button
-              v-if="isDescriptionLong"
-              @click="toggleDescription"
-              class="text-black font-srProDisplay text-sm font-medium underline focus:outline-none"
-            >
+            <button v-if="isDescriptionLong" @click="toggleDescription"
+              :class="['font-srProDisplay text-sm font-medium underline focus:outline-none', textClasses]">
               {{ showFullDescription ? 'less...' : 'more...' }}
             </button>
           </div>
 
           <!-- Action Buttons -->
           <div class="flex gap-3">
-            <button
-              @click="addToWishlist"
+            <button @click="addToWishlist"
               :disabled="wishlistLoading || !isAuthenticated || (!!currentProduct?.id && wishlistStore.isProductInWishlist(currentProduct.id))"
               :class="[
-                'flex-1 border border-gray-300 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
+                'flex-1 border py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
                 wishlistLoading || !isAuthenticated || (!!currentProduct?.id && wishlistStore.isProductInWishlist(currentProduct.id))
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'text-gray-700 hover:bg-gray-50'
-              ]"
-            >
+                  ? 'border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                  : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
+              ]">
               <span v-if="wishlistLoading" class="flex items-center justify-center">
-                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 mr-2"></div>
+                <div class="w-4 h-4 mr-2 border-b-2 border-gray-600 rounded-full animate-spin"></div>
                 Adding...
               </span>
               <span v-else-if="!isAuthenticated">
@@ -1268,18 +1270,16 @@ const fetchProductVariants = async (productId: number) => {
                 Add to Wishlist
               </span>
             </button>
-            <button
-              @click="addToCart"
+            <button @click="addToCart"
               :disabled="cartLoading || !isInStock || (!selectedColor && availableColors.length > 0) || (!selectedStorage && availableSizes.length > 0)"
               :class="[
                 'flex-1 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
                 !cartLoading && isInStock && (availableColors.length === 0 || selectedColor) && (availableSizes.length === 0 || selectedStorage)
-                  ? 'bg-black text-white hover:bg-gray-800'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              ]"
-            >
+                  ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100'
+                  : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+              ]">
               <span v-if="cartLoading" class="flex items-center justify-center">
-                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                <div class="w-4 h-4 mr-2 border-b-2 border-white rounded-full animate-spin"></div>
                 Adding...
               </span>
               <span v-else-if="!isAuthenticated">
@@ -1301,32 +1301,32 @@ const fetchProductVariants = async (productId: number) => {
           </div>
 
           <!-- Delivery Info -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-            <div class="flex items-center bg-[#F4F4F4] rounded-[8px] p-3">
-              <div class="w-[50px] h-[50px] flex items-center justify-center text-gray-600 mr-4">
+          <div class="grid grid-cols-1 gap-4 pt-4 md:grid-cols-3">
+            <div class="flex items-center bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] p-3">
+              <div class="w-[50px] h-[50px] flex items-center justify-center text-gray-600 dark:text-gray-300 mr-4">
                 <v-icon name="hi-truck" scale="1.2" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Free Delivery</p>
-                <p class="font-srProDisplay text-sm font-semibold">1-2 day</p>
+                <p :class="['text-xs', textMutedClasses]">Free Delivery</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">1-2 day</p>
               </div>
             </div>
-            <div class="flex items-center bg-[#F4F4F4] rounded-[8px] p-3">
-              <div class="w-[50px] h-[50px] flex items-center justify-center text-gray-600 mr-4">
+            <div class="flex items-center bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] p-3">
+              <div class="w-[50px] h-[50px] flex items-center justify-center text-gray-600 dark:text-gray-300 mr-4">
                 <v-icon name="bi-shop" scale="1.2" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">In Stock</p>
-                <p class="font-srProDisplay text-sm font-semibold">Today</p>
+                <p :class="['text-xs', textMutedClasses]">In Stock</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">Today</p>
               </div>
             </div>
-            <div class="flex items-center bg-[#F4F4F4] rounded-[8px] p-3">
-              <div class="w-[50px] h-[50px] flex items-center justify-center text-gray-600 mr-4">
+            <div class="flex items-center bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] p-3">
+              <div class="w-[50px] h-[50px] flex items-center justify-center text-gray-600 dark:text-gray-300 mr-4">
                 <v-icon name="hi-badge-check" scale="1.2" />
               </div>
               <div>
-                <p class="text-xs text-gray-500">Guaranteed</p>
-                <p class="font-srProDisplay text-sm font-semibold">1 year</p>
+                <p :class="['text-xs', textMutedClasses]">Guaranteed</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">1 year</p>
               </div>
             </div>
           </div>
@@ -1335,27 +1335,20 @@ const fetchProductVariants = async (productId: number) => {
     </div>
 
     <!-- Details Section -->
-    <section class="w-full flex justify-center bg-[#fafbfc] py-24">
-      <div class="w-full max-w-[1640px] bg-white rounded-2xl shadow-sm px-8 py-10">
+    <section :class="['w-full flex justify-center py-24', 'bg-[#fafbfc] dark:bg-gray-800']">
+      <div :class="['w-full max-w-[1640px] rounded-2xl shadow-sm px-8 py-10', cardClasses]">
         <div class="flex items-center justify-between mb-2">
-          <h2 class="text-2xl font-semibold">Details</h2>
-          <button
-            @click="toggleDetails"
-            class="p-1 hover:bg-gray-100 rounded transition-colors"
-            type="button"
-            aria-label="Toggle details section"
-          >
-            <v-icon
-              name="hi-chevron-down"
-              class="w-5 h-5 text-gray-600 transition-transform duration-200"
-              :class="{ 'rotate-180': detailsCollapsed }"
-              scale="1.2"
-            />
+          <h2 :class="['text-2xl font-semibold', textClasses]">Details</h2>
+          <button @click="toggleDetails" class="p-1 transition-colors rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+            type="button" aria-label="Toggle details section">
+            <v-icon name="hi-chevron-down"
+              :class="['w-5 h-5 transition-transform duration-200', textSecondaryClasses, { 'rotate-180': detailsCollapsed }]"
+              scale="1.2" />
           </button>
         </div>
         <transition name="fade-details">
           <div v-show="!detailsCollapsed">
-            <p class="text-gray-400 mb-8 max-w-auto">
+            <p :class="['mb-8 max-w-auto', textMutedClasses]">
               Just as a book is judged by its cover, the first thing you notice when you pick up a
               modern smartphone is the display. Nothing surprising, because advanced technologies
               allow you to practically level the display frames and cutouts for the front camera and
@@ -1367,173 +1360,177 @@ const fetchProductVariants = async (productId: number) => {
             </p>
 
             <!-- Details content with fade effect -->
-            <div class="space-y-6 relative">
-              <div
-                :class="[
-                  'transition-all duration-300 overflow-hidden',
-                  showAllDetails ? '' : 'max-h-[600px]',
-                ]"
-                style="position: relative"
-              >
-                <div
-                  :style="
-                    showAllDetails
-                      ? ''
-                      : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
-                  "
-                >
+            <div class="relative space-y-6">
+              <div :class="[
+                'transition-all duration-300 overflow-hidden',
+                showAllDetails ? '' : 'max-h-[600px]',
+              ]" style="position: relative">
+                <div :style="showAllDetails
+                    ? ''
+                    : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
+                  ">
                   <!-- Mobile & Compute Template Details -->
                   <template v-if="isMobileComputeCategory && hasMobileComputeSpecs">
-                  <!-- Display Section -->
-                  <div>
-                    <h3 class="text-xl font-semibold mb-4 mt-8">Display & Screen</h3>
-                    <div class="border-t border-gray-200">
-                      <div v-if="currentProduct.specifications?.screenSize"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Screen size</div>
-                        <div class="w-48 text-right font-medium">
-                          {{ currentProduct.specifications.screenSize }}
+                    <!-- Display Section -->
+                    <div>
+                      <h3 :class="['mt-8 mb-4 text-xl font-semibold', textClasses]">Display & Screen</h3>
+                      <div :class="['border-t', 'border-gray-200 dark:border-gray-600']">
+                        <div v-if="currentProduct.specifications?.screenSize"
+                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          <div :class="['flex-1', textSecondaryClasses]">Screen size</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">
+                            {{ currentProduct.specifications.screenSize }}
+                          </div>
+                        </div>
+                        <div v-if="currentProduct.specifications?.refreshRate"
+                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          <div :class="['flex-1', textSecondaryClasses]">Refresh rate</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.refreshRate }}Hz</div>
                         </div>
                       </div>
-                      <div v-if="currentProduct.specifications?.refreshRate"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Refresh rate</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.refreshRate }}Hz</div>
+                    </div>
+                    <!-- Performance Section -->
+                    <div>
+                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Performance</h3>
+                      <div :class="['border-t', 'border-gray-200 dark:border-gray-600']">
+                        <div v-if="currentProduct.specifications?.cpu"
+                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          <div :class="['flex-1', textSecondaryClasses]">CPU</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.cpu }}</div>
+                        </div>
+                        <div v-if="currentProduct.specifications?.gpu"
+                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          <div :class="['flex-1', textSecondaryClasses]">GPU</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.gpu }}</div>
+                        </div>
+                        <div v-if="currentProduct.specifications?.ram"
+                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          <div :class="['flex-1', textSecondaryClasses]">RAM</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.ram }}GB</div>
+                        </div>
+                        <div v-if="currentProduct.specifications?.storage"
+                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          <div :class="['flex-1', textSecondaryClasses]">Storage</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.storage }}</div>
+                        </div>
+                        <div v-if="currentProduct.specifications?.os" class="flex items-center py-4">
+                          <div :class="['flex-1', textSecondaryClasses]">Operating System</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{ currentProduct.specifications.os
+                            }}</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <!-- Performance Section -->
-                  <div>
-                    <h3 class="text-xl font-semibold mb-4 mt-12">Performance</h3>
-                    <div class="border-t border-gray-200">
-                      <div v-if="currentProduct.specifications?.cpu"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">CPU</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.cpu }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.gpu"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">GPU</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.gpu }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.ram"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">RAM</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.ram }}GB</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.storage"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Storage</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.storage }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.os"
-                           class="flex items-center py-4">
-                        <div class="flex-1 text-gray-600">Operating System</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.os }}</div>
+                    <!-- Camera Section -->
+                    <div v-if="currentProduct.specifications?.camera || currentProduct.specifications?.frontCamera">
+                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Camera</h3>
+                      <div :class="['border-t', 'border-gray-200 dark:border-gray-600']">
+                        <div v-if="currentProduct.specifications?.camera"
+                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          <div :class="['flex-1', textSecondaryClasses]">Rear camera</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.camera }}</div>
+                        </div>
+                        <div v-if="currentProduct.specifications?.frontCamera" class="flex items-center py-4">
+                          <div :class="['flex-1', textSecondaryClasses]">Front camera</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.frontCamera }}</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <!-- Camera Section -->
-                  <div v-if="currentProduct.specifications?.camera || currentProduct.specifications?.frontCamera">
-                    <h3 class="text-xl font-semibold mb-4 mt-12">Camera</h3>
-                    <div class="border-t border-gray-200">
-                      <div v-if="currentProduct.specifications?.camera"
-                           class="flex items-center py-4 border-b border-gray-100">
-                        <div class="flex-1 text-gray-600">Rear camera</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.camera }}</div>
-                      </div>
-                      <div v-if="currentProduct.specifications?.frontCamera"
-                           class="flex items-center py-4">
-                        <div class="flex-1 text-gray-600">Front camera</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.frontCamera }}</div>
+                    <!-- Battery Section -->
+                    <div v-if="currentProduct.specifications?.battery">
+                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Battery</h3>
+                      <div :class="['border-t', 'border-gray-200 dark:border-gray-600']">
+                        <div class="flex items-center py-4">
+                          <div :class="['flex-1', textSecondaryClasses]">Battery capacity</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.battery }}</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <!-- Battery Section -->
-                  <div v-if="currentProduct.specifications?.battery">
-                    <h3 class="text-xl font-semibold mb-4 mt-12">Battery</h3>
-                    <div class="border-t border-gray-200">
-                      <div class="flex items-center py-4">
-                        <div class="flex-1 text-gray-600">Battery capacity</div>
-                        <div class="w-48 text-right font-medium">{{ currentProduct.specifications.battery }}</div>
-                      </div>
-                    </div>
-                  </div>
                   </template>
                   <!-- Input & Control Template Details -->
                   <template v-else-if="isInputControlCategory && hasInputControlSpecs">
                     <!-- Performance Section -->
                     <div>
-                      <h3 class="text-xl font-semibold mb-4 mt-8">Performance</h3>
-                      <div class="border-t border-gray-200">
+                      <h3 :class="['mt-8 mb-4 text-xl font-semibold', textClasses]">Performance</h3>
+                      <div :class="['border-t', 'border-gray-200 dark:border-gray-600']">
                         <div v-if="currentProduct.specifications?.dpi"
-                             class="flex items-center py-4 border-b border-gray-100">
-                          <div class="flex-1 text-gray-600">DPI</div>
-                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.dpi }}</div>
+                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          <div :class="['flex-1', textSecondaryClasses]">DPI</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.dpi }}</div>
                         </div>
-                        <div v-if="currentProduct.specifications?.pollingRate"
-                             class="flex items-center py-4">
-                          <div class="flex-1 text-gray-600">Polling rate</div>
-                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.pollingRate }}Hz</div>
+                        <div v-if="currentProduct.specifications?.pollingRate" class="flex items-center py-4">
+                          <div :class="['flex-1', textSecondaryClasses]">Polling rate</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.pollingRate }}Hz</div>
                         </div>
                       </div>
                     </div>
                     <!-- Input Features Section -->
                     <div>
-                      <h3 class="text-xl font-semibold mb-4 mt-12">Input Features</h3>
-                      <div class="border-t border-gray-200">
+                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Input Features</h3>
+                      <div :class="['border-t', 'border-gray-200 dark:border-gray-600']">
                         <div v-if="currentProduct.specifications?.switchType"
-                             class="flex items-center py-4 border-b border-gray-100">
-                          <div class="flex-1 text-gray-600">Switch type</div>
-                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.switchType }}</div>
+                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          <div :class="['flex-1', textSecondaryClasses]">Switch type</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.switchType }}</div>
                         </div>
                         <div v-if="currentProduct.specifications?.backlighting"
-                             class="flex items-center py-4 border-b border-gray-100">
-                          <div class="flex-1 text-gray-600">Backlighting</div>
-                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.backlighting }}</div>
+                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          <div :class="['flex-1', textSecondaryClasses]">Backlighting</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.backlighting }}</div>
                         </div>
                         <div v-if="currentProduct.specifications?.programmableButtons !== undefined"
-                             class="flex items-center py-4 border-b border-gray-100">
-                          <div class="flex-1 text-gray-600">Programmable buttons</div>
-                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.programmableButtons ? 'Yes' : 'No' }}</div>
+                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          <div :class="['flex-1', textSecondaryClasses]">Programmable buttons</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.programmableButtons ? 'Yes' : 'No' }}</div>
                         </div>
                         <div v-if="currentProduct.specifications?.ergonomic !== undefined"
-                             class="flex items-center py-4">
-                          <div class="flex-1 text-gray-600">Ergonomic design</div>
-                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.ergonomic ? 'Yes' : 'No' }}</div>
+                          class="flex items-center py-4">
+                          <div :class="['flex-1', textSecondaryClasses]">Ergonomic design</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.ergonomic ? 'Yes' : 'No' }}</div>
                         </div>
                       </div>
                     </div>
                     <!-- Power Section -->
                     <div v-if="currentProduct.specifications?.batteryLife">
-                      <h3 class="text-xl font-semibold mb-4 mt-12">Power</h3>
-                      <div class="border-t border-gray-200">
+                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Power</h3>
+                      <div :class="['border-t', 'border-gray-200 dark:border-gray-600']">
                         <div class="flex items-center py-4">
-                          <div class="flex-1 text-gray-600">Battery life</div>
-                          <div class="w-48 text-right font-medium">{{ currentProduct.specifications.batteryLife }}</div>
+                          <div :class="['flex-1', textSecondaryClasses]">Battery life</div>
+                          <div :class="['w-48 font-medium text-right', textClasses]">{{
+                            currentProduct.specifications.batteryLife }}</div>
                         </div>
                       </div>
                     </div>
                   </template>
 
-                  </div>
+                </div>
 
                 <!-- Fade overlay when not showing all details -->
-                <div
-                  v-if="!showAllDetails"
-                  class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"
-                ></div>
+                <div v-if="!showAllDetails"
+                  class="absolute bottom-0 left-0 w-full h-32 pointer-events-none bg-gradient-to-t from-white dark:from-gray-900 to-transparent">
+                </div>
               </div>
 
               <!-- View More/Less Button -->
               <div class="flex justify-center mt-6">
-                <button
-                  @click="showAllDetails = !showAllDetails"
-                  class="flex items-center justify-center gap-2 px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                >
+                <button @click="showAllDetails = !showAllDetails"
+                  class="flex items-center justify-center gap-2 px-8 py-3 font-medium text-gray-800 transition-all bg-white border border-gray-400 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300">
                   <span>{{ showAllDetails ? 'View Less' : 'View More' }}</span>
-                  <v-icon v-if="!showAllDetails" name="hi-chevron-down" class="h-5 w-5" scale="1.2" />
-                  <v-icon v-else name="hi-chevron-up" class="h-5 w-5" scale="1.2" />
+                  <v-icon v-if="!showAllDetails" name="hi-chevron-down" class="w-5 h-5" scale="1.2" />
+                  <v-icon v-else name="hi-chevron-up" class="w-5 h-5" scale="1.2" />
                 </button>
               </div>
             </div>
@@ -1543,480 +1540,375 @@ const fetchProductVariants = async (productId: number) => {
     </section>
 
     <!-- Reviews Section -->
-<section class="w-full flex justify-center bg-white py-12 lg:py-24">
-  <div class="w-full max-w-[1640px] bg-white rounded-2xl px-4 lg:px-8 py-6 lg:py-10">
-    <div class="flex items-center justify-between mb-2">
-      <h2 class="text-xl lg:text-2xl font-semibold mb-4 lg:mb-8">Reviews</h2>
-      <button
-        @click="toggleReviews"
-        class="p-2 hover:bg-gray-100 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-        type="button"
-        aria-label="Toggle reviews section"
-      >
-        <v-icon
-          name="hi-chevron-down"
-          class="w-5 h-5 text-gray-600 transition-transform duration-200"
-          :class="{ 'rotate-180': reviewsCollapsed }"
-          scale="1.2"
-        />
-      </button>
-    </div>
-
-    <transition name="fade-reviews">
-      <div v-show="!reviewsCollapsed">
-        <!-- Mobile Reviews Stats -->
-        <div v-if="!productReviewsLoading && productReviews.length > 0" class="lg:hidden mb-6">
-          <!-- Overall Rating - Mobile -->
-          <div class="text-center bg-[#F4F4F4] rounded-2xl p-6 mb-6">
-            <div class="text-4xl font-bold mb-2">{{ Number(reviewStats.averageRating).toFixed(Number(reviewStats.averageRating) % 1 === 0 ? 0 : 1) }}</div>
-            <div class="text-gray-400 text-sm mb-3">
-              of {{ reviewStats.totalReviews }} reviews
-            </div>
-            <div class="flex justify-center">
-              <div class="flex">
-                <v-icon
-                  v-for="star in 5"
-                  :key="star"
-                  :name="
-                    star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'
-                  "
-                  :class="
-                    star <= Math.floor(reviewStats.averageRating)
-                      ? 'text-yellow-400'
-                      : 'text-gray-300'
-                  "
-                  scale="1.1"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- Rating Breakdown - Mobile -->
-          <div class="bg-gray-50 rounded-2xl p-4">
-            <h3 class="text-base font-semibold mb-4">Rating Breakdown</h3>
-            <div class="space-y-3">
-              <div class="flex items-center gap-3">
-                <span class="text-sm text-gray-600 w-20 flex-shrink-0">Excellent</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-2">
-                  <div
-                    class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                    :style="{
-                      width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
-                    }"
-                  ></div>
-                </div>
-                <span class="text-xs text-gray-400 w-6 text-right">{{ reviewStats.excellent }}</span>
-              </div>
-              <div class="flex items-center gap-3">
-                <span class="text-sm text-gray-600 w-20 flex-shrink-0">Good</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-2">
-                  <div
-                    class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                    :style="{
-                      width: (reviewStats.good / reviewStats.totalReviews) * 100 + '%',
-                    }"
-                  ></div>
-                </div>
-                <span class="text-xs text-gray-400 w-6 text-right">{{ reviewStats.good }}</span>
-              </div>
-              <div class="flex items-center gap-3">
-                <span class="text-sm text-gray-600 w-20 flex-shrink-0">Average</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-2">
-                  <div
-                    class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                    :style="{
-                      width: (reviewStats.average / reviewStats.totalReviews) * 100 + '%',
-                    }"
-                  ></div>
-                </div>
-                <span class="text-xs text-gray-400 w-6 text-right">{{ reviewStats.average }}</span>
-              </div>
-              <div class="flex items-center gap-3">
-                <span class="text-sm text-gray-600 w-20 flex-shrink-0">Below Avg</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-2">
-                  <div
-                    class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                    :style="{
-                      width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
-                    }"
-                  ></div>
-                </div>
-                <span class="text-xs text-gray-400 w-6 text-right">{{ reviewStats.belowAverage }}</span>
-              </div>
-              <div class="flex items-center gap-3">
-                <span class="text-sm text-gray-600 w-20 flex-shrink-0">Poor</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-2">
-                  <div
-                    class="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                    :style="{
-                      width: (reviewStats.poor / reviewStats.totalReviews) * 100 + '%',
-                    }"
-                  ></div>
-                </div>
-                <span class="text-xs text-gray-400 w-6 text-right">{{ reviewStats.poor }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Desktop Reviews Stats -->
-        <div v-if="!productReviewsLoading && productReviews.length > 0" class="hidden lg:flex items-start gap-12 mb-8">
-          <!-- Overall Rating -->
-          <div class="text-center space-x-3 bg-[#F4F4F4] rounded-[25px] w-auto h-auto p-8">
-            <div class="text-6xl font-bold mb-2">{{ Number(reviewStats.averageRating).toFixed(Number(reviewStats.averageRating) % 1 === 0 ? 0 : 1) }}</div>
-            <div class="text-gray-400 text-sm mb-2">
-              of {{ reviewStats.totalReviews }} reviews
-            </div>
-            <div class="flex justify-center">
-              <div class="flex">
-                <v-icon
-                  v-for="star in 5"
-                  :key="star"
-                  :name="
-                    star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'
-                  "
-                  :class="
-                    star <= Math.floor(reviewStats.averageRating)
-                      ? 'text-yellow-400'
-                      : 'text-gray-300'
-                  "
-                  scale="1.2"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- Rating Breakdown -->
-          <div class="flex-1 max-w-7xl">
-            <div class="space-y-2">
-              <div class="flex items-center gap-4">
-                <span class="text-lg text-gray-600 w-30">Excellent</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                  <div
-                    class="bg-yellow-400 h-1.5 rounded-full"
-                    :style="{
-                      width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
-                    }"
-                  ></div>
-                </div>
-                <span class="text-sm text-gray-400 w-8">{{ reviewStats.excellent }}</span>
-              </div>
-              <div class="flex items-center gap-4">
-                <span class="text-lg text-gray-600 w-30">Good</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                  <div
-                    class="bg-yellow-400 h-1.5 rounded-full"
-                    :style="{
-                      width: (reviewStats.good / reviewStats.totalReviews) * 100 + '%',
-                    }"
-                  ></div>
-                </div>
-                <span class="text-sm text-gray-400 w-8">{{ reviewStats.good }}</span>
-              </div>
-              <div class="flex items-center gap-4">
-                <span class="text-lg text-gray-600 w-30">Average</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                  <div
-                    class="bg-yellow-400 h-1.5 rounded-full"
-                    :style="{
-                      width: (reviewStats.average / reviewStats.totalReviews) * 100 + '%',
-                    }"
-                  ></div>
-                </div>
-                <span class="text-sm text-gray-400 w-8">{{ reviewStats.average }}</span>
-              </div>
-              <div class="flex items-center gap-4">
-                <span class="text-lg text-gray-600 w-30">Below Average</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                  <div
-                    class="bg-yellow-400 h-1.5 rounded-full"
-                    :style="{
-                      width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
-                    }"
-                  ></div>
-                </div>
-                <span class="text-sm text-gray-400 w-8">{{ reviewStats.belowAverage }}</span>
-              </div>
-              <div class="flex items-center gap-4">
-                <span class="text-lg text-gray-600 w-30">Poor</span>
-                <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                  <div
-                    class="bg-yellow-400 h-1.5 rounded-full"
-                    :style="{
-                      width: (reviewStats.poor / reviewStats.totalReviews) * 100 + '%',
-                    }"
-                  ></div>
-                </div>
-                <span class="text-sm text-gray-400 w-8">{{ reviewStats.poor }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Leave Comment Button -->
-        <div class="mb-8">
-          <button
-            @click="showReviewModal = true"
-            class="w-full border border-gray-200 rounded-[7px] px-4 py-4 text-gray-700 text-base font-medium bg-white hover:bg-gray-50 transition-all focus:outline-none focus:ring-2 focus:ring-gray-200 min-h-[48px]"
-          >
-            Leave Comment
+    <section :class="['w-full flex justify-center py-12 lg:py-24', pageBackgroundClasses]">
+      <div :class="['w-full max-w-[1640px] rounded-2xl px-4 lg:px-8 py-6 lg:py-10', cardClasses]">
+        <div class="flex items-center justify-between mb-2">
+          <h2 :class="['text-xl lg:text-2xl font-semibold mb-4 lg:mb-8', textClasses]">Reviews</h2>
+          <button @click="toggleReviews"
+            class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+            type="button" aria-label="Toggle reviews section">
+            <v-icon name="hi-chevron-down"
+              :class="['w-5 h-5 transition-transform duration-200', textSecondaryClasses, { 'rotate-180': reviewsCollapsed }]"
+              scale="1.2" />
           </button>
         </div>
 
-        <!-- Review Modal -->
-        <transition name="fade-details">
-          <div v-if="showReviewModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4">
-            <div class="bg-white rounded-xl shadow-lg p-6 lg:p-8 w-full max-w-md relative max-h-[90vh] overflow-y-auto">
-              <button @click="closeReviewModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Close">
-                <v-icon name="hi-x" scale="1.2" />
-              </button>
-              <h3 class="text-lg lg:text-xl font-semibold mb-4 pr-8">Leave a Review</h3>
-              <form @submit.prevent="submitReview">
-                <div class="mb-4">
-                  <label class="block text-gray-700 font-medium mb-2">Rating</label>
-                  <div class="flex gap-2">
-                    <button
-                      v-for="star in 5"
-                      :key="star"
-                      type="button"
-                      @click="reviewRating = star"
-                      :aria-label="`Set rating to ${star}`"
-                      class="focus:outline-none min-w-[44px] min-h-[44px] flex items-center justify-center"
-                    >
-                      <v-icon
-                        :name="star <= reviewRating ? 'bi-star-fill' : 'bi-star'"
-                        :class="star <= reviewRating ? 'text-yellow-400' : 'text-gray-300'"
-                        scale="1.5"
-                      />
-                    </button>
-                  </div>
-                  <div v-if="reviewErrors.rating" class="text-red-500 text-sm mt-1">{{ reviewErrors.rating }}</div>
+        <transition name="fade-reviews">
+          <div v-show="!reviewsCollapsed">
+            <!-- Mobile Reviews Stats -->
+            <div v-if="!productReviewsLoading && productReviews.length > 0" class="mb-6 lg:hidden">
+              <!-- Overall Rating - Mobile -->
+              <div class="text-center bg-[#F4F4F4] dark:bg-gray-700 rounded-2xl p-6 mb-6">
+                <div :class="['text-4xl font-bold mb-2', textClasses]">{{
+                  Number(reviewStats.averageRating).toFixed(Number(reviewStats.averageRating) % 1 === 0 ? 0 : 1) }}
                 </div>
-                <div class="mb-4">
-                  <label class="block text-gray-700 font-medium mb-2">Comment</label>
-                  <textarea
-                    v-model="reviewComment"
-                    maxlength="1000"
-                    rows="5"
-                    class="w-full border border-gray-200 rounded-[7px] px-4 py-3 text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all resize-none"
-                    placeholder="Share your experience..."
-                  ></textarea>
-                  <div class="flex justify-between text-xs text-gray-400 mt-1">
-                    <span>{{ reviewComment.length }}/1000</span>
-                    <span v-if="reviewErrors.comment" class="text-red-500">{{ reviewErrors.comment }}</span>
+                <div :class="['text-sm mb-3', textMutedClasses]">
+                  of {{ reviewStats.totalReviews }} reviews
+                </div>
+                <div class="flex justify-center">
+                  <div class="flex">
+                    <v-icon v-for="star in 5" :key="star" :name="star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'
+                      " :class="star <= Math.floor(reviewStats.averageRating)
+                      ? 'text-yellow-400'
+                      : 'text-gray-300'
+                    " scale="1.1" />
                   </div>
                 </div>
-                <div class="flex flex-col sm:flex-row justify-end gap-3 mt-6">
-                  <button
-                    type="button"
-                    @click="closeReviewModal"
-                    :class="[
-                      'flex-1 border border-gray-300 py-3 lg:py-4 px-4 lg:px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors min-h-[48px]',
-                      'text-gray-700 hover:bg-gray-50'
-                    ]"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    :disabled="reviewSubmitting"
-                    :class="[
-                      'flex-1 py-3 lg:py-4 px-4 lg:px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors min-h-[48px]',
-                      !reviewSubmitting
-                        ? 'bg-black text-white hover:bg-gray-800'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    ]"
-                  >
-                    <span v-if="reviewSubmitting">Submitting...</span>
-                    <span v-else>Submit Review</span>
-                  </button>
-                </div>
-                <div v-if="reviewErrors.submit" class="text-red-500 text-sm mt-4 text-center">{{ reviewErrors.submit }}</div>
-              </form>
-            </div>
-          </div>
-        </transition>
+              </div>
 
-        <!-- Loading State for Reviews -->
-        <div v-if="productReviewsLoading" class="flex justify-center items-center py-8">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-          <span class="ml-3 text-gray-600">Loading reviews...</span>
-        </div>
-
-        <!-- Error State for Reviews -->
-        <div v-else-if="productReviewsError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {{ productReviewsError }}
-        </div>
-
-        <!-- No Reviews State -->
-        <div v-else-if="productReviews.length === 0" class="text-center py-8">
-          <div class="text-gray-500 text-lg">No reviews yet</div>
-          <div class="text-gray-400 text-sm mt-2">Be the first to leave a review!</div>
-        </div>
-
-        <!-- Individual Reviews with View More/Less and Fade -->
-        <div v-else class="space-y-4 lg:space-y-6 relative">
-          <div
-            :class="[
-              'transition-all duration-300 overflow-hidden',
-              showAllReviews ? '' : 'max-h-[400px] lg:max-h-[600px]',
-            ]"
-            style="position: relative"
-          >
-            <div
-              :style="
-                showAllReviews
-                  ? ''
-                  : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
-              "
-            >
-              <div v-for="review in displayedReviews" :key="review.id" class="relative mb-4 lg:mb-6">
-                <div
-                  class="flex items-start gap-3 lg:gap-4 bg-[#F4F4F4] rounded-[10px] w-auto h-auto p-4 lg:p-8"
-                >
-                  <!-- Avatar -->
-                  <div class="w-10 h-10 lg:w-12 lg:h-12 flex-shrink-0">
-                    <img
-                      v-if="review.userAvatar"
-                      :src="review.userAvatar"
-                      :alt="`${review.userName || 'User'} avatar`"
-                      class="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover border-2 border-white shadow-lg avatar-hover"
-                      @error="handleAvatarError"
-                    />
-                    <div
-                      v-else
-                      class="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br rounded-full flex items-center justify-center shadow-lg avatar-hover"
-                      :class="`bg-gradient-to-br ${getAvatarColor(review.userName || 'Anonymous')} ${review.userAvatar ? 'hidden' : ''}`"
-                    >
-                      <span class="text-white text-xs lg:text-sm font-semibold">{{
-                        getUserInitials(review.userName || 'Anonymous')
-                      }}</span>
+              <!-- Rating Breakdown - Mobile -->
+              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                <h3 :class="['text-base font-semibold mb-4', textClasses]">Rating Breakdown</h3>
+                <div class="space-y-3">
+                  <div class="flex items-center gap-3">
+                    <span :class="['text-sm w-20 flex-shrink-0', textSecondaryClasses]">Excellent</span>
+                    <div class="flex-1 h-2 bg-gray-200 rounded-full dark:bg-gray-600">
+                      <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
+                        width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
+                      }"></div>
                     </div>
+                    <span :class="['text-xs w-6 text-right', textMutedClasses]">{{ reviewStats.excellent }}</span>
                   </div>
-
-                  <!-- Review Content -->
-                  <div class="flex-1">
-                    <div class="flex items-center justify-between mb-1">
-                      <h4 class="font-medium text-gray-900 text-sm lg:text-base">{{ review.userName || 'Anonymous' }}</h4>
-                      <span class="text-xs lg:text-sm text-gray-500">{{ review.date }}</span>
+                  <div class="flex items-center gap-3">
+                    <span :class="['text-sm w-20 flex-shrink-0', textSecondaryClasses]">Good</span>
+                    <div class="flex-1 h-2 bg-gray-200 rounded-full dark:bg-gray-600">
+                      <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
+                        width: (reviewStats.good / reviewStats.totalReviews) * 100 + '%',
+                      }"></div>
                     </div>
-
-                    <!-- Star Rating -->
-                    <div class="flex mb-2">
-                      <v-icon
-                        v-for="star in 5"
-                        :key="star"
-                        :name="star <= review.rating ? 'bi-star-fill' : 'bi-star'"
-                        :class="star <= review.rating ? 'text-yellow-400' : 'text-gray-300'"
-                        scale="1.0"
-                        class="lg:scale-110"
-                      />
+                    <span class="w-6 text-xs text-right text-gray-400">{{ reviewStats.good }}</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="flex-shrink-0 w-20 text-sm text-gray-600">Average</span>
+                    <div class="flex-1 h-2 bg-gray-200 rounded-full">
+                      <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
+                        width: (reviewStats.average / reviewStats.totalReviews) * 100 + '%',
+                      }"></div>
                     </div>
-
-                    <!-- Comment -->
-                    <p class="text-gray-700 leading-relaxed text-sm lg:text-base">{{ review.comment }}</p>
+                    <span class="w-6 text-xs text-right text-gray-400">{{ reviewStats.average }}</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="flex-shrink-0 w-20 text-sm text-gray-600">Below Avg</span>
+                    <div class="flex-1 h-2 bg-gray-200 rounded-full">
+                      <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
+                        width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
+                      }"></div>
+                    </div>
+                    <span class="w-6 text-xs text-right text-gray-400">{{ reviewStats.belowAverage }}</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="flex-shrink-0 w-20 text-sm text-gray-600">Poor</span>
+                    <div class="flex-1 h-2 bg-gray-200 rounded-full">
+                      <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
+                        width: (reviewStats.poor / reviewStats.totalReviews) * 100 + '%',
+                      }"></div>
+                    </div>
+                    <span class="w-6 text-xs text-right text-gray-400">{{ reviewStats.poor }}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Fade overlay when not showing all reviews -->
-            <div
-              v-if="!showAllReviews && hasMoreReviews"
-              class="absolute bottom-0 left-0 w-full h-24 lg:h-32 bg-gradient-to-t from-white to-transparent pointer-events-none"
-            ></div>
+            <!-- Desktop Reviews Stats -->
+            <div v-if="!productReviewsLoading && productReviews.length > 0"
+              class="items-start hidden gap-12 mb-8 lg:flex">
+              <!-- Overall Rating -->
+              <div class="text-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[25px] w-auto h-auto p-8">
+                <div :class="['mb-2 text-6xl font-bold', textClasses]">{{
+                  Number(reviewStats.averageRating).toFixed(Number(reviewStats.averageRating) % 1 === 0 ? 0 : 1) }}
+                </div>
+                <div :class="['mb-2 text-sm', textMutedClasses]">
+                  of {{ reviewStats.totalReviews }} reviews
+                </div>
+                <div class="flex justify-center">
+                  <div class="flex">
+                    <v-icon v-for="star in 5" :key="star" :name="star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'
+                      " :class="star <= Math.floor(reviewStats.averageRating)
+                      ? 'text-yellow-400'
+                      : 'text-gray-300'
+                    " scale="1.2" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rating Breakdown -->
+              <div class="flex-1 max-w-7xl">
+                <div class="space-y-2">
+                  <div class="flex items-center gap-4">
+                    <span class="text-lg text-gray-600 w-30">Excellent</span>
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
+                        width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
+                      }"></div>
+                    </div>
+                    <span class="w-8 text-sm text-gray-400">{{ reviewStats.excellent }}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-lg text-gray-600 w-30">Good</span>
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
+                        width: (reviewStats.good / reviewStats.totalReviews) * 100 + '%',
+                      }"></div>
+                    </div>
+                    <span class="w-8 text-sm text-gray-400">{{ reviewStats.good }}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-lg text-gray-600 w-30">Average</span>
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
+                        width: (reviewStats.average / reviewStats.totalReviews) * 100 + '%',
+                      }"></div>
+                    </div>
+                    <span class="w-8 text-sm text-gray-400">{{ reviewStats.average }}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-lg text-gray-600 w-30">Below Average</span>
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
+                        width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
+                      }"></div>
+                    </div>
+                    <span class="w-8 text-sm text-gray-400">{{ reviewStats.belowAverage }}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-lg text-gray-600 w-30">Poor</span>
+                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
+                        width: (reviewStats.poor / reviewStats.totalReviews) * 100 + '%',
+                      }"></div>
+                    </div>
+                    <span class="w-8 text-sm text-gray-400">{{ reviewStats.poor }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Leave Comment Button -->
+            <div class="mb-8">
+              <button @click="showReviewModal = true"
+                :class="['w-full border rounded-[7px] px-4 py-4 text-base font-medium transition-all focus:outline-none focus:ring-2 min-h-[48px]', 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-gray-200 dark:focus:ring-gray-600']">
+                Leave Comment
+              </button>
+            </div>
+
+            <!-- Review Modal -->
+            <transition name="fade-details">
+              <div v-if="showReviewModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
+                <div
+                  :class="['rounded-xl shadow-lg p-6 lg:p-8 w-full max-w-md relative max-h-[90vh] overflow-y-auto', cardClasses]">
+                  <button @click="closeReviewModal"
+                    :class="['absolute top-4 right-4 min-w-[44px] min-h-[44px] flex items-center justify-center', 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300']"
+                    aria-label="Close">
+                    <v-icon name="hi-x" scale="1.2" />
+                  </button>
+                  <h3 :class="['text-lg lg:text-xl font-semibold mb-4 pr-8', textClasses]">Leave a Review</h3>
+                  <form @submit.prevent="submitReview">
+                    <div class="mb-4">
+                      <label class="block mb-2 font-medium text-gray-700">Rating</label>
+                      <div class="flex gap-2">
+                        <button v-for="star in 5" :key="star" type="button" @click="reviewRating = star"
+                          :aria-label="`Set rating to ${star}`"
+                          class="focus:outline-none min-w-[44px] min-h-[44px] flex items-center justify-center">
+                          <v-icon :name="star <= reviewRating ? 'bi-star-fill' : 'bi-star'"
+                            :class="star <= reviewRating ? 'text-yellow-400' : 'text-gray-300'" scale="1.5" />
+                        </button>
+                      </div>
+                      <div v-if="reviewErrors.rating" class="mt-1 text-sm text-red-500">{{ reviewErrors.rating }}</div>
+                    </div>
+                    <div class="mb-4">
+                      <label class="block mb-2 font-medium text-gray-700">Comment</label>
+                      <textarea v-model="reviewComment" maxlength="1000" rows="5"
+                        class="w-full border border-gray-200 rounded-[7px] px-4 py-3 text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all resize-none"
+                        placeholder="Share your experience..."></textarea>
+                      <div class="flex justify-between mt-1 text-xs text-gray-400">
+                        <span>{{ reviewComment.length }}/1000</span>
+                        <span v-if="reviewErrors.comment" class="text-red-500">{{ reviewErrors.comment }}</span>
+                      </div>
+                    </div>
+                    <div class="flex flex-col justify-end gap-3 mt-6 sm:flex-row">
+                      <button type="button" @click="closeReviewModal" :class="[
+                        'flex-1 border border-gray-300 py-3 lg:py-4 px-4 lg:px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors min-h-[48px]',
+                        'text-gray-700 hover:bg-gray-50'
+                      ]">
+                        Cancel
+                      </button>
+                      <button type="submit" :disabled="reviewSubmitting" :class="[
+                        'flex-1 py-3 lg:py-4 px-4 lg:px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors min-h-[48px]',
+                        !reviewSubmitting
+                          ? 'bg-black text-white hover:bg-gray-800'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      ]">
+                        <span v-if="reviewSubmitting">Submitting...</span>
+                        <span v-else>Submit Review</span>
+                      </button>
+                    </div>
+                    <div v-if="reviewErrors.submit" class="mt-4 text-sm text-center text-red-500">{{ reviewErrors.submit
+                      }}
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </transition>
+
+            <!-- Loading State for Reviews -->
+            <div v-if="productReviewsLoading" class="flex items-center justify-center py-8">
+              <div class="w-8 h-8 border-b-2 border-gray-900 rounded-full animate-spin"></div>
+              <span class="ml-3 text-gray-600">Loading reviews...</span>
+            </div>
+
+            <!-- Error State for Reviews -->
+            <div v-else-if="productReviewsError"
+              class="px-4 py-3 mb-4 text-red-700 bg-red-100 border border-red-400 rounded">
+              {{ productReviewsError }}
+            </div>
+
+            <!-- No Reviews State -->
+            <div v-else-if="productReviews.length === 0" class="py-8 text-center">
+              <div class="text-lg text-gray-500">No reviews yet</div>
+              <div class="mt-2 text-sm text-gray-400">Be the first to leave a review!</div>
+            </div>
+
+            <!-- Individual Reviews with View More/Less and Fade -->
+            <div v-else class="relative space-y-4 lg:space-y-6">
+              <div :class="[
+                'transition-all duration-300 overflow-hidden',
+                showAllReviews ? '' : 'max-h-[400px] lg:max-h-[600px]',
+              ]" style="position: relative">
+                <div :style="showAllReviews
+                    ? ''
+                    : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
+                  ">
+                  <div v-for="review in displayedReviews" :key="review.id" class="relative mb-4 lg:mb-6">
+                    <div class="flex items-start gap-3 lg:gap-4 bg-[#F4F4F4] rounded-[10px] w-auto h-auto p-4 lg:p-8">
+                      <!-- Avatar -->
+                      <div class="flex-shrink-0 w-10 h-10 lg:w-12 lg:h-12">
+                        <img v-if="review.userAvatar" :src="review.userAvatar"
+                          :alt="`${review.userName || 'User'} avatar`"
+                          class="object-cover w-10 h-10 border-2 border-white rounded-full shadow-lg lg:w-12 lg:h-12 avatar-hover"
+                          @error="handleAvatarError" />
+                        <div v-else
+                          class="flex items-center justify-center w-10 h-10 rounded-full shadow-lg lg:w-12 lg:h-12 bg-gradient-to-br avatar-hover"
+                          :class="`bg-gradient-to-br ${getAvatarColor(review.userName || 'Anonymous')} ${review.userAvatar ? 'hidden' : ''}`">
+                          <span class="text-xs font-semibold text-white lg:text-sm">{{
+                            getUserInitials(review.userName || 'Anonymous')
+                            }}</span>
+                        </div>
+                      </div>
+
+                      <!-- Review Content -->
+                      <div class="flex-1">
+                        <div class="flex items-center justify-between mb-1">
+                          <h4 class="text-sm font-medium text-gray-900 lg:text-base">{{ review.userName || 'Anonymous'
+                            }}
+                          </h4>
+                          <span class="text-xs text-gray-500 lg:text-sm">{{ review.date }}</span>
+                        </div>
+
+                        <!-- Star Rating -->
+                        <div class="flex mb-2">
+                          <v-icon v-for="star in 5" :key="star"
+                            :name="star <= review.rating ? 'bi-star-fill' : 'bi-star'"
+                            :class="star <= review.rating ? 'text-yellow-400' : 'text-gray-300'" scale="1.0"
+                            class="lg:scale-110" />
+                        </div>
+
+                        <!-- Comment -->
+                        <p class="text-sm leading-relaxed text-gray-700 lg:text-base">{{ review.comment }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Fade overlay when not showing all reviews -->
+                <div v-if="!showAllReviews && hasMoreReviews"
+                  class="absolute bottom-0 left-0 w-full h-24 pointer-events-none lg:h-32 bg-gradient-to-t from-white dark:from-gray-900 to-transparent">
+                </div>
+              </div>
+              <div v-if="hasMoreReviews" class="flex justify-center mt-6">
+                <button @click="toggleShowAllReviews"
+                  class="flex items-center justify-center gap-2 px-6 lg:px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 min-h-[48px]">
+                  <span>{{ showAllReviews ? 'View Less' : 'View More' }}</span>
+                  <v-icon v-if="!showAllReviews" name="hi-chevron-down" class="w-5 h-5" scale="1.2" />
+                  <v-icon v-else name="hi-chevron-up" class="w-5 h-5" scale="1.2" />
+                </button>
+              </div>
+            </div>
           </div>
-          <div v-if="hasMoreReviews" class="flex justify-center mt-6">
-            <button
-              @click="toggleShowAllReviews"
-              class="flex items-center justify-center gap-2 px-6 lg:px-8 py-3 border border-gray-400 rounded-lg bg-white text-gray-800 font-medium transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300 min-h-[48px]"
-            >
-              <span>{{ showAllReviews ? 'View Less' : 'View More' }}</span>
-              <v-icon v-if="!showAllReviews" name="hi-chevron-down" class="h-5 w-5" scale="1.2" />
-              <v-icon v-else name="hi-chevron-up" class="h-5 w-5" scale="1.2" />
-            </button>
-          </div>
-        </div>
+        </transition>
       </div>
-    </transition>
-  </div>
-</section>
+    </section>
 
 
     <!-- Related Products Section -->
-    <section class="w-full flex justify-center bg-[#fafbfc] py-32">
+    <section :class="['w-full flex justify-center py-32', 'bg-[#fafbfc] dark:bg-gray-800']">
       <div class="w-full max-w-[1640px] px-8">
         <div class="flex items-center justify-between mb-2">
-          <h2 class="text-2xl font-semibold text-left mb-8 text-black">Related Products</h2>
-          <button
-            @click="toggleRelated"
-            class="p-1 hover:bg-gray-100 rounded transition-colors"
-            type="button"
-            aria-label="Toggle related products section"
-          >
-            <v-icon
-              name="hi-chevron-down"
-              class="w-5 h-5 text-gray-600 transition-transform duration-200"
-              :class="{ 'rotate-180': relatedCollapsed }"
-              scale="1.2"
-            />
+          <h2 :class="['text-2xl font-semibold text-left mb-8', textClasses]">Related Products</h2>
+          <button @click="toggleRelated" class="p-1 transition-colors rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+            type="button" aria-label="Toggle related products section">
+            <v-icon name="hi-chevron-down"
+              :class="['w-5 h-5 transition-transform duration-200', textSecondaryClasses, { 'rotate-180': relatedCollapsed }]"
+              scale="1.2" />
           </button>
         </div>
         <transition name="fade-details">
           <div v-show="!relatedCollapsed">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
               <!-- Product 1 -->
               <div
-                class="bg-white rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300"
-              >
-                <div class="h-32 w-full flex items-center justify-center mb-6">
-                  <img
-                    src="/images/Apple-phone.png"
-                    alt="iPhone 14"
-                    class="h-full object-contain"
-                  />
+                :class="['rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300', cardClasses]">
+                <div class="flex items-center justify-center w-full h-32 mb-6">
+                  <img src="/images/Apple-phone.png" alt="iPhone 14" class="object-contain h-full" />
                 </div>
-                <h3 class="font-srProDisplay text-lg font-medium mb-2 text-black">iPhone 14</h3>
-                <p class="font-srProDisplay text-[#787878] text-sm mb-4">Starting at $699</p>
-                <button
-                  class="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
-                >
+                <h3 :class="['font-srProDisplay text-lg font-medium mb-2', textClasses]">iPhone 14</h3>
+                <p :class="['font-srProDisplay text-sm mb-4', textMutedClasses]">Starting at $699</p>
+                <button :class="['w-full py-2 px-4 rounded-lg transition-colors', buttonPrimaryClasses]">
                   View Details
                 </button>
               </div>
 
               <!-- Product 2 -->
               <div
-                class="bg-white rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300"
-              >
-                <div class="h-32 w-full flex items-center justify-center mb-6">
-                  <img src="/images/Apple-iPad.png" alt="iPad Pro" class="h-full object-contain" />
+                :class="['rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300', cardClasses]">
+                <div class="flex items-center justify-center w-full h-32 mb-6">
+                  <img src="/images/Apple-iPad.png" alt="iPad Pro" class="object-contain h-full" />
                 </div>
-                <h3 class="font-srProDisplay text-lg font-medium mb-2 text-black">iPad Pro</h3>
-                <p class="font-srProDisplay text-[#787878] text-sm mb-4">Starting at $999</p>
-                <button
-                  class="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
-                >
+                <h3 :class="['font-srProDisplay text-lg font-medium mb-2', textClasses]">iPad Pro</h3>
+                <p :class="['font-srProDisplay text-sm mb-4', textMutedClasses]">Starting at $999</p>
+                <button :class="['w-full py-2 px-4 rounded-lg transition-colors', buttonPrimaryClasses]">
                   View Details
                 </button>
               </div>
 
               <!-- Product 3 -->
               <div
-                class="bg-white rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300"
-              >
-                <div class="h-32 w-full flex items-center justify-center mb-6">
-                  <img
-                    src="/images/Apple-airPods.png"
-                    alt="AirPods Pro"
-                    class="h-full object-contain"
-                  />
+                :class="['rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300', cardClasses]">
+                <div class="flex items-center justify-center w-full h-32 mb-6">
+                  <img src="/images/Apple-airPods.png" alt="AirPods Pro" class="object-contain h-full" />
                 </div>
-                <h3 class="font-srProDisplay text-lg font-medium mb-2 text-black">AirPods Pro</h3>
-                <p class="font-srProDisplay text-[#787878] text-sm mb-4">Starting at $249</p>
-                <button
-                  class="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
-                >
+                <h3 :class="['font-srProDisplay text-lg font-medium mb-2', textClasses]">AirPods Pro</h3>
+                <p :class="['font-srProDisplay text-sm mb-4', textMutedClasses]">Starting at $249</p>
+                <button :class="['w-full py-2 px-4 rounded-lg transition-colors', buttonPrimaryClasses]">
                   View Details
                 </button>
               </div>
