@@ -8,44 +8,50 @@
    Light Theme (Default)
    ========================= */
 :root {
-  /* Brand / UI Colors */
-  --color-primary: #0066cc; /* Accessible blue (strong but not harsh) */
-  --color-secondary: #5c6ac4; /* Complementary secondary (purple-blue) */
-  --color-accent: #0099ff; /* Vibrant accent for CTAs */
+  /* Brand / UI Colors (widely used accessible blues/indigos) */
+  --color-primary: #0a66c2; /* Proven readable blue (e.g., LinkedIn-style), strong on white */
+  --color-secondary: #4f46e5; /* Indigo-600 for emphasis and secondary CTAs */
+  --color-accent: #2563eb; /* Blue-600 accent for links/hover/active */
+
+  /* Base Surfaces and Text */
   --color-background: #ffffff;
-  --color-text: #111827; /* Near-black, high contrast on white */
-  --color-border: #d1d5db; /* Soft gray border */
-  --color-success: #10b981; /* Emerald green (WCAG AA+) */
-  --color-warning: #f59e0b; /* Amber */
-  --color-error: #ef4444; /* Red-500 */
+  --color-text: #111827; /* Near-black for high contrast on white */
+  --color-muted: #6b7280; /* Gray-500 for secondary text (ensure size/weight meets WCAG) */
+  --color-muted-foreground: #9ca3af; /* Gray-400 for placeholders, helper text */
+
+  /* Borders and Dividers */
+  --color-border: #d1d5db; /* Gray-300 for subtle but visible separation */
+
+  /* Feedback */
+  --color-success: #10b981; /* Green-500 (use darker text on light surfaces when needed) */
+  --color-warning: #f59e0b; /* Amber-500 */
+  --color-error:   #dc2626; /* Red-600 for stronger contrast than Red-500 on white */
 
   /* E-commerce Specific */
-  --color-cart: #ef4444; /* Red for urgency */
-  --color-favorite: #e11d48; /* Pink-600 (accessible heart/favorite) */
-  --color-discount: #f97316; /* Orange-500 (clear sale signal) */
-  --color-price: #059669; /* Green-700 (positive, readable) */
+  --color-cart: #dc2626; /* Red-600 to ensure strong visibility on white */
+  --color-favorite: #e11d48; /* Rose-600 */
+  --color-discount: #ea580c; /* Orange-600 to improve contrast vs white */
+  --color-price: #065f46; /* Emerald-800 for strong legibility as text */
 
   /* Typography */
   --font-figtree: 'Figtree', sans-serif;
   --font-srProDisplay: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* Utility Colors */
-  --color-primary-foreground: #ffffff; /* White text on primary */
+  --color-primary-foreground: #ffffff; /* Text on primary */
   --color-secondary-foreground: #ffffff;
-  --color-muted: #6b7280; /* Gray-500 */
-  --color-muted-foreground: #9ca3af; /* Gray-400 */
-  --color-input-border: #d1d5db;
   --color-input-background: #ffffff;
+  --color-input-border: #d1d5db;
 
-  /* Surface Layers (for cards, panels) */
-  --surface-bg: #f9fafb; /* Gray-50 */
+  /* Surface Layers (cards, panels) */
+  --surface-bg: #f9fafb; /* Gray-50, subtle elevation on white */
 
   /* Custom Breakpoints */
   --breakpoint-xs: 420px;
 
   /* Sub-navigation */
-  --subnav-bg: #f3f4f6; /* Light gray */
-  --subnav-hover: #e5e7eb; /* Subtle hover */
+  --subnav-bg: #f3f4f6; /* Gray-100 */
+  --subnav-hover: #e5e7eb; /* Gray-200 */
 
   /* Header */
   --header-bg: #ffffff;
@@ -57,39 +63,43 @@
    ========================= */
 .dark,
 [data-theme="dark"] {
-  /* Brand / UI Colors */
-  --color-primary: #3b82f6; /* Blue-500 - bright but not glowing */
-  --color-secondary: #818cf8; /* Indigo-400 */
-  --color-accent: #93c5fd; /* Light blue accent */
-  --color-background: #0e1522; /* User-requested dark background */
-  --color-text: #f1f5f9; /* Slate-100 - clean white-blue tone */
-  --color-border: #334155; /* Gray-700 */
-  --color-success: #10b981; /* Same as light (consistent feedback) */
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
+  /* Brand / UI Colors (optimized for dark backgrounds) */
+  --color-primary: #60a5fa; /* Blue-400/500 mix: visible without glow on dark */
+  --color-secondary: #818cf8; /* Indigo-400 for secondary emphasis */
+  --color-accent: #93c5fd; /* Light blue accent for focus/hover */
+
+  /* Base Surfaces and Text */
+  --color-background: #0b1220; /* Deep blue-tinted charcoal; less pure-black for comfort */
+  --color-text: #e5e7eb; /* Gray-200/Slate-200 for soft “off-white” text */
+  --color-muted: #94a3b8; /* Slate-400 for secondary text */
+  --color-muted-foreground: #64748b; /* Slate-500 for tertiary/placeholder */
+
+  /* Borders and Dividers */
+  --color-border: #334155; /* Slate-700 for clean separation on dark */
+
+  /* Feedback (tuned for dark surfaces) */
+  --color-success: #22c55e; /* Green-500 for badges/indicators on dark */
+  --color-warning: #f59e0b; /* Amber-500 */
+  --color-error:   #f87171; /* Red-400 for visibility on dark */
 
   /* E-commerce Specific */
-  --color-cart: #f87171; /* Red-400 - visible but not harsh */
+  --color-cart: #f87171; /* Red-400 on dark to avoid harshness yet remain clear */
   --color-favorite: #f472b6; /* Pink-400 */
   --color-discount: #fb923c; /* Orange-400 */
-  --color-price: #10b981; /* Green-400 - consistent positive signal */
+  --color-price: #34d399; /* Emerald-400 for positive pricing emphasis */
 
-  /* Foreground (text) on primary */
-  --color-primary-foreground: #ffffff;
+  /* Foreground on primaries */
+  --color-primary-foreground: #0b1220; /* Dark text on lighter primary chips/buttons */
 
-  /* Neutral surface backgrounds for cards, inputs, panels */
-  --surface-bg: #1e293b; /* Slate-800 */
-  --color-input-background: #334155; /* Gray-700 */
-  --color-input-border: #475569; /* Gray-600 */
-
-  /* Muted text */
-  --color-muted: #94a3b8; /* Slate-400 */
-  --color-muted-foreground: #64748b; /* Slate-500 */
+  /* Surfaces (cards, inputs, panels) */
+  --surface-bg: #111827; /* Gray-900 for elevated panels above background */
+  --color-input-background: #1f2937; /* Gray-800 for inputs */
+  --color-input-border: #374151; /* Gray-700 for inputs */
 
   /* Sub-navigation */
-  --subnav-bg: #243146; /* User-requested dark subnav */
-  --subnav-hover: #334155;
+  --subnav-bg: #141b2a; /* Slightly lighter than bg for separation */
+  --subnav-hover: #1f2a3b; /* Hover elevation without high contrast jump */
 
   /* Header */
-  --header-bg: #192132; /* User-requested dark header */
+  --header-bg: #0e1522; /* Cohesive with background, slightly lifted */
 }
