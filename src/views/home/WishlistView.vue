@@ -27,9 +27,18 @@ import { useAuthStore } from '@/stores/auth'
 import { useUserCartStore } from '@/stores/userCart'
 import { useProductVariantsStore } from '@/stores/productVariants'
 import { useToast } from '@/composables/useToast'
+import { useThemeClasses } from '@/composables/useThemeClasses'
 const router = useRouter()
 const { t } = useLanguage()
 const toast = useToast()
+
+// Theme classes
+const {
+  cardClasses,
+  textClasses,
+  textSecondaryClasses,
+  actionButtonClasses,
+} = useThemeClasses()
 
 const authStore = useAuthStore()
 const wishlistStore = useWishlistStore()
@@ -147,7 +156,7 @@ function inferCategoryFromProduct(product: typeof wishlistProducts.value[0]): st
 
   // Check for specific product types
   if (name.includes('iphone') || name.includes('samsung') || name.includes('phone') ||
-      description.includes('phone') || description.includes('mobile')) {
+    description.includes('phone') || description.includes('mobile')) {
     return 'smartphones'
   }
 
@@ -164,7 +173,7 @@ function inferCategoryFromProduct(product: typeof wishlistProducts.value[0]): st
   }
 
   if (name.includes('headphone') || name.includes('airpods') || name.includes('buds') ||
-      description.includes('headphone') || description.includes('audio')) {
+    description.includes('headphone') || description.includes('audio')) {
     return 'headphones'
   }
 
@@ -215,89 +224,88 @@ watch(() => wishlistProducts.value, () => {
   <div class="pt-[85px] lg:pt-0 bg-background text-foreground min-h-screen">
     <Wrapper class="py-8">
       <!-- Breadcrumb -->
-      <BreadcrumbNav
-        :breadcrumbs="[{ label: t('wishlist.title') || 'Wishlist', to: '/wishlist' }]"
-      />
+      <BreadcrumbNav :breadcrumbs="[{ label: t('wishlist.title') || 'Wishlist', to: '/wishlist' }]" />
 
       <!-- Header -->
       <section class="mx-auto mb-8 max-w-7xl">
-  <h1 class="text-2xl font-semibold text-left text-foreground font-srProDisplay">
+        <h1 class="text-2xl font-semibold text-left text-foreground font-srProDisplay">
           {{ t('wishlist.title') || 'Wishlist' }}
         </h1>
       </section>
 
       <!-- Wishlist Content -->
       <section class="mx-auto mb-16 max-w-7xl animate-fadeInUp">
-        <LoadingState
-          v-if="wishlistLoading"
-          :loading-text="t('wishlist.loading') || 'Loading...'"
-        />
+        <LoadingState v-if="wishlistLoading" :loading-text="t('wishlist.loading') || 'Loading...'" />
 
-        <ErrorAlert
-          v-else-if="wishlistError"
-          :message="wishlistError"
-          :show="!!wishlistError"
-        />
+        <ErrorAlert v-else-if="wishlistError" :message="wishlistError" :show="!!wishlistError" />
 
         <div v-else>
-          <EmptyWishlistState
-            v-if="wishlistProducts.length === 0"
+          <EmptyWishlistState v-if="wishlistProducts.length === 0"
             :empty-title="t('wishlist.empty') || 'Your wishlist is empty.'"
             :empty-description="t('wishlist.emptyDescription') || 'Browse products and add your favorites here.'"
             :catalog-button-text="t('wishlist.goToCatalog') || 'Go to Catalog'"
-            @go-to-catalog="() => router.push('/catalog')"
-          />
+            @go-to-catalog="() => router.push('/catalog')" />
 
           <div v-else class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <div
-              v-for="item in wishlistProducts"
-              :key="item.id"
-              class="relative flex flex-col overflow-hidden transition bg-white border border-gray-100 shadow-lg cursor-pointer rounded-xl hover:shadow-xl group"
-              @click="openProductUrl(item.productUrl, item.id)"
-            >
+            <div v-for="item in wishlistProducts" :key="item.id" :class="[
+              'relative flex flex-col overflow-hidden transition cursor-pointer rounded-xl group',
+              cardClasses,
+              'hover:shadow-xl'
+            ]" @click="openProductUrl(item.productUrl, item.id)">
               <!-- Remove 'x' button -->
-              <button
-                class="absolute z-10 flex items-center justify-center w-8 h-8 text-gray-500 transition bg-gray-100 rounded-full top-3 right-3 hover:bg-red-500 hover:text-white"
-                @click.stop="removeFromWishlist(item.id)"
-                aria-label="{{ t('wishlist.remove') || 'Remove' }}"
-              >
+              <button :class="[
+                'absolute z-10 flex items-center justify-center w-8 h-8 transition rounded-full top-3 right-3',
+                actionButtonClasses,
+                'bg-gray-100 dark:bg-gray-800'
+              ]" @click.stop="removeFromWishlist(item.id)" :aria-label="t('wishlist.remove') || 'Remove'">
                 <span class="text-lg font-bold">&times;</span>
               </button>
-              <div class="flex items-center justify-center h-48 bg-gray-50">
-                <img :src="item.imageUrl" :alt="item.name" class="object-contain h-40 transition-transform duration-200 group-hover:scale-105" />
+              <div :class="['flex items-center justify-center h-48', 'bg-surface']">
+                <img :src="item.imageUrl" :alt="item.name"
+                  class="object-contain h-40 transition-transform duration-200 group-hover:scale-105" />
               </div>
               <div class="flex flex-col flex-1 p-5">
-                <h2 class="mb-1 text-lg font-semibold text-black font-srProDisplay">{{ item.name }}</h2>
-                <p class="mb-2 text-sm text-gray-500">{{ item.description }}</p>
+                <h2 :class="['mb-1 text-lg font-semibold font-srProDisplay', textClasses]">{{ item.name }}</h2>
+                <p :class="['mb-2 text-sm', textSecondaryClasses]">{{ item.description }}</p>
                 <div class="flex flex-wrap gap-2 mb-2">
-                  <span class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">{{ item.brand }}</span>
-                  <span class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded">${{ item.basePrice }}</span>
-                  <span v-if="item.screenSize" class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">{{ item.screenSize }}</span>
-                  <span v-if="item.ramCapacity" class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">RAM: {{ item.ramCapacity }}GB</span>
-                  <span v-if="item.storageCapacity" class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">Almacenamiento: {{ item.storageCapacity }}GB</span>
-                  <span v-if="item.operatingSystem" class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded">{{ item.operatingSystem }}</span>
-                  <span v-if="item.totalStock !== undefined" class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded">Stock: {{ item.totalStock }}</span>
+                  <span
+                    :class="['px-2 py-1 text-xs font-medium rounded', 'bg-gray-100 dark:bg-gray-800', textSecondaryClasses]">{{
+                    item.brand }}</span>
+                  <span
+                    :class="['px-2 py-1 text-xs font-medium rounded', 'bg-gray-100 dark:bg-gray-800', textClasses]">${{
+                    item.basePrice }}</span>
+                  <span v-if="item.screenSize"
+                    :class="['px-2 py-1 text-xs font-medium rounded', 'bg-gray-100 dark:bg-gray-800', textSecondaryClasses]">{{
+                    item.screenSize }}</span>
+                  <span v-if="item.ramCapacity"
+                    :class="['px-2 py-1 text-xs font-medium rounded', 'bg-gray-100 dark:bg-gray-800', textSecondaryClasses]">RAM:
+                    {{ item.ramCapacity }}GB</span>
+                  <span v-if="item.storageCapacity"
+                    :class="['px-2 py-1 text-xs font-medium rounded', 'bg-gray-100 dark:bg-gray-800', textSecondaryClasses]">Almacenamiento:
+                    {{ item.storageCapacity }}GB</span>
+                  <span v-if="item.operatingSystem"
+                    :class="['px-2 py-1 text-xs font-medium rounded', 'bg-gray-100 dark:bg-gray-800', textSecondaryClasses]">{{
+                      item.operatingSystem }}</span>
+                  <span v-if="item.totalStock !== undefined"
+                    :class="['px-2 py-1 text-xs font-medium rounded', 'bg-green-100 dark:bg-green-900/30', 'text-green-700 dark:text-green-300']">Stock:
+                    {{ item.totalStock }}</span>
                 </div>
                 <div class="flex flex-col items-center mt-auto space-y-2">
-                  <button
-                    v-if="!addedToCartItems.has(item.id)"
-                    :disabled="loadingItems.has(item.id)"
-                    class="w-full bg-primary text-primary-foreground py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:opacity-95 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    @click.stop="addToCartFromWishlist(item.id)"
-                  >
+                  <button v-if="!addedToCartItems.has(item.id)" :disabled="loadingItems.has(item.id)" :class="[
+                    'w-full py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium',
+                    'disabled:opacity-50 disabled:cursor-not-allowed',
+                    'bg-primary text-primary-foreground hover:opacity-95 transition-colors'
+                  ]" @click.stop="addToCartFromWishlist(item.id)">
                     <span v-if="loadingItems.has(item.id)">Adding...</span>
                     <span v-else>{{ t('cart.addToCart') || 'Add to Cart' }}</span>
                   </button>
-                  <button
-                    v-else
-                    disabled
+                  <button v-else disabled
                     class="w-full bg-green-600 text-white py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium cursor-not-allowed"
-                    @click.stop
-                  >{{ t('cart.addedToCart') || 'Added to Cart' }}</button>
-                  <button
-                    class="w-full bg-gray-100 text-foreground py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:bg-gray-200 transition-colors"
-                    @click.stop="goToProduct(item.id)"
-                  >{{ t('wishlist.details') || 'View details' }}</button>
+                    @click.stop>{{ t('cart.addedToCart') || 'Added to Cart' }}</button>
+                  <button :class="[
+                    'w-full py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium transition-colors',
+                    'bg-gray-100 dark:bg-gray-800 text-foreground dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  ]" @click.stop="goToProduct(item.id)">{{ t('wishlist.details') || 'View details' }}</button>
                 </div>
               </div>
             </div>
