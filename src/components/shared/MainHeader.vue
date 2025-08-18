@@ -1,12 +1,11 @@
 <template>
   <header
-  :class="`fixed z-50 h-[82px] w-full shadow-md lg:sticky lg:left-0 lg:top-0 lg:transition-transform lg:duration-300 ${show}`"
-  :style="{ background: 'var(--header-bg)' }"
-  >
+    :class="`fixed z-50 h-[82px] w-full shadow-md lg:sticky lg:left-0 lg:top-0 lg:transition-transform lg:duration-300 ${show}`"
+    :style="{ background: 'var(--header-bg)' }">
     <Wrapper class="flex h-[82px] items-center justify-between py-4 md:gap-3 xl:gap-8">
       <!-- logo start -->
       <div class="flex items-center justify-center lg:justify-start">
-          <router-link to="/">
+        <router-link to="/">
           <img :src="logoSrc" alt="logo" class="w-[180px] h-auto" />
         </router-link>
       </div>
@@ -14,8 +13,7 @@
 
       <!-- search bar start -->
       <div
-        :class="`fixed left-0 ${positionSearchBar} w-full duration-500 ease-linear lg:visible lg:static lg:block lg:w-[401px] lg:opacity-100 lg:duration-0`"
-      >
+        :class="`fixed left-0 ${positionSearchBar} w-full duration-500 ease-linear lg:visible lg:static lg:block lg:w-[401px] lg:opacity-100 lg:duration-0`">
         <HeaderSearch />
       </div>
       <!-- search bar end -->
@@ -23,65 +21,46 @@
       <!-- Navigation start -->
       <div class="px-1 lg:w-[383px]">
         <ul
-          :class="`fixed top-[81px] z-50 flex h-screen w-[250px] flex-col items-start justify-start gap-0 bg-surface p-2 font-srProDisplay text-base font-medium text-foreground *:w-full lg:static lg:h-auto lg:w-auto lg:flex-row lg:items-center lg:justify-center lg:gap-3 lg:bg-transparent lg:p-0 lg:text-muted *:lg:text-center ${showMobileMenu} duration-500 ease-linear lg:duration-0`"
-        >
-          <li
-            class="block p-3 duration-300 active hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
-          >
-            <router-link to="/">{{ $t('nav.home') }}</router-link>
+          :class="`fixed top-[81px] z-50 flex h-screen w-[250px] flex-col items-start justify-start gap-0 bg-white dark:bg-gray-900 p-2 font-srProDisplay text-base font-medium text-foreground *:w-full lg:static lg:h-auto lg:w-auto lg:flex-row lg:items-center lg:justify-center lg:gap-3 lg:bg-transparent lg:p-0 lg:text-muted *:lg:text-center ${showMobileMenu} duration-500 ease-linear lg:duration-0`">
+          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent">
+            <router-link to="/"
+              class="transition-colors text-foreground hover:text-blue-600 dark:hover:text-blue-400">{{ $t('nav.home')
+              }}</router-link>
           </li>
           <li
-            class="relative flex cursor-pointer items-center justify-between p-3 hover:bg-blue-200 lg:gap-[2px] lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
-          >
+            class="relative flex cursor-pointer items-center justify-between p-3 hover:bg-blue-200 lg:gap-[2px] lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
             <div @click.stop="toggleCategoriesDropdown" class="flex items-center w-full">
               <span>{{ $t('nav.categories') }}</span>
-              <svg
-                class="w-4 h-4 ml-1 transition-transform duration-200"
-                :class="{ 'rotate-180': showCategoriesDropdown }"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fill-rule="evenodd"
+              <svg class="w-4 h-4 ml-1 transition-transform duration-200"
+                :class="{ 'rotate-180': showCategoriesDropdown }" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clip-rule="evenodd"
-                />
+                  clip-rule="evenodd" />
               </svg>
             </div>
 
             <!-- Categories Dropdown -->
-            <div
-              v-show="showCategoriesDropdown"
+            <div v-show="showCategoriesDropdown"
               class="absolute top-full left-0 mt-2 w-72 bg-white border border-gray-200 rounded-xl shadow-2xl z-[100]"
-              @click.stop
-            >
+              @click.stop>
               <div class="py-3">
                 <div class="overflow-y-auto max-h-80 categories-scroll">
-                  <div
-                    v-for="category in categories"
-                    :key="category.name"
-                    @click="selectCategory(category)"
-                    class="flex items-center px-4 py-3 text-sm text-gray-700 transition-all duration-200 border-l-4 border-transparent cursor-pointer group font-srProDisplay hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:border-gray-700"
-                  >
+                  <div v-for="category in categories" :key="category.name" @click="selectCategory(category)"
+                    class="flex items-center px-4 py-3 text-sm text-gray-700 transition-all duration-200 border-l-4 border-transparent cursor-pointer group font-srProDisplay hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:border-gray-700">
                     <span
-                      class="flex-1 transition-all duration-200 group-hover:text-gray-800 group-hover:font-medium"
-                      >{{ category.name }}</span
-                    >
+                      class="flex-1 transition-all duration-200 group-hover:text-gray-800 group-hover:font-medium">{{
+                      category.name }}</span>
                   </div>
                 </div>
               </div>
             </div>
           </li>
-          <li
-            class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
-          >
+          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
             <router-link to="/about" class="block">
               {{ $t('nav.about') }}
             </router-link>
           </li>
-          <li
-            class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black"
-          >
+          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
             <router-link to="/contact">{{ $t('nav.contact') }}</router-link>
           </li>
         </ul>
@@ -91,20 +70,14 @@
       <!-- icons start -->
       <div class="flex items-center gap-3">
         <!-- DEBUG: TEMP: Theme Switcher for testing -->
-        <select
-          v-model="selectedTheme"
-          @change="themeStore.setTheme(selectedTheme)"
+        <select v-model="selectedTheme" @change="themeStore.setTheme(selectedTheme)"
           class="px-2 py-1 text-sm text-gray-700 transition-colors duration-200 bg-white border border-gray-300 rounded dark:bg-gray-900 dark:text-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          style="min-width: 90px;"
-        >
+          style="min-width: 90px;">
           <option value="light">Light</option>
           <option value="dark">Dark</option>
           <option value="system">System</option>
         </select>
-        <IconMenu
-          @update-mobile-menu="setShowMobileMenu"
-          @update-search-bar="setPositionSearchBar"
-        />
+        <IconMenu @update-mobile-menu="setShowMobileMenu" @update-search-bar="setPositionSearchBar" />
       </div>
       <!-- icons end -->
     </Wrapper>
