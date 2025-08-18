@@ -1,6 +1,6 @@
 <template>
   <header
-    :class="`fixed z-50 h-[82px] w-full shadow-md lg:sticky lg:left-0 lg:top-0 lg:transition-transform lg:duration-300 ${show}`"
+    :class="`fixed z-50 h-[82px] w-full shadow-md border-b border-gray-600 lg:sticky lg:left-0 lg:top-0 lg:transition-transform lg:duration-300 ${show}`"
     :style="{ background: 'var(--header-bg)' }">
     <Wrapper class="flex h-[82px] items-center justify-between py-4 md:gap-3 xl:gap-8">
       <!-- logo start -->
