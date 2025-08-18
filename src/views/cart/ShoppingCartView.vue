@@ -1,61 +1,49 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-background text-foreground animate-fadeInUp">
+  <div :class="['pt-[85px] lg:pt-0 animate-fadeInUp', pageBackgroundClasses]">
     <!-- Wrapper for layout consistency and responsive padding -->
     <Wrapper class="py-4">
       <!-- Breadcrumb navigation for user orientation -->
       <BreadcrumbNav :breadcrumbs="breadcrumbs" />
 
       <!-- Main cart title section -->
-      <section class="max-w-7xl mx-auto py-6 mb-6">
-        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-black">
+      <section class="py-6 mx-auto mb-6 max-w-7xl">
+        <h1 :class="['font-srProDisplay text-2xl font-semibold text-left', textClasses]">
           {{ $t('cart.title') }}
         </h1>
       </section>
 
       <!-- Cart content: items and order summary -->
-      <section class="max-w-7xl mx-auto mb-16">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+      <section class="mx-auto mb-16 max-w-7xl">
+        <div class="grid items-start grid-cols-1 gap-8 lg:grid-cols-2">
           <!-- Left Panel: Cart Items List -->
-          <div class="bg-white rounded-lg p-6 h-full">
+          <div :class="['rounded-lg p-6 h-full', cardClasses]">
             <!-- Loading state -->
-            <div v-if="userCartStore.loading" class="text-center text-[#666666]">
+            <div v-if="userCartStore.loading" :class="['text-center', textMutedClasses]">
               {{ $t('cart.loading') }}
             </div>
 
             <!-- Error state -->
-            <div v-else-if="userCartStore.error" class="text-center text-red-600">
+            <div v-else-if="userCartStore.error" class="text-center text-red-600 dark:text-red-400">
               {{ $t('cart.error') }}
             </div>
 
             <!-- Empty cart state -->
-            <div v-else-if="!userCartStore.hasItems" class="text-center text-[#666666]">
+            <div v-else-if="!userCartStore.hasItems" :class="['text-center', textMutedClasses]">
               {{ $t('cart.empty') }}
             </div>
 
             <!-- Render cart items when available -->
-            <div v-else class="divide-y divide-border">
-              <CartItem
-                v-for="item in userCartStore.cartItems"
-                :key="item.id"
-                :item="item"
-                @increment="increment"
-                @decrement="decrement"
-                @remove="remove"
-              />
+            <div v-else class="divide-y divide-gray-200 dark:divide-gray-700">
+              <CartItem v-for="item in userCartStore.cartItems" :key="item.id" :item="item" @increment="increment"
+                @decrement="decrement" @remove="remove" />
             </div>
           </div>
 
           <!-- Right Panel: Order Summary with pricing and checkout action -->
           <div>
-            <OrderSummary
-              :subtotal="userCartStore.totalPrice"
-              :estimated-tax="estimatedTax"
-              :estimated-shipping="estimatedShipping"
-              :discount="discount"
-              :is-cart-empty="!userCartStore.hasItems"
-              @checkout="checkout"
-              @apply-discount="applyDiscount"
-            />
+            <OrderSummary :subtotal="userCartStore.totalPrice" :estimated-tax="estimatedTax"
+              :estimated-shipping="estimatedShipping" :discount="discount" :is-cart-empty="!userCartStore.hasItems"
+              @checkout="checkout" @apply-discount="applyDiscount" />
           </div>
         </div>
       </section>
@@ -81,6 +69,9 @@ import OrderSummary from '@/components/cart/OrderSummary.vue'
 import { useUserCartStore } from '@/stores/userCart'
 import { useAuthStore } from '@/stores/auth'
 
+// Theme classes
+import { useThemeClasses } from '@/composables/useThemeClasses'
+
 /**
  * Setup and initialization
  */
@@ -88,6 +79,16 @@ const router = useRouter()
 const userCartStore = useUserCartStore()
 const authStore = useAuthStore()
 const { t } = useI18n()
+
+/**
+ * Theme classes for dark mode support
+ */
+const {
+  pageBackgroundClasses,
+  cardClasses,
+  textClasses,
+  textMutedClasses
+} = useThemeClasses()
 
 /**
  * Breadcrumb navigation: current page only (as per design)

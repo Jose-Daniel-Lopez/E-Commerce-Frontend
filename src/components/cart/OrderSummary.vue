@@ -1,7 +1,13 @@
 <template>
-  <div class="bg-background border border-border rounded-[10px] p-6 py-16 h-full">
+  <div :class="[
+    'border rounded-[10px] p-6 py-16 h-full',
+    cardClasses
+  ]">
     <!-- Section header for order summary -->
-    <h2 class="font-srProDisplay text-xl font-semibold text-black mb-6">
+    <h2 :class="[
+      'font-srProDisplay text-xl font-semibold mb-6',
+      textClasses
+    ]">
       Order Summary
     </h2>
 
@@ -10,7 +16,10 @@
       <div>
         <!-- Label and success feedback -->
         <div class="flex items-center justify-between mb-2">
-          <label class="block font-srProDisplay text-sm text-black">
+          <label :class="[
+            'block font-srProDisplay text-sm',
+            textClasses
+          ]">
             Discount code / Promo code
           </label>
 
@@ -31,7 +40,10 @@
             type="text"
             v-model="localDiscountCode"
             :class="[
-              'w-full px-4 py-5 border border-border rounded-[7px] bg-surface font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border focus:ring-2 focus:ring-black/20 transition-all duration-200 pr-28',
+              'w-full px-4 py-5 border rounded-[7px] font-srProDisplay placeholder-muted focus:outline-none focus:border-border focus:ring-2 focus:ring-black/20 transition-all duration-200 pr-28',
+              'border-gray-300 bg-white text-gray-900',
+              'dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100',
+              'dark:focus:ring-white/20',
               couponEffect ? 'ring-2 ring-green-400' : '',
             ]"
             placeholder="Code"
@@ -39,7 +51,11 @@
           <button
             type="button"
             @click="handleApplyDiscount"
-            class="absolute top-1/2 right-4 -translate-y-1/2 px-6 border border-black rounded-[6px] bg-background text-foreground font-srProDisplay transition-colors duration-200 hover:bg-gray-100 active:bg-gray-200 focus:outline-none text-base cursor-pointer"
+            :class="[
+              'absolute top-1/2 right-4 -translate-y-1/2 px-6 border rounded-[6px] font-srProDisplay transition-colors duration-200 focus:outline-none text-base cursor-pointer',
+              'border-gray-900 bg-white text-gray-900 hover:bg-gray-100 active:bg-gray-200',
+              'dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:active:bg-gray-600'
+            ]"
             style="height: 32px; min-width: 75px"
           >
             Apply
@@ -49,20 +65,35 @@
     </form>
 
     <!-- Order Summary Details -->
-  <div class="my-6 border-t border-border pt-4 space-y-2">
-      <div class="flex justify-between font-srProDisplay font-semibold">
+    <div :class="[
+      'my-6 border-t pt-4 space-y-2',
+      'border-gray-200 dark:border-gray-700'
+    ]">
+      <div :class="[
+        'flex justify-between font-srProDisplay font-semibold',
+        textClasses
+      ]">
         <span>Subtotal</span>
         <span>{{ formatPrice(subtotal) }}</span>
       </div>
-      <div class="flex justify-between font-srProDisplay text-[#666666]">
+      <div :class="[
+        'flex justify-between font-srProDisplay',
+        textSecondaryClasses
+      ]">
         <span>Estimated Tax</span>
         <span>{{ formatPrice(estimatedTax) }}</span>
       </div>
-      <div class="flex justify-between font-srProDisplay text-[#666666]">
+      <div :class="[
+        'flex justify-between font-srProDisplay',
+        textSecondaryClasses
+      ]">
         <span>Estimated shipping &amp; Handling</span>
         <span>{{ formatPrice(estimatedShipping) }}</span>
       </div>
-      <div class="flex justify-between font-srProDisplay text-lg font-semibold pt-2">
+      <div :class="[
+        'flex justify-between font-srProDisplay text-lg font-semibold pt-2',
+        textClasses
+      ]">
         <span>Total</span>
         <span>{{ formatPrice(total) }}</span>
       </div>
@@ -72,8 +103,11 @@
     <button
       @click="$emit('checkout')"
       :disabled="props.isCartEmpty"
-  class="w-full bg-primary text-primary-foreground font-srProDisplay font-medium py-4 rounded-md hover:opacity-95 transition-colors duration-200 mt-4 cursor-pointer"
-      :class="{ 'opacity-50 cursor-not-allowed': props.isCartEmpty }"
+      :class="[
+        'w-full font-srProDisplay font-medium py-4 rounded-md transition-colors duration-200 mt-4 cursor-pointer',
+        buttonPrimaryClasses,
+        { 'opacity-50 cursor-not-allowed': props.isCartEmpty }
+      ]"
     >
       Checkout
     </button>
@@ -83,6 +117,15 @@
 <script setup lang="ts">
 // Vue imports
 import { ref, computed } from 'vue'
+import { useThemeClasses } from '@/composables/useThemeClasses'
+
+// Theme classes
+const {
+  cardClasses,
+  textClasses,
+  textSecondaryClasses,
+  buttonPrimaryClasses
+} = useThemeClasses()
 
 /**
  * Props definition for OrderSummary component

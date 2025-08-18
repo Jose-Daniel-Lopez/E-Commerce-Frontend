@@ -3,13 +3,22 @@
     <img
       :src="item.product?.imageUrl || getProductImage(item.product?.name)"
       :alt="item.product?.name"
-      class="w-24 h-24 object-contain rounded-lg bg-gray-50"
+      :class="[
+        'w-24 h-24 object-contain rounded-lg',
+        'bg-gray-50 dark:bg-gray-800'
+      ]"
     />
     <div class="flex-1">
-      <h3 class="font-srProDisplay text-lg font-medium text-black mb-1">
+      <h3 :class="[
+        'font-srProDisplay text-lg font-medium mb-1',
+        textClasses
+      ]">
         {{ item.product?.name }}
       </h3>
-      <p class="text-[#666666] text-sm mb-1">#{{ item.productVariant?.sku }}</p>
+      <p :class="[
+        'text-sm mb-1',
+        textSecondaryClasses
+      ]">#{{ item.productVariant?.sku }}</p>
       <QuantityButton
         :quantity="item.quantity"
         @increment="$emit('increment', item.id, item.quantity)"
@@ -17,11 +26,18 @@
       />
     </div>
     <div class="flex flex-col items-end gap-2">
-      <span class="font-srProDisplay text-lg font-semibold text-black">{{
+      <span :class="[
+        'font-srProDisplay text-lg font-semibold',
+        textClasses
+      ]">{{
         formatPrice(item.product?.basePrice ? item.product.basePrice * item.quantity : 0)
       }}</span>
       <button
-        class="text-2xl text-[#666666] hover:text-black transition-colors cursor-pointer"
+        :class="[
+          'text-2xl transition-colors cursor-pointer',
+          'text-gray-500 hover:text-red-500',
+          'dark:text-gray-400 dark:hover:text-red-400'
+        ]"
         @click="$emit('remove', item.id)"
       >
         <v-icon name="hi-x" scale="1.2" />
@@ -32,6 +48,10 @@
 
 <script setup lang="ts">
 import QuantityButton from '@/components/cart/QuantityButton.vue'
+import { useThemeClasses } from '@/composables/useThemeClasses'
+
+// Theme classes
+const { textClasses, textSecondaryClasses } = useThemeClasses()
 
 
 interface Product {
