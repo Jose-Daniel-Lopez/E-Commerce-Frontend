@@ -46,7 +46,6 @@ const {
   hoverClasses,
   pageBackgroundClasses,
   catalogFilterSectionClasses,
-  catalogFilterHeaderClasses,
   catalogFilterTitleClasses,
   catalogSearchInputClasses,
   catalogProductCardClasses,
@@ -358,7 +357,7 @@ onMounted(async () => {
 <template>
   <div :class="pageBackgroundClasses" class="min-h-screen">
     <!-- Breadcrumb -->
-    <div :class="cardClasses" class="pt-[85px] lg:pt-0">
+    <div class="pt-[85px] lg:pt-0">
       <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <BreadcrumbNav :breadcrumbs="breadcrumbs" />
       </div>
@@ -466,59 +465,102 @@ onMounted(async () => {
         <!-- Desktop Sidebar Filters -->
         <div class="flex-shrink-0 hidden w-64 lg:block">
           <!-- Price Filter -->
-          <div :class="catalogFilterSectionClasses" class="mb-6">
-            <div :class="catalogFilterHeaderClasses" class="flex items-center justify-between pb-3 mb-4">
+          <div class="mb-6">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-200 dark:border-gray-600">
               <h3 :class="catalogFilterTitleClasses" class="text-lg font-semibold font-srProDisplay">Price</h3>
-              <button @click="toggleFilter('price')" :class="hoverClasses" class="p-1 transition-colors rounded"
-                type="button" aria-label="Toggle price filter">
+              <button
+                @click="toggleFilter('price')"
+                class="p-1 transition-colors rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+                type="button"
+                aria-label="Toggle price filter"
+              >
                 <svg
-                  :class="[textSecondaryClasses, 'transition-transform duration-200', { 'rotate-180': collapsedFilters.price }]"
-                  class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  class="w-4 h-4 text-gray-600 transition-transform duration-200 dark:text-gray-300"
+                  :class="{ 'rotate-180': collapsedFilters.price }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
                 </svg>
               </button>
             </div>
             <div v-show="!collapsedFilters.price" class="flex flex-col space-y-4 transition-all duration-200">
               <!-- Dual Range Slider Component -->
-              <DualRangeSlider :min="minValue" :max="maxValue" :step="50" v-model="priceRange"
-                :format-value="(value) => `$${value}`" />
+              <DualRangeSlider
+                :min="minValue"
+                :max="maxValue"
+                :step="50"
+                v-model="priceRange"
+                :format-value="(value) => `$${value}`"
+              />
             </div>
           </div>
 
           <!-- Brand Filter -->
-          <div :class="catalogFilterSectionClasses" class="mb-6">
-            <div :class="catalogFilterHeaderClasses" class="flex items-center justify-between pb-3 mb-4">
+          <div class="mb-6">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-200 dark:border-gray-600">
               <h3 :class="catalogFilterTitleClasses" class="text-lg font-semibold font-srProDisplay">Brand</h3>
               <div class="flex items-center space-x-2">
-                <button v-if="productStore.brands.some(brand => brand.checked)" @click="clearBrandFilters"
-                  :class="[catalogClearFilterClasses, 'text-xs transition-colors']" type="button"
-                  title="Clear brand filters">
+                <button
+                  v-if="productStore.brands.some(brand => brand.checked)"
+                  @click="clearBrandFilters"
+                  :class="catalogClearFilterClasses"
+                  class="text-xs transition-colors"
+                  type="button"
+                  title="Clear brand filters"
+                >
                   Clear
                 </button>
-                <button @click="toggleFilter('brand')" :class="hoverClasses" class="p-1 transition-colors rounded"
-                  type="button" aria-label="Toggle brand filter">
+                <button
+                  @click="toggleFilter('brand')"
+                  class="p-1 transition-colors rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+                  type="button"
+                  aria-label="Toggle brand filter"
+                >
                   <svg
-                    :class="[textSecondaryClasses, 'transition-transform duration-200', { 'rotate-180': collapsedFilters.brand }]"
-                    class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    class="w-4 h-4 text-gray-600 transition-transform duration-200 dark:text-gray-300"
+                    :class="{ 'rotate-180': collapsedFilters.brand }"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
                   </svg>
                 </button>
               </div>
             </div>
             <div v-show="!collapsedFilters.brand" class="transition-all duration-200">
-              <div :class="catalogSearchInputClasses" class="flex items-center justify-start gap-2 p-3 mb-4 rounded-lg">
-                <v-icon name="fa-search" scale="1.2" :class="textMutedClasses" />
-                <input v-model="brandSearchQuery"
-                  :class="[textClasses, 'w-full p-0.5 font-srProDisplay text-sm font-medium outline-none bg-transparent']"
-                  type="search" placeholder="Search" />
+              <div class="flex items-center justify-start gap-2 p-3 mb-4 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                <v-icon name="fa-search" scale="1.2" class="text-gray-400 dark:text-gray-300" />
+                <input
+                  v-model="brandSearchQuery"
+                  :class="[textClasses, 'w-full p-0.5 font-srProDisplay text-sm font-medium outline-none bg-transparent', 'placeholder-gray-500 dark:placeholder-gray-300']"
+                  type="search"
+                  placeholder="Search"
+                />
               </div>
               <div class="space-y-3 overflow-y-auto max-h-64">
                 <div v-for="brand in filteredBrands" :key="brand.name" class="flex items-center">
-                  <input :id="'brand-' + brand.name" type="checkbox" v-model="brand.checked"
-                    :class="catalogCheckboxClasses" class="focus:ring-1 focus:ring-gray-400" />
-                  <label :for="'brand-' + brand.name" :class="catalogFilterLabelClasses"
-                    class="flex items-center justify-between flex-1 ml-3">
-                    <span class="text-sm font-srProDisplay">{{ brand.name }}</span>
+                  <input
+                    :id="'brand-' + brand.name"
+                    type="checkbox"
+                    v-model="brand.checked"
+                    :class="catalogCheckboxClasses"
+                    class="focus:ring-1 focus:ring-gray-400"
+                  />
+                  <label :for="'brand-' + brand.name" class="flex items-center justify-between flex-1 ml-3">
+                    <span :class="catalogFilterLabelClasses" class="text-sm font-srProDisplay">{{ brand.name }}</span>
                   </label>
                 </div>
               </div>
@@ -526,41 +568,42 @@ onMounted(async () => {
           </div>
 
           <!-- Active Filters Summary -->
-          <div v-if="hasActiveFilters()" :class="catalogFilterSummaryClasses" class="p-4 mb-6 rounded-lg">
-            <h4 :class="textClasses" class="mb-3 text-sm font-semibold font-srProDisplay">Active Filters</h4>
+          <div v-if="hasActiveFilters()" :class="['mb-6', catalogFilterSummaryClasses]">
+            <h4 :class="['font-srProDisplay text-sm font-semibold mb-3', textClasses]">Active Filters</h4>
             <div class="space-y-2">
               <div v-if="priceRange[0] > 0 || priceRange[1] < 5000" class="flex items-center justify-between text-sm">
                 <span :class="textSecondaryClasses">Price:</span>
-                <span :class="textClasses" class="font-medium">${{ priceRange[0] }} - ${{ priceRange[1] }}</span>
+                <span :class="['font-medium', textClasses]">${{ priceRange[0] }} - ${{ priceRange[1] }}</span>
               </div>
-              <div v-if="productStore.brands.some(brand => brand.checked)"
-                class="flex items-center justify-between text-sm">
+              <div v-if="productStore.brands.some(brand => brand.checked)" class="flex items-center justify-between text-sm">
                 <span :class="textSecondaryClasses">Brands:</span>
-                <span :class="textClasses" class="font-medium">{{productStore.brands.filter(brand =>
-                  brand.checked).map(brand => brand.name).join(', ') }}</span>
+                <span :class="['font-medium', textClasses]">{{ productStore.brands.filter(brand => brand.checked).map(brand => brand.name).join(', ') }}</span>
               </div>
             </div>
-            <button @click="clearAllFilters" :class="catalogClearFilterClasses"
-              class="mt-3 text-xs underline transition-colors" type="button">
+            <button
+              @click="clearAllFilters"
+              class="mt-3 text-xs text-red-600 underline transition-colors hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+              type="button"
+            >
               Clear All Filters
             </button>
           </div>
 
           <!-- Quick Stats -->
-          <div :class="catalogFilterSummaryClasses" class="p-4 mb-6 rounded-lg">
-            <h4 :class="textClasses" class="mb-2 text-sm font-semibold font-srProDisplay">Summary</h4>
+          <div :class="['mb-6', catalogFilterSummaryClasses]">
+            <h4 :class="['font-srProDisplay text-sm font-semibold mb-2', textClasses]">Summary</h4>
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
                 <span :class="textSecondaryClasses">Total Products:</span>
-                <span :class="textClasses" class="font-medium">{{ productStore.products.length }}</span>
+                <span :class="['font-medium', textClasses]">{{ productStore.products.length }}</span>
               </div>
               <div class="flex justify-between">
                 <span :class="textSecondaryClasses">Filtered Results:</span>
-                <span :class="textClasses" class="font-medium">{{ filteredProducts.length }}</span>
+                <span :class="['font-medium', textClasses]">{{ filteredProducts.length }}</span>
               </div>
               <div class="flex justify-between">
                 <span :class="textSecondaryClasses">Current Page:</span>
-                <span :class="textClasses" class="font-medium">{{ currentPage }} of {{ totalPages }}</span>
+                <span :class="['font-medium', textClasses]">{{ currentPage }} of {{ totalPages }}</span>
               </div>
             </div>
           </div>
