@@ -419,7 +419,7 @@ onMounted(async () => {
             </svg>
             <span :class="textClasses">Filters</span>
             <span v-if="hasActiveFilters()"
-              class="ml-1 bg-black text-white dark:bg-white dark:text-black text-xs rounded-full px-2 py-0.5">
+              class="ml-1 bg-primary text-primary-foreground text-xs rounded-full px-2 py-0.5">
               Active
             </span>
           </button>

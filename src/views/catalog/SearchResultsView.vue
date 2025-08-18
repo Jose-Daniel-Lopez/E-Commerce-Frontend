@@ -73,7 +73,7 @@
           </div>
           <router-link
             to="/catalog"
-            class="inline-block mt-6 px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+            class="inline-block mt-6 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-95 transition-colors"
           >
             Browse Categories
           </router-link>
@@ -177,7 +177,7 @@
               <div class="flex justify-center">
                 <button
                   @click="goToProductDetails(product.id)"
-                  class="w-full py-2 bg-black text-white text-xs sm:text-sm font-medium rounded hover:bg-gray-800 transition-colors mt-auto"
+                  class="w-full py-2 bg-primary text-primary-foreground text-xs sm:text-sm font-medium rounded hover:opacity-95 transition-colors mt-auto"
                   :disabled="product.totalStock === 0"
                 >
                   {{ product.totalStock === 0 ? 'Out of Stock' : 'View Details' }}
@@ -206,7 +206,7 @@
                 :class="[
                   'px-3 py-2 text-sm font-medium rounded-lg',
                   page === currentPage
-                    ? 'bg-black text-white'
+                    ? 'bg-primary text-primary-foreground'
                     : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
                 ]"
               >

@@ -221,7 +221,7 @@
                       />
                       <span
                         v-if="item.quantity > 1"
-                        class="absolute -top-1 -right-1 lg:top-0 lg:right-0 bg-black text-white text-xs rounded-full px-1.5 py-0.5 lg:px-2 font-srProDisplay min-w-[18px] text-center"
+                        class="absolute -top-1 -right-1 lg:top-0 lg:right-0 bg-primary text-primary-foreground text-xs rounded-full px-1.5 py-0.5 lg:px-2 font-srProDisplay min-w-[18px] text-center"
                         >x{{ item.quantity }}</span
                       >
                     </div>

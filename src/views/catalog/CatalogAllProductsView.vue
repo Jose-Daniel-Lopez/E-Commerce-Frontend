@@ -797,7 +797,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                   <div class="flex items-center justify-center pt-2 mt-auto">
                     <button
                       @click="buyNow(product.id)"
-                      class="w-full max-w-[160px] h-[40px] bg-black text-white text-sm font-medium rounded hover:bg-[#1a1a1a] transition-colors"
+                      class="w-full max-w-[160px] h-[40px] bg-primary text-primary-foreground text-sm font-medium rounded hover:opacity-95 transition-colors"
                     >
                       Buy Now
                     </button>
@@ -1192,7 +1192,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                   <div class="flex items-center justify-center mt-auto">
                     <button
                       @click="buyNow(product.id)"
-                      class="w-[183px] h-[48px] bg-black text-white text-sm font-medium rounded hover:bg-[#1a1a1a] transition-colors"
+                      class="w-[183px] h-[48px] bg-primary text-primary-foreground text-sm font-medium rounded hover:opacity-95 transition-colors"
                     >
                       Buy Now
                     </button>

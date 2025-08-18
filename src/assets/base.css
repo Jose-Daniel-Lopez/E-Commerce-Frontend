@@ -16,30 +16,7 @@
   transition: none !important;
 }
 
-/* Tailwind theme configuration (moved out of @theme to top-level) */
-
-/* Main e-commerce colors (defaults; override in themes.css) */
-:root {
-  --color-primary: #000000;
-  --color-secondary: #333333;
-  --color-accent: #666666;
-  --color-background: #ffffff;
-  --color-text: #000000;
-  --color-border: #e5e7eb;
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-
-  /* E-commerce specific colors */
-  --color-cart: #ff6b6b;
-  --color-favorite: #ff6b6b;
-  --color-discount: #ff4757;
-  --color-price: #2ed573;
-
-  /* Sub-navigation colors (can be overridden in dark mode) */
-  --subnav-bg: #2e2e2e;
-  --subnav-hover: #404040;
-}
+/* Tailwind theme configuration (tokens live in src/assets/themes.css) */
 
 /* Tailwind theme configuration is centralized in themes.css */
 @layer base {
@@ -158,13 +135,27 @@
   }
 
   /* Variable-backed color utilities so components don't hardcode colors */
+  .bg-primary { background: var(--color-primary) !important; }
   .bg-background { background: var(--background) !important; }
   .text-foreground { color: var(--foreground) !important; }
+  .text-muted { color: var(--color-muted) !important; }
+  .text-muted-foreground { color: var(--color-muted-foreground) !important; }
   .bg-surface { background: var(--surface-bg, var(--color-background)) !important; }
   .text-primary-foreground { color: var(--color-primary-foreground, var(--color-text)) !important; }
   .bg-subnav { background: var(--subnav-bg) !important; }
   .bg-subnav-hover { background: var(--subnav-hover) !important; }
   .bg-header { background: var(--header-bg) !important; }
+  .bg-border { background: var(--color-border) !important; }
+  .border-border { border-color: var(--color-border) !important; }
+
+  /* Placeholder color utility */
+  .placeholder-muted::placeholder { color: var(--color-muted-foreground) !important; }
+
+  /* Accent color for inputs (radios/checkboxes) */
+  .accent-primary { accent-color: var(--color-primary) !important; }
+
+  /* Overlay background utility */
+  .bg-overlay { background-color: rgba(0, 0, 0, 0.5) !important; }
 
   /* Override Tailwind's min-h-screen to prevent conflicts */
   .min-h-screen {

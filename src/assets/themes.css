@@ -1,48 +1,51 @@
 /*
   themes.css
   Centralized color palette and theme variables.
+  Optimized for accessibility, contrast, and modern UX.
 */
-
 
 /* =========================
    Light Theme (Default)
    ========================= */
 :root {
-  /* Brand / UI colors */
-  --color-primary: #000000;
-  --color-secondary: #333333;
-  --color-accent: #666666;
+  /* Brand / UI Colors */
+  --color-primary: #0066cc; /* Accessible blue (strong but not harsh) */
+  --color-secondary: #5c6ac4; /* Complementary secondary (purple-blue) */
+  --color-accent: #0099ff; /* Vibrant accent for CTAs */
   --color-background: #ffffff;
-  --color-text: #000000;
-  --color-border: #e5e7eb;
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
+  --color-text: #111827; /* Near-black, high contrast on white */
+  --color-border: #d1d5db; /* Soft gray border */
+  --color-success: #10b981; /* Emerald green (WCAG AA+) */
+  --color-warning: #f59e0b; /* Amber */
+  --color-error: #ef4444; /* Red-500 */
 
-  /* E-commerce specific */
-  --color-cart: #ff6b6b;
-  --color-favorite: #ff6b6b;
-  --color-discount: #ff4757;
-  --color-price: #2ed573;
+  /* E-commerce Specific */
+  --color-cart: #ef4444; /* Red for urgency */
+  --color-favorite: #e11d48; /* Pink-600 (accessible heart/favorite) */
+  --color-discount: #f97316; /* Orange-500 (clear sale signal) */
+  --color-price: #059669; /* Green-700 (positive, readable) */
 
   /* Typography */
   --font-figtree: 'Figtree', sans-serif;
   --font-srProDisplay: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* Utility colors — pair with Tailwind classes */
-  --color-primary-foreground: #ffffff; /* ensures readable text over primary */
+  /* Utility Colors */
+  --color-primary-foreground: #ffffff; /* White text on primary */
   --color-secondary-foreground: #ffffff;
-  --color-muted: #666666;
-  --color-muted-foreground: #999999;
-  --color-input-border: #ebebeb;
-  --color-input-background: rgba(255, 255, 255, 0.5);
+  --color-muted: #6b7280; /* Gray-500 */
+  --color-muted-foreground: #9ca3af; /* Gray-400 */
+  --color-input-border: #d1d5db;
+  --color-input-background: #ffffff;
 
-  /* Custom breakpoints */
+  /* Surface Layers (for cards, panels) */
+  --surface-bg: #f9fafb; /* Gray-50 */
+
+  /* Custom Breakpoints */
   --breakpoint-xs: 420px;
 
   /* Sub-navigation */
-  --subnav-bg: #2e2e2e;
-  --subnav-hover: #404040;
+  --subnav-bg: #f3f4f6; /* Light gray */
+  --subnav-hover: #e5e7eb; /* Subtle hover */
 
   /* Header */
   --header-bg: #ffffff;
@@ -54,33 +57,39 @@
    ========================= */
 .dark,
 [data-theme="dark"] {
-  /* Brand / UI colors */
-  --color-primary: #ffffff;
-  --color-secondary: #f3f4f6;
-  --color-accent: #d1d5db;
-  --color-background: #0e1522; /* base dark background */
-  --color-text: #f9fafb;
-  --color-border: #374151;
-  --color-success: #34d399;
-  --color-warning: #fbbf24;
-  --color-error: #f87171;
+  /* Brand / UI Colors */
+  --color-primary: #3b82f6; /* Blue-500 - bright but not glowing */
+  --color-secondary: #818cf8; /* Indigo-400 */
+  --color-accent: #93c5fd; /* Light blue accent */
+  --color-background: #0f172a; /* Deep navy-blue (softer than pure black) */
+  --color-text: #f1f5f9; /* Slate-100 - clean white-blue tone */
+  --color-border: #334155; /* Gray-700 */
+  --color-success: #10b981; /* Same as light (consistent feedback) */
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
 
-  /* E-commerce specific */
-  --color-cart: #ff7675;
-  --color-favorite: #ff7675;
-  --color-discount: #fd79a8;
-  --color-price: #00b894;
+  /* E-commerce Specific */
+  --color-cart: #f87171; /* Red-400 - visible but not harsh */
+  --color-favorite: #f472b6; /* Pink-400 */
+  --color-discount: #fb923c; /* Orange-400 */
+  --color-price: #10b981; /* Green-400 - consistent positive signal */
 
-  /* Ensure legible text against light primary */
-  --color-primary-foreground: #000000;
+  /* Foreground (text) on primary */
+  --color-primary-foreground: #ffffff;
 
-  /* Neutral surface backgrounds for cards/panels */
-  --surface-bg: #1f2937;
+  /* Neutral surface backgrounds for cards, inputs, panels */
+  --surface-bg: #1e293b; /* Slate-800 */
+  --color-input-background: #334155; /* Gray-700 */
+  --color-input-border: #475569; /* Gray-600 */
+
+  /* Muted text */
+  --color-muted: #94a3b8; /* Slate-400 */
+  --color-muted-foreground: #64748b; /* Slate-500 */
 
   /* Sub-navigation */
-  --subnav-bg: #243146; /* refined darker tone */
-  --subnav-hover: #2f3f53;
+  --subnav-bg: #1e293b; /* Match surface-bg for consistency */
+  --subnav-hover: #334155;
 
   /* Header */
-  --header-bg: #192132; /* matches dark subnav tone */
+  --header-bg: #1e293b; /* Unified with subnav and surfaces */
 }

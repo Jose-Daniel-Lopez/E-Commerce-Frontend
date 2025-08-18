@@ -212,7 +212,7 @@ watch(() => wishlistProducts.value, () => {
 </script>
 
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-white text-black min-h-screen">
+  <div class="pt-[85px] lg:pt-0 bg-background text-foreground min-h-screen">
     <Wrapper class="py-8">
       <!-- Breadcrumb -->
       <BreadcrumbNav
@@ -221,7 +221,7 @@ watch(() => wishlistProducts.value, () => {
 
       <!-- Header -->
       <section class="mx-auto mb-8 max-w-7xl">
-        <h1 class="text-2xl font-semibold text-left text-black font-srProDisplay">
+  <h1 class="text-2xl font-semibold text-left text-foreground font-srProDisplay">
           {{ t('wishlist.title') || 'Wishlist' }}
         </h1>
       </section>
@@ -282,7 +282,7 @@ watch(() => wishlistProducts.value, () => {
                   <button
                     v-if="!addedToCartItems.has(item.id)"
                     :disabled="loadingItems.has(item.id)"
-                    class="w-full bg-black text-white py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="w-full bg-primary text-primary-foreground py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:opacity-95 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     @click.stop="addToCartFromWishlist(item.id)"
                   >
                     <span v-if="loadingItems.has(item.id)">Adding...</span>
@@ -295,7 +295,7 @@ watch(() => wishlistProducts.value, () => {
                     @click.stop
                   >{{ t('cart.addedToCart') || 'Added to Cart' }}</button>
                   <button
-                    class="w-full bg-gray-100 text-black py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:bg-gray-200 transition-colors"
+                    class="w-full bg-gray-100 text-foreground py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium hover:bg-gray-200 transition-colors"
                     @click.stop="goToProduct(item.id)"
                   >{{ t('wishlist.details') || 'View details' }}</button>
                 </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-white text-black min-h-screen">
+  <div class="pt-[85px] lg:pt-0 bg-background text-foreground min-h-screen">
     <Wrapper class="py-20 max-w-[1300px] mx-auto">
       <!-- Stepper -->
       <div class="flex items-center justify-center mb-20">
@@ -20,12 +20,12 @@
           <div class="flex-1 h-0.5 bg-[#E5E5E5] mx-2"></div>
           <!-- Step 2: Shipping -->
           <div class="flex flex-1 items-center justify-center">
-            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-black mr-3">
-              <v-icon name="md-localshipping" scale="1.5" fill="white" />
+            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-primary mr-3">
+              <v-icon name="md-localshipping" scale="1.5" class="text-primary-foreground" />
             </span>
             <div class="flex flex-col items-start">
-              <span class="font-srProDisplay text-xs text-black">Step 2</span>
-              <span class="font-srProDisplay text-base font-semibold text-black mt-0.5"
+              <span class="font-srProDisplay text-xs text-foreground">Step 2</span>
+              <span class="font-srProDisplay text-base font-semibold text-foreground mt-0.5"
                 >Shipping</span
               >
             </div>
@@ -49,12 +49,12 @@
 
       <!-- Select Shipping Method -->
       <section class="max-w-5xl mx-auto">
-        <h2 class="font-srProDisplay text-lg font-semibold text-[#232340] mb-6">{{ $t('checkout.shipmentMethod') }}</h2>
+        <h2 class="font-srProDisplay text-lg font-semibold text-foreground mb-6">{{ $t('checkout.shipmentMethod') }}</h2>
         <div class="space-y-6 overflow-visible">
           <div
             v-for="method in shippingMethods"
             :key="method.id"
-            class="bg-[#F7F7F7] rounded-xl p-6 flex items-center justify-between overflow-visible relative"
+            class="bg-surface rounded-xl p-6 flex items-center justify-between overflow-visible relative"
           >
             <label class="flex items-start gap-4 cursor-pointer flex-1 w-full">
               <input
@@ -62,27 +62,27 @@
                 name="selectedShipping"
                 :value="method.id"
                 v-model="selectedShippingId"
-                class="accent-black w-5 h-5 mt-1"
+                class="accent-primary w-5 h-5 mt-1"
               />
               <div class="flex flex-1 items-center justify-between w-full">
                 <div class="flex-1">
                   <div class="flex items-center gap-2 mb-1">
-                    <span class="font-srProDisplay text-base font-semibold text-black">{{
+                    <span class="font-srProDisplay text-base font-semibold text-foreground">{{
                       method.name
                     }}</span>
                     <span
-                      class="ml-2 px-2 py-0.5 rounded bg-black text-white text-xs font-srProDisplay font-semibold"
+                      class="ml-2 px-2 py-0.5 rounded bg-primary text-primary-foreground text-xs font-srProDisplay font-semibold"
                       >{{ userCartStore.formatPrice(method.price) }}</span
                     >
                   </div>
-                  <div class="font-srProDisplay text-[#232340] text-base mb-2">
+                  <div class="font-srProDisplay text-foreground text-base mb-2">
                     {{ method.description }}
                   </div>
                 </div>
                 <div class="flex items-center relative overflow-visible">
                   <!-- Show estimated delivery or "Select Date" for schedule -->
                   <span
-                    class="font-srProDisplay text-[#232340] text-base whitespace-nowrap"
+                    class="font-srProDisplay text-foreground text-base whitespace-nowrap"
                   >
                     {{ method.id === '3' && selectedShippingId === '3' && selectedScheduleDate
                         ? selectedScheduleDate
@@ -97,9 +97,9 @@
         <!-- DatePicker Section - Outside of shipping methods loop for better mobile UX -->
         <div
           v-if="selectedShippingId === '3'"
-          class="mt-8 p-6 bg-[#F7F7F7] rounded-xl"
+          class="mt-8 p-6 bg-surface rounded-xl"
         >
-          <h3 class="font-srProDisplay text-base font-semibold text-black mb-4">
+          <h3 class="font-srProDisplay text-base font-semibold text-foreground mb-4">
             Select your preferred delivery date
           </h3>
           <div class="w-full">
@@ -114,13 +114,13 @@
       <!-- Navigation Buttons -->
       <div class="flex justify-end gap-4 max-w-5xl mx-auto mt-8">
         <button
-          class="px-22 py-5 border border-black rounded-[6px] font-srProDisplay text-black bg-white hover:bg-gray-50 transition"
+          class="px-22 py-5 border border-border rounded-[6px] font-srProDisplay text-foreground bg-background hover:bg-gray-50 transition"
           @click="goBack"
         >
           Back
         </button>
         <button
-          class="px-22 py-5 rounded-[6px] font-srProDisplay text-white bg-black hover:bg-[#232340] transition"
+          class="px-22 py-5 rounded-[6px] font-srProDisplay text-primary-foreground bg-primary hover:opacity-95 transition"
           @click="goNext"
         >
           Next

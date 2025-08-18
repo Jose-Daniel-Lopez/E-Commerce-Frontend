@@ -3,9 +3,9 @@
     <button
       @click="toggleCalendar"
       :class="[
-        'px-4 py-2 border border-[#EBEBEB] rounded-md bg-white font-srProDisplay text-black transition-colors duration-200',
-        'hover:border-black focus:outline-none focus:border-black',
-        isOpen ? 'border-black' : '',
+        'px-4 py-2 border border-border rounded-md bg-background font-srProDisplay text-foreground transition-colors duration-200',
+        'hover:border-border focus:outline-none focus:border-border',
+        isOpen ? 'border-border' : '',
       ]"
     >
       {{ selectedDate || 'Select Date' }}
@@ -19,24 +19,24 @@
     <!-- Calendar Dropdown -->
     <div
       v-if="isOpen"
-      class="absolute top-full mt-2 bg-white border border-[#EBEBEB] rounded-lg shadow-xl z-[9999] min-w-[280px] max-w-[280px] calendar-dropdown"
+  class="absolute top-full mt-2 bg-background border border-border rounded-lg shadow-xl z-[9999] min-w-[280px] max-w-[280px] calendar-dropdown"
       style="box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);"
     >
       <!-- Calendar Header -->
-      <div class="flex items-center justify-between p-4 border-b border-[#EBEBEB]">
+  <div class="flex items-center justify-between p-4 border-b border-border">
         <button
           @click="previousMonth"
           :disabled="!canGoToPreviousMonth"
           :class="[
             'p-1 rounded transition-colors',
             canGoToPreviousMonth
-              ? 'hover:bg-gray-100 text-black'
+              ? 'hover:bg-gray-100 text-foreground'
               : 'text-gray-300 cursor-not-allowed'
           ]"
         >
           <v-icon name="md-chevronleft" scale="1.2" />
         </button>
-        <span class="font-srProDisplay font-semibold text-black">
+  <span class="font-srProDisplay font-semibold text-foreground">
           {{ monthNames[currentMonth] }} {{ currentYear }}
         </span>
         <button
@@ -79,9 +79,9 @@
               'h-8 w-8 rounded text-sm font-srProDisplay transition-colors',
               isPastOrSameDayDate(day)
                 ? 'text-gray-300 cursor-not-allowed'
-                : 'text-black hover:bg-gray-100',
+                : 'text-foreground hover:bg-gray-100',
               isSelectedDate(day)
-                ? 'bg-black text-white hover:bg-black'
+                ? 'bg-primary text-primary-foreground hover:opacity-95'
                 : '',
             ]"
           >
@@ -90,7 +90,7 @@
         </div>
 
         <!-- Info text -->
-        <div class="mt-3 pt-3 border-t border-[#EBEBEB]">
+  <div class="mt-3 pt-3 border-t border-border">
           <p class="text-xs font-srProDisplay text-gray-500 text-center">
             Delivery available from tomorrow onwards
           </p>

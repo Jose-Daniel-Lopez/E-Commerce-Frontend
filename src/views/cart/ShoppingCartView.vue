@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-white text-black animate-fadeInUp">
+  <div class="pt-[85px] lg:pt-0 bg-background text-foreground animate-fadeInUp">
     <!-- Wrapper for layout consistency and responsive padding -->
     <Wrapper class="py-4">
       <!-- Breadcrumb navigation for user orientation -->
