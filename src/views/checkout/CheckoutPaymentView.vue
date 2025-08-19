@@ -3,70 +3,62 @@
     <Wrapper class="py-20 max-w-[1300px] mx-auto">
       <!-- Stepper - Mobile optimized -->
       <div class="flex items-center justify-center mb-12 lg:mb-20">
-        <div class="flex items-center gap-4 lg:gap-8 w-full max-w-3xl px-4 lg:px-0">
+        <div class="flex items-center w-full max-w-3xl gap-4 px-4 lg:gap-8 lg:px-0">
           <!-- Step 1: Address -->
-          <div class="flex flex-1 items-center justify-center">
-            <span class="w-8 h-8 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-surface mr-2 lg:mr-3">
+          <div class="flex items-center justify-center flex-1">
+            <span class="flex items-center justify-center w-8 h-8 mr-2 rounded-full lg:w-12 lg:h-12 bg-surface lg:mr-3">
               <v-icon name="md-locationon" :scale="1" class="lg:scale-150 text-muted" />
             </span>
             <div class="flex flex-col items-start">
-              <span class="font-srProDisplay text-xs text-[#BDBDBD] hidden sm:block">Step 1</span>
-              <span class="font-srProDisplay text-sm lg:text-base font-semibold text-[#BDBDBD] mt-0.5"
-                >Address</span
-              >
+              <span class="hidden text-xs font-srProDisplay text-muted sm:block">Step 1</span>
+              <span class="font-srProDisplay text-sm lg:text-base font-semibold text-muted mt-0.5">Address</span>
             </div>
           </div>
           <!-- Line -->
           <div class="flex-1 h-0.5 bg-border mx-1 lg:mx-2"></div>
           <!-- Step 2: Shipping -->
-          <div class="flex flex-1 items-center justify-center">
-            <span class="w-8 h-8 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-surface mr-2 lg:mr-3">
+          <div class="flex items-center justify-center flex-1">
+            <span class="flex items-center justify-center w-8 h-8 mr-2 rounded-full lg:w-12 lg:h-12 bg-surface lg:mr-3">
               <v-icon name="md-localshipping" :scale="1" class="lg:scale-150 text-muted" />
             </span>
             <div class="flex flex-col items-start">
-              <span class="font-srProDisplay text-xs text-[#BDBDBD] hidden sm:block">Step 2</span>
-              <span class="font-srProDisplay text-sm lg:text-base font-semibold text-[#BDBDBD] mt-0.5"
-                >Shipping</span
-              >
+              <span class="hidden text-xs font-srProDisplay text-muted sm:block">Step 2</span>
+              <span class="font-srProDisplay text-sm lg:text-base font-semibold text-muted mt-0.5">Shipping</span>
             </div>
           </div>
           <!-- Line -->
-          <div class="flex-1 h-0.5 bg-[#E5E5E5] mx-1 lg:mx-2"></div>
+          <div class="flex-1 h-0.5 bg-border mx-1 lg:mx-2"></div>
           <!-- Step 3: Payment -->
-          <div class="flex flex-1 items-center justify-center">
-            <span class="w-8 h-8 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-primary mr-2 lg:mr-3">
-              <v-icon name="si-contactlesspayment" :scale="1.5" class="lg:scale-200 text-primary-foreground" />
+          <div class="flex items-center justify-center flex-1">
+            <span
+              class="flex items-center justify-center w-8 h-8 mr-2 rounded-full shadow-sm lg:w-12 lg:h-12 bg-primary lg:mr-3 ring-2 ring-primary/20 dark:ring-primary/30 text-primary-foreground">
+              <v-icon name="si-contactlesspayment" :scale="1.5" fill="currentColor"
+                class="lg:scale-200 text-primary-foreground" />
             </span>
             <div class="flex flex-col items-start">
-              <span class="font-srProDisplay text-xs text-black hidden sm:block">Step 3</span>
-              <span class="font-srProDisplay text-sm lg:text-base font-semibold text-black mt-0.5"
-                >Payment</span
-              >
+              <span class="hidden text-xs text-muted font-srProDisplay sm:block">Step 3</span>
+              <span class="font-srProDisplay text-sm lg:text-base font-semibold text-foreground mt-0.5">Payment</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Mobile: Single column, Desktop: Two columns -->
-      <div class="flex flex-col lg:flex-row gap-6 lg:gap-12 max-w-5xl mx-auto px-4 lg:px-0">
+      <div class="flex flex-col max-w-5xl gap-6 px-4 mx-auto lg:flex-row lg:gap-12 lg:px-0">
         <!-- Payment Section - Shows first on mobile -->
         <div class="flex-1 order-2 lg:order-2">
           <section>
-            <h2 class="font-srProDisplay text-lg font-semibold text-foreground mb-6">{{ $t('checkout.payment') }}</h2>
+            <h2 class="mb-6 text-lg font-semibold font-srProDisplay text-foreground">{{ $t('checkout.payment') }}</h2>
 
             <!-- Payment Method Tabs - Mobile optimized -->
-            <div class="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-8">
-              <button
-                v-for="method in paymentMethods"
-                :key="method.id"
-                @click="selectedPaymentMethod = method.id"
+            <div class="flex flex-col gap-2 mb-8 sm:flex-row sm:gap-4">
+              <button v-for="method in paymentMethods" :key="method.id" @click="selectedPaymentMethod = method.id"
                 :class="[
                   'px-4 py-3 sm:py-2 rounded-md font-srProDisplay text-sm font-medium transition-colors min-h-[44px]',
                   selectedPaymentMethod === method.id
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-surface text-muted border border-border hover:border-border',
-                ]"
-              >
+                ]">
                 {{ method.name }}
               </button>
             </div>
@@ -76,14 +68,9 @@
               <!-- Credit Card Visual - Mobile responsive -->
               <div class="relative flex justify-center lg:justify-start">
                 <div class="w-full max-w-[320px] lg:max-w-none">
-                  <CreditCard
-                    :name="paymentForm.cardholderName"
-                    :number="paymentForm.cardNumber"
-                    :expiration="paymentForm.expDate"
-                    :cvc="paymentForm.cvv"
-                    :focused="focusedField"
-                    class="scale-90 sm:scale-100"
-                  />
+                  <CreditCard :name="paymentForm.cardholderName" :number="paymentForm.cardNumber"
+                    :expiration="paymentForm.expDate" :cvc="paymentForm.cvv" :focused="focusedField"
+                    class="scale-90 sm:scale-100" />
                 </div>
               </div>
 
@@ -91,98 +78,70 @@
               <form @submit.prevent="processPayment" class="space-y-4">
                 <!-- Cardholder Name -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Cardholder Name</label>
-                  <input
-                    v-model="paymentForm.cardholderName"
-                    type="text"
-                    required
-                    @focus="focusedField = 'name'"
-                    @blur="focusedField = ''"
-                    @input="
+                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Cardholder
+                    Name</label>
+                  <input v-model="paymentForm.cardholderName" type="text" required @focus="focusedField = 'name'"
+                    @blur="focusedField = ''" @input="
                       paymentForm.cardholderName = paymentForm.cardholderName.replace(/\d/g, '')
-                    "
-                    class="w-full px-4 py-4 lg:py-3 border border-border rounded-md bg-background font-srProDisplay text-base lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
-                    placeholder="Enter cardholder name"
-                  />
+                      "
+                    class="w-full px-4 py-4 text-base transition-colors duration-200 border rounded-md lg:py-3 border-border bg-background font-srProDisplay lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border"
+                    placeholder="Enter cardholder name" />
                 </div>
 
                 <!-- Card Number -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Card Number</label>
-                  <input
-                    v-model="paymentForm.cardNumber"
-                    type="text"
-                    required
-                    maxlength="19"
-                    @focus="focusedField = 'number'"
-                    @blur="focusedField = ''"
-                    @input="formatCardNumber"
-                    class="w-full px-4 py-4 lg:py-3 border border-border rounded-md bg-background font-srProDisplay text-base lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
-                    placeholder="1234 5678 9012 3456"
-                  />
+                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Card Number</label>
+                  <input v-model="paymentForm.cardNumber" type="text" required maxlength="19"
+                    @focus="focusedField = 'number'" @blur="focusedField = ''" @input="formatCardNumber"
+                    class="w-full px-4 py-4 text-base transition-colors duration-200 border rounded-md lg:py-3 border-border bg-background font-srProDisplay lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border"
+                    placeholder="1234 5678 9012 3456" />
                 </div>
 
                 <!-- Exp Date and CVV -->
                 <div class="flex gap-4">
                   <div class="flex-1">
-                    <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Exp Date</label>
-                    <input
-                      v-model="paymentForm.expDate"
-                      type="text"
-                      required
-                      maxlength="5"
-                      @focus="focusedField = 'expiry'"
-                      @blur="focusedField = ''"
-                      @input="formatExpDate"
-                      class="w-full px-4 py-4 lg:py-3 border border-border rounded-md bg-background font-srProDisplay text-base lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
-                      placeholder="MM/YY"
-                    />
+                    <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Exp Date</label>
+                    <input v-model="paymentForm.expDate" type="text" required maxlength="5"
+                      @focus="focusedField = 'expiry'" @blur="focusedField = ''" @input="formatExpDate"
+                      class="w-full px-4 py-4 text-base transition-colors duration-200 border rounded-md lg:py-3 border-border bg-background font-srProDisplay lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border"
+                      placeholder="MM/YY" />
                   </div>
                   <div class="flex-1">
-                    <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">CVV</label>
-                    <input
-                      v-model="paymentForm.cvv"
-                      type="text"
-                      required
-                      maxlength="3"
-                      @focus="focusedField = 'cvv'"
+                    <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">CVV</label>
+                    <input v-model="paymentForm.cvv" type="text" required maxlength="3" @focus="focusedField = 'cvv'"
                       @blur="focusedField = ''"
-                      class="w-full px-4 py-4 lg:py-3 border border-border rounded-md bg-background font-srProDisplay text-base lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
-                      placeholder="123"
-                    />
+                      class="w-full px-4 py-4 text-base transition-colors duration-200 border rounded-md lg:py-3 border-border bg-background font-srProDisplay lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border"
+                      placeholder="123" />
                   </div>
                 </div>
 
                 <!-- Same as billing address -->
                 <div class="flex items-center gap-2 py-2">
-                  <input
-                    v-model="paymentForm.sameAsBilling"
-                    type="checkbox"
-                    id="sameAsBilling"
-                    class="w-5 h-5 lg:w-4 lg:h-4 accent-primary"
-                  />
-                  <label for="sameAsBilling" class="font-srProDisplay text-sm text-foreground">Same as billing address</label>
+                  <input v-model="paymentForm.sameAsBilling" type="checkbox" id="sameAsBilling"
+                    class="w-5 h-5 lg:w-4 lg:h-4 accent-primary" />
+                  <label for="sameAsBilling" class="text-sm font-srProDisplay text-foreground">Same as billing
+                    address</label>
                 </div>
               </form>
             </div>
 
             <!-- PayPal Option -->
-            <div v-else-if="selectedPaymentMethod === 'paypal'" class="text-center py-8">
-              <div class="text-blue-600 text-2xl font-bold mb-4" />
-              <v-icon name="bi-paypal" :scale="1" fill="#666" class="lg:scale-150 mb-1" />
-                <span class="text-black text-2xl font-bold"> Paypal</span>
-              <p class="font-srProDisplay text-[#666] mb-6">
+            <div v-else-if="selectedPaymentMethod === 'paypal'" class="py-8 text-center">
+              <div class="mb-4 text-2xl font-bold text-foreground" />
+              <v-icon name="bi-paypal" :scale="1" fill="currentColor" class="mb-1 lg:scale-150 text-muted" />
+              <span class="text-2xl font-bold text-foreground"> Paypal</span>
+              <p class="mb-6 font-srProDisplay text-muted">
                 You will be redirected to PayPal to complete your payment.
               </p>
             </div>
 
             <!-- Apple Pay Option -->
-            <div v-else-if="selectedPaymentMethod === 'apple-pay'" class="text-center py-8">
-              <div class="border border-black rounded-[8px] inline-block px-4 py-2 mb-4">
-                <v-icon name="bi-apple" :scale="1" fill="#666" class="lg:scale-150 mb-1" />
-                <span class="text-black text-2xl font-bold"> Pay</span>
+            <div v-else-if="selectedPaymentMethod === 'apple-pay'" class="py-8 text-center">
+              <div class="border border-border rounded-[8px] inline-block px-4 py-2 mb-4 bg-surface text-foreground">
+                <v-icon name="bi-apple" :scale="1" fill="currentColor" class="mb-1 lg:scale-150 text-muted" />
+                <span class="text-2xl font-bold text-foreground"> Pay</span>
               </div>
-              <p class="font-srProDisplay text-[#666] mb-6">
+              <p class="mb-6 font-srProDisplay text-muted">
                 Pay with Apple Pay for a faster checkout.
               </p>
             </div>
@@ -193,89 +152,88 @@
         <div class="flex-1 order-1 lg:order-1">
           <div class="border border-border rounded-[10px] p-4 lg:p-8">
             <section>
-              <h2 class="font-srProDisplay text-lg font-semibold text-foreground mb-6">{{ $t('checkout.summary') }}</h2>
+              <h2 class="mb-6 text-lg font-semibold font-srProDisplay text-foreground">{{ $t('checkout.summary') }}</h2>
 
               <!-- Products - Mobile optimized -->
-              <div class="space-y-3 lg:space-y-4 mb-6 lg:mb-8">
-                <div
-                  v-for="item in cartItems"
-                  :key="item.id"
-                  class="flex items-center p-3 lg:p-2 rounded-[13px] justify-between bg-surface"
-                >
+              <div class="mb-6 space-y-3 lg:space-y-4 lg:mb-8">
+                <div v-for="item in cartItems" :key="item.id"
+                  class="flex items-center p-3 lg:p-2 rounded-[13px] justify-between bg-surface">
                   <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 lg:w-16 lg:h-16 rounded-lg flex items-center justify-center relative">
-                      <img
-                        :src="item.product?.imageUrl || getProductImage(item.product?.name)"
-                        :alt="item.product?.name"
-                        class="w-10 h-10 lg:w-12 lg:h-12 object-contain"
-                      />
-                      <span
-                        v-if="item.quantity > 1"
-                        class="absolute -top-1 -right-1 lg:top-0 lg:right-0 bg-primary text-primary-foreground text-xs rounded-full px-1.5 py-0.5 lg:px-2 font-srProDisplay min-w-[18px] text-center"
-                        >x{{ item.quantity }}</span
-                      >
+                    <div class="relative flex items-center justify-center w-12 h-12 rounded-lg lg:w-16 lg:h-16">
+                      <img :src="item.product?.imageUrl || getProductImage(item.product?.name)"
+                        :alt="item.product?.name" class="object-contain w-10 h-10 lg:w-12 lg:h-12" />
+                      <span v-if="item.quantity > 1"
+                        class="absolute -top-1 -right-1 lg:top-0 lg:right-0 bg-primary text-primary-foreground text-xs rounded-full px-1.5 py-0.5 lg:px-2 font-srProDisplay min-w-[18px] text-center">x{{
+                        item.quantity }}</span>
                     </div>
-                    <span class="font-srProDisplay text-sm lg:text-base text-foreground line-clamp-2">{{
+                    <span class="text-sm font-srProDisplay lg:text-base text-foreground line-clamp-2">{{
                       item.product?.name
-                    }}</span>
+                      }}</span>
                   </div>
-                  <span class="font-srProDisplay text-sm lg:text-base font-semibold text-foreground whitespace-nowrap ml-2">{{
-                    userCartStore.formatPrice((item.product?.basePrice || 0) * item.quantity)
-                  }}</span>
+                  <span
+                    class="ml-2 text-sm font-semibold font-srProDisplay lg:text-base text-foreground whitespace-nowrap">{{
+                      userCartStore.formatPrice((item.product?.basePrice || 0) * item.quantity)
+                    }}</span>
                 </div>
               </div>
 
               <!-- Address -->
               <div class="mb-4 lg:mb-6">
-                  <h3 class="font-srProDisplay text-base font-semibold text-foreground mb-2">{{ $t('checkout.address') }}</h3>
+                <h3 class="mb-2 text-base font-semibold font-srProDisplay text-foreground">{{ $t('checkout.address') }}
+                </h3>
                 <div v-if="selectedAddress" class="flex flex-col gap-1">
-                  <span class="font-srProDisplay text-sm text-foreground">{{
+                  <span class="text-sm font-srProDisplay text-foreground">{{
                     selectedAddress.street
-                  }}</span>
-                  <span class="font-srProDisplay text-sm text-foreground">{{ selectedAddress.city }}, {{ selectedAddress.state }} {{ selectedAddress.zipCode }}</span>
-                  <span class="font-srProDisplay text-sm text-foreground">{{ selectedAddress.country }}</span>
-                  <span
-                    v-if="selectedAddress.addressType"
-                    class="font-srProDisplay text-xs text-white bg-black rounded px-2 py-0.5 w-fit mt-1"
-                    >{{ selectedAddress.addressType }}</span
-                  >
+                    }}</span>
+                  <span class="text-sm font-srProDisplay text-foreground">{{ selectedAddress.city }}, {{
+                    selectedAddress.state }} {{ selectedAddress.zipCode }}</span>
+                  <span class="text-sm font-srProDisplay text-foreground">{{ selectedAddress.country }}</span>
+                  <span v-if="selectedAddress.addressType"
+                    class="font-srProDisplay text-xs text-white bg-black rounded px-2 py-0.5 w-fit mt-1">{{
+                    selectedAddress.addressType }}</span>
                 </div>
-                <p v-else class="font-srProDisplay text-muted text-sm">{{ $t('checkout.noAddress') }}</p>
+                <p v-else class="text-sm font-srProDisplay text-muted">{{ $t('checkout.noAddress') }}</p>
               </div>
 
               <!-- Shipment method -->
               <div class="mb-6 lg:mb-8">
-                <h3 class="font-srProDisplay text-base font-semibold text-black mb-2">
+                <h3 class="mb-2 text-base font-semibold text-foreground font-srProDisplay">
                   {{ $t('checkout.shipmentMethod') }}
                 </h3>
                 <div v-if="selectedShipping" class="space-y-1">
-                  <p class="font-srProDisplay text-foreground text-sm">
+                  <p class="text-sm font-srProDisplay text-foreground">
                     {{ selectedShipping.name }}
                   </p>
-                  <p v-if="selectedShipping.id === '3' && selectedShipping.selectedDate" class="font-srProDisplay text-muted text-xs">Scheduled for: {{ selectedShipping.selectedDate }}</p>
+                  <p v-if="selectedShipping.id === '3' && selectedShipping.selectedDate"
+                    class="text-xs font-srProDisplay text-muted">Scheduled for: {{ selectedShipping.selectedDate }}</p>
                 </div>
-                <p v-else class="font-srProDisplay text-gray-400 text-sm">
+                <p v-else class="text-sm text-gray-400 font-srProDisplay">
                   {{ $t('checkout.noShipping') }}
                 </p>
               </div>
 
               <!-- Order Summary -->
-                <div class="space-y-3 pt-4 border-t border-border">
+              <div class="pt-4 space-y-3 border-t border-border">
                 <div class="flex justify-between">
-                  <span class="font-srProDisplay text-base font-semibold text-foreground">{{ $t('checkout.subtotal') }}</span>
-                  <span class="font-srProDisplay text-base font-semibold text-foreground">{{ userCartStore.formatPrice(subtotal) }}</span>
+                  <span class="text-base font-semibold font-srProDisplay text-foreground">{{ $t('checkout.subtotal')
+                    }}</span>
+                  <span class="text-base font-semibold font-srProDisplay text-foreground">{{
+                    userCartStore.formatPrice(subtotal) }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-srProDisplay text-base text-muted">{{ $t('checkout.estimatedTax') }}</span>
-                  <span class="font-srProDisplay text-base text-muted">{{ userCartStore.formatPrice(estimatedTax) }}</span>
+                  <span class="text-base font-srProDisplay text-muted">{{ $t('checkout.estimatedTax') }}</span>
+                  <span class="text-base font-srProDisplay text-muted">{{ userCartStore.formatPrice(estimatedTax)
+                    }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="font-srProDisplay text-base text-muted">{{ $t('checkout.estimatedShipping') }}</span>
-                  <span class="font-srProDisplay text-base text-muted">{{ userCartStore.formatPrice(shippingCost) }}</span>
+                  <span class="text-base font-srProDisplay text-muted">{{ $t('checkout.estimatedShipping') }}</span>
+                  <span class="text-base font-srProDisplay text-muted">{{ userCartStore.formatPrice(shippingCost)
+                    }}</span>
                 </div>
                 <div class="flex justify-between pt-3 border-t border-border">
-                  <span class="font-srProDisplay text-lg font-bold text-foreground">{{ $t('checkout.total') }}</span>
-                  <span class="font-srProDisplay text-lg font-bold text-foreground">{{ userCartStore.formatPrice(total) }}</span>
+                  <span class="text-lg font-bold font-srProDisplay text-foreground">{{ $t('checkout.total') }}</span>
+                  <span class="text-lg font-bold font-srProDisplay text-foreground">{{ userCartStore.formatPrice(total)
+                    }}</span>
                 </div>
               </div>
             </section>
@@ -284,19 +242,15 @@
       </div>
 
       <!-- Navigation Buttons - Mobile optimized -->
-      <div class="flex flex-col sm:flex-row justify-between gap-4 max-w-5xl mx-auto mt-8 px-4 lg:px-0">
+      <div class="flex flex-col justify-between max-w-5xl gap-4 px-4 mx-auto mt-8 sm:flex-row lg:px-0">
         <button
-          class="px-8 sm:px-28 py-4 lg:py-5 border border-black rounded-[6px] font-srProDisplay text-black bg-white hover:bg-gray-50 transition min-h-[48px] order-2 sm:order-1"
-          @click="goBack"
-        >
+          class="px-8 sm:px-28 py-4 lg:py-5 border border-border rounded-[6px] font-srProDisplay text-muted bg-surface hover:bg-surface/95 transition min-h-[48px] order-2 sm:order-1"
+          @click="goBack">
           Back
         </button>
         <button
-          class="px-8 sm:px-28 py-4 lg:py-5 rounded-[6px] font-srProDisplay text-white bg-black hover:bg-[#232340] transition min-h-[48px] order-1 sm:order-2"
-          @click="processPayment"
-          :disabled="!isFormValid"
-          :class="{ 'opacity-50 cursor-not-allowed': !isFormValid }"
-        >
+          class="px-8 sm:px-28 py-4 lg:py-5 rounded-[6px] font-srProDisplay bg-primary text-primary-foreground hover:bg-primary/90 transition min-h-[48px] order-1 sm:order-2"
+          @click="processPayment" :disabled="!isFormValid" :class="{ 'opacity-50 cursor-not-allowed': !isFormValid }">
           Pay
         </button>
       </div>
@@ -491,11 +445,13 @@ function getProductImage(productName: string | undefined) {
     opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .fade-slide-enter-from,
 .fade-slide-leave-to {
   opacity: 0;
   transform: translateY(24px);
 }
+
 .fade-slide-enter-to,
 .fade-slide-leave-from {
   opacity: 1;
@@ -511,6 +467,7 @@ button:focus {
 /* Mobile-specific utilities */
 .line-clamp-2 {
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
