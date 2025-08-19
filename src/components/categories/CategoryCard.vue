@@ -37,26 +37,25 @@ const handleDeleteCategory = (categoryId: number) => {
 
 <template>
   <div
-    class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden cursor-pointer"
+    class="rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border overflow-hidden cursor-pointer"
+    :class="['theme-card', 'theme-border']"
   >
     <!-- Category Icon Header -->
-    <div
-      class="h-32 bg-gradient-to-br from-blue-100 to-purple-200 dark:from-blue-900/30 dark:to-purple-800/30 flex items-center justify-center"
-    >
+  <div class="h-32 flex items-center justify-center theme-icon-container">
       <CategoryIcon :category="category" />
     </div>
 
     <div class="p-6">
       <!-- Category Name -->
-      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 text-center">
+  <h3 class="text-xl font-bold theme-text mb-3 text-center">
         {{ category.name }}
       </h3>
 
       <!-- Product Count -->
       <div class="flex items-center justify-center mb-4">
         <div class="flex items-center space-x-2">
-          <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-          <span class="text-sm text-gray-600 dark:text-gray-300 font-medium">
+          <div class="w-2 h-2 rounded-full" :style="{ backgroundColor: 'var(--color-primary)' }"></div>
+          <span class="text-sm theme-muted-text font-medium">
             {{ categoriesStore.getProductCount(category.id) }} product{{
               categoriesStore.getProductCount(category.id) !== 1 ? 's' : ''
             }}

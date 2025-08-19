@@ -31,6 +31,6 @@ const getCategoryIcon = (category: Category): string => {
   <v-icon
     :name="getCategoryIcon(category)"
     :scale="sizeClasses[size]"
-    class="text-blue-600 dark:text-blue-400"
+    class="theme-text"
   />
 </template>
