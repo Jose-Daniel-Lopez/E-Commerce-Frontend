@@ -26,6 +26,7 @@ const {
   pageBackgroundClasses,
   textClasses,
   textSecondaryClasses,
+  catalogProductCardClasses,
   catalogFilterTitleClasses,
   catalogFilterSectionClasses,
   catalogFilterHeaderClasses,
@@ -717,11 +718,11 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Products Grid -->
-          <div v-else class="grid grid-cols-2 gap-4 mb-8 sm:grid-cols-3">
+      <div v-else class="grid grid-cols-2 gap-4 mb-8 sm:grid-cols-3">
             <div
               v-for="product in paginatedProducts"
               :key="product.id"
-              :class="['relative rounded-lg p-3 hover:shadow-md transition-shadow', 'bg-gray-100 dark:bg-gray-800']"
+        :class="['relative rounded-lg p-3 hover:shadow-md transition-shadow', catalogProductCardClasses]"
             >
               <!-- Category Badge -->
               <div
@@ -783,14 +784,14 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                         <template v-for="i in 5" :key="i">
                           <svg
                             class="w-4 h-4"
-                            :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'"
+                            :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : textSecondaryClasses"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 0 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
                           </svg>
                         </template>
-                        <span class="ml-2 text-xs text-gray-500">{{ (product.rating ?? 0).toFixed(1) }}</span>
+                        <span :class="['ml-2 text-xs', textSecondaryClasses]">{{ (product.rating ?? 0).toFixed(1) }}</span>
                       </span>
                     </div>
                     <div class="flex items-center justify-center gap-2">

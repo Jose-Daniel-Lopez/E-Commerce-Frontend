@@ -9,15 +9,29 @@ const totalUsers = computed(
   () => usersStore.stats.totalUsers || usersStore.pagination.totalElements,
 )
 
-const adminUsersCount = computed(() => usersStore.stats.adminUsers || usersStore.adminUsers.length)
+const adminUsersCount = computed(() => {
+  const stats = (usersStore as unknown as { stats?: Record<string, number> }).stats
+  const statsVal = stats && typeof stats.adminUsers === 'number' ? stats.adminUsers : undefined
+  const list = (usersStore as unknown as { adminUsers?: unknown }).adminUsers
+  const listVal = Array.isArray(list) ? list.length : undefined
+  return statsVal ?? listVal ?? 0
+})
 
-const enabledUsersCount = computed(
-  () => usersStore.stats.enabledUsers || usersStore.enabledUsers.length,
-)
+const enabledUsersCount = computed(() => {
+  const stats = (usersStore as unknown as { stats?: Record<string, number> }).stats
+  const statsVal = stats && typeof stats.enabledUsers === 'number' ? stats.enabledUsers : undefined
+  const list = (usersStore as unknown as { enabledUsers?: unknown }).enabledUsers
+  const listVal = Array.isArray(list) ? list.length : undefined
+  return statsVal ?? listVal ?? 0
+})
 
-const disabledUsersCount = computed(
-  () => usersStore.stats.disabledUsers || usersStore.disabledUsers.length,
-)
+const disabledUsersCount = computed(() => {
+  const stats = (usersStore as unknown as { stats?: Record<string, number> }).stats
+  const statsVal = stats && typeof stats.disabledUsers === 'number' ? stats.disabledUsers : undefined
+  const list = (usersStore as unknown as { disabledUsers?: unknown }).disabledUsers
+  const listVal = Array.isArray(list) ? list.length : undefined
+  return statsVal ?? listVal ?? 0
+})
 </script>
 
 <template>

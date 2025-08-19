@@ -366,15 +366,15 @@ onMounted(async () => {
 
     <!-- Debug Panel - Mobile optimized -->
     <div class="fixed bottom-4 right-4 z-50 max-w-[300px] sm:max-w-[420px] w-full">
-      <div class="p-3 border border-yellow-300 rounded-lg shadow-lg bg-yellow-50 sm:p-4">
+      <div :class="['p-3 rounded-lg shadow-lg sm:p-4', 'theme-debug-bg']">
         <div class="flex items-center justify-between mb-2">
-          <span class="text-xs font-bold text-yellow-800 sm:text-sm">🛠️ Debug Panel</span>
-          <button @click="showDebug = !showDebug" class="text-xs text-yellow-700 underline focus:outline-none">
+          <span :class="['text-xs font-bold sm:text-sm', 'theme-debug-text']">🛠️ Debug Panel</span>
+          <button @click="showDebug = !showDebug" :class="['text-xs underline', 'theme-debug-text']" >
             {{ showDebug ? 'Hide' : 'Show' }}
           </button>
         </div>
         <transition name="fade-debug">
-          <div v-show="showDebug" class="space-y-2 overflow-y-auto text-xs text-yellow-900 max-h-40">
+          <div v-show="showDebug" :class="['space-y-2 overflow-y-auto text-xs max-h-40', 'theme-debug-text']">
             <div><b>User:</b> {{ user }}</div>
             <div><b>Wishlist ID:</b> {{ wishlistStore.wishlistId }}</div>
             <div><b>Wishlist Count:</b> {{ wishlistProducts.length }}</div>
@@ -670,13 +670,12 @@ onMounted(async () => {
                       <span class="flex items-center">
                         <template v-for="i in 5" :key="i">
                           <svg class="w-4 h-4"
-                            :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'"
+                            :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : textSecondaryClasses"
                             fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 0 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 0 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
                           </svg>
                         </template>
-                        <span class="ml-2 text-xs" :class="textMutedClasses">{{ (product.rating ?? 0).toFixed(1)
+                        <span :class="['ml-2 text-xs', textMutedClasses]">{{ (product.rating ?? 0).toFixed(1)
                           }}</span>
                       </span>
                     </div>
