@@ -1,5 +1,5 @@
 <template>
-  <section class="flex h-fit w-full items-center py-[80px] md:h-[352px] bg-background transition-colors duration-200">
+  <section class="flex h-fit w-full items-center py-[80px] md:h-[352px] theme-surface transition-colors duration-200">
     <Wrapper class="relative h-fit md:h-[192px]">
       <!-- ENCABEZADO Y NAVEGACIÓN -->
       <div class="relative flex h-9 w-full items-center justify-between mb-8">
@@ -8,7 +8,7 @@
         </h3>
         <div class="flex items-center gap-2 absolute right-0 top-1/2 -translate-y-1/2 z-20">
           <button
-            class="custom-swiper-button-prev-browse-category flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed text-muted hover:text-foreground transition-colors duration-200"
+            class="custom-swiper-button-prev-browse-category flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed text-muted hover:theme-text transition-colors duration-200"
             type="button"
             aria-label="Previous slide"
             :disabled="categoriesStore.loading || !carouselRef?.canGoPrev"
@@ -28,7 +28,7 @@
             </svg>
           </button>
           <button
-            class="custom-swiper-button-next-browse-category flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed text-muted hover:text-foreground transition-colors duration-200"
+            class="custom-swiper-button-next-browse-category flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed text-muted hover:theme-text transition-colors duration-200"
             type="button"
             aria-label="Next slide"
             :disabled="categoriesStore.loading || !carouselRef?.canGoNext"
@@ -53,8 +53,8 @@
       <div class="w-full">
         <!-- Loading State -->
         <div v-if="categoriesStore.loading" class="flex justify-center items-center py-12">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-border"></div>
-          <span class="ml-3 text-muted transition-colors duration-200">{{ t('common.loading') }}</span>
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2" :style="{ borderColor: 'var(--color-border)' }"></div>
+          <span class="ml-3 theme-muted-text transition-colors duration-200">{{ t('common.loading') }}</span>
         </div>
 
         <!-- Error State -->
@@ -78,7 +78,7 @@
 
         <!-- Empty State -->
         <div v-else class="text-center py-8">
-          <p class="text-muted transition-colors duration-200">{{ t('shop.empty.title') }}</p>
+          <p class="theme-muted-text transition-colors duration-200">{{ t('shop.empty.title') }}</p>
         </div>
       </div>
     </Wrapper>

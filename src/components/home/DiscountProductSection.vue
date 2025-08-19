@@ -1,14 +1,14 @@
 <template>
-  <section class="h-auto w-full bg-white dark:bg-gray-900 transition-colors duration-200">
+  <section class="h-auto w-full theme-surface transition-colors duration-200">
     <Wrapper class="flex h-fit w-full flex-col gap-8 py-[80px]">
       <div class="relative flex h-9 w-full items-center justify-between">
-        <h3 class="font-srProDisplay text-2xl font-medium text-black dark:text-white transition-colors duration-200">{{ $t('discountProducts.title') }}</h3>
+        <h3 class="font-srProDisplay text-2xl font-medium theme-text transition-colors duration-200">{{ $t('discountProducts.title') }}</h3>
         <!-- Navigation buttons -->
         <div class="absolute right-0 top-1/2 z-20 flex -translate-y-1/2 items-center gap-2">
           <button
             @click="goToPrev()"
             :disabled="!canGoPrev"
-            class="custom-swiper-button-prev-discount flex items-center justify-center bg-transparent p-0 transition disabled:cursor-not-allowed disabled:opacity-40 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+            class="custom-swiper-button-prev-discount flex items-center justify-center bg-transparent p-0 transition disabled:cursor-not-allowed disabled:opacity-40 text-muted dark:text-muted transition-colors duration-200"
             style="transform: scaleX(-1)"
           >
             <svg
@@ -26,7 +26,7 @@
           <button
             @click="goToNext()"
             :disabled="!canGoNext"
-            class="custom-swiper-button-next-discount flex items-center justify-center bg-transparent p-0 transition disabled:cursor-not-allowed disabled:opacity-40 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+            class="custom-swiper-button-next-discount flex items-center justify-center bg-transparent p-0 transition disabled:cursor-not-allowed disabled:opacity-40 text-muted dark:text-muted transition-colors duration-200"
           >
             <svg
               :width="'1.2em'"

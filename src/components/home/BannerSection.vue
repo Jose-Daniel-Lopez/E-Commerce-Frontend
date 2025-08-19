@@ -4,13 +4,13 @@
   >
     <Wrapper class="flex h-[448px] items-center justify-center">
       <div>
-        <h1 class="text-center font-srProDisplay text-[48px] font-thin text-white md:text-[72px] transition-colors duration-200">
+        <h1 class="text-center font-srProDisplay text-[48px] font-thin theme-text md:text-[72px] transition-colors duration-200">
           Gran Venta de
-          <span class="font-srProDisplay text-[48px] font-medium text-white md:text-[72px] transition-colors duration-200">
+          <span class="font-srProDisplay text-[48px] font-medium theme-text md:text-[72px] transition-colors duration-200">
             Verano
           </span>
         </h1>
-        <p class="text-center font-srProDisplay text-base font-normal text-[#787878] dark:text-gray-300 transition-colors duration-200">
+        <p class="text-center font-srProDisplay text-base font-normal theme-muted-text transition-colors duration-200">
           Descubre las mejores ofertas de la temporada en todos nuestros productos.
         </p>
         <div class="mt-[40px] flex justify-center">

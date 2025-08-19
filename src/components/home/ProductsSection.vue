@@ -14,13 +14,13 @@
             :breakpoints="tabBreakpoints"
             class="productTag !grid !h-9 !w-full !items-center pl-1"
           >
-            <SwiperSlide
+              <SwiperSlide
               v-for="tab in tabs"
               :key="tab"
               class="cursor-pointer !w-auto !flex-shrink-0 font-srProDisplay text-base sm:text-lg font-medium outline-none"
               @click="handleTabClick(tab)"
             >
-              <span :class="['tab whitespace-nowrap px-2 py-1 transition-colors duration-200', textSecondaryClasses, { activeTab: value === tab }]">
+                <span :class="['tab whitespace-nowrap px-2 py-1 transition-colors duration-200', textSecondaryClasses, { activeTab: value === tab }]">
                 {{ tab }}
               </span>
             </SwiperSlide>
@@ -28,7 +28,7 @@
         </div>
         <!-- Custom Pagination Buttons (BrowseCategory style) -->
         <div class="flex items-center gap-2 absolute right-0 top-1/2 -translate-y-1/2 z-20">
-          <button
+            <button
             ref="prevBtnRef"
             :class="['custom-swiper-button-prev-products-browse flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed', interactiveIconClasses]"
             type="button"
@@ -51,7 +51,7 @@
           </button>
           <button
             ref="nextBtnRef"
-            :class="['custom-swiper-button-next-products-browse flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed', interactiveIconClasses]"
+              :class="['custom-swiper-button-next-products-browse flex items-center justify-center bg-transparent p-0 transition disabled:opacity-40 disabled:cursor-not-allowed', interactiveIconClasses]"
             type="button"
             aria-label="Next slide"
             :disabled="!canGoNext"
@@ -93,7 +93,7 @@
             @swiper="onSwiperInit"
           >
             <!-- Products -->
-            <SwiperSlide v-for="product in filteredProducts" :key="product.id">
+              <SwiperSlide v-for="product in filteredProducts" :key="product.id">
               <ProductCard
                 :product="product"
                 class="mb-4 w-[163.5px] xs:w-[190px] sm:w-[298px] md:w-[240px] xl:w-[268px]"
@@ -109,7 +109,7 @@
           <!-- Loading State -->
           <SwiperSlide v-for="n in 8" :key="`loading-${n}`">
             <div class="mb-4 w-[163.5px] xs:w-[190px] sm:w-[298px] md:w-[240px] xl:w-[268px]">
-              <div class="animate-pulse rounded-[9px] bg-gray-200 dark:bg-gray-700 h-[355px] sm:h-[330px] md:h-[390px] transition-colors duration-200"></div>
+                <div class="animate-pulse rounded-[9px] theme-surface h-[355px] sm:h-[330px] md:h-[390px] transition-colors duration-200"></div>
             </div>
           </SwiperSlide>
         </template>
@@ -122,7 +122,7 @@
               class="flex h-[355px] w-full flex-col items-center justify-center gap-4 sm:h-[330px] md:h-[390px]"
             >
               <div
-                :class="['flex items-center justify-center font-srProDisplay text-xl font-semibold transition-colors duration-200', emptyStateTextClasses]"
+                  :class="['flex items-center justify-center font-srProDisplay text-xl font-semibold transition-colors duration-200', emptyStateTextClasses]"
               >
                 {{ $t('productsSection.noData') }}
               </div>

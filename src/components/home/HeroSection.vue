@@ -6,25 +6,25 @@
       <!-- left side start -->
       <div class="flex h-auto basis-[60%] flex-col justify-center gap-4 md:gap-8 md:px-2">
         <div class="flex flex-col text-center md:gap-3 md:text-left">
-          <p
-            class="font-figtree text-[25px] font-semibold text-gray-500 dark:text-gray-400 transition-colors duration-200"
-          >
+            <p
+              class="font-figtree text-[25px] font-semibold theme-muted-text transition-colors duration-200"
+            >
             {{ $t('hero.smallTitle') }}
           </p>
-          <h1
-            class="font-srProDisplay text-[75px] font-thin leading-[1.1] md:text-[60px] md:leading-[0.7] lg:text-[96px] text-white dark:text-white transition-colors duration-200"
-          >
-            {{ $t('hero.bigTitle') }}
-            <span
-              class="ml-2 font-srProDisplay font-semibold text-white dark:text-white transition-colors duration-200"
+            <h1
+              class="font-srProDisplay text-[75px] font-thin leading-[1.1] md:text-[60px] md:leading-[0.7] lg:text-[96px] theme-text transition-colors duration-200"
             >
+            {{ $t('hero.bigTitle') }}
+              <span
+                class="ml-2 font-srProDisplay font-semibold theme-text transition-colors duration-200"
+              >
               {{ $t('hero.bigTitleBold') }}
             </span>
           </h1>
         </div>
-        <p
-          class="text-wrap text-center font-srProDisplay text-[19px] font-medium md:pr-3 md:text-left md:text-lg lg:pr-0 text-gray-500 dark:text-gray-400 transition-colors duration-200"
-        >
+          <p
+            class="text-wrap text-center font-srProDisplay text-[19px] font-medium md:pr-3 md:text-left md:text-lg lg:pr-0 theme-muted-text transition-colors duration-200"
+          >
           {{ $t('hero.description') }}
         </p>
         <div class="mt-4 flex w-full items-center justify-center md:justify-start">
@@ -33,11 +33,11 @@
             width="181px"
             height="56px"
             font-weight="600"
-            bg-color=""
-            text-color="white"
+            bg-color="var(--color-primary)"
+            text-color="var(--color-primary-foreground)"
             border-width="1px"
-            border-color="grey"
-            hover-bg-color="#333333"
+            border-color="var(--color-border)"
+            hover-bg-color="var(--color-accent)"
             hover-text-color=""
             @click="goToCatalog"
           >
