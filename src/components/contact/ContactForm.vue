@@ -46,13 +46,13 @@
           </label>
           <div class="space-y-2">
             <label class="flex items-center">
-              <input type="radio" name="contactMethod" value="email" class="mr-3 text-black" checked />
+              <input type="radio" name="contactMethod" value="email" class="mr-3" checked />
               <span :class="['font-srProDisplay text-sm transition-colors duration-200', textClasses]">
                 {{ t('contact.form.fields.contactMethod.email') }}
               </span>
             </label>
             <label class="flex items-center">
-              <input type="radio" name="contactMethod" value="phone" class="mr-3 text-black" />
+              <input type="radio" name="contactMethod" value="phone" class="mr-3" />
               <span :class="['font-srProDisplay text-sm transition-colors duration-200', textClasses]">
                 {{ t('contact.form.fields.contactMethod.phone') }}
               </span>

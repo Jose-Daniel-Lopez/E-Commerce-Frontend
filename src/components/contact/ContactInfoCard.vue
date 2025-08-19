@@ -6,9 +6,9 @@
     <div class="space-y-0">
       <!-- Email Block -->
       <div :class="['flex items-start gap-4 py-8 border-b', dividerClasses]">
-        <div :class="iconBackgroundClasses">
-          <v-icon name="hi-mail" :class="['w-6 h-6', interactiveIconClasses]" />
-        </div>
+          <div :class="iconBackgroundClasses">
+            <v-icon name="hi-mail" :class="['w-6 h-6', interactiveIconClasses]" />
+          </div>
         <div>
           <h3 :class="['font-srProDisplay text-lg font-medium mb-1 transition-colors duration-200', textClasses]">
             {{ t('contact.information.email.title') }}

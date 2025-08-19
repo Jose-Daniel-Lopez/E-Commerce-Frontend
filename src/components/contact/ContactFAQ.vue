@@ -1,6 +1,6 @@
 <template>
   <div :class="[cardClasses, 'rounded-lg overflow-hidden']">
-    <div :class="['px-6 py-4 border-b bg-gray-50 dark:bg-gray-800 transition-colors duration-200', dividerClasses]">
+  <div :class="['px-6 py-4 border-b theme-surface transition-colors duration-200', dividerClasses]">
       <h2 :class="['font-srProDisplay text-lg font-semibold transition-colors duration-200', textClasses]">
         {{ t('contact.faq.title') }}
       </h2>
