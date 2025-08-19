@@ -7,12 +7,30 @@
       {{ $t('about.cta.description') }}
     </p>
     <div class="flex flex-col justify-center gap-4 sm:flex-row">
-      <Button text-color="black" bg-color="white" border-width="1px" border-color="white" hover-bg-color="#f0f0f0"
-        hover-text-color="black" width="160px" height="48px" @click="goToProducts">
+      <Button
+        text-color="var(--color-primary-foreground)"
+        bg-color="var(--color-primary)"
+        border-width="1px"
+        border-color="var(--color-border)"
+        hover-bg-color="var(--color-accent)"
+        hover-text-color="var(--color-primary-foreground)"
+        width="160px"
+        height="48px"
+        @click="goToProducts"
+      >
         Explorar
       </Button>
-      <Button text-color="white" bg-color="transparent" border-width="1px" border-color="white" hover-bg-color="white"
-        hover-text-color="black" width="160px" height="48px" @click="contactUs">
+      <Button
+        text-color="var(--color-text)"
+        bg-color="transparent"
+        border-width="1px"
+        border-color="var(--color-border)"
+        hover-bg-color="var(--color-primary)"
+        hover-text-color="var(--color-primary-foreground)"
+        width="160px"
+        height="48px"
+        @click="contactUs"
+      >
         {{ $t('about.cta.contact') }}
       </Button>
     </div>
