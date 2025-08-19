@@ -3,43 +3,39 @@
     <Wrapper class="py-20 max-w-[1300px] mx-auto">
       <!-- Stepper -->
       <div class="flex items-center justify-center mb-20">
-        <div class="flex items-center gap-8 w-full max-w-3xl">
+        <div class="flex items-center w-full max-w-3xl gap-8">
           <!-- Step 1: Address -->
-          <div class="flex flex-1 items-center justify-center">
-            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-black mr-3">
-              <v-icon name="md-locationon" scale="1.5" fill="white" />
+          <div class="flex items-center justify-center flex-1">
+            <span class="flex items-center justify-center w-12 h-12 mr-3 bg-primary rounded-full text-primary-foreground ring-2 ring-primary/20 dark:ring-primary/30 shadow-sm">
+              <v-icon name="md-locationon" scale="1.5" fill="currentColor" class="text-primary-foreground" />
             </span>
             <div class="flex flex-col items-start">
-              <span class="font-srProDisplay text-xs text-black">Step 1</span>
-              <span class="font-srProDisplay text-base font-semibold text-black mt-0.5"
-                >Address</span
-              >
+              <span class="text-xs text-muted font-srProDisplay">Step 1</span>
+              <span class="font-srProDisplay text-base font-semibold text-foreground mt-0.5">Address</span>
             </div>
           </div>
           <!-- Line -->
           <div class="flex-1 h-0.5 bg-border mx-2"></div>
           <!-- Step 2: Shipping -->
-          <div class="flex flex-1 items-center justify-center">
-            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-surface mr-3">
+          <div class="flex items-center justify-center flex-1">
+            <span class="flex items-center justify-center w-12 h-12 mr-3 rounded-full bg-surface">
               <v-icon name="md-localshipping" scale="1.5" class="text-muted" />
             </span>
             <div class="flex flex-col items-start">
-              <span class="font-srProDisplay text-xs text-muted">Step 2</span>
+              <span class="text-xs font-srProDisplay text-muted">Step 2</span>
               <span class="font-srProDisplay text-base font-semibold text-muted mt-0.5">Shipping</span>
             </div>
           </div>
           <!-- Line -->
           <div class="flex-1 h-0.5 bg-border mx-2"></div>
           <!-- Step 3: Payment -->
-          <div class="flex flex-1 items-center justify-center">
-            <span class="w-12 h-12 flex items-center justify-center rounded-full bg-surface mr-3">
+          <div class="flex items-center justify-center flex-1">
+            <span class="flex items-center justify-center w-12 h-12 mr-3 rounded-full bg-surface">
               <v-icon name="si-contactlesspayment" scale="2" class="text-muted" />
             </span>
             <div class="flex flex-col items-start">
-              <span class="font-srProDisplay text-xs text-[#BDBDBD]">Step 3</span>
-              <span class="font-srProDisplay text-base font-semibold text-[#BDBDBD] mt-0.5"
-                >Payment</span
-              >
+              <span class="font-srProDisplay text-xs text-muted">Step 3</span>
+              <span class="font-srProDisplay text-base font-semibold text-muted mt-0.5">Payment</span>
             </div>
           </div>
         </div>
@@ -47,21 +43,21 @@
 
       <!-- Select Address -->
       <section class="max-w-5xl mx-auto">
-  <h2 class="font-srProDisplay text-lg font-semibold text-foreground mb-6">{{ $t('checkout.selectAddress') }}</h2>
+  <h2 class="mb-6 text-lg font-semibold font-srProDisplay text-foreground">{{ $t('checkout.selectAddress') }}</h2>
 
         <!-- Loading State -->
-        <div v-if="shippingAddressStore.loading" class="text-center py-8">
-          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
-          <p class="mt-2 text-gray-600">Loading addresses...</p>
+        <div v-if="shippingAddressStore.loading" class="py-8 text-center">
+          <div class="inline-block w-8 h-8 border-b-2 border-primary rounded-full animate-spin"></div>
+          <p class="mt-2 text-muted">Loading addresses...</p>
         </div>
 
         <!-- Error State -->
-        <div v-else-if="shippingAddressStore.error" class="text-center py-8">
-          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div v-else-if="shippingAddressStore.error" class="py-8 text-center">
+          <div class="p-4 border border-red-200 rounded-lg bg-red-50">
             <p class="text-red-600">{{ shippingAddressStore.error }}</p>
             <button
               @click="loadAddresses"
-              class="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              class="px-4 py-2 mt-2 text-white bg-red-600 rounded hover:bg-red-700"
             >
               Try Again
             </button>
@@ -73,20 +69,20 @@
           <div
             v-for="address in addresses"
             :key="address.id"
-            class="bg-surface rounded-xl p-6 flex items-center justify-between"
+            class="flex items-center justify-between p-6 bg-surface rounded-xl"
           >
-            <label class="flex items-start gap-4 cursor-pointer flex-1">
+            <label class="flex items-start flex-1 gap-4 cursor-pointer">
               <input
                 type="radio"
                 name="selectedAddress"
                 :value="address.id"
                 v-model="selectedAddressId"
                 @change="onAddressSelected(address)"
-                class="accent-primary w-5 h-5 mt-1"
+                class="w-5 h-5 mt-1 accent-primary"
               />
               <div>
                 <div class="flex items-center gap-2 mb-1">
-                  <span class="font-srProDisplay text-base font-semibold text-foreground">{{
+                  <span class="text-base font-semibold font-srProDisplay text-foreground">{{
                     address.title
                   }}</span>
                   <span
@@ -94,13 +90,13 @@
                     >{{ getAddressTypeLabel(address.addressType) }}</span
                   >
                 </div>
-                <div class="font-srProDisplay text-foreground text-base">
+                <div class="text-base font-srProDisplay text-foreground">
                   {{ address.street }}
                 </div>
-                <div class="font-srProDisplay text-foreground text-base">
+                <div class="text-base font-srProDisplay text-foreground">
                   {{ `${address.city}, ${address.state} ${address.zipCode}` }}
                 </div>
-                <div class="font-srProDisplay text-foreground text-base">{{ address.country }}</div>
+                <div class="text-base font-srProDisplay text-foreground">{{ address.country }}</div>
               </div>
             </label>
             <div class="flex items-center gap-4 ml-4">
@@ -133,16 +129,16 @@
         </div>
 
         <!-- No Addresses State -->
-        <div v-else class="text-center py-12">
-          <div class="bg-surface rounded-lg p-8">
-            <v-icon name="md-locationon" scale="3" class="text-muted mb-4" />
-            <h3 class="text-lg font-semibold text-muted mb-2">No addresses found</h3>
-            <p class="text-muted mb-4">Add your first shipping address to continue</p>
+        <div v-else class="py-12 text-center">
+          <div class="p-8 rounded-lg bg-surface">
+            <v-icon name="md-locationon" scale="3" class="mb-4 text-muted" />
+            <h3 class="mb-2 text-lg font-semibold text-muted">No addresses found</h3>
+            <p class="mb-4 text-muted">Add your first shipping address to continue</p>
           </div>
         </div>
 
         <!-- Add New Address -->
-        <div class="relative flex flex-col items-center justify-center my-14 select-none">
+        <div class="relative flex flex-col items-center justify-center select-none my-14">
           <div class="flex items-center w-full" style="height: 48px">
             <!-- Left dashed line -->
             <div class="flex-1 h-0.5">
@@ -179,9 +175,10 @@
             <!-- Add Address Icon -->
             <button
               @click="showAddForm = true"
-              class="mx-1 flex items-center justify-center p-0 mt-5 bg-transparent border-none outline-none focus:outline-none"
+              class="flex items-center justify-center p-0 mx-1 mt-5 w-10 h-10 rounded-full bg-primary text-primary-foreground border-none outline-none focus:outline-none shadow-sm"
+              aria-label="Add address"
             >
-              <v-icon name="md-addcircle" scale="1.7" fill="black" />
+              <v-icon name="md-addcircle" scale="1.4" fill="currentColor" />
             </button>
             <!-- Right dashed line -->
             <div class="flex-1 h-0.5">
@@ -217,39 +214,39 @@
               </svg>
             </div>
           </div>
-          <span class="font-srProDisplay text-muted mt-2">Add New Address</span>
+          <span class="mt-2 font-srProDisplay text-muted">Add New Address</span>
 
           <!-- Add/Edit Address Form -->
           <transition name="fade-slide">
             <div
               v-if="showAddForm || editingAddress"
-              class="w-full max-w-lg mt-8 bg-background border border-border rounded-lg p-8 shadow z-20"
+              class="z-20 w-full max-w-lg p-8 mt-8 border rounded-lg shadow bg-background border-border"
             >
-              <h3 class="font-srProDisplay text-lg font-semibold mb-4">
+              <h3 class="mb-4 text-lg font-semibold font-srProDisplay">
                 {{ editingAddress ? 'Edit Address' : 'Add New Address' }}
               </h3>
 
               <form @submit.prevent="submitAddressForm" class="space-y-4">
                 <!-- Title -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Title</label>
+                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Title</label>
 
                   <input
                     v-model="addressForm.title"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
+                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border"
                     placeholder="e.g. Home, Work, etc."
                   />
                 </div>
 
                 <!-- Type -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Type</label>
+                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Type</label>
                   <select
                     v-model="addressForm.addressType"
                     required
-                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground focus:outline-none focus:border-border transition-colors duration-200"
+                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground focus:outline-none focus:border-border"
                   >
                     <option value="" disabled>Select type</option>
                     <option value="HOME">Home</option>
@@ -260,66 +257,66 @@
 
                 <!-- Street Address -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Street Address</label>
+                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Street Address</label>
                   <input
                     v-model="addressForm.street"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
+                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border"
                     placeholder="Street name and number"
                   />
                 </div>
 
                 <!-- City -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">City</label>
+                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">City</label>
                   <input
                     v-model="addressForm.city"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
+                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border"
                     placeholder="City"
                   />
                 </div>
 
                 <!-- State -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">State</label>
+                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">State</label>
                   <input
                     v-model="addressForm.state"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
+                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border"
                     placeholder="State or Province"
                   />
                 </div>
 
                 <!-- Zip Code -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Zip Code</label>
+                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Zip Code</label>
                   <input
                     v-model="addressForm.zipCode"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
+                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border"
                     placeholder="Zip or Postal Code"
                   />
                 </div>
 
                 <!-- Country -->
                 <div>
-                  <label class="block font-srProDisplay text-sm font-medium text-foreground mb-2">Country</label>
+                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Country</label>
                   <input
                     v-model="addressForm.country"
                     type="text"
                     required
-                    class="w-full px-4 py-3 border border-border rounded-md bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border transition-colors duration-200"
+                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border"
                     placeholder="Country"
                   />
                 </div>
 
                 <!-- Actions -->
-                <div class="flex gap-2 justify-end pt-4 border-t border-border mt-6">
+                <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-border">
                   <button
                     type="button"
                     @click="cancelAddressForm"
@@ -330,10 +327,10 @@
                   </button>
                   <button
                     type="submit"
-                    class="px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-95 font-srProDisplay flex items-center gap-2"
+                    class="flex items-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-95 font-srProDisplay"
                     :disabled="formSubmitting"
                   >
-                    <div v-if="formSubmitting" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div v-if="formSubmitting" class="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
                     {{ editingAddress ? 'Update' : 'Add' }}
                   </button>
                 </div>
@@ -344,7 +341,7 @@
       </section>
 
       <!-- Navigation Buttons -->
-      <div class="flex justify-end gap-4 max-w-5xl mx-auto mt-8">
+      <div class="flex justify-end max-w-5xl gap-4 mx-auto mt-8">
         <button
           class="px-22 py-5 border border-border rounded-[6px] font-srProDisplay text-foreground bg-background hover:bg-surface transition"
           @click="goBack"
