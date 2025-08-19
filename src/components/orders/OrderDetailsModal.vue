@@ -8,25 +8,25 @@
       <Transition name="modal-content">
         <div
           v-if="isOpen"
-          class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto transform border border-gray-100"
+          class="rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto transform theme-card border theme-border"
           @click.stop
         >
           <!-- Modal Header -->
-          <div class="sticky top-0 bg-white/90 backdrop-blur-sm border-b border-gray-200 px-6 py-4 rounded-t-xl z-10">
+      <div class="sticky top-0 backdrop-blur-sm border-b theme-border px-6 py-4 rounded-t-xl z-10 theme-surface">
             <div class="flex items-center justify-between">
               <div>
-                <h2 class="font-srProDisplay text-2xl font-semibold text-black">
+        <h2 class="font-srProDisplay text-2xl font-semibold theme-text">
                   Order #{{ order.id }}
                 </h2>
-                <p class="font-srProDisplay text-sm text-gray-600 mt-1">
+        <p class="font-srProDisplay text-sm theme-muted-text mt-1">
                   Placed on {{ formatDate(order.date) }}
                 </p>
               </div>
               <button
                 @click="closeModal"
-                class="p-2 hover:bg-gray-100 rounded-full transition-colors"
+        class="p-2 hover:theme-card rounded-full transition-colors"
               >
-                <v-icon name="hi-x" scale="1.4" class="text-gray-500" />
+        <v-icon name="hi-x" scale="1.4" class="theme-muted-text" />
               </button>
             </div>
           </div>
@@ -35,28 +35,23 @@
           <div class="p-6 space-y-8">
             <!-- Loading State -->
             <div v-if="order.shippingAddress.name === 'Loading...'" class="text-center py-8">
-              <v-icon name="hi-refresh" scale="2" class="text-blue-600 animate-spin mb-4" />
-              <p class="font-srProDisplay text-gray-600">Loading order details...</p>
+              <v-icon name="hi-refresh" scale="2" class="animate-spin mb-4" :style="{ color: 'var(--color-primary)' }" />
+              <p class="font-srProDisplay theme-muted-text">Loading order details...</p>
             </div>
 
             <!-- Order Content (when loaded) -->
             <template v-else>
             <!-- Order Status and Progress -->
             <section>
-              <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">
+              <h3 class="font-srProDisplay text-lg font-semibold theme-text mb-4">
                 Order Status
               </h3>
-              <div class="bg-gray-50 rounded-lg p-6">
+              <div class="theme-surface rounded-lg p-6">
                 <div class="flex items-center justify-between mb-6">
-                  <span
-                    :class="[
-                      getStatusColor(order.status),
-                      'px-4 py-2 rounded-full text-sm font-medium'
-                    ]"
-                  >
+                  <span class="px-4 py-2 rounded-full text-sm font-medium" :style="getStatusStyle(order.status)">
                     {{ order.status }}
                   </span>
-                  <span class="font-srProDisplay text-sm text-gray-600">
+                  <span class="font-srProDisplay text-sm theme-muted-text">
                     Expected delivery: {{ order.expectedDelivery }}
                   </span>
                 </div>
@@ -70,14 +65,8 @@
                       class="flex flex-col items-center"
                     >
                       <div
-                        :class="[
-                          'w-12 h-12 rounded-full flex items-center justify-center border-3 transition-all duration-500 shadow-lg',
-                          step.completed
-                            ? 'bg-green-500 border-green-500 text-white shadow-green-200'
-                            : step.current
-                            ? 'bg-blue-500 border-blue-500 text-white shadow-blue-200 pulse'
-                            : 'bg-white border-gray-300 text-gray-500 shadow-gray-100'
-                        ]"
+                        :class="['w-12 h-12 rounded-full flex items-center justify-center border-3 transition-all duration-500 shadow-lg', { pulse: step.current }]"
+                        :style="getStepStyle(step)"
                       >
                         <v-icon
                           v-if="step.completed"
@@ -89,21 +78,13 @@
                           v-else
                           :name="step.icon"
                           scale="1.4"
-                          :class="step.current ? 'text-white' : 'text-gray-500'"
+                          class=""
                         />
                       </div>
-                      <span
-                        :class="[
-                          'font-srProDisplay text-sm mt-3 text-center font-medium',
-                          step.completed || step.current ? 'text-black' : 'text-gray-500'
-                        ]"
-                      >
+                      <span :class="['font-srProDisplay text-sm mt-3 text-center font-medium', step.completed || step.current ? 'theme-text' : 'theme-muted-text']">
                         {{ step.label }}
                       </span>
-                      <span
-                        v-if="step.date"
-                        class="font-srProDisplay text-xs text-gray-500 mt-1"
-                      >
+                      <span v-if="step.date" class="font-srProDisplay text-xs theme-muted-text mt-1">
                         {{ formatDate(step.date) }}
                       </span>
                     </div>
@@ -429,18 +410,65 @@ const formatDate = (date: string) => {
   })
 }
 
-const getStatusColor = (status: string) => {
+const getStatusStyle = (status: string) => {
   switch (status) {
     case 'Delivered':
-      return 'bg-green-100 text-green-800'
+      return {
+        background: 'var(--color-success-bg, #dcfce7)',
+        color: 'var(--color-success, #16a34a)',
+        borderColor: 'var(--color-success, #16a34a)'
+      }
     case 'Shipped':
-      return 'bg-blue-100 text-blue-800'
+      return {
+        background: 'var(--color-primary-100, #dbeafe)',
+        color: 'var(--color-primary, #2563eb)',
+        borderColor: 'var(--color-primary, #2563eb)'
+      }
     case 'Paid':
-      return 'bg-yellow-100 text-yellow-800'
+      return {
+        background: 'var(--color-warning-bg, #fef3c7)',
+        color: 'var(--color-warning, #b45309)',
+        borderColor: 'var(--color-warning, #b45309)'
+      }
     case 'Cancelled':
-      return 'bg-red-100 text-red-800'
+      return {
+        background: 'var(--color-error-bg, #fee2e2)',
+        color: 'var(--color-error, #dc2626)',
+        borderColor: 'var(--color-error, #dc2626)'
+      }
     default:
-      return 'bg-gray-100 text-gray-800'
+      return {
+        background: 'var(--color-surface, #ffffff)',
+        color: 'var(--color-muted-foreground, #6b7280)',
+        borderColor: 'var(--color-border, #e5e7eb)'
+      }
+  }
+}
+
+const getStepStyle = (step: { completed: boolean; current: boolean }) => {
+  if (step.completed) {
+    return {
+      background: 'var(--color-success, #16a34a)',
+      borderColor: 'var(--color-success, #16a34a)',
+      color: '#ffffff',
+      boxShadow: '0 4px 14px 0 rgba(34,197,94,0.25)'
+    }
+  }
+
+  if (step.current) {
+    return {
+      background: 'var(--color-primary, #2563eb)',
+      borderColor: 'var(--color-primary, #2563eb)',
+      color: '#ffffff',
+      boxShadow: '0 4px 14px 0 rgba(59,130,246,0.25)'
+    }
+  }
+
+  return {
+    background: 'var(--color-surface, #ffffff)',
+    borderColor: 'var(--color-border, #d1d5db)',
+    color: 'var(--color-muted-foreground, #6b7280)',
+    boxShadow: '0 2px 8px 0 rgba(107,114,128,0.06)'
   }
 }
 
