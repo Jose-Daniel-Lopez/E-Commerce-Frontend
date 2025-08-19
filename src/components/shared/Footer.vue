@@ -1,5 +1,5 @@
 <template>
-  <footer class="mb-[66px] h-auto w-full bg-background text-foreground sm:mb-0 lg:h-[464px] transition-colors duration-200">
+  <footer class="mb-[66px] h-auto w-full bg-surface text-foreground sm:mb-0 lg:h-[464px] transition-colors duration-200">
     <Wrapper class="flex h-auto flex-col gap-8 py-12 md:gap-6 md:px-[64px] lg:py-[104px]">
       <div
         class="flex h-auto w-full flex-col items-center justify-start gap-8 md:flex-row md:items-start lg:h-[216px] lg:justify-between">
