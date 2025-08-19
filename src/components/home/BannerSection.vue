@@ -18,9 +18,9 @@
             height="56px"
             width="184px"
             border-width="1px"
-            border-color="grey"
-            text-color="white"
-            hover-bg-color="#333333"
+            border-color="var(--color-border)"
+            text-color="var(--color-primary-foreground)"
+            hover-bg-color="var(--color-accent)"
           >
             Explorar Ofertas
           </CustomButton>

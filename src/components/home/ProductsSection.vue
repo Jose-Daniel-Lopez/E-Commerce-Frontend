@@ -353,12 +353,12 @@ const handleTabClick = async (tab: string) => {
 /* Tab styles */
 
 .activeTab {
-  color: #000000;
+  color: var(--color-primary) !important;
   font-weight: 900;
 }
 
 .tab {
-  color: #6b7280;
+  color: var(--color-muted-foreground);
   padding-bottom: 0.5rem;
   transition: color 0.2s ease;
   display: block;
@@ -367,7 +367,7 @@ const handleTabClick = async (tab: string) => {
 }
 
 .tab:hover {
-  color: #000000;
+  color: var(--color-primary);
 }
 
 /* BrowseCategory style navigation buttons for ProductsSection (sin círculo, solo icono, tamaño 1.2em) */

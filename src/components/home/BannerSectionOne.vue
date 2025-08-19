@@ -38,7 +38,8 @@
                 width="184px"
                 border-width="1px"
                 border-color="var(--color-border)"
-                text-color="var(--color-text)"
+                text-color="var(--color-primary-foreground)"
+                bg-color="var(--color-primary)"
               >
                 Comprar Ahora
               </Button>
@@ -73,8 +74,9 @@
                 height="56px"
                 width="184px"
                 border-width="1px"
-                border-color="#000"
-                text-color="black"
+                border-color="var(--color-border)"
+                text-color="var(--color-primary-foreground)"
+                bg-color="var(--color-primary)"
               >
                 Comprar Ahora
               </Button>
@@ -109,8 +111,9 @@
                 height="56px"
                 width="184px"
                 border-width="1px"
-                border-color="#000"
-                text-color="black"
+                border-color="var(--color-border)"
+                text-color="var(--color-primary-foreground)"
+                bg-color="var(--color-primary)"
               >
                 Comprar Ahora
               </Button>
@@ -147,6 +150,7 @@
                 border-width="1px"
                 border-color="var(--color-border)"
                 text-color="var(--color-primary-foreground)"
+                bg-color="var(--color-primary)"
               >
                 Comprar Ahora
               </Button>

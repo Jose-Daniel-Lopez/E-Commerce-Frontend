@@ -53,7 +53,7 @@
       <div class="w-full">
         <!-- Loading State -->
         <div v-if="categoriesStore.loading" class="flex justify-center items-center py-12">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2" :style="{ borderColor: 'var(--color-border)' }"></div>
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2" :style="{ borderColor: 'var(--color-primary)' }"></div>
           <span class="ml-3 theme-muted-text transition-colors duration-200">{{ t('common.loading') }}</span>
         </div>
 
@@ -62,7 +62,7 @@
           <p class="theme-error-text mb-4 transition-colors duration-200">{{ t('common.error') }}: {{ categoriesStore.error }}</p>
           <button
             @click="categoriesStore.fetchCategories()"
-            class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-colors duration-200"
+            class="px-4 py-2 button-primary rounded-lg hover:opacity-90 transition-colors duration-200"
           >
             {{ t('common.confirm') }}
           </button>
