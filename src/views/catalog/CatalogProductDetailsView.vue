@@ -978,10 +978,10 @@ const fetchProductVariants = async (productId: number) => {
 
           <!-- DEBUG: Raw product data -->
           <div v-if="product"
-            class="p-4 space-y-3 border theme-warning-bg rounded">
-            <h3 class="text-sm font-bold theme-warning-text">🔍 DEBUG: Product & Variant Data (REMOVE
+            class="p-4 space-y-3 border theme-muted-foreground rounded">
+            <h3 class="text-sm font-bold theme-color-text">🔍 DEBUG: Product & Variant Data (REMOVE
               LATER)</h3>
-            <div class="space-y-1 text-xs theme-warning-text">
+            <div class="space-y-1 text-xs theme-muted-text">
               <p><strong>Category:</strong> {{ product?.category ?? '' }}</p>
               <p><strong>Is Mobile/Compute:</strong> {{ isMobileComputeCategory }}</p>
               <p><strong>Is Input/Control:</strong> {{ isInputControlCategory }}</p>
@@ -1921,25 +1921,9 @@ const fetchProductVariants = async (productId: number) => {
 </template>
 
 <style scoped>
-/* Remove Vue's Blue Effect on selected item */
-button:focus {
-  outline: none;
-  box-shadow: none;
-}
+/* Component-specific styles for CatalogProductDetailsView */
 
-input::placeholder {
-  font-weight: 200;
-  color: var(--color-muted-foreground);
-  font-size: 14px;
-  opacity: 1;
-}
-
-/* Custom transitions */
-.transition-all {
-  transition: all 0.3s ease;
-}
-
-/* Hover effects for product images */
+/* Product image hover effects specific to this view */
 .product-image-hover {
   transition: transform 0.3s ease;
 }
@@ -1948,7 +1932,7 @@ input::placeholder {
   transform: scale(1.05);
 }
 
-/* Color button animations */
+/* Color selection button animations */
 .color-button {
   transition: all 0.2s ease;
 }
@@ -1957,7 +1941,7 @@ input::placeholder {
   transform: scale(1.1);
 }
 
-/* Storage button animations */
+/* Storage selection button animations */
 .storage-button {
   transition: all 0.2s ease;
 }
@@ -1967,7 +1951,7 @@ input::placeholder {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Transition animations for collapsible sections */
+/* Collapsible section animations for details/reviews */
 .fade-details-enter-active,
 .fade-details-leave-active,
 .fade-reviews-enter-active,
@@ -1983,13 +1967,13 @@ input::placeholder {
   transform: translateY(-10px);
 }
 
-/* Fade effect for reviews */
+/* Reviews section fade overlay */
 .review-fade-overlay {
   background: linear-gradient(to bottom, transparent 0%, var(--color-background) 100%);
   z-index: 2;
 }
 
-/* Avatar hover effects */
+/* Avatar hover effects for reviews */
 .avatar-hover {
   transition: all 0.2s ease-in-out;
 }
@@ -1997,86 +1981,5 @@ input::placeholder {
 .avatar-hover:hover {
   transform: scale(1.05);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* Theme based text colors */
-.theme-text {
-  color: var(--color-text);
-}
-
-/* Theme-aware background utilities */
-.theme-surface {
-  background: var(--surface-bg);
-}
-
-.theme-card {
-  background: var(--color-background);
-  border-color: var(--color-border);
-}
-
-.theme-muted-text {
-  color: var(--color-muted);
-}
-
-.theme-muted-foreground {
-  color: var(--color-muted-foreground);
-}
-
-.theme-border {
-  border-color: var(--color-border);
-}
-
-.theme-error-bg {
-  background: var(--color-error);
-  color: var(--color-primary-foreground);
-}
-
-.theme-error-text {
-  color: var(--color-error);
-}
-
-.theme-warning-bg {
-  background: var(--color-warning);
-  color: var(--color-primary-foreground);
-}
-
-.theme-warning-text {
-  color: var(--color-warning);
-}
-
-.theme-success-text {
-  color: var(--color-success);
-}
-
-.theme-input {
-  background: var(--color-input-background);
-  border-color: var(--color-input-border);
-  color: var(--color-text);
-}
-
-.theme-input::placeholder {
-  color: var(--color-muted-foreground);
-}
-
-/* Debug panel theme */
-.theme-debug-bg {
-  background: var(--color-warning);
-  border-color: var(--color-warning);
-  opacity: 0.1;
-}
-
-.theme-debug-text {
-  color: var(--color-warning);
-}
-
-/* Icon container theme */
-.theme-icon-container {
-  background: var(--surface-bg);
-  color: var(--color-muted);
-}
-
-/* Gradient overlays for fade effects */
-.theme-fade-overlay {
-  background: linear-gradient(to bottom, transparent 0%, var(--color-background) 100%);
 }
 </style>

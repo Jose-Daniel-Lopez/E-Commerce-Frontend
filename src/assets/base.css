@@ -73,6 +73,20 @@
     outline: 2px solid #3b82f6;
     outline-offset: 2px;
   }
+
+  /* Global input styles */
+  input::placeholder {
+    font-weight: 200;
+    color: var(--color-muted-foreground);
+    font-size: 14px;
+    opacity: 1;
+  }
+
+  /* Remove Vue's default blue focus effect */
+  button:focus {
+    outline: none;
+    box-shadow: none;
+  }
 }
 
 @layer components {
@@ -170,6 +184,47 @@
   .bg-input { background: var(--color-input-background) !important; }
   .border-input { border-color: var(--color-input-border) !important; }
 
+  /* Global theme-aware utility classes */
+  .theme-text { color: var(--color-text) !important; }
+  .theme-surface { background: var(--surface-bg) !important; }
+  .theme-card {
+    background: var(--color-background) !important;
+    border-color: var(--color-border) !important;
+  }
+  .theme-muted-text { color: var(--color-muted) !important; }
+  .theme-muted-foreground { color: var(--color-muted-foreground) !important; }
+  .theme-border { border-color: var(--color-border) !important; }
+  .theme-error-bg {
+    background: var(--color-error) !important;
+    color: var(--color-primary-foreground) !important;
+  }
+  .theme-error-text { color: var(--color-error) !important; }
+  .theme-warning-bg {
+    background: var(--color-warning) !important;
+    color: var(--color-primary-foreground) !important;
+  }
+  .theme-warning-text { color: var(--color-warning) !important; }
+  .theme-success-text { color: var(--color-success) !important; }
+  .theme-input {
+    background: var(--color-input-background) !important;
+    border-color: var(--color-input-border) !important;
+    color: var(--color-text) !important;
+  }
+  .theme-input::placeholder { color: var(--color-muted-foreground) !important; }
+  .theme-debug-bg {
+    background: var(--color-warning) !important;
+    border-color: var(--color-warning) !important;
+    opacity: 0.1 !important;
+  }
+  .theme-debug-text { color: var(--color-warning) !important; }
+  .theme-icon-container {
+    background: var(--surface-bg) !important;
+    color: var(--color-muted) !important;
+  }
+  .theme-fade-overlay {
+    background: linear-gradient(to bottom, transparent 0%, var(--color-background) 100%) !important;
+  }
+
   /* Override Tailwind's min-h-screen to prevent conflicts */
   .min-h-screen {
     min-height: calc(100vh - 0px);
@@ -182,6 +237,26 @@
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* Global transition classes */
+  .transition-all {
+    transition: all 0.3s ease;
+  }
+
+  /* Global hover effects */
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .hover-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
 
   /* Utility classes to prevent stretching */

@@ -20,7 +20,7 @@
   --color-muted-foreground: #94a3b8; /* gray-400: Tertiary/helper text, ≥ 3:1 (OK for large text) */
 
   /* Backgrounds & Surfaces */
-  --color-background: #ffffff;    /* Pure white */
+  --color-background: #eaeaea;    /* Pure white */
   --surface-bg: #f8fafc;          /* gray-50: Subtle card/panel background */
   --subnav-bg: #f1f5f9;           /* gray-100: Soft sub-navigation background */
   --subnav-hover: #e2e8f0;        /* gray-200: Hover background for subnav in light mode */
