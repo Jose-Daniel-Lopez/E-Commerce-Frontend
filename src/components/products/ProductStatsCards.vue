@@ -24,70 +24,62 @@ const averagePrice = computed(() => productStore.stats.averagePrice || productSt
   <!-- Statistics Cards -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
     <!-- Total Products -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6"
-    >
+  <div class="rounded-xl shadow-lg border theme-border theme-card p-6">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Total Products</p>
-          <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ totalProducts }}</p>
+          <p class="text-sm font-medium theme-muted-text">Total Products</p>
+          <p class="text-2xl font-bold theme-text">{{ totalProducts }}</p>
         </div>
-        <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
-          <v-icon name="hi-shopping-bag" scale="1.5" class="text-blue-600 dark:text-blue-400" />
+        <div class="p-3 rounded-full" :style="{ background: 'var(--color-primary-100)' }">
+          <v-icon name="hi-shopping-bag" scale="1.5" :style="{ color: 'var(--color-primary)' }" />
         </div>
       </div>
     </div>
 
     <!-- In Stock Products -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6"
-    >
+  <div class="rounded-xl shadow-lg border theme-border theme-card p-6">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm font-medium text-gray-600 dark:text-gray-300">In Stock</p>
-          <p class="text-2xl font-bold text-green-600 dark:text-green-400">
+          <p class="text-sm font-medium theme-muted-text">In Stock</p>
+          <p class="text-2xl font-bold" :style="{ color: 'var(--color-success)' }">
             {{ inStockProductsCount }}
           </p>
         </div>
-        <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
-          <v-icon name="hi-check-circle" scale="1.5" class="text-green-600 dark:text-green-400" />
+        <div class="p-3 rounded-full" :style="{ background: 'var(--color-success-bg)' }">
+          <v-icon name="hi-check-circle" scale="1.5" :style="{ color: 'var(--color-success)' }" />
         </div>
       </div>
     </div>
 
     <!-- Out of Stock Products -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6"
-    >
+  <div class="rounded-xl shadow-lg border theme-border theme-card p-6">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Out of Stock</p>
-          <p class="text-2xl font-bold text-red-600 dark:text-red-400">
+          <p class="text-sm font-medium theme-muted-text">Out of Stock</p>
+          <p class="text-2xl font-bold" :style="{ color: 'var(--color-error)' }">
             {{ outOfStockProductsCount }}
           </p>
         </div>
-        <div class="bg-red-100 dark:bg-red-900/30 p-3 rounded-full">
-          <v-icon name="hi-x-circle" scale="1.5" class="text-red-600 dark:text-red-400" />
+        <div class="p-3 rounded-full" :style="{ background: 'var(--color-error-bg)' }">
+          <v-icon name="hi-x-circle" scale="1.5" :style="{ color: 'var(--color-error)' }" />
         </div>
       </div>
     </div>
 
     <!-- Average Price -->
-    <div
-      class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6"
-    >
+  <div class="rounded-xl shadow-lg border theme-border theme-card p-6">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Average Price</p>
-          <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+          <p class="text-sm font-medium theme-muted-text">Average Price</p>
+          <p class="text-2xl font-bold" :style="{ color: 'var(--color-warning)' }">
             €{{ averagePrice.toFixed(2) }}
           </p>
         </div>
-        <div class="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full">
+        <div class="p-3 rounded-full" :style="{ background: 'var(--color-warning-bg)' }">
           <v-icon
             name="hi-currency-euro"
             scale="1.5"
-            class="text-yellow-600 dark:text-yellow-400"
+            :style="{ color: 'var(--color-warning)' }"
           />
         </div>
       </div>

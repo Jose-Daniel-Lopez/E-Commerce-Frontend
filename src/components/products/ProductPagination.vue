@@ -38,16 +38,16 @@ const endItem = computed(() =>
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+  <div class="theme-card rounded-lg p-4 border theme-border">
     <!-- Pagination Info -->
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
       <!-- Items per page -->
       <div class="flex items-center space-x-2">
-        <span class="text-sm text-gray-600 dark:text-gray-300">Items per page:</span>
+        <span class="text-sm theme-muted-text">Items per page:</span>
         <select
           :value="pagination.size"
           @change="productStore.changePageSize(Number(($event.target as HTMLSelectElement).value))"
-          class="border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          class="theme-input text-sm rounded-md px-2 py-1"
         >
           <option v-for="size in pageSizeOptions" :key="size" :value="size">
             {{ size }}
@@ -56,7 +56,7 @@ const endItem = computed(() =>
       </div>
 
       <!-- Pagination info text -->
-      <div class="text-sm text-gray-600 dark:text-gray-300">
+      <div class="text-sm theme-muted-text">
         Showing {{ startItem }} to {{ endItem }} of {{ pagination.totalElements }} products
       </div>
 
@@ -66,7 +66,7 @@ const endItem = computed(() =>
         <button
           @click="productStore.goToFirstPage()"
           :disabled="pagination.first || productStore.loading"
-          class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          class="px-2 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:theme-surface theme-text theme-border bg-transparent"
         >
           <v-icon name="hi-chevron-double-left" scale="0.9" />
         </button>
@@ -75,7 +75,7 @@ const endItem = computed(() =>
         <button
           @click="productStore.goToPreviousPage()"
           :disabled="pagination.first || productStore.loading"
-          class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          class="px-2 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:theme-surface theme-text theme-border bg-transparent"
         >
           <v-icon name="hi-chevron-left" scale="0.9" />
         </button>
@@ -89,8 +89,8 @@ const endItem = computed(() =>
           :class="[
             'px-3 py-1 text-sm border rounded-md transition-colors',
             pageNum === pagination.page
-              ? 'bg-blue-600 border-blue-600 text-white'
-              : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white',
+              ? 'button-primary'
+              : 'border theme-border hover:theme-surface theme-text bg-transparent',
           ]"
         >
           {{ pageNum + 1 }}
@@ -100,7 +100,7 @@ const endItem = computed(() =>
         <button
           @click="productStore.goToNextPage()"
           :disabled="pagination.last || productStore.loading"
-          class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          class="px-2 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:theme-surface theme-text theme-border bg-transparent"
         >
           <v-icon name="hi-chevron-right" scale="0.9" />
         </button>
@@ -109,7 +109,7 @@ const endItem = computed(() =>
         <button
           @click="productStore.goToLastPage()"
           :disabled="pagination.last || productStore.loading"
-          class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          class="px-2 py-1 text-sm border rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:theme-surface theme-text theme-border bg-transparent"
         >
           <v-icon name="hi-chevron-double-right" scale="0.9" />
         </button>
@@ -118,9 +118,9 @@ const endItem = computed(() =>
 
     <!-- Loading indicator for pagination -->
     <div v-if="productStore.loading" class="mt-2 flex justify-center">
-      <div class="flex items-center space-x-2 text-sm text-gray-500">
-        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
-        <span>Loading...</span>
+      <div class="flex items-center space-x-2 text-sm theme-muted-text">
+        <div class="animate-spin rounded-full h-4 w-4 border-b-2" :style="{ borderColor: 'var(--color-primary)' }"></div>
+        <span class="theme-muted-text">Loading...</span>
       </div>
     </div>
   </div>
