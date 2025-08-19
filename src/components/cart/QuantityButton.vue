@@ -3,8 +3,7 @@
     <button
       :class="[
         'w-8 h-8 flex items-center justify-center border rounded transition-colors cursor-pointer',
-        'border-gray-300 hover:bg-gray-100',
-        'dark:border-gray-600 dark:hover:bg-gray-700',
+        'theme-border hover:theme-surface',
         textClasses,
         { 'opacity-50 cursor-not-allowed': quantity <= 1 }
       ]"
@@ -20,8 +19,7 @@
     <button
       :class="[
         'w-8 h-8 flex items-center justify-center border rounded transition-colors cursor-pointer',
-        'border-gray-300 hover:bg-gray-100',
-        'dark:border-gray-600 dark:hover:bg-gray-700',
+        'theme-border hover:theme-surface',
         textClasses
       ]"
       @click="$emit('increment')"

@@ -1,11 +1,11 @@
 <template>
   <div class="flex items-center gap-6 py-8">
-    <img
+  <img
       :src="item.product?.imageUrl || getProductImage(item.product?.name)"
       :alt="item.product?.name"
       :class="[
         'w-24 h-24 object-contain rounded-lg',
-        'bg-gray-50 dark:bg-gray-800'
+    'theme-surface'
       ]"
     />
     <div class="flex-1">
@@ -35,8 +35,7 @@
       <button
         :class="[
           'text-2xl transition-colors cursor-pointer',
-          'text-gray-500 hover:text-red-500',
-          'dark:text-gray-400 dark:hover:text-red-400'
+          'theme-muted-text hover:theme-error-text'
         ]"
         @click="$emit('remove', item.id)"
       >

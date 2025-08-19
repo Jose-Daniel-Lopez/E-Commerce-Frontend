@@ -24,14 +24,14 @@
           </label>
 
           <!-- Success feedback with transition effect when coupon is applied -->
-          <transition name="fade">
-            <span
-              v-if="couponEffect"
-              class="text-green-600 font-srProDisplay text-sm animate-bounce ml-2 whitespace-nowrap"
-            >
-              ✔ Coupon applied!
-            </span>
-          </transition>
+            <transition name="fade">
+              <span
+                v-if="couponEffect"
+                class="theme-success-text font-srProDisplay text-sm animate-bounce ml-2 whitespace-nowrap"
+              >
+                ✔ Coupon applied!
+              </span>
+            </transition>
         </div>
 
         <!-- Input field with apply button -->
@@ -40,10 +40,8 @@
             type="text"
             v-model="localDiscountCode"
             :class="[
-              'w-full px-4 py-5 border rounded-[7px] font-srProDisplay placeholder-muted focus:outline-none focus:border-border focus:ring-2 focus:ring-black/20 transition-all duration-200 pr-28',
-              'border-gray-300 bg-white text-gray-900',
-              'dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100',
-              'dark:focus:ring-white/20',
+              'w-full px-4 py-5 rounded-[7px] font-srProDisplay placeholder-muted transition-all duration-200 pr-28',
+              'theme-input',
               couponEffect ? 'ring-2 ring-green-400' : '',
             ]"
             placeholder="Code"
@@ -52,9 +50,8 @@
             type="button"
             @click="handleApplyDiscount"
             :class="[
-              'absolute top-1/2 right-4 -translate-y-1/2 px-6 border rounded-[6px] font-srProDisplay transition-colors duration-200 focus:outline-none text-base cursor-pointer',
-              'border-gray-900 bg-white text-gray-900 hover:bg-gray-100 active:bg-gray-200',
-              'dark:border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:active:bg-gray-600'
+              'absolute top-1/2 right-4 -translate-y-1/2 px-6 rounded-[6px] font-srProDisplay transition-colors duration-200 focus:outline-none text-base cursor-pointer',
+              'button-primary',
             ]"
             style="height: 32px; min-width: 75px"
           >
@@ -66,8 +63,8 @@
 
     <!-- Order Summary Details -->
     <div :class="[
-      'my-6 border-t pt-4 space-y-2',
-      'border-gray-200 dark:border-gray-700'
+      'my-6 pt-4 space-y-2 border-t',
+      'theme-border'
     ]">
       <div :class="[
         'flex justify-between font-srProDisplay font-semibold',
