@@ -1,5 +1,5 @@
 <template>
-  <nav class="flex items-center text-sm text-[#787878] space-x-2 mb-8 p-4 bg-[#f8f8f8] rounded-lg">
+  <nav class="flex items-center text-sm theme-muted-text space-x-2 mb-8 p-4 theme-surface rounded-lg">
     <router-link
       to="/"
       class="flex items-center hover:text-black transition-colors duration-200 font-srProDisplay font-medium"
@@ -9,17 +9,17 @@
     </router-link>
 
     <template v-for="(breadcrumb, index) in breadcrumbs" :key="index">
-      <span class="text-[#CCCCCC] font-srProDisplay">></span>
+  <span class="text-muted-foreground font-srProDisplay">></span>
 
       <router-link
         v-if="breadcrumb.to && index !== breadcrumbs.length - 1"
         :to="breadcrumb.to"
-        class="hover:text-black transition-colors duration-200 font-srProDisplay font-medium"
+  class="hover:theme-text transition-colors duration-200 font-srProDisplay font-medium"
       >
         {{ breadcrumb.label }}
       </router-link>
 
-      <span v-else class="text-black font-srProDisplay font-medium">
+  <span v-else class="theme-text font-srProDisplay font-medium">
         {{ breadcrumb.label }}
       </span>
     </template>

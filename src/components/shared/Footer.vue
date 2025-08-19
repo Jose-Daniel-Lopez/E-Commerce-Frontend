@@ -1,5 +1,5 @@
 <template>
-  <footer class="mb-[66px] h-auto w-full bg-surface text-foreground sm:mb-0 lg:h-[464px] transition-colors duration-200">
+  <footer class="mb-[66px] h-auto w-full theme-surface theme-text sm:mb-0 lg:h-[464px] transition-colors duration-200">
     <Wrapper class="flex h-auto flex-col gap-8 py-12 md:gap-6 md:px-[64px] lg:py-[104px]">
       <div
         class="flex h-auto w-full flex-col items-center justify-start gap-8 md:flex-row md:items-start lg:h-[216px] lg:justify-between">
@@ -8,13 +8,13 @@
             <img :src="logoSrc" alt="logo" class="w-20 h-auto mb-4 transition-transform duration-200 hover:scale-105" />
           </router-link>
           <div class="w-[295px] xl:w-full">
-            <p class="text-base font-semibold font-srProDisplay text-foreground">Location</p>
-            <address class="h-[48px] font-srProDisplay text-sm font-light text-muted-foreground">
+            <p class="text-base font-semibold font-srProDisplay theme-text">Location</p>
+            <address class="h-[48px] font-srProDisplay text-sm font-light theme-muted-text">
               Head Office: Lorem ipsum dolor sit amet, consectetur adipiscing elit
             </address>
-            <h4 class="text-base font-medium font-srProDisplay text-foreground">Email:</h4>
+            <h4 class="text-base font-medium font-srProDisplay theme-text">Email:</h4>
             <a href="mailto:webteam@tejontech.com"
-              class="font-normal text-primary transition-colors font-srProDisplay hover:text-accent">webteam@tejontech.com</a>
+              class="font-normal theme-primary transition-colors font-srProDisplay hover:theme-accent">webteam@tejontech.com</a>
           </div>
         </div>
         <div

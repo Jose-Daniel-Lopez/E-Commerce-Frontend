@@ -55,10 +55,10 @@ const censoredCVC = computed(() => {
 .credit-card-visual {
   width: 340px;
   height: 210px;
-  background: linear-gradient(135deg, #232340 60%, #4e54c8 100%);
+  background: linear-gradient(135deg, var(--color-primary-700, #232340) 60%, var(--color-primary-500, #4e54c8) 100%);
   border-radius: 18px;
   box-shadow: 0 8px 32px rgba(44, 44, 84, 0.18);
-  color: #fff;
+  color: var(--color-primary-foreground, #fff);
   padding: 24px 28px;
   display: flex;
   flex-direction: column;

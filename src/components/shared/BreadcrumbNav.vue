@@ -36,17 +36,17 @@ const { textSecondaryClasses, textClasses } = useThemeClasses()
 
 // Classes for breadcrumb container
 const breadcrumbContainerClasses = computed(
-  () => 'flex items-center text-sm space-x-2 mb-4 mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-200'
+  () => 'flex items-center text-sm space-x-2 mb-4 mt-4 p-4 theme-surface rounded-lg border theme-border transition-colors duration-200'
 )
 
 // Classes for breadcrumb links
 const breadcrumbLinkClasses = computed(
-  () => `flex items-center ${textSecondaryClasses.value} hover:text-black dark:hover:text-white transition-colors duration-200 font-srProDisplay font-medium`
+  () => `flex items-center ${textSecondaryClasses.value} hover:theme-text transition-colors duration-200 font-srProDisplay font-medium`
 )
 
 // Classes for breadcrumb separator
 const breadcrumbSeparatorClasses = computed(
-  () => 'text-gray-400 dark:text-gray-500 font-srProDisplay transition-colors duration-200'
+  () => 'text-muted-foreground font-srProDisplay transition-colors duration-200'
 )
 
 // Classes for current breadcrumb (last item)
