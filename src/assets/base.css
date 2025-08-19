@@ -157,6 +157,19 @@
   /* Overlay background utility */
   .bg-overlay { background-color: rgba(0, 0, 0, 0.5) !important; }
 
+  /* Additional theme-aware utilities */
+  .bg-section { background: var(--surface-bg) !important; }
+  .bg-muted { background: var(--color-muted-foreground) !important; }
+  .border-muted { border-color: var(--color-muted-foreground) !important; }
+  .text-success { color: var(--color-success) !important; }
+  .text-warning { color: var(--color-warning) !important; }
+  .text-error { color: var(--color-error) !important; }
+  .bg-success { background: var(--color-success) !important; }
+  .bg-warning { background: var(--color-warning) !important; }
+  .bg-error { background: var(--color-error) !important; }
+  .bg-input { background: var(--color-input-background) !important; }
+  .border-input { border-color: var(--color-input-border) !important; }
+
   /* Override Tailwind's min-h-screen to prevent conflicts */
   .min-h-screen {
     min-height: calc(100vh - 0px);
