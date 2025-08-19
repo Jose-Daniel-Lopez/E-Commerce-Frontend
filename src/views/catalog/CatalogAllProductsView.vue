@@ -27,6 +27,9 @@ const {
   textClasses,
   textSecondaryClasses,
   catalogFilterTitleClasses,
+  catalogFilterSectionClasses,
+  catalogFilterHeaderClasses,
+  catalogSearchInputClasses,
   catalogMobileFilterClasses,
   catalogSortSelectClasses,
   catalogDebugPanelClasses,
@@ -841,8 +844,8 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
         <!-- Desktop Sidebar Filters -->
         <div class="flex-shrink-0 w-64">
           <!-- Price Filter -->
-          <div class="mb-6">
-            <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-200 dark:border-gray-600">
+          <div :class="catalogFilterSectionClasses">
+            <div :class="catalogFilterHeaderClasses">
               <h3 :class="catalogFilterTitleClasses">Price</h3>
               <button
                 @click="toggleFilter('price')"
@@ -884,8 +887,8 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Category Filter -->
-          <div class="mb-6" v-if="availableCategories.length > 0">
-            <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-200 dark:border-gray-600">
+          <div :class="catalogFilterSectionClasses" v-if="availableCategories.length > 0">
+            <div :class="catalogFilterHeaderClasses">
               <h3 :class="catalogFilterTitleClasses">Categories</h3>
               <div class="flex items-center space-x-2">
                 <button
@@ -938,8 +941,8 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Brand Filter -->
-          <div class="mb-6">
-            <div class="flex items-center justify-between pb-3 mb-4 border-b border-gray-200 dark:border-gray-600">
+          <div :class="catalogFilterSectionClasses">
+            <div :class="catalogFilterHeaderClasses">
               <h3 :class="catalogFilterTitleClasses">Brand</h3>
               <div class="flex items-center space-x-2">
                 <button
@@ -975,7 +978,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
               </div>
             </div>
             <div v-show="!collapsedFilters.brand" class="transition-all duration-200">
-              <div class="flex items-center justify-start gap-2 p-3 mb-4 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600">
+              <div :class="catalogSearchInputClasses" class="flex items-center justify-start gap-2 p-3 mb-4 rounded-lg">
                 <v-icon name="fa-search" scale="1.2" class="text-gray-400 dark:text-gray-300" />
                 <input
                   v-model="brandSearchQuery"
@@ -1001,7 +1004,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Active Filters Summary -->
-          <div v-if="hasActiveFilters()" :class="['mb-6', catalogFilterSummaryClasses]">
+          <div v-if="hasActiveFilters()" :class="catalogFilterSummaryClasses">
             <h4 :class="['font-srProDisplay text-sm font-semibold mb-3', textClasses]">Active Filters</h4>
             <div class="space-y-2">
               <div v-if="priceRange[0] > 0 || priceRange[1] < 5000" class="flex items-center justify-between text-sm">
@@ -1027,7 +1030,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Quick Stats -->
-          <div :class="['mb-6', catalogFilterSummaryClasses]">
+          <div :class="catalogFilterSummaryClasses">
             <h4 :class="['font-srProDisplay text-sm font-semibold mb-2', textClasses]">Summary</h4>
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
