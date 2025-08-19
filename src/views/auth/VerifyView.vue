@@ -1,7 +1,7 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-background text-foreground min-h-screen flex items-center justify-center">
+  <div :class="['pt-[85px] lg:pt-0 min-h-screen flex items-center justify-center', pageBackgroundClasses]">
     <div class="max-w-md w-full mx-auto p-6">
-  <div class="bg-background border border-border rounded-lg p-8 text-center">
+  <div :class="['border rounded-lg p-8 text-center', cardClasses]">
         <!-- Loading State -->
         <div v-if="loading" class="space-y-4">
           <div
@@ -63,6 +63,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import api from '@/lib/axios'
+import { useThemeClasses } from '@/composables/useThemeClasses'
 
 const router = useRouter()
 const route = useRoute()
@@ -70,6 +71,9 @@ const route = useRoute()
 const loading = ref(true)
 const verified = ref(false)
 const errorMessage = ref('')
+
+// Theme classes
+const { pageBackgroundClasses, cardClasses } = useThemeClasses()
 
 const verifyAccount = async (token: string) => {
   try {

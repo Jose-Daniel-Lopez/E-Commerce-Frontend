@@ -1117,9 +1117,9 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Operating System -->
             <div v-if="currentProduct.specifications?.os"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
-                <v-icon name="io-settings" scale="1.2" class="text-gray-600 dark:text-gray-300" />
+                <v-icon name="io-settings" scale="1.2" :class="textMutedClasses" />
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">OS</p>
@@ -1135,9 +1135,9 @@ const fetchProductVariants = async (productId: number) => {
             class="grid grid-cols-2 gap-3 md:grid-cols-3">
             <!-- DPI -->
             <div v-if="currentProduct.specifications?.dpi"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
-                <v-icon name="io-locate" scale="1.2" class="text-gray-600 dark:text-gray-300" />
+                <v-icon name="io-locate" scale="1.2" :class="textMutedClasses" />
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">DPI</p>
@@ -1149,9 +1149,9 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Polling Rate -->
             <div v-if="currentProduct.specifications?.pollingRate"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
-                <v-icon name="hi-lightning-bolt" scale="1.2" class="text-gray-600 dark:text-gray-300" />
+                <v-icon name="hi-lightning-bolt" scale="1.2" :class="textMutedClasses" />
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">Polling Rate</p>
@@ -1164,9 +1164,9 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Switch Type -->
             <div v-if="currentProduct.specifications?.switchType"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
-                <v-icon name="io-keypad" scale="1.2" class="text-gray-600 dark:text-gray-300" />
+                <v-icon name="io-keypad" scale="1.2" :class="textMutedClasses" />
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">Switch Type</p>
@@ -1178,9 +1178,9 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Backlighting -->
             <div v-if="currentProduct.specifications?.backlighting"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
-                <v-icon name="io-bulb" scale="1.2" class="text-gray-600 dark:text-gray-300" />
+                <v-icon name="io-bulb" scale="1.2" :class="textMutedClasses" />
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">Backlighting</p>
@@ -1192,9 +1192,9 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Programmable Buttons -->
             <div v-if="currentProduct.specifications?.programmableButtons !== undefined"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
-                <v-icon name="io-options" scale="1.2" class="text-gray-600 dark:text-gray-300" />
+                <v-icon name="io-options" scale="1.2" :class="textMutedClasses" />
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">Programmable</p>
@@ -1207,9 +1207,9 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Battery Life -->
             <div v-if="currentProduct.specifications?.batteryLife"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
-                <v-icon name="gi-battery-75" scale="1.2" class="text-gray-600 dark:text-gray-300" />
+                <v-icon name="gi-battery-75" scale="1.2" :class="textMutedClasses" />
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">Battery Life</p>
@@ -1221,9 +1221,9 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Ergonomic -->
             <div v-if="currentProduct.specifications?.ergonomic !== undefined"
-              class="flex items-center space-x-3 bg-[#F4F4F4] dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
+              class="flex items-center space-x-3 bg-surface dark:bg-gray-700 rounded-[8px] w-auto h-auto p-3">
               <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg dark:bg-gray-600">
-                <v-icon name="io-hand-left" scale="1.2" class="text-gray-600 dark:text-gray-300" />
+                <v-icon name="io-hand-left" scale="1.2" :class="textMutedClasses" />
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">Ergonomic</p>

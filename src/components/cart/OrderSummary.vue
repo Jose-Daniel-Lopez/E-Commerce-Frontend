@@ -51,7 +51,7 @@
             @click="handleApplyDiscount"
             :class="[
               'absolute top-1/2 right-4 -translate-y-1/2 px-6 rounded-[6px] font-srProDisplay transition-colors duration-200 focus:outline-none text-base cursor-pointer',
-              'button-primary',
+              buttonPrimaryClasses,
             ]"
             style="height: 32px; min-width: 75px"
           >

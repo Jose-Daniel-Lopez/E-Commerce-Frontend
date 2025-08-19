@@ -23,7 +23,7 @@
             </div>
 
             <!-- Error state -->
-            <div v-else-if="userCartStore.error" class="text-center text-red-600 dark:text-red-400">
+            <div v-else-if="userCartStore.error" class="text-center theme-error-text">
               {{ $t('cart.error') }}
             </div>
 
@@ -33,7 +33,7 @@
             </div>
 
             <!-- Render cart items when available -->
-            <div v-else class="divide-y divide-gray-200 dark:divide-gray-700">
+            <div v-else class="divide-theme-border">
               <CartItem v-for="item in userCartStore.cartItems" :key="item.id" :item="item" @increment="increment"
                 @decrement="decrement" @remove="remove" />
             </div>

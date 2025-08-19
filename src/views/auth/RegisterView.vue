@@ -54,6 +54,8 @@ const {
   clearGlobalError,
 } = useFormValidation()
 
+// Theme classes (not used in this view)
+
 // Available user roles
 const roles = [
   { value: 'CUSTOMER', label: 'Customer' },

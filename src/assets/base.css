@@ -225,6 +225,13 @@
     background: linear-gradient(to bottom, transparent 0%, var(--color-background) 100%) !important;
   }
 
+  /* Theme-aware divider utility for use instead of hardcoded divide colors */
+  .divide-theme-border > * + * {
+    border-top-width: 1px !important;
+    border-top-style: solid !important;
+    border-top-color: var(--color-border) !important;
+  }
+
   /* Override Tailwind's min-h-screen to prevent conflicts */
   .min-h-screen {
     min-height: calc(100vh - 0px);

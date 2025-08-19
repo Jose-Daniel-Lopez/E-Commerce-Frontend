@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
+import { useThemeClasses } from '@/composables/useThemeClasses'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import FloatingInput from '@/components/shared/FloatingInput.vue'
 import PasswordInput from '@/components/shared/PasswordInput.vue'
@@ -18,6 +19,8 @@ interface LoginForm {
 const router = useRouter()
 const authStore = useAuthStore()
 const toast = useToast()
+// Theme classes
+const { pageBackgroundClasses, cardClasses } = useThemeClasses()
 
 const form = ref<LoginForm>({
   email: '',
@@ -127,10 +130,11 @@ const handleSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <div class="bg-[#f6f6f6] min-h-screen flex items-center justify-center">
+  <div :class="['min-h-screen flex items-center justify-center', pageBackgroundClasses]">
     <!-- Centered card with two sections: image and form -->
     <div
-      class="flex max-[900px]:flex-col w-[850px] max-w-full min-h-[520px] max-[900px]:w-screen max-[900px]:h-auto max-[900px]:rounded-none rounded-2xl shadow-2xl overflow-hidden bg-white mx-auto"
+      class="flex max-[900px]:flex-col w-[850px] max-w-full min-h-[520px] max-[900px]:w-screen max-[900px]:h-auto max-[900px]:rounded-none rounded-2xl shadow-2xl overflow-hidden mx-auto"
+      :class="cardClasses"
     >
       <!-- Left: welcoming image for visual appeal -->
       <div
@@ -139,9 +143,9 @@ const handleSubmit = async (): Promise<void> => {
       ></div>
       <!-- Right: login form for user authentication -->
       <div
-        class="flex-1 min-w-[320px] max-[900px]:w-full max-[900px]:min-w-0 flex items-center justify-center bg-white"
+        class="flex-1 min-w-[320px] max-[900px]:w-full max-[900px]:min-w-0 flex items-center justify-center"
       >
-        <Wrapper class="w-full max-w-[400px] px-6 py-8 rounded-[20px] bg-white">
+        <Wrapper class="w-full max-w-[400px] px-6 py-8 rounded-[20px]">
           <div class="w-full max-w-md animate-[fadeInUp_0.8s_ease-out]">
             <!-- Welcome header -->
             <div class="text-center mb-8">
