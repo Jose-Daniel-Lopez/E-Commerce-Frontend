@@ -38,11 +38,7 @@
             </div>
           </div>
           <div class="flex items-center gap-4">
-            <span
-              :class="[getStatusColor(order.status), statusBadgeClasses]"
-            >
-              {{ order.status }}
-            </span>
+            <span :class="[statusBadgeClasses, getStatusThemeClass(order.status)]">{{ order.status }}</span>
             <Button
               @click="$emit('open-details', order)"
               bg-color="transparent"
@@ -128,17 +124,17 @@ interface Emits {
 defineProps<Props>()
 defineEmits<Emits>()
 
-// Helper function to determine status colors
-const getStatusColor = (status: string) => {
+// Helper: return theme-aware badge classes
+const getStatusThemeClass = (status: string) => {
   switch (status) {
     case 'Delivered':
-      return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+      return 'theme-success-text theme-success-bg'
     case 'Shipped':
-      return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400'
+      return 'theme-text theme-surface'
     case 'Cancelled':
-      return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
+      return 'theme-error-text theme-error-bg'
     default:
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+      return 'theme-muted-text theme-surface'
   }
 }
 </script>

@@ -31,7 +31,7 @@
           <div class="flex items-start justify-between mb-3">
             <div>
               <span :class="reviewHeaderClasses">{{ review.product }}</span>
-              <span class="ml-2 text-yellow-500 dark:text-yellow-400">{{ '★'.repeat(review.rating) }}</span>
+              <span class="ml-2 theme-warning-text">{{ '★'.repeat(review.rating) }}</span>
             </div>
             <span :class="reviewMetaClasses">{{ review.date }}</span>
           </div>
@@ -78,7 +78,6 @@ defineProps<Props>()
 /* Optimized scrollbar styles with hardware acceleration */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #d1d5db #f3f4f6;
   transform: translateZ(0); /* Hardware acceleration */
 }
 
@@ -87,12 +86,12 @@ defineProps<Props>()
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: var(--color-border);
   border-radius: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f3f4f6;
+  background: var(--color-surface);
   border-radius: 6px;
 }
 </style>

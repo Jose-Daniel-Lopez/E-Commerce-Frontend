@@ -31,11 +31,7 @@
           </div>
         </div>
         <div class="flex items-center gap-4">
-          <span
-            :class="[getRefundStatusColor(refund.status), statusBadgeClasses]"
-          >
-            {{ refund.status }}
-          </span>
+          <span :class="[statusBadgeClasses, getRefundStatusTheme(refund.status)]">{{ refund.status }}</span>
           <Button
             @click="$emit('open-details', refund)"
             bg-color="transparent"
@@ -119,17 +115,17 @@ interface Emits {
 defineProps<Props>()
 defineEmits<Emits>()
 
-// Helper function to determine refund status colors
-const getRefundStatusColor = (status: string) => {
+// Theme-aware refund status
+const getRefundStatusTheme = (status: string) => {
   switch (status) {
     case 'Completed':
     case 'Refunded':
-      return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+      return 'theme-success-text theme-success-bg'
     case 'Processing':
     case 'Returned':
-      return 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400'
+      return 'theme-warning-text theme-warning-bg'
     default:
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+      return 'theme-muted-text theme-surface'
   }
 }
 </script>

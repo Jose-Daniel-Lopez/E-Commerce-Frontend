@@ -54,28 +54,20 @@ const usersStore = useUsersStore()
 </script>
 
 <template>
-  <div
-    class="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-200 dark:border-gray-700 overflow-hidden"
-  >
+  <div class="rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden theme-card theme-border">
     <!-- User Header -->
-    <div
-      class="bg-gradient-to-r from-emerald-50 to-blue-50 dark:from-gray-700 dark:to-gray-600 p-4 border-b border-gray-200 dark:border-gray-700"
-    >
+    <div class="p-4 border-b theme-border theme-surface">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
           <!-- Avatar -->
           <UserAvatar :user="user" />
           <div>
-            <h3 class="font-semibold text-gray-900 dark:text-white">{{ user.displayName }}</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-300">{{ user.username }}</p>
+            <h3 class="font-semibold theme-text">{{ user.displayName }}</h3>
+            <p class="text-sm theme-muted-text">{{ user.username }}</p>
           </div>
         </div>
-        <!-- Status Badge -->
-        <span
-          :class="`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${usersStore.getStatusColor(user)}`"
-        >
-          {{ usersStore.getStatusText(user) }}
-        </span>
+  <!-- Status Badge -->
+  <span :class="`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${usersStore.getStatusColor(user as any)}`">{{ usersStore.getStatusText(user as any) }}</span>
       </div>
     </div>
 
@@ -84,35 +76,27 @@ const usersStore = useUsersStore()
       <div class="space-y-4 mb-6">
         <!-- Email -->
         <div class="flex items-center space-x-2">
-          <v-icon name="hi-mail" scale="1" class="text-gray-500" />
-          <span class="text-sm text-gray-600 dark:text-gray-300">{{ user.email }}</span>
+          <v-icon name="hi-mail" scale="1" class="theme-muted-text" />
+          <span class="text-sm theme-muted-text">{{ user.email }}</span>
         </div>
 
         <!-- Role -->
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2">
-            <v-icon name="hi-user-circle" scale="1" class="text-gray-500" />
-            <span class="text-sm text-gray-600 dark:text-gray-300">Role:</span>
+            <v-icon name="hi-user-circle" scale="1" class="theme-muted-text" />
+            <span class="text-sm theme-muted-text">Role:</span>
           </div>
-          <span
-            :class="`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${usersStore.getRoleColor(user.role)}`"
-          >
-            {{ user.role }}
-          </span>
+          <span :class="`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${usersStore.getRoleColor(user.role)}`">{{ user.role }}</span>
         </div>
 
         <!-- Authorities -->
         <div v-if="user.authorities && user.authorities.length > 0">
           <div class="flex items-center space-x-2 mb-2">
-            <v-icon name="hi-key" scale="1" class="text-gray-500" />
-            <span class="text-sm text-gray-600 dark:text-gray-300">Authorities:</span>
+            <v-icon name="hi-key" scale="1" class="theme-muted-text" />
+            <span class="text-sm theme-muted-text">Authorities:</span>
           </div>
           <div class="flex flex-wrap gap-1">
-            <span
-              v-for="authority in user.authorities"
-              :key="authority.authority"
-              class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
-            >
+            <span v-for="authority in user.authorities" :key="authority.authority" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium theme-surface theme-text">
               {{ authority.authority }}
             </span>
           </div>
@@ -126,8 +110,8 @@ const usersStore = useUsersStore()
       <UserActions :user="user" />
 
       <!-- User ID -->
-      <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <span class="text-xs text-gray-500 dark:text-gray-400">ID: {{ user.id }}</span>
+      <div class="mt-4 pt-4 border-t theme-border">
+        <span class="text-xs theme-muted-text">ID: {{ user.id }}</span>
       </div>
     </div>
   </div>

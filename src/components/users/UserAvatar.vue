@@ -22,7 +22,7 @@ const usersStore = useUsersStore()
   <div class="relative">
     <div
       v-if="user.avatar && user.avatar !== 'alicia.png'"
-      class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center overflow-hidden"
+        class="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden theme-card"
     >
       <img
         :src="`/avatars/${user.avatar}`"
@@ -32,9 +32,9 @@ const usersStore = useUsersStore()
     </div>
     <div
       v-else
-      class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center"
+  class="w-12 h-12 rounded-full flex items-center justify-center theme-card"
     >
-      <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+  <span class="text-sm font-bold theme-text">
         {{ usersStore.getInitials(user.displayName) }}
       </span>
     </div>

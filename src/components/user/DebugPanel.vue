@@ -5,19 +5,19 @@
     role="region"
     aria-label="Debug information panel"
   >
-    <div class="p-4 border border-yellow-300 rounded-lg shadow-lg bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-700">
+    <div class="p-4 rounded-lg shadow-lg theme-warning-bg theme-warning-text">
       <div class="flex items-center justify-between mb-2">
-        <span class="text-sm font-bold text-yellow-800 dark:text-yellow-300">🛠️ Debug Panel</span>
+        <span class="text-sm font-bold theme-warning-text">🛠️ Debug Panel</span>
         <button
           @click="$emit('toggle')"
-          class="text-xs text-yellow-700 underline rounded dark:text-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          class="text-xs underline rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
           :aria-expanded="true"
           aria-controls="debug-content"
         >
           Hide
         </button>
       </div>
-      <div id="debug-content" class="space-y-2 text-xs text-yellow-900 dark:text-yellow-200">
+      <div id="debug-content" class="space-y-2 text-xs theme-warning-text">
         <div><b>User:</b> {{ debugData.username || 'N/A' }}</div>
         <div><b>Theme:</b> {{ debugData.theme }}</div>
         <div><b>Wishlist Count:</b> {{ debugData.wishlistCount }}</div>

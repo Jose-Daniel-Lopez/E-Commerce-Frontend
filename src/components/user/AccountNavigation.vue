@@ -4,25 +4,25 @@
     :class="['hidden p-6 rounded-lg shadow-lg lg:block', navClasses]"
     aria-label="Desktop account navigation"
   >
-    <h2 :class="['mb-4 text-lg font-extrabold tracking-tight uppercase font-srProDisplay', textClasses]">
+  <h2 :class="['mb-4 text-lg font-extrabold tracking-tight uppercase font-srProDisplay', textClasses]">
       {{ $t('account.navigation') }}
     </h2>
     <ul class="space-y-1" role="list">
       <li v-for="section in sections" :key="section.id" role="listitem">
         <a
           :href="`#${section.id}`"
-          class="flex items-center px-3 py-3 text-sm text-gray-700 transition-all duration-200 border-l-4 border-transparent rounded-lg cursor-pointer dark:text-gray-300 group font-srProDisplay hover:bg-gradient-to-r hover:from-gray-50 dark:hover:from-gray-700 hover:to-gray-100 dark:hover:to-gray-600 hover:border-black dark:hover:border-white focus:outline-none focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-500"
+          class="flex items-center px-3 py-3 text-sm transition-all duration-200 border-l-4 border-transparent rounded-lg cursor-pointer group font-srProDisplay hover:theme-surface focus:outline-none focus:ring-2 focus:ring-blue-300"
           :aria-label="`Go to ${section.label} section`"
           :aria-current="activeSection === section.id ? 'page' : undefined"
         >
           <v-icon
             :name="section.icon"
             scale="1.1"
-            class="mr-3 text-gray-500 transition-colors duration-200 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white"
+            class="mr-3 transition-colors duration-200 theme-muted-text group-hover:theme-text"
             :aria-hidden="true"
           />
           <span
-            class="transition-all duration-200 group-hover:text-black dark:group-hover:text-white group-hover:font-semibold"
+            class="transition-all duration-200 group-hover:theme-text group-hover:font-semibold"
           >{{ section.label }}</span>
         </a>
       </li>
@@ -37,7 +37,7 @@
     :aria-expanded="isMobileNavOpen"
     aria-controls="mobile-nav"
   >
-    <v-icon name="hi-menu" scale="1.2" class="text-black" aria-hidden="true" />
+  <v-icon name="hi-menu" scale="1.2" class="theme-text" aria-hidden="true" />
   </button>
 
   <!-- Mobile Navigation Overlay -->

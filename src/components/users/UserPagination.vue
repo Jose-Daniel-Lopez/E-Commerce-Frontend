@@ -38,12 +38,12 @@ const endItem = computed(() =>
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+  <div class="rounded-lg p-4 theme-card theme-border">
     <!-- Pagination Info -->
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
       <!-- Items per page -->
       <div class="flex items-center space-x-2">
-        <span class="text-sm text-gray-600 dark:text-gray-300">Items per page:</span>
+  <span class="text-sm theme-muted-text">Items per page:</span>
         <select
           :value="pagination.size"
           @change="usersStore.changePageSize(Number(($event.target as HTMLSelectElement).value))"
@@ -56,7 +56,7 @@ const endItem = computed(() =>
       </div>
 
       <!-- Pagination info text -->
-      <div class="text-sm text-gray-600 dark:text-gray-300">
+  <div class="text-sm theme-muted-text">
         Showing {{ startItem }} to {{ endItem }} of {{ pagination.totalElements }} users
       </div>
 
@@ -66,7 +66,7 @@ const endItem = computed(() =>
         <button
           @click="usersStore.goToFirstPage()"
           :disabled="pagination.first || usersStore.loading"
-          class="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          class="px-2 py-1 text-sm rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:theme-surface theme-text"
         >
           <v-icon name="hi-chevron-double-left" scale="0.9" />
         </button>
@@ -87,10 +87,8 @@ const endItem = computed(() =>
           @click="usersStore.goToPage(pageNum)"
           :disabled="usersStore.loading"
           :class="[
-            'px-3 py-1 text-sm border rounded-md transition-colors',
-            pageNum === pagination.page
-              ? 'bg-emerald-600 border-emerald-600 text-white'
-              : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white',
+            'px-3 py-1 text-sm rounded-md transition-colors',
+            pageNum === pagination.page ? 'button-primary' : 'theme-border theme-text hover:theme-surface'
           ]"
         >
           {{ pageNum + 1 }}

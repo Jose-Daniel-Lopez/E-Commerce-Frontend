@@ -64,16 +64,14 @@
           <img
             :src="user?.avatar || '/images/User.png'"
             :alt="`${user?.username || 'User'} profile picture`"
-            class="object-cover w-24 h-24 border-2 border-gray-200 rounded-full"
+            class="object-cover w-24 h-24 rounded-full border theme-border"
             loading="eager"
             width="96"
             height="96"
           />
-          <div
-            class="absolute w-6 h-6 bg-green-500 border-2 border-white rounded-full -bottom-1 -right-1"
-            aria-label="User is online"
-            role="status"
-          ></div>
+          <div class="absolute w-6 h-6 rounded-full -bottom-1 -right-1" aria-label="User is online" role="status">
+            <div class="w-full h-full rounded-full theme-success-bg" />
+          </div>
         </div>
         <div class="flex-1">
           <h3 :class="['mb-1 text-xl font-semibold font-srProDisplay', textClasses]">
@@ -117,12 +115,12 @@
               <img
                 :src="user?.avatar || '/images/User.png'"
                 alt="User avatar"
-                class="object-cover w-24 h-24 transition-all duration-200 border-2 border-gray-200 rounded-full cursor-pointer group-hover:border-blue-400 group-hover:shadow-lg"
+                class="object-cover w-24 h-24 transition-all duration-200 rounded-full cursor-pointer group-hover:theme-surface group-hover:shadow-lg"
                 @click="$emit('openAvatarSelector')"
               />
-              <div
-                class="absolute w-6 h-6 bg-green-500 border-2 border-white rounded-full -bottom-1 -right-1"
-              ></div>
+              <div class="absolute w-6 h-6 rounded-full -bottom-1 -right-1">
+                <div class="w-full h-full rounded-full theme-success-bg" />
+              </div>
             </div>
             <div>
               <h4 :class="['mb-1 font-medium font-srProDisplay', textClasses]">

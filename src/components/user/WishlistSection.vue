@@ -19,18 +19,18 @@
 
     <!-- Loading state for wishlist -->
     <div v-if="wishlistLoading" class="flex items-center justify-center py-8" role="status" aria-live="polite">
-      <div class="w-8 h-8 border-b-2 border-black rounded-full dark:border-white animate-spin opacity-70" aria-hidden="true"></div>
+      <div class="w-8 h-8 border-b-2 rounded-full animate-spin opacity-70" :class="['border-theme-text']" aria-hidden="true"></div>
       <span class="sr-only">Loading wishlist items...</span>
     </div>
 
     <!-- Error state for wishlist -->
-    <div v-else-if="wishlistError" class="p-4 border border-red-200 rounded-lg dark:border-red-800 bg-red-50 dark:bg-red-900/20" role="alert">
-      <p class="text-sm font-semibold text-red-700 dark:text-red-400">{{ wishlistError }}</p>
+    <div v-else-if="wishlistError" class="p-4 rounded-lg theme-error-bg theme-error-text" role="alert">
+      <p class="text-sm font-semibold theme-error-text">{{ wishlistError }}</p>
     </div>
 
     <!-- Empty state when no wishlist items are available -->
     <div v-else-if="wishlistProducts.length === 0" class="py-8 text-center">
-      <v-icon name="hi-heart" scale="2" :class="['mb-4 opacity-80', emptyStateIconClasses]" aria-hidden="true" />
+  <v-icon name="hi-heart" scale="2" :class="['mb-4 opacity-80', emptyStateIconClasses]" aria-hidden="true" />
       <p :class="['text-base font-srProDisplay', emptyStateTextClasses]">{{ $t('account.wishlist.emptyMessage') }}</p>
     </div>
 
@@ -66,12 +66,12 @@
           <button
             @click="$emit('remove-from-wishlist', item.id, item.name)"
             :disabled="removeItemLoading[item.id]"
-            class="absolute flex items-center justify-center w-6 h-6 transition-opacity bg-red-500 rounded-full opacity-0 cursor-pointer -top-2 -right-2 group-hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-300 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="absolute flex items-center justify-center w-6 h-6 transition-opacity rounded-full opacity-0 cursor-pointer -top-2 -right-2 group-hover:opacity-100 focus:outline-none focus:ring-2 hover:theme-error-bg disabled:opacity-50 disabled:cursor-not-allowed"
             :aria-label="`Remove ${item.name} from wishlist`"
             type="button"
           >
-            <div v-if="removeItemLoading[item.id]" class="w-3 h-3 border border-white rounded-full border-t-transparent animate-spin" aria-hidden="true"></div>
-            <v-icon v-else name="hi-x" scale="0.8" class="text-white" aria-hidden="true" />
+            <div v-if="removeItemLoading[item.id]" class="w-3 h-3 border rounded-full border-t-transparent animate-spin" :class="['border-theme-text']" aria-hidden="true"></div>
+            <v-icon v-else name="hi-x" scale="0.8" class="theme-text" aria-hidden="true" />
           </button>
         </div>
         <div class="flex-1 min-w-0">

@@ -26,7 +26,7 @@
           <select
             :value="currentLocale.code"
             @change="$emit('language-change', ($event.target as HTMLSelectElement).value)"
-            class="px-3 py-2 text-sm text-black placeholder-gray-400 transition-all duration-200 bg-white border border-gray-300 rounded-lg cursor-pointer dark:placeholder-gray-500 dark:border-gray-600 font-srProDisplay dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 focus:border-blue-600 dark:focus:border-blue-400 focus:shadow-lg"
+            class="px-3 py-2 text-sm transition-all duration-200 rounded-lg font-srProDisplay theme-input theme-text focus:shadow-lg"
           >
             <option v-for="locale in availableLocales" :key="locale.code" :value="locale.code">
               {{ locale.name }}
@@ -50,7 +50,7 @@
                 {{ $t('account.settings.theme.description') }}
               </p>
               <!-- Current theme indicator -->
-              <p class="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">
+              <p class="mt-1 text-xs font-medium theme-text">
                 Current: {{ selectedTheme === 'system' ? `System (${effectiveTheme})` : selectedTheme }}
               </p>
             </div>

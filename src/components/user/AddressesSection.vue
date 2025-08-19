@@ -7,7 +7,7 @@
       <h2 :class="['text-xl font-semibold font-srProDisplay', textClasses]">
         <span :class="sectionHeaderClasses">{{ $t('account.addresses.title') }}</span>
       </h2>
-      <div class="flex gap-2">
+  <div class="flex gap-2">
         <Button
           @click="$emit('refresh-addresses')"
           :class="['px-4', buttonOutlineClasses]"
@@ -17,7 +17,7 @@
           width="auto"
           height="36px"
         >
-          <v-icon name="hi-refresh" scale="0.9" class="mr-2" />
+          <v-icon name="hi-refresh" scale="0.9" class="mr-2 theme-text" />
           <span :class="buttonTextClasses">Refresh</span>
         </Button>
         <Button
@@ -28,7 +28,7 @@
           width="auto"
           height="36px"
         >
-          <v-icon name="hi-plus" scale="0.9" class="mr-2" />
+          <v-icon name="hi-plus" scale="0.9" class="mr-2 theme-text" />
           <span :class="buttonTextClasses">{{ $t('account.addresses.addButton') }}</span>
         </Button>
       </div>
@@ -36,19 +36,16 @@
 
     <!-- Loading state for addresses -->
     <div v-if="addressesLoading" class="flex items-center justify-center py-8">
-      <div class="w-8 h-8 border-b-2 border-black rounded-full dark:border-white animate-spin opacity-70"></div>
-      <span :class="['ml-3 font-medium', loadingTextClasses]">Loading addresses...</span>
+      <div class="w-8 h-8 border-b-2 rounded-full animate-spin opacity-70" :class="['border-theme-text']"></div>
+      <span :class="['ml-3 font-medium theme-text', loadingTextClasses]">Loading addresses...</span>
     </div>
 
     <!-- Error state for addresses -->
-    <div
-      v-else-if="addressesError"
-      class="p-4 border border-red-200 rounded-lg dark:border-red-800 bg-red-50 dark:bg-red-900/20"
-    >
-      <p class="font-semibold text-red-700 dark:text-red-400">{{ addressesError }}</p>
-      <Button
-        @click="$emit('refresh-addresses')"
-        class="px-3 mt-2 text-sm font-semibold text-red-600 transition-colors duration-200 bg-transparent border border-red-600 dark:border-red-400 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+    <div v-else-if="addressesError" class="p-4 rounded-lg theme-error-bg theme-error-text">
+      <p class="font-semibold theme-error-text">{{ addressesError }}</p>
+  <Button
+  @click="$emit('refresh-addresses')"
+  class="px-3 mt-2 text-sm font-semibold transition-colors duration-200 bg-transparent border theme-error-text hover:theme-error-bg"
         text-color="currentColor"
         bg-color="transparent"
         border-width="1px"
