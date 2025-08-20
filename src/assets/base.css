@@ -669,3 +669,26 @@ section {
     color-scheme: dark;
   }
 }
+
+/* UserAccountView specific theme utilities */
+@layer utilities {
+  /* Page layout utilities */
+  .user-account-layout {
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  }
+
+  /* Navigation body scroll lock */
+  .nav-open {
+    overflow: hidden !important;
+  }
+
+  /* Performance optimized animations */
+  .animate-fadeInUp {
+    animation: fadeInUp 0.3s ease-out;
+  }
+
+  /* Hardware accelerated elements */
+  .hw-accelerate {
+    transform: translateZ(0);
+  }
+}
