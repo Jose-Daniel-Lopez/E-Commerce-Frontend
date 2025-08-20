@@ -7,46 +7,46 @@ import { computed } from 'vue'
  */
 export const useThemeClasses = () => {
   // Classes for main containers (cards, sections)
-  const cardClasses = computed(() => 'bg-background text-foreground border border-gray-200 dark:border-gray-600 transition-colors duration-200')
+  const cardClasses = computed(() => 'bg-background text-foreground border border-border transition-colors duration-200')
 
   // Classes for primary text
   const textClasses = computed(() => 'text-foreground')
 
   // Classes for secondary text
-  const textSecondaryClasses = computed(() => 'text-gray-600 dark:text-gray-200')
+  const textSecondaryClasses = computed(() => 'text-muted')
 
   // Classes for tertiary/muted text
-  const textMutedClasses = computed(() => 'text-gray-500 dark:text-gray-300')
+  const textMutedClasses = computed(() => 'text-muted-foreground')
 
   // Classes for primary buttons (use semantic primary token)
   const buttonPrimaryClasses = computed(() => 'bg-primary text-primary-foreground hover:opacity-90 transition-colors duration-200')
 
   // Classes for secondary buttons
-  const buttonSecondaryClasses = computed(() => 'bg-gray-200 dark:bg-gray-800 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors duration-200')
+  const buttonSecondaryClasses = computed(() => 'bg-surface-secondary text-foreground hover:bg-surface-tertiary transition-colors duration-200')
 
   // Classes for inputs
-  const inputClasses = computed(() => 'w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-md bg-background dark:bg-surface text-foreground placeholder-gray-400 dark:placeholder-gray-300 focus:outline-none focus:border-black dark:focus:border-white transition-colors duration-200')
+  const inputClasses = computed(() => 'w-full px-4 py-3 border border-input bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors duration-200')
 
   // Classes for navigation
   const navClasses = computed(() => 'bg-background text-foreground transition-colors duration-200')
 
   // Classes for hover effects on items
-  const hoverClasses = computed(() => 'hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-500 transition-all duration-200')
+  const hoverClasses = computed(() => 'hover:bg-surface-hover hover:border-border transition-all duration-200')
 
   // Classes for contrast backgrounds (like debug panel)
-  const contrastBgClasses = computed(() => 'bg-yellow-50 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-600/50')
+  const contrastBgClasses = computed(() => 'bg-warning text-primary-foreground')
 
   // Classes for overlays/modals
-  const overlayClasses = computed(() => 'bg-black/50 dark:bg-black/80 backdrop-blur-sm')
+  const overlayClasses = computed(() => 'bg-overlay backdrop-blur-sm')
 
   // Classes for outline buttons (secondary with border)
-  const buttonOutlineClasses = computed(() => 'bg-transparent border border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-400 dark:hover:border-gray-400')
+  const buttonOutlineClasses = computed(() => 'bg-transparent border border-border text-foreground hover:bg-surface-hover transition-colors duration-200')
 
   // Classes for button text that adapts to theme
-  const buttonTextClasses = computed(() => 'text-gray-700 dark:text-gray-100')
+  const buttonTextClasses = computed(() => 'text-foreground')
 
   // Classes for links/router-links
-  const linkClasses = computed(() => 'text-gray-600 dark:text-gray-200 hover:text-black dark:hover:text-white')
+  const linkClasses = computed(() => 'text-muted hover:text-foreground transition-colors duration-200')
 
   // Classes for theme toggle buttons (inactive state)
   const themeButtonInactiveClasses = computed(() => 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-400 hover:scale-105')
@@ -73,19 +73,19 @@ export const useThemeClasses = () => {
   const reviewMetaClasses = computed(() => 'text-gray-500 dark:text-gray-400 text-sm')
 
   // Classes for section containers with consistent dark theme
-  const sectionContainerClasses = computed(() => 'bg-background dark:bg-surface border border-gray-200 dark:border-gray-700 shadow-md rounded-2xl p-6 transition-colors duration-200')
+  const sectionContainerClasses = computed(() => 'bg-background border border-border shadow-md rounded-2xl p-6 transition-colors duration-200')
 
   // Classes for section headers with consistent styling
-  const sectionHeaderClasses = computed(() => 'text-base font-bold tracking-tight text-gray-700 uppercase dark:text-gray-300')
+  const sectionHeaderClasses = computed(() => 'text-base font-bold tracking-tight text-muted uppercase')
 
   // Classes for list items with hover effects
-  const listItemClasses = computed(() => 'flex items-center justify-between p-4 transition-all duration-200 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-800 hover:shadow-lg')
+  const listItemClasses = computed(() => 'flex items-center justify-between p-4 transition-all duration-200 border border-border rounded-xl bg-surface hover:shadow-lg')
 
   // Classes for status badges/pills
   const statusBadgeClasses = computed(() => 'px-3 py-1 text-sm font-medium rounded-full')
 
   // Classes for action buttons in list items
-  const actionButtonClasses = computed(() => 'text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors duration-200 cursor-pointer text-xs font-light')
+  const actionButtonClasses = computed(() => 'text-muted hover:text-foreground transition-colors duration-200 cursor-pointer text-xs font-light')
 
   // Classes for icon containers (like in order items)
   const iconContainerClasses = computed(() => 'flex items-center justify-center w-10 h-10 rounded-lg bg-surface text-primary-foreground')
@@ -94,40 +94,40 @@ export const useThemeClasses = () => {
   const iconInContainerClasses = computed(() => 'text-primary-foreground')
 
   // Classes for empty state text
-  const emptyStateTextClasses = computed(() => 'text-gray-500 dark:text-gray-400')
+  const emptyStateTextClasses = computed(() => 'text-muted-foreground')
 
   // Classes for empty state icons
-  const emptyStateIconClasses = computed(() => 'text-gray-300 dark:text-gray-600 opacity-80')
+  const emptyStateIconClasses = computed(() => 'text-muted-foreground opacity-80')
 
   // Classes for loading text
-  const loadingTextClasses = computed(() => 'text-gray-600 dark:text-gray-300')
+  const loadingTextClasses = computed(() => 'text-muted')
 
   // Classes for icon colors (generic)
-  const iconColorClasses = computed(() => 'text-gray-500 dark:text-gray-400')
+  const iconColorClasses = computed(() => 'text-muted-foreground')
 
   // Classes for interactive icons (buttons)
-  const interactiveIconClasses = computed(() => 'text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors duration-200')
+  const interactiveIconClasses = computed(() => 'text-muted-foreground hover:text-foreground transition-colors duration-200')
 
   // Classes for price text
   const priceTextClasses = computed(() => 'text-foreground font-semibold')
 
   // Classes for footer sections
-  const footerLinkClasses = computed(() => 'transition-colors hover:text-orange-400 text-gray-300 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors duration-200')
+  const footerLinkClasses = computed(() => 'text-muted hover:text-foreground transition-colors duration-200')
 
   // Classes for page background
   const pageBackgroundClasses = computed(() => 'bg-background text-foreground transition-colors duration-200')
 
   // Classes for form inputs
-  const formInputClasses = computed(() => 'w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-md bg-background dark:bg-surface text-foreground placeholder-gray-400 dark:placeholder-gray-300 focus:outline-none focus:border-black dark:focus:border-white transition-colors duration-200')
+  const formInputClasses = computed(() => 'w-full px-4 py-3 border border-border rounded-md bg-input text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors duration-200')
 
   // Classes for form labels
   const formLabelClasses = computed(() => 'block font-srProDisplay text-sm font-medium text-foreground mb-2')
 
   // Classes for FAQ buttons
-  const faqButtonClasses = computed(() => 'w-full px-6 py-4 text-left font-srProDisplay font-medium text-foreground hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 flex items-center justify-between bg-gray-50 dark:bg-gray-800')
+  const faqButtonClasses = computed(() => 'w-full px-6 py-4 text-left font-srProDisplay font-medium text-foreground hover:bg-surface-hover transition-colors duration-200 flex items-center justify-between bg-surface-secondary')
 
   // Classes for FAQ content
-  const faqContentClasses = computed(() => 'px-6 pb-4 py-4 bg-background dark:bg-surface')
+  const faqContentClasses = computed(() => 'px-6 pb-4 py-4 bg-background')
 
   // Classes for info cards (contact information blocks)
   const infoCardClasses = computed(() => 'bg-background dark:bg-surface rounded-lg p-6 h-full transition-colors duration-200')

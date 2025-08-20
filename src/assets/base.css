@@ -155,6 +155,9 @@
   .text-muted { color: var(--color-muted) !important; }
   .text-muted-foreground { color: var(--color-muted-foreground) !important; }
   .bg-surface { background: var(--surface-bg, var(--color-background)) !important; }
+  .bg-surface-secondary { background: var(--color-surface-secondary) !important; }
+  .bg-surface-tertiary { background: var(--color-surface-tertiary) !important; }
+  .bg-surface-hover { background: var(--color-surface-hover) !important; }
   .text-primary-foreground { color: var(--color-primary-foreground, var(--color-text)) !important; }
   .bg-subnav { background: var(--subnav-bg) !important; }
   .bg-subnav-hover { background: var(--subnav-hover) !important; }
