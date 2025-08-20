@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-white dark:bg-gray-900 text-black dark:text-white animate-fadeInUp transition-colors duration-200">
+  <div class="pt-[85px] lg:pt-0 animate-fadeInUp transition-colors duration-200" :class="pageBackgroundClasses">
     <!-- Debug Panel - Only shown in development -->
     <DebugPanel
       :show-debug-panel="showDebugPanel"
@@ -270,6 +270,7 @@ const toast = useToast()
 
 // Theme classes composable for consistent styling
 const {
+  pageBackgroundClasses,
   textClasses,
   navClasses,
   buttonPrimaryClasses,
