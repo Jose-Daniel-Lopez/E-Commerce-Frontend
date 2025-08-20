@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/lib/axios'
+import { useThemeClasses } from '@/composables/useThemeClasses'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import FloatingInput from '@/components/shared/FloatingInput.vue'
 import PasswordInput from '@/components/shared/PasswordInput.vue'
@@ -31,6 +32,16 @@ interface RegisterResponse {
 
 const router = useRouter()
 
+// Theme classes
+const {
+  pageBackgroundClasses,
+  cardClasses,
+  textClasses,
+  textMutedClasses,
+  formInputClasses,
+  iconBackgroundClasses
+} = useThemeClasses()
+
 // Component state
 const form = ref<RegisterForm>({
   username: '',
@@ -53,8 +64,6 @@ const {
   setGlobalError,
   clearGlobalError,
 } = useFormValidation()
-
-// Theme classes (not used in this view)
 
 // Available user roles
 const roles = [
@@ -199,55 +208,55 @@ const handleSubmit = async (): Promise<void> => {
 </script>
 
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-background text-primary">
+  <div :class="['pt-[85px] lg:pt-0', pageBackgroundClasses]">
     <Wrapper class="py-8">
       <!-- Header -->
       <section class="max-w-7xl mx-auto mb-8">
-        <h1 class="font-srProDisplay text-2xl font-semibold text-left text-primary">Join us</h1>
+        <h1 :class="['font-srProDisplay text-2xl font-semibold text-left', textClasses]">Join us</h1>
       </section>
 
       <!-- Registration Content -->
       <section class="max-w-7xl mx-auto mb-16">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <!-- Left Panel - Account Benefits -->
-          <div class="bg-background rounded-lg p-6 h-full">
-            <h2 class="font-srProDisplay text-xl font-semibold text-primary mb-6">
+          <div :class="['rounded-lg p-6 h-full', cardClasses]">
+            <h2 :class="['font-srProDisplay text-xl font-semibold mb-6', textClasses]">
               Why Create an Account?
             </h2>
 
             <div class="space-y-0">
               <!-- Faster Checkout -->
-              <div class="flex items-start gap-4 py-8 border-b border-input-border">
+              <div class="flex items-start gap-4 py-8 border-b border-border">
                 <div
-                  class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0"
+                  :class="['w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0', iconBackgroundClasses]"
                 >
                   <v-icon name="hi-truck" scale="1.7" class="text-primary" />
                 </div>
                 <div>
-                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">
+                  <h3 :class="['font-srProDisplay text-lg font-medium mb-1', textClasses]">
                     Faster Checkout
                   </h3>
-                  <p class="font-srProDisplay text-muted text-sm mb-1">
+                  <p :class="['font-srProDisplay text-sm mb-1', textMutedClasses]">
                     Save your information for quicker purchases
                   </p>
-                  <p class="font-srProDisplay text-muted text-sm">
+                  <p :class="['font-srProDisplay text-sm', textMutedClasses]">
                     Skip entering details every time
                   </p>
                 </div>
               </div>
 
               <!-- Order History -->
-              <div class="flex items-start gap-4 py-12 border-b border-input-border">
+              <div class="flex items-start gap-4 py-12 border-b border-border">
                 <div
-                  class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0"
+                  :class="['w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0', iconBackgroundClasses]"
                 >
                   <v-icon name="hi-clipboard-list" scale="1.7" class="text-primary" />
                 </div>
                 <div>
-                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">
+                  <h3 :class="['font-srProDisplay text-lg font-medium mb-1', textClasses]">
                     Order History
                   </h3>
-                  <p class="font-srProDisplay text-muted text-sm mb-1">
+                  <p :class="['font-srProDisplay text-sm mb-1', textMutedClasses]">
                     Track all your purchases in one place
                   </p>
                   <p class="font-srProDisplay text-muted-foreground text-xs">
@@ -257,20 +266,20 @@ const handleSubmit = async (): Promise<void> => {
               </div>
 
               <!-- Exclusive Offers -->
-              <div class="flex items-start gap-4 py-12 border-b border-input-border">
+              <div class="flex items-start gap-4 py-12 border-b border-border">
                 <div
-                  class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0"
+                  :class="['w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0', iconBackgroundClasses]"
                 >
                   <v-icon name="hi-gift" scale="1.7" class="text-primary" />
                 </div>
                 <div>
-                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">
+                  <h3 :class="['font-srProDisplay text-lg font-medium mb-1', textClasses]">
                     Exclusive Offers
                   </h3>
-                  <p class="font-srProDisplay text-muted text-sm mb-1">
+                  <p :class="['font-srProDisplay text-sm mb-1', textMutedClasses]">
                     Get access to member-only deals
                   </p>
-                  <p class="font-srProDisplay text-muted text-sm">
+                  <p :class="['font-srProDisplay text-sm', textMutedClasses]">
                     Early access to sales and new products
                   </p>
                 </div>
@@ -279,15 +288,15 @@ const handleSubmit = async (): Promise<void> => {
               <!-- Wishlist -->
               <div class="flex items-start gap-4 py-12">
                 <div
-                  class="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0"
+                  :class="['w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0', iconBackgroundClasses]"
                 >
                   <v-icon name="hi-heart" scale="1.7" class="text-primary" />
                 </div>
                 <div>
-                  <h3 class="font-srProDisplay text-lg font-medium text-primary mb-1">
+                  <h3 :class="['font-srProDisplay text-lg font-medium mb-1', textClasses]">
                     Save Favorites
                   </h3>
-                  <p class="font-srProDisplay text-muted text-sm mb-1">
+                  <p :class="['font-srProDisplay text-sm mb-1', textMutedClasses]">
                     Create wishlists and save items for later
                   </p>
                   <p class="font-srProDisplay text-muted-foreground text-xs">
@@ -301,18 +310,18 @@ const handleSubmit = async (): Promise<void> => {
           <!-- Right Panel - Registration Form -->
           <div class="animate-[fadeInUp_0.8s_ease-out]">
             <div
-              class="bg-background border border-input-border rounded-lg p-6 h-full transition-all duration-300 hover:shadow-lg"
+              :class="['border rounded-lg p-6 h-full transition-all duration-300 hover:shadow-lg', cardClasses]"
             >
-              <h2 class="font-srProDisplay text-xl font-semibold text-primary mb-6">
+              <h2 :class="['font-srProDisplay text-xl font-semibold mb-6', textClasses]">
                 Registration Form
               </h2>
 
               <!-- Success Message -->
               <div
                 v-if="showVerificationMsg"
-                class="mb-4 flex items-center justify-between rounded-lg border border-green-200 bg-green-50 p-3 animate-[slideDown_0.3s_ease-out]"
+                class="mb-4 flex items-center justify-between rounded-lg border border-success bg-success-bg p-3 animate-[slideDown_0.3s_ease-out]"
               >
-                <p class="font-srProDisplay text-sm text-green-700">
+                <p class="font-srProDisplay text-sm text-success">
                   Account verification email sent! Please check your inbox to verify your account.
                 </p>
               </div>
@@ -359,7 +368,7 @@ const handleSubmit = async (): Promise<void> => {
                     <select
                       id="role"
                       v-model="form.role"
-                      class="peer w-full px-4 pt-6 pb-2 pr-10 border border-input-border rounded-xl bg-input-background backdrop-blur-sm font-srProDisplay text-primary focus:outline-none focus:border-primary focus:bg-white focus:shadow-[0_0_0_3px_rgba(0,0,0,0.05)] focus:scale-[1.01] transition-all duration-300 appearance-none cursor-pointer"
+                      :class="['peer w-full px-4 pt-6 pb-2 pr-10 border rounded-xl bg-input backdrop-blur-sm font-srProDisplay focus:outline-none focus:border-primary focus:bg-input focus:shadow-[0_0_0_3px_rgba(0,0,0,0.05)] focus:scale-[1.01] transition-all duration-300 appearance-none cursor-pointer', formInputClasses]"
                     >
                       <option v-for="r in roles" :key="r.value" :value="r.value">
                         {{ r.label }}
@@ -367,7 +376,7 @@ const handleSubmit = async (): Promise<void> => {
                     </select>
                     <label
                       for="role"
-                      class="absolute left-4 top-2 text-xs font-srProDisplay text-primary transition-all duration-300 transform origin-left pointer-events-none bg-white px-1.5 z-[1]"
+                      :class="['absolute left-4 top-2 text-xs font-srProDisplay transition-all duration-300 transform origin-left pointer-events-none bg-background px-1.5 z-[1]', textClasses]"
                     >
                       Account Type
                     </label>
@@ -406,7 +415,7 @@ const handleSubmit = async (): Promise<void> => {
 
                 <!-- Divider -->
                 <div
-                  class="border-t border-input-border pt-4 animate-[fadeInUp_0.6s_ease-out_0.6s_both]"
+                  class="border-t border-border pt-4 animate-[fadeInUp_0.6s_ease-out_0.6s_both]"
                 >
                   <!-- Terms Agreement -->
                   <div class="mb-4">
@@ -415,10 +424,10 @@ const handleSubmit = async (): Promise<void> => {
                         v-model="termsAccepted"
                         type="checkbox"
                         required
-                        class="appearance-none w-4 h-4 border border-gray-300 rounded-sm bg-white cursor-pointer relative flex-shrink-0 mr-3 mt-1 hover:border-gray-400 checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-3 after:h-3 after:bg-[url('data:image/svg+xml,%3csvg%20viewBox%3D%270%200%2016%2016%27%20fill%3D%27white%27%20xmlns%3D%27http://www.w3.org/2000/svg%27%3e%3cpath%20d%3D%27m13.854%203.646a.5.5%200%200%201%200%20.708l-7%207a.5.5%200%200%201-.708%200l-3.5-3.5a.5.5%200%201%201%20.708-.708L6.5%2010.293l6.646-6.647a.5.5%200%200%201%20.708%200z%27/%3e%3c/svg%3e')] after:bg-contain after:bg-no-repeat after:bg-center after:opacity-0 checked:after:opacity-100 transition-all duration-200"
+                        class="appearance-none w-4 h-4 border border-border rounded-sm bg-input cursor-pointer relative flex-shrink-0 mr-3 mt-1 hover:border-muted checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-3 after:h-3 after:bg-[url('data:image/svg+xml,%3csvg%20viewBox%3D%270%200%2016%2016%27%20fill%3D%27white%27%20xmlns%3D%27http://www.w3.org/2000/svg%27%3e%3cpath%20d%3D%27m13.854%203.646a.5.5%200%200%201%200%20.708l-7%207a.5.5%200%200%201-.708%200l-3.5-3.5a.5.5%200%201%201%20.708-.708L6.5%2010.293l6.646-6.647a.5.5%200%200%201%20.708%200z%27/%3e%3c/svg%3e')] after:bg-contain after:bg-no-repeat after:bg-center after:opacity-0 checked:after:opacity-100 transition-all duration-200"
                       />
                       <span
-                        class="font-srProDisplay text-sm text-muted group-hover:text-primary transition-colors duration-200"
+                        :class="['font-srProDisplay text-sm group-hover:text-primary transition-colors duration-200', textMutedClasses]"
                       >
                         I agree to the
                         <a href="#" class="text-primary hover:underline cursor-pointer"
@@ -443,8 +452,8 @@ const handleSubmit = async (): Promise<void> => {
               </form>
 
               <!-- Sign In Link -->
-              <div class="mt-6 pt-4 border-t border-input-border">
-                <p class="text-center font-srProDisplay text-sm text-muted">
+              <div class="mt-6 pt-4 border-t border-border">
+                <p :class="['text-center font-srProDisplay text-sm', textMutedClasses]">
                   Already have an account?
                   <RouterLink
                     to="/login"
@@ -462,6 +471,7 @@ const handleSubmit = async (): Promise<void> => {
 </template>
 
 <style scoped>
+/* Component-specific styles only */
 /* Hide browser password visibility toggles since we have our own */
 input[type='password']::-ms-reveal,
 input[type='password']::-ms-clear,
@@ -470,6 +480,7 @@ input[type='password']::-webkit-input-password-toggle-button,
 input[type='password']::-webkit-input-clear-button {
   display: none !important;
 }
+
 input[type='text']::-ms-reveal,
 input[type='text']::-ms-clear,
 input[type='text']::-webkit-credentials-auto-fill-button,
@@ -478,13 +489,7 @@ input[type='text']::-webkit-input-clear-button {
   display: none !important;
 }
 
-/* Remove button focus outline since we use Tailwind focus states */
-button:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-/* Keep essential animations */
+/* Component-specific animations for registration form */
 @keyframes fadeInUp {
   from {
     opacity: 0;

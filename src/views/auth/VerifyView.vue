@@ -5,28 +5,28 @@
         <!-- Loading State -->
         <div v-if="loading" class="space-y-4">
           <div
-            class="animate-spin h-12 w-12 border-4 border-black border-t-transparent rounded-full mx-auto"
+            class="animate-spin h-12 w-12 border-4 border-foreground border-t-transparent rounded-full mx-auto"
           ></div>
-          <h2 class="font-srProDisplay text-xl font-semibold text-foreground">
+          <h2 :class="['font-srProDisplay text-xl font-semibold', textClasses]">
             {{ $t('auth.verify.loading') }}
           </h2>
-          <p class="font-srProDisplay text-muted text-sm">
+          <p :class="['font-srProDisplay text-sm', textMutedClasses]">
             {{ $t('auth.verify.loadingMessage') }}
           </p>
         </div>
 
         <!-- Success State -->
         <div v-else-if="verified" class="space-y-4">
-          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-            <v-icon name="hi-check" scale="2" class="text-green-600" />
+          <div class="w-16 h-16 bg-success-bg rounded-full flex items-center justify-center mx-auto">
+            <v-icon name="hi-check" scale="2" class="text-success" />
           </div>
-          <h2 class="font-srProDisplay text-xl font-semibold text-foreground">{{ $t('auth.verify.success') }}</h2>
-          <p class="font-srProDisplay text-muted text-sm">
+          <h2 :class="['font-srProDisplay text-xl font-semibold', textClasses]">{{ $t('auth.verify.success') }}</h2>
+          <p :class="['font-srProDisplay text-sm', textMutedClasses]">
             {{ $t('auth.verify.successMessage') }}
           </p>
           <button
             @click="goToLogin"
-            class="w-full bg-primary text-primary-foreground font-srProDisplay font-medium py-3 rounded-md hover:opacity-95 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg"
+            :class="['w-full font-srProDisplay font-medium py-3 rounded-md hover:opacity-95 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg', buttonPrimaryClasses]"
           >
             {{ $t('auth.verify.goToLogin') }}
           </button>
@@ -34,21 +34,21 @@
 
         <!-- Error State -->
         <div v-else class="space-y-4">
-          <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-            <v-icon name="hi-x" scale="2" class="text-red-600" />
+          <div class="w-16 h-16 bg-error-bg rounded-full flex items-center justify-center mx-auto">
+            <v-icon name="hi-x" scale="2" class="text-error" />
           </div>
-          <h2 class="font-srProDisplay text-xl font-semibold text-foreground">{{ $t('auth.verify.error') }}</h2>
-          <p class="font-srProDisplay text-muted text-sm">{{ errorMessage }}</p>
+          <h2 :class="['font-srProDisplay text-xl font-semibold', textClasses]">{{ $t('auth.verify.error') }}</h2>
+          <p :class="['font-srProDisplay text-sm', textMutedClasses]">{{ errorMessage }}</p>
           <div class="space-y-2">
             <button
               @click="goToLogin"
-              class="w-full bg-primary text-primary-foreground font-srProDisplay font-medium py-3 rounded-md hover:opacity-95 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg"
+              :class="['w-full font-srProDisplay font-medium py-3 rounded-md hover:opacity-95 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg', buttonPrimaryClasses]"
             >
               {{ $t('auth.verify.goToLogin') }}
             </button>
             <button
               @click="goToRegister"
-              class="w-full border border-border text-foreground font-srProDisplay font-medium py-3 rounded-md hover:bg-gray-50 transition-all duration-300"
+              :class="['w-full font-srProDisplay font-medium py-3 rounded-md hover:bg-surface-hover transition-all duration-300', buttonOutlineClasses]"
             >
               {{ $t('auth.verify.registerAgain') }}
             </button>
@@ -73,7 +73,14 @@ const verified = ref(false)
 const errorMessage = ref('')
 
 // Theme classes
-const { pageBackgroundClasses, cardClasses } = useThemeClasses()
+const {
+  pageBackgroundClasses,
+  cardClasses,
+  textClasses,
+  textMutedClasses,
+  buttonPrimaryClasses,
+  buttonOutlineClasses
+} = useThemeClasses()
 
 const verifyAccount = async (token: string) => {
   try {
@@ -110,6 +117,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Component-specific animations */
 @keyframes spin {
   from {
     transform: rotate(0deg);

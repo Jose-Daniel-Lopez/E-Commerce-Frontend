@@ -20,7 +20,12 @@ const router = useRouter()
 const authStore = useAuthStore()
 const toast = useToast()
 // Theme classes
-const { pageBackgroundClasses, cardClasses } = useThemeClasses()
+const {
+  pageBackgroundClasses,
+  cardClasses,
+  textClasses,
+  textMutedClasses
+} = useThemeClasses()
 
 const form = ref<LoginForm>({
   email: '',
@@ -149,16 +154,16 @@ const handleSubmit = async (): Promise<void> => {
           <div class="w-full max-w-md animate-[fadeInUp_0.8s_ease-out]">
             <!-- Welcome header -->
             <div class="text-center mb-8">
-              <h1 class="font-srProDisplay text-3xl font-semibold text-primary mb-2">
+              <h1 :class="['font-srProDisplay text-3xl font-semibold mb-2', textClasses]">
                 Welcome back
               </h1>
-              <p class="font-srProDisplay text-muted text-sm">
+              <p :class="['font-srProDisplay text-sm', textMutedClasses]">
                 Sign in to continue to your account
               </p>
             </div>
             <!-- Login form card -->
             <div
-              class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 transition-all duration-500 hover:bg-white/90"
+              class="bg-surface/80 backdrop-blur-sm rounded-2xl p-8 transition-all duration-500 hover:bg-surface/90"
               role="main"
               aria-label="Login form"
             >
@@ -200,16 +205,16 @@ const handleSubmit = async (): Promise<void> => {
                     <input
                       v-model="rememberMe"
                       type="checkbox"
-                      class="appearance-none w-4 h-4 border border-gray-300 rounded-sm bg-white cursor-pointer relative flex-shrink-0 mr-3 hover:border-gray-400 checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-3 after:h-3 after:bg-[url('data:image/svg+xml,%3csvg%20viewBox%3D%270%200%2016%2016%27%20fill%3D%27white%27%20xmlns%3D%27http://www.w3.org/2000/svg%27%3e%3cpath%20d%3D%27m13.854%203.646a.5.5%200%200%201%200%20.708l-7%207a.5.5%200%200%201-.708%200l-3.5-3.5a.5.5%200%201%201%20.708-.708L6.5%2010.293l6.646-6.647a.5.5%200%200%201%20.708%200z%27/%3e%3c/svg%3e')] after:bg-contain after:bg-no-repeat after:bg-center after:opacity-0 checked:after:opacity-100 transition-all duration-200"
+                      class="appearance-none w-4 h-4 border border-border rounded-sm bg-input cursor-pointer relative flex-shrink-0 mr-3 hover:border-muted checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-3 after:h-3 after:bg-[url('data:image/svg+xml,%3csvg%20viewBox%3D%270%200%2016%2016%27%20fill%3D%27white%27%20xmlns%3D%27http://www.w3.org/2000/svg%27%3e%3cpath%20d%3D%27m13.854%203.646a.5.5%200%200%201%200%20.708l-7%207a.5.5%200%200%201-.708%200l-3.5-3.5a.5.5%200%201%201%20.708-.708L6.5%2010.293l6.646-6.647a.5.5%200%200%201%20.708%200z%27/%3e%3c/svg%3e')] after:bg-contain after:bg-no-repeat after:bg-center after:opacity-0 checked:after:opacity-100 transition-all duration-200"
                     />
                     <span
-                      class="font-srProDisplay text-sm text-muted group-hover:text-primary transition-colors duration-200"
+                      :class="['font-srProDisplay text-sm group-hover:text-primary transition-colors duration-200', textMutedClasses]"
                       >Remember me</span
                     >
                   </label>
                   <a
                     href="#"
-                    class="font-srProDisplay text-sm text-muted hover:text-primary hover:underline transition-all duration-200 cursor-pointer"
+                    :class="['font-srProDisplay text-sm hover:text-primary hover:underline transition-all duration-200 cursor-pointer', textMutedClasses]"
                   >
                     Forgot password?
                   </a>
@@ -223,8 +228,8 @@ const handleSubmit = async (): Promise<void> => {
                 />
               </form>
               <!-- Sign up link for new users -->
-              <div class="mt-8 pt-6 border-t border-input-border">
-                <p class="text-center font-srProDisplay text-sm text-muted">
+              <div class="mt-8 pt-6 border-t border-border">
+                <p :class="['text-center font-srProDisplay text-sm', textMutedClasses]">
                   Don't have an account?
                   <RouterLink
                     to="/register"
@@ -248,6 +253,7 @@ const handleSubmit = async (): Promise<void> => {
 </template>
 
 <style scoped>
+/* Component-specific styles only */
 /* Hide browser password visibility toggles since we have our own */
 input[type='password']::-ms-reveal,
 input[type='password']::-ms-clear,
@@ -256,6 +262,7 @@ input[type='password']::-webkit-input-password-toggle-button,
 input[type='password']::-webkit-input-clear-button {
   display: none !important;
 }
+
 input[type='text']::-ms-reveal,
 input[type='text']::-ms-clear,
 input[type='text']::-webkit-credentials-auto-fill-button,
@@ -264,13 +271,7 @@ input[type='text']::-webkit-input-clear-button {
   display: none !important;
 }
 
-/* Remove button focus outline since we use Tailwind focus states */
-button:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-/* Backdrop filter support for browsers that support it */
+/* Component-specific backdrop filter support */
 @supports (backdrop-filter: blur(10px)) {
   .backdrop-blur-sm {
     backdrop-filter: blur(4px);
