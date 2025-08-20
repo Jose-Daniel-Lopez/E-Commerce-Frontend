@@ -291,7 +291,7 @@ watch(() => wishlistProducts.value, () => {
                     :class="['px-2 py-1 text-xs font-medium rounded', 'bg-gray-100 dark:bg-gray-800', textSecondaryClasses]">{{
                       item.operatingSystem }}</span>
                   <span v-if="item.totalStock !== undefined"
-                    :class="['px-2 py-1 text-xs font-medium rounded', 'bg-success', 'text-success']">Stock:
+                    :class="['px-2 py-1 text-xs font-medium rounded', 'bg-gray-100 dark:bg-gray-800', 'text-success']">Stock:
                     {{ item.totalStock }}</span>
                 </div>
                 <div class="flex flex-col items-center mt-auto space-y-2">
