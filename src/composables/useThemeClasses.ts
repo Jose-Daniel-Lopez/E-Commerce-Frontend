@@ -32,7 +32,7 @@ export const useThemeClasses = () => {
    * Standard container for cards, sections, and panels.
    * Includes background, border, and subtle transition.
    */
-  const cardClasses = computed(() => 'bg-background text-foreground border border-border transition-colors duration-200')
+  const cardClasses = computed(() => 'bg-surface text-foreground border border-border transition-colors duration-200')
 
   /**
    * Full-page background with consistent text color.
@@ -42,7 +42,7 @@ export const useThemeClasses = () => {
   /**
    * Section-level container with padding, border, and shadow.
    */
-  const sectionContainerClasses = computed(() => 'bg-background border border-border shadow-md rounded-2xl p-6 transition-colors duration-200')
+  const sectionContainerClasses = computed(() => 'bg-surface border border-border shadow-md rounded-2xl p-6 transition-colors duration-200')
 
   /**
    * Header style for sections (uppercase, muted, small font).
@@ -125,7 +125,7 @@ export const useThemeClasses = () => {
   /**
    * Primary button: solid fill, high contrast, hover opacity.
    */
-  const buttonPrimaryClasses = computed(() => 'bg-primary text-primary-foreground hover:opacity-90 transition-colors duration-200')
+  const buttonPrimaryClasses = computed(() => 'bg-primary text-primary-foreground hover:bg-accent transition-colors duration-200')
 
   /**
    * Secondary button: surface background, subtle hover.
@@ -150,12 +150,12 @@ export const useThemeClasses = () => {
   /**
    * Theme toggle inactive state: light/dark neutral appearance.
    */
-  const themeButtonInactiveClasses = computed(() => 'bg-background text-muted border-border hover:bg-surface-hover hover:border-border hover:scale-105')
+  const themeButtonInactiveClasses = computed(() => 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-400 hover:scale-105')
 
   /**
    * Theme toggle active state: blue highlight with shadow and scale.
    */
-  const themeButtonActiveClasses = computed(() => 'bg-primary text-primary-foreground border-primary shadow-lg scale-110 ring-2 ring-primary-bg')
+  const themeButtonActiveClasses = computed(() => 'bg-primary text-white border-primary shadow-lg scale-110 ring-2 ring-primary-bg')
 
   /**
    * Action buttons in lists (small, subtle, interactive).
@@ -170,7 +170,7 @@ export const useThemeClasses = () => {
   /**
    * Pagination button (default state).
    */
-  const catalogPaginationButtonClasses = computed(() => 'px-3 py-2 rounded-md text-sm font-medium bg-background text-foreground hover:opacity-95 border border-border transition-colors duration-200')
+  const catalogPaginationButtonClasses = computed(() => 'px-3 py-2 rounded-md text-sm font-medium bg-surface text-foreground hover:bg-surface-hover border border-border transition-colors duration-200')
 
   /**
    * Pagination button (active/current page).
@@ -214,7 +214,7 @@ export const useThemeClasses = () => {
   /**
    * Checkbox inputs in catalog filters.
    */
-  const catalogCheckboxClasses = computed(() => 'w-4 h-4 accent-primary rounded transition-colors duration-200')
+  const catalogCheckboxClasses = computed(() => 'w-4 h-4 accent-primary dark:accent-white rounded transition-colors duration-200')
 
   // ===========================================================================
   // 🖼️ Icons & Visual Elements
@@ -267,27 +267,27 @@ export const useThemeClasses = () => {
   /**
    * Review card styling (rounded, border, hover shadow).
    */
-  const reviewCardClasses = computed(() => 'bg-background border border-border rounded-xl p-4 transition-all duration-200 hover:shadow-lg')
+  const reviewCardClasses = computed(() => 'bg-surface border border-border rounded-xl p-4 transition-all duration-200 hover:shadow-lg')
 
   /**
    * Review content section (light gray background).
    */
-  const reviewContentClasses = computed(() => 'bg-surface border border-border rounded-xl')
+  const reviewContentClasses = computed(() => 'bg-surface-secondary border border-border rounded-xl')
 
   /**
    * Info card (e.g., contact blocks).
    */
-  const infoCardClasses = computed(() => 'bg-background border border-border rounded-lg p-6 h-full transition-colors duration-200')
+  const infoCardClasses = computed(() => 'bg-surface border border-border rounded-lg p-6 h-full transition-colors duration-200')
 
   /**
    * Value card in about page (centered, padded).
    */
-  const aboutValueCardClasses = computed(() => 'text-center p-6 bg-background border border-border rounded-lg transition-colors duration-200')
+  const aboutValueCardClasses = computed(() => 'text-center p-6 bg-surface border border-border rounded-lg transition-colors duration-200')
 
   /**
    * Featured product card (used in homepage).
    */
-  const featuredProductCardClasses = computed(() => 'bg-surface border border-border rounded-[15px] p-8 text-center hover:shadow-lg transition-all duration-300')
+  const featuredProductCardClasses = computed(() => 'bg-surface-secondary border border-border rounded-[15px] p-8 text-center hover:shadow-lg transition-all duration-300')
 
   /**
    * Catalog product card (individual items).
@@ -369,7 +369,7 @@ export const useThemeClasses = () => {
   /**
    * Catalog filter section wrapper.
    */
-  const catalogFilterSectionClasses = computed(() => 'bg-background border border-border rounded-lg p-4 mb-6 transition-colors duration-200')
+  const catalogFilterSectionClasses = computed(() => 'bg-surface border border-border rounded-lg p-4 mb-6 transition-colors duration-200')
 
   /**
    * Catalog filter header (flex with border bottom).
@@ -394,7 +394,7 @@ export const useThemeClasses = () => {
   /**
    * Filter summary section (applied filters preview).
    */
-  const catalogFilterSummaryClasses = computed(() => 'p-4 bg-surface border border-border rounded-lg transition-colors duration-200')
+  const catalogFilterSummaryClasses = computed(() => 'p-4 bg-surface-secondary border border-border rounded-lg transition-colors duration-200')
 
   /**
    * Debug panel in catalog (yellow highlight for dev tools).

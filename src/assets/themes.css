@@ -6,62 +6,62 @@
 */
 
 /* =========================
-   Light Theme (Default)
+   Light Theme (Default) - Bold & Modern
    ========================= */
 :root {
-  /* Brand Colors - Accessible & Recognizable */
-  --color-primary: #0a66c2;       /* Blue-600: High-contrast, LinkedIn-style, WCAG AAA on white */
-  --color-secondary: #5850d6;     /* Indigo-600: Strong secondary, accessible on white */
-  --color-accent: #1d4ed8;        /* Blue-700: For active/hover states */
+  /* 🔥 Brand Colors - Vibrant, accessible, professional */
+  --color-primary: #0a66c2;           /* LinkedIn Blue: trusted, high-contrast */
+  --color-secondary: #5850d6;         /* Indigo-600: strong secondary */
+  --color-accent: #035fc4;            /* Blue-700: deeper hover/active state */
 
-  /* Text & Foreground */
-  --color-text: #0f172a;          /* gray-900: Near-black, excellent contrast on white (9.8:1) */
-  --color-muted: #64748b;         /* gray-600: Secondary text, ≥ 4.5:1 on white */
-  --color-muted-foreground: #94a3b8; /* gray-400: Tertiary/helper text, ≥ 3:1 (OK for large text) */
+  /* 🖋️ Text & Foreground - High contrast, sharp */
+  --color-text: #0f172a;              /* slate-900: near-black, excellent contrast */
+  --color-muted: #475569;             /* slate-700: clear secondary text */
+  --color-muted-foreground: #64748b;  /* slate-600: helper text, still readable */
 
-  /* Backgrounds & Surfaces */
-  --color-background: #eaeaea;    /* Pure white */
-  --surface-bg: #f8fafc;          /* gray-50: Subtle card/panel background */
-  --subnav-bg: #f1f5f9;           /* gray-100: Soft sub-navigation background */
-  --subnav-hover: #e2e8f0;        /* gray-200: Hover background for subnav in light mode */
-  --header-bg: #ffffff;           /* White header */
-  --color-input-background: #ffffff;
+  /* 🏗️ Backgrounds & Surfaces - Deep, layered, not flat */
+  --color-background: #f1f3f5;        /* Google-inspired light gray (not pure white) */
+  --surface-bg: #ffffff;              /* White cards/panels (creates lift) */
+  --subnav-bg: #f8f9fa;               /* Very light gray for sub-navigation */
+  --subnav-hover: #e9ecef;            /* Subtle hover on nav items */
+  --header-bg: #ffffff;               /* Clean white header */
+  --color-input-background: #ffffff;  /* Inputs on white or card surfaces */
 
-  /* Borders & Dividers */
-  --color-border: #cbd5e1;        /* gray-300: Visible but not harsh */
-  --color-input-border: #94a3b8;  /* gray-500: Clear input borders, ≥ 3:1 */
+  /* 🔲 Borders & Dividers - Crisp but not harsh */
+  --color-border: #e2e8f0;            /* Soft but visible (slate-200) */
+  --color-input-border: #cbd5e1;      /* slate-300: clear input borders */
 
-  /* Surface Variations */
-  --color-surface-secondary: #f1f5f9;  /* gray-100: Secondary surface */
-  --color-surface-tertiary: #e2e8f0;   /* gray-200: Tertiary surface */
-  --color-surface-hover: #f8fafc;      /* gray-50: Hover state surface */
+  /* 🧱 Surface Variations - Layered UI */
+  --color-surface-secondary: #f8f9fa; /* Slightly lifted surfaces */
+  --color-surface-tertiary: #f1f3f5;  /* Deeper layer (e.g., banners) */
+  --color-surface-hover: #f1f3f5;     /* Hover state for interactive elements */
 
-  /* Feedback Colors */
-  --color-success: #059669;       /* Emerald-600: Strong, accessible on white */
-  --color-warning: #d97706;       /* Amber-600: High-contrast warning */
-  --color-error: #dc2626;         /* Red-600: High-contrast error */
+  /* ✅❌⚠️ Feedback Colors - Bold and clear */
+  --color-success: #059669;           /* Emerald-600: confident, positive */
+  --color-warning: #d97706;           /* Amber-600: attention-grabbing */
+  --color-error: #dc2626;             /* Red-600: urgent, high-contrast */
 
-  /* Feedback Background Colors */
-  --color-success-bg: #dcfce7;    /* Emerald-100: Light success background */
-  --color-warning-bg: #fef3c7;    /* Amber-100: Light warning background */
-  --color-error-bg: #fee2e2;      /* Red-100: Light error background */
-  --color-primary-bg: #dbeafe;    /* Blue-100: Light primary background */
+  /* 🟩🟨🟥 Feedback Backgrounds - Subtle but clear */
+  --color-success-bg: #ecfdf5;        /* Very light green */
+  --color-warning-bg: #fffbeb;        /* Warm light yellow */
+  --color-error-bg: #fef2f2;          /* Soft red background */
+  --color-primary-bg: #eff6ff;        /* Light blue tint for primary */
 
-  /* E-commerce Specific */
-  --color-cart: #dc2626;          /* Red-600: Clear, urgent cart indicator */
-  --color-favorite: #be123c;      /* Rose-700: Deep rose for favorites */
-  --color-discount: #ea580c;      /* Orange-600: Warm, attention-grabbing */
-  --color-price: #065f46;         /* Emerald-800: Dark green for price legibility */
+  /* 🛒 E-commerce Specific - Bold and emotional */
+  --color-cart: #dc2626;              /* Red-600: urgent, action-driven */
+  --color-favorite: #be123c;          /* Rose-700: passionate, deep */
+  --color-discount: #ea580c;          /* Orange-600: energetic, sale-focused */
+  --color-price: #1e293b;             /* slate-900: bold, legible, blackish */
 
-  /* Foreground on Brand Colors */
-  --color-primary-foreground: #ffffff;     /* White text on primary */
-  --color-secondary-foreground: #ffffff;
+  /* 🧍‍♂️ Foreground on Brand Colors */
+  --color-primary-foreground: #ffffff;     /* White text on primary buttons */
+  --color-secondary-foreground: #ffffff;   /* White on secondary */
 
-  /* Typography */
+  /* 📝 Typography */
   --font-figtree: 'Figtree', sans-serif;
   --font-srProDisplay: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* Utility */
+  /* 📏 Utility */
   --breakpoint-xs: 420px;
 }
 
