@@ -148,6 +148,7 @@ const {
   textSecondaryClasses,
   textMutedClasses,
   buttonPrimaryClasses,
+  buttonSecondaryClasses,
   pageBackgroundClasses
 } = useThemeClasses()
 
@@ -855,7 +856,7 @@ const fetchProductVariants = async (productId: number) => {
 <template>
   <div :class="['min-h-screen', pageBackgroundClasses]">
     <!-- Breadcrumb -->
-    <div :class="['pt-[85px] lg:pt-0', cardClasses]">
+  <div :class="['pt-[85px] lg:pt-0', cardClasses]">
       <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <BreadcrumbNav :breadcrumbs="breadcrumbs" />
       </div>
@@ -863,28 +864,24 @@ const fetchProductVariants = async (productId: number) => {
 
     <!-- Loading State -->
     <div v-if="loading" :class="['flex justify-center items-center py-12', pageBackgroundClasses]">
-      <div
-        :class="['animate-spin rounded-full h-12 w-12 border-b-2', textClasses.includes('dark:text-white') ? 'border-black dark:border-white' : 'border-black']">
-      </div>
+      <div :class="['animate-spin rounded-full h-12 w-12 border-b-2', textClasses.includes('dark:text-white') ? 'border-black dark:border-white' : 'border-black']"></div>
       <span :class="['ml-3', textSecondaryClasses]">Cargando producto...</span>
     </div>
 
     <!-- Error State -->
     <div v-else-if="error" :class="['max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8', pageBackgroundClasses]">
-      <div
-        class="px-4 py-3 text-center theme-error-bg border theme-border rounded-lg">
-        <span>{{ error }}</span>
+      <div class="px-4 py-3 text-center bg-error-bg border-border rounded-lg">
+        <span :class="textClasses">{{ error }}</span>
       </div>
     </div>
 
     <!-- Product Details -->
     <div v-else :class="['max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8', pageBackgroundClasses]">
-      <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+  <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <!-- Left Column - Product Images -->
         <div class="space-y-4">
           <!-- Main Product Image -->
-          <div
-            class="w-full h-[400px] lg:h-[500px] flex items-center justify-center theme-surface rounded-2xl overflow-hidden">
+            <div class="w-full h-[400px] lg:h-[500px] flex items-center justify-center theme-surface rounded-2xl overflow-hidden">
             <img :src="currentImage" :alt="currentProduct.name"
               class="object-cover w-full h-full rounded-2xl product-image-hover" />
           </div>
@@ -924,7 +921,7 @@ const fetchProductVariants = async (productId: number) => {
           </div>
 
           <!-- Color Selection -->
-          <div v-if="availableColors.length > 0" class="flex items-center gap-4">
+            <div v-if="availableColors.length > 0" class="flex items-center gap-4">
             <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">Select color:</span>
             <div class="flex space-x-3">
               <button v-for="color in availableColors" :key="color" @click="selectColor(color)" :class="[
@@ -961,12 +958,12 @@ const fetchProductVariants = async (productId: number) => {
           </div>
 
           <!-- Stock Information -->
-          <div v-if="currentVariant || productVariants.length > 0" class="space-y-2">
+            <div v-if="currentVariant || productVariants.length > 0" class="space-y-2">
             <div class="flex items-center gap-2">
               <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">Stock:</span>
               <span :class="[
                 'font-srProDisplay text-sm font-semibold',
-                isInStock ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                isInStock ? 'text-success' : 'text-error'
               ]">
                 {{ isInStock ? `${currentStock} available` : 'Out of stock' }}
               </span>
@@ -1250,12 +1247,7 @@ const fetchProductVariants = async (productId: number) => {
           <div class="flex gap-3">
             <button @click="addToWishlist"
               :disabled="wishlistLoading || !isAuthenticated || (!!currentProduct?.id && wishlistStore.isProductInWishlist(currentProduct.id))"
-              :class="[
-                'flex-1 border py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
-                wishlistLoading || !isAuthenticated || (!!currentProduct?.id && wishlistStore.isProductInWishlist(currentProduct.id))
-                  ? 'border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                  : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
-              ]">
+              :class="['flex-1 border py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors', buttonSecondaryClasses]">
               <span v-if="wishlistLoading" class="flex items-center justify-center">
                 <div class="w-4 h-4 mr-2 border-b-2 border-gray-600 rounded-full animate-spin"></div>
                 Adding...
@@ -1272,12 +1264,7 @@ const fetchProductVariants = async (productId: number) => {
             </button>
             <button @click="addToCart"
               :disabled="cartLoading || !isInStock || (!selectedColor && availableColors.length > 0) || (!selectedStorage && availableSizes.length > 0)"
-              :class="[
-                'flex-1 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors',
-                !cartLoading && isInStock && (availableColors.length === 0 || selectedColor) && (availableSizes.length === 0 || selectedStorage)
-                  ? 'bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100'
-                  : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-              ]">
+              :class="['flex-1 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors', buttonPrimaryClasses]">
               <span v-if="cartLoading" class="flex items-center justify-center">
                 <div class="w-4 h-4 mr-2 border-b-2 border-white rounded-full animate-spin"></div>
                 Adding...

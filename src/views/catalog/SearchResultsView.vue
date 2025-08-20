@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen">
+  <div :class="pageBackgroundClasses" class="min-h-screen">
     <!-- Breadcrumb -->
-    <div class="pt-[85px] lg:pt-0 bg-white">
+    <div :class="['pt-[85px] lg:pt-0', cardClasses]">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <BreadcrumbNav :breadcrumbs="breadcrumbs" />
       </div>
@@ -10,9 +10,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
       <!-- Search Header -->
       <div class="mb-6">
-        <h1 class="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-          Search Results
-        </h1>
+  <h1 :class="['text-2xl lg:text-3xl font-bold mb-2', textClasses]">Search Results</h1>
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div class="text-gray-600">
             <span v-if="searchQuery">
@@ -24,7 +22,7 @@
           </div>
 
           <!-- Sort Controls -->
-          <div class="flex items-center gap-4">
+      <div class="flex items-center gap-4">
             <label for="sort-select" class="text-sm font-medium text-gray-700 whitespace-nowrap">
               Sort by:
             </label>
@@ -32,7 +30,7 @@
               id="sort-select"
               v-model="sortBy"
               @change="handleSortChange"
-              class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+        :class="['px-3 py-2 text-sm rounded-lg', catalogSortSelectClasses]"
             >
               <option value="name,asc">Name A-Z</option>
               <option value="name,desc">Name Z-A</option>
@@ -50,7 +48,7 @@
       </div>
 
       <!-- No Results -->
-      <div v-else-if="!loading && products.length === 0" class="text-center py-12">
+  <div v-else-if="!loading && products.length === 0" class="text-center py-12">
         <div class="max-w-md mx-auto">
           <div class="flex justify-center mb-4">
             <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,7 +71,7 @@
           </div>
           <router-link
             to="/catalog"
-            class="inline-block mt-6 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-95 transition-colors"
+            :class="['inline-block mt-6 px-6 py-2 rounded-lg transition-colors', buttonPrimaryClasses]"
           >
             Browse Categories
           </router-link>
@@ -236,6 +234,7 @@ import { useWishlistStore } from '@/stores/wishlistStore'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+import { useThemeClasses } from '@/composables/useThemeClasses'
 
 const route = useRoute()
 const router = useRouter()
@@ -246,6 +245,9 @@ const authStore = useAuthStore()
 const { products, loading, pagination } = storeToRefs(productStore)
 const { user } = storeToRefs(authStore)
 const { wishlistLoading } = storeToRefs(wishlistStore)
+
+// Theme classes
+const { pageBackgroundClasses, cardClasses, textClasses, catalogSortSelectClasses, buttonPrimaryClasses } = useThemeClasses()
 
 // =======================
 // 📦 State

@@ -35,6 +35,9 @@ const {
   catalogSortSelectClasses,
   catalogDebugPanelClasses,
   catalogDebugTextClasses,
+  buttonPrimaryClasses,
+  cardClasses,
+  hoverClasses,
   catalogPaginationButtonClasses,
   catalogCheckboxClasses,
   catalogFilterLabelClasses,
@@ -512,8 +515,8 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
     <div class="fixed bottom-4 right-4 z-50 max-w-[300px] sm:max-w-[420px] w-full">
       <div :class="catalogDebugPanelClasses">
         <div class="flex items-center justify-between mb-2">
-          <span class="text-xs font-bold text-yellow-800 dark:text-yellow-200 sm:text-sm">🛠️ All Products Debug</span>
-          <button @click="showDebug = !showDebug" class="text-xs text-yellow-700 underline dark:text-yellow-300 focus:outline-none">
+          <span :class="['text-xs font-bold sm:text-sm', catalogDebugTextClasses]">🛠️ All Products Debug</span>
+          <button @click="showDebug = !showDebug" :class="['text-xs underline', catalogDebugTextClasses]">
             {{ showDebug ? 'Hide' : 'Show' }}
           </button>
         </div>
@@ -546,12 +549,12 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Mobile Filter/Sort Controls -->
-          <div class="flex gap-3 mb-4">
+            <div class="flex gap-3 mb-4">
             <button
               @click="showMobileFilters = !showMobileFilters"
               :class="[
-                'flex-1 flex items-center justify-center gap-2 px-4 py-3 border rounded-lg text-sm font-medium transition-colors min-h-[48px]',
-                showMobileFilters ? 'bg-black dark:bg-white text-white dark:text-black border-black dark:border-white' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                'flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors min-h-[48px]',
+                showMobileFilters ? buttonPrimaryClasses : `${cardClasses} ${hoverClasses}`
               ]"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -565,7 +568,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
 
             <button
               @click="showMobileSorting = !showMobileSorting"
-              class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 min-h-[48px] transition-colors duration-200"
+              :class="['flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-medium min-h-[48px]', cardClasses, hoverClasses]"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
@@ -576,7 +579,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Mobile Collapsible Filters -->
-          <div v-if="showMobileFilters" :class="catalogMobileFilterClasses">
+            <div v-if="showMobileFilters" :class="catalogMobileFilterClasses">
             <!-- Price Filter -->
             <div>
               <h3 :class="['font-srProDisplay text-base font-semibold mb-3', textClasses]">Price Range</h3>
@@ -596,7 +599,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                 <label
                   v-for="category in availableCategories.slice(0, 12)"
                   :key="category.name"
-                  class="flex items-center gap-2 p-2 text-sm transition-colors bg-white border border-gray-200 rounded cursor-pointer dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
+                  :class="['flex items-center gap-2 p-2 text-sm transition-colors rounded cursor-pointer', cardClasses, hoverClasses]"
                 >
                   <input
                     type="checkbox"
@@ -620,11 +623,11 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                   placeholder="Search brands"
                 />
               </div>
-              <div class="grid grid-cols-2 gap-3 overflow-y-auto max-h-48">
+        <div class="grid grid-cols-2 gap-3 overflow-y-auto max-h-48">
                 <label
                   v-for="brand in filteredBrands.slice(0, 10)"
                   :key="brand.name"
-                  class="flex items-center gap-2 p-2 text-sm transition-colors bg-white border border-gray-200 rounded cursor-pointer dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
+          :class="['flex items-center gap-2 p-2 text-sm transition-colors rounded cursor-pointer', cardClasses, hoverClasses]"
                 >
                   <input
                     type="checkbox"
@@ -637,16 +640,16 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
             </div>
 
             <!-- Clear Filters -->
-            <div v-if="hasActiveFilters()" class="flex gap-3">
+              <div v-if="hasActiveFilters()" class="flex gap-3">
               <button
                 @click="clearAllFilters"
-                class="flex-1 py-2 text-sm text-red-600 transition-colors border border-red-200 rounded-lg hover:bg-red-50"
+                class="flex-1 py-2 text-sm text-error transition-colors border rounded-lg"
               >
                 Clear All
               </button>
               <button
                 @click="showMobileFilters = false"
-                class="flex-1 py-2 text-sm text-white transition-colors bg-black rounded-lg hover:bg-gray-800"
+                :class="['flex-1 py-2 text-sm rounded-lg', buttonPrimaryClasses]"
               >
                 Apply Filters
               </button>
@@ -718,11 +721,11 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           </div>
 
           <!-- Products Grid -->
-      <div v-else class="grid grid-cols-2 gap-4 mb-8 sm:grid-cols-3">
-            <div
+          <div v-else class="grid grid-cols-2 gap-4 mb-8 sm:grid-cols-3">
+      <div
               v-for="product in paginatedProducts"
               :key="product.id"
-        :class="['relative rounded-lg p-3 hover:shadow-md transition-shadow', catalogProductCardClasses]"
+    :class="['relative rounded-lg p-3 hover:shadow-md transition-shadow', catalogProductCardClasses]"
             >
               <!-- Category Badge -->
               <div
@@ -759,7 +762,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                 </button>
               </div>
 
-              <div class="flex flex-col h-full">
+                <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center mb-3">
                   <div class="h-[140px] w-full">
                     <img
@@ -773,8 +776,8 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                 <div class="flex flex-col flex-1 gap-3">
                   <div class="flex flex-col gap-2">
                     <div class="h-[48px]">
-                      <a href="#" @click.prevent="goToProductDetails(product.id)" class="block cursor-pointer">
-                        <h3 class="text-base font-medium text-center transition-colors font-srProDisplay hover:text-indigo-600 line-clamp-2">
+            <a href="#" @click.prevent="goToProductDetails(product.id)" class="block cursor-pointer">
+              <h3 :class="['text-base font-medium text-center transition-colors font-srProDisplay line-clamp-2', textClasses]">
                           {{ product.name }}
                         </h3>
                       </a>

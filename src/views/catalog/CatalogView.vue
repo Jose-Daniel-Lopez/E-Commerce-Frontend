@@ -385,10 +385,10 @@ watch(
         <div class="mb-6">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h1 :class="textClasses" class="text-lg font-semibold font-srProDisplay sm:text-xl">
+              <h1 :class="['text-lg font-semibold font-srProDisplay sm:text-xl', textClasses]">
                 {{ t('catalog.title') }}
               </h1>
-              <p :class="textSecondaryClasses" class="text-sm font-srProDisplay">
+              <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
                 {{ filteredCategories.length }} {{ filteredCategories.length === 1 ? t('catalog.category') :
                 t('catalog.categories') }}
               </p>
@@ -398,8 +398,8 @@ watch(
           <!-- Mobile Filter/Sort Controls -->
           <div class="flex gap-3 mb-4">
             <button @click="showMobileFilters = !showMobileFilters" :class="[
-                'flex-1 flex items-center justify-center gap-2 px-4 py-3 border rounded-lg text-sm font-medium transition-colors min-h-[48px]',
-                showMobileFilters ? buttonPrimaryClasses : `${pageBackgroundClasses} ${textSecondaryClasses} border-gray-300 dark:border-gray-600 ${hoverClasses}`
+                'flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors min-h-[48px]',
+                showMobileFilters ? buttonPrimaryClasses : `${pageBackgroundClasses} ${textSecondaryClasses} ${hoverClasses}`
               ]">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -412,7 +412,7 @@ watch(
             </button>
 
             <button @click="showMobileSorting = !showMobileSorting"
-              :class="`flex-1 flex items-center justify-center gap-2 px-4 py-3 border rounded-lg text-sm font-medium min-h-[48px] ${pageBackgroundClasses} ${textSecondaryClasses} border-gray-300 dark:border-gray-600 ${hoverClasses}`">
+              :class="`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-medium min-h-[48px] ${pageBackgroundClasses} ${textSecondaryClasses} ${hoverClasses}`">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
