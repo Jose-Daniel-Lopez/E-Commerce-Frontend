@@ -238,6 +238,11 @@
     background: linear-gradient(to bottom, transparent 0%, var(--color-background) 100%) !important;
   }
 
+  /* Theme-aware ring utilities to allow using CSS variable colors with Tailwind's ring utility */
+  .ring-success { --tw-ring-color: var(--color-success) !important; }
+  .ring-warning { --tw-ring-color: var(--color-warning) !important; }
+  .ring-error { --tw-ring-color: var(--color-error) !important; }
+
   /* Theme-aware divider utility for use instead of hardcoded divide colors */
   .divide-theme-border > * + * {
     border-top-width: 1px !important;

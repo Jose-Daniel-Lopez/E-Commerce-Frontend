@@ -36,13 +36,13 @@
 
         <!-- Input field with apply button -->
         <div class="relative">
-          <input
+      <input
             type="text"
             v-model="localDiscountCode"
             :class="[
               'w-full px-4 py-5 rounded-[7px] font-srProDisplay placeholder-muted transition-all duration-200 pr-28',
               'theme-input',
-              couponEffect ? 'ring-2 ring-green-400' : '',
+        couponEffect ? 'ring-2 ring-success' : '',
             ]"
             placeholder="Code"
           />
