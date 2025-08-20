@@ -2,7 +2,7 @@
   <Transition name="modal-overlay">
     <div
       v-if="isOpen"
-      class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md z-50 flex items-center justify-center p-4"
+      class="fixed inset-0 bg-overlay backdrop-blur-md z-50 flex items-center justify-center p-4"
       @click="closeModal"
     >
       <Transition name="modal-content">
@@ -96,34 +96,34 @@
 
             <!-- Order Items -->
             <section>
-              <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">Order Items</h3>
+              <h3 class="font-srProDisplay text-lg font-semibold text-foreground mb-4">Order Items</h3>
               <div class="space-y-4">
                 <div
                   v-for="item in order.items"
                   :key="item.id"
-                  class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  class="flex items-center gap-4 p-4 bg-surface rounded-lg hover:bg-surface-hover transition-colors"
                 >
                   <img
                     :src="item.image"
                     :alt="item.name"
-                    class="w-16 h-16 object-contain rounded-lg bg-white"
+                    class="w-16 h-16 object-contain rounded-lg bg-background"
                   />
                   <div class="flex-1">
-                    <h4 class="font-srProDisplay font-medium text-black">{{ item.name }}</h4>
-                    <p class="font-srProDisplay text-sm text-gray-600 mt-1">
+                    <h4 class="font-srProDisplay font-medium text-foreground">{{ item.name }}</h4>
+                    <p class="font-srProDisplay text-sm text-muted mt-1">
                       {{ item.description }}
                     </p>
                     <div class="flex items-center gap-4 mt-2">
-                      <span class="font-srProDisplay text-sm text-gray-600">
+                      <span class="font-srProDisplay text-sm text-muted">
                         Qty: {{ item.quantity }}
                       </span>
-                      <span class="font-srProDisplay text-sm text-gray-600">
+                      <span class="font-srProDisplay text-sm text-muted">
                         Unit Price: {{ formatPrice(item.price) }}
                       </span>
                     </div>
                   </div>
                   <div class="text-right">
-                    <span class="font-srProDisplay text-lg font-semibold text-black">
+                    <span class="font-srProDisplay text-lg font-semibold text-foreground">
                       {{ formatPrice(item.price * item.quantity) }}
                     </span>
                   </div>
@@ -133,34 +133,34 @@
 
             <!-- Order Summary -->
             <section>
-              <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">
+              <h3 class="font-srProDisplay text-lg font-semibold text-foreground mb-4">
                 Order Summary
               </h3>
-              <div class="bg-gray-50 rounded-lg p-6">
+              <div class="bg-surface rounded-lg p-6">
                 <div class="space-y-3">
                   <div class="flex justify-between">
-                    <span class="font-srProDisplay text-gray-600">Subtotal</span>
-                    <span class="font-srProDisplay text-black">{{
+                    <span class="font-srProDisplay text-muted">Subtotal</span>
+                    <span class="font-srProDisplay text-foreground">{{
                       formatPrice(order.subtotal)
                     }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="font-srProDisplay text-gray-600">Shipping</span>
-                    <span class="font-srProDisplay text-black">{{
+                    <span class="font-srProDisplay text-muted">Shipping</span>
+                    <span class="font-srProDisplay text-foreground">{{
                       formatPrice(order.shipping)
                     }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="font-srProDisplay text-gray-600">Tax</span>
-                    <span class="font-srProDisplay text-black">{{ formatPrice(order.tax) }}</span>
+                    <span class="font-srProDisplay text-muted">Tax</span>
+                    <span class="font-srProDisplay text-foreground">{{ formatPrice(order.tax) }}</span>
                   </div>
-                  <div v-if="order.discount > 0" class="flex justify-between text-green-600">
+                  <div v-if="order.discount > 0" class="flex justify-between text-success">
                     <span class="font-srProDisplay">Discount</span>
                     <span class="font-srProDisplay">-{{ formatPrice(order.discount) }}</span>
                   </div>
-                  <div class="border-t border-gray-300 pt-3 flex justify-between">
-                    <span class="font-srProDisplay text-lg font-semibold text-black">Total</span>
-                    <span class="font-srProDisplay text-lg font-semibold text-black">
+                  <div class="border-t border-border pt-3 flex justify-between">
+                    <span class="font-srProDisplay text-lg font-semibold text-foreground">Total</span>
+                    <span class="font-srProDisplay text-lg font-semibold text-foreground">
                       {{ formatPrice(order.total) }}
                     </span>
                   </div>
@@ -170,14 +170,14 @@
 
             <!-- Shipping Information -->
             <section>
-              <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">
+              <h3 class="font-srProDisplay text-lg font-semibold text-foreground mb-4">
                 Shipping Information
               </h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Shipping Address -->
-                <div class="bg-gray-50 rounded-lg p-4">
-                  <h4 class="font-srProDisplay font-medium text-black mb-2">Shipping Address</h4>
-                  <div class="font-srProDisplay text-sm text-gray-700 space-y-1">
+                <div class="bg-surface rounded-lg p-4">
+                  <h4 class="font-srProDisplay font-medium text-foreground mb-2">Shipping Address</h4>
+                  <div class="font-srProDisplay text-sm text-muted space-y-1">
                     <p>{{ order.shippingAddress.name }}</p>
                     <p>{{ order.shippingAddress.street }}</p>
                     <p>
@@ -189,9 +189,9 @@
                 </div>
 
                 <!-- Billing Address -->
-                <div class="bg-gray-50 rounded-lg p-4">
-                  <h4 class="font-srProDisplay font-medium text-black mb-2">Billing Address</h4>
-                  <div class="font-srProDisplay text-sm text-gray-700 space-y-1">
+                <div class="bg-surface rounded-lg p-4">
+                  <h4 class="font-srProDisplay font-medium text-foreground mb-2">Billing Address</h4>
+                  <div class="font-srProDisplay text-sm text-muted space-y-1">
                     <p>{{ order.billingAddress.name }}</p>
                     <p>{{ order.billingAddress.street }}</p>
                     <p>
@@ -206,33 +206,26 @@
 
             <!-- Payment Information -->
             <section>
-              <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">
+              <h3 class="font-srProDisplay text-lg font-semibold text-foreground mb-4">
                 Payment Information
               </h3>
-              <div class="bg-gray-50 rounded-lg p-4">
+              <div class="bg-surface rounded-lg p-4">
                 <div class="flex items-center gap-4">
                   <div
-                    class="w-12 h-8 bg-gradient-to-r from-blue-600 to-blue-800 rounded flex items-center justify-center"
+                    class="w-12 h-8 bg-primary rounded flex items-center justify-center"
                   >
-                    <v-icon name="hi-credit-card" scale="1.2" class="text-white" />
+                    <v-icon name="hi-credit-card" scale="1.2" class="text-primary-foreground" />
                   </div>
                   <div>
-                    <p class="font-srProDisplay font-medium text-black">
+                    <p class="font-srProDisplay font-medium text-foreground">
                       {{ order.paymentMethod.type }}
                     </p>
-                    <p class="font-srProDisplay text-sm text-gray-600">
+                    <p class="font-srProDisplay text-sm text-muted">
                       **** **** **** {{ order.paymentMethod.lastFour }}
                     </p>
                   </div>
                   <div class="ml-auto">
-                    <span
-                      :class="[
-                        'px-3 py-1 rounded-full text-sm font-medium',
-                        order.paymentStatus === 'Paid'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                      ]"
-                    >
+                    <span :class="['px-3 py-1 rounded-full text-sm font-medium', getPaymentStatusClass(order.paymentStatus)]">
                       {{ order.paymentStatus }}
                     </span>
                   </div>
@@ -242,22 +235,22 @@
 
             <!-- Tracking Information -->
             <section v-if="order.trackingNumber">
-              <h3 class="font-srProDisplay text-lg font-semibold text-black mb-4">
+              <h3 class="font-srProDisplay text-lg font-semibold text-foreground mb-4">
                 Tracking Information
               </h3>
-              <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div class="bg-surface border border-border rounded-lg p-4">
                 <div class="flex items-center gap-3">
-                  <v-icon name="hi-truck" scale="1.2" class="text-blue-600" />
+                  <v-icon name="hi-truck" scale="1.2" class="text-primary" />
                   <div>
-                    <p class="font-srProDisplay font-medium text-black">
+                    <p class="font-srProDisplay font-medium text-foreground">
                       Tracking Number: {{ order.trackingNumber }}
                     </p>
-                    <p class="font-srProDisplay text-sm text-gray-600">
+                    <p class="font-srProDisplay text-sm text-muted">
                       Carrier: {{ order.carrier }}
                     </p>
                   </div>
                   <button
-                    class="ml-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                    class="ml-auto px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-colors text-sm font-medium"
                   >
                     Track Package
                   </button>
@@ -269,23 +262,23 @@
 
           <!-- Modal Footer -->
           <div
-            class="sticky bottom-0 bg-white/90 backdrop-blur-sm border-t border-gray-200 px-6 py-4 rounded-b-xl z-10"
+            class="sticky bottom-0 bg-background/90 backdrop-blur-sm border-t border-border px-6 py-4 rounded-b-xl z-10"
           >
             <div class="flex gap-3 justify-end">
               <button
                 @click="closeModal"
-                class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                class="px-6 py-2 border border-border text-foreground rounded-lg hover:bg-surface-hover transition-colors font-medium"
               >
                 Close
               </button>
               <button
                 v-if="order.status !== 'Delivered' && order.status !== 'Cancelled'"
-                class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                class="px-6 py-2 bg-error text-primary-foreground rounded-lg hover:opacity-90 transition-colors font-medium"
               >
                 Cancel Order
               </button>
               <button
-                class="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
+                class="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-colors font-medium"
               >
                 Reorder
               </button>
@@ -393,7 +386,18 @@ const orderSteps = computed(() => {
   return steps
 })
 
-
+const getPaymentStatusClass = (status: string) => {
+  switch (status) {
+    case 'Paid':
+      return 'bg-success text-primary-foreground'
+    case 'Pending':
+      return 'bg-warning text-primary-foreground'
+    case 'Failed':
+      return 'bg-error text-primary-foreground'
+    default:
+      return 'bg-surface text-muted'
+  }
+}
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('en-US', {
@@ -414,33 +418,33 @@ const getStatusStyle = (status: string) => {
   switch (status) {
     case 'Delivered':
       return {
-        background: 'var(--color-success-bg, #dcfce7)',
-        color: 'var(--color-success, #16a34a)',
-        borderColor: 'var(--color-success, #16a34a)'
+        background: 'var(--color-success-bg)',
+        color: 'var(--color-success)',
+        borderColor: 'var(--color-success)'
       }
     case 'Shipped':
       return {
-        background: 'var(--color-primary-100, #dbeafe)',
-        color: 'var(--color-primary, #2563eb)',
-        borderColor: 'var(--color-primary, #2563eb)'
+        background: 'var(--color-primary-bg)',
+        color: 'var(--color-primary)',
+        borderColor: 'var(--color-primary)'
       }
     case 'Paid':
       return {
-        background: 'var(--color-warning-bg, #fef3c7)',
-        color: 'var(--color-warning, #b45309)',
-        borderColor: 'var(--color-warning, #b45309)'
+        background: 'var(--color-warning-bg)',
+        color: 'var(--color-warning)',
+        borderColor: 'var(--color-warning)'
       }
     case 'Cancelled':
       return {
-        background: 'var(--color-error-bg, #fee2e2)',
-        color: 'var(--color-error, #dc2626)',
-        borderColor: 'var(--color-error, #dc2626)'
+        background: 'var(--color-error-bg)',
+        color: 'var(--color-error)',
+        borderColor: 'var(--color-error)'
       }
     default:
       return {
-        background: 'var(--color-surface, #ffffff)',
-        color: 'var(--color-muted-foreground, #6b7280)',
-        borderColor: 'var(--color-border, #e5e7eb)'
+        background: 'var(--surface-bg)',
+        color: 'var(--color-muted-foreground)',
+        borderColor: 'var(--color-border)'
       }
   }
 }
@@ -448,27 +452,27 @@ const getStatusStyle = (status: string) => {
 const getStepStyle = (step: { completed: boolean; current: boolean }) => {
   if (step.completed) {
     return {
-      background: 'var(--color-success, #16a34a)',
-      borderColor: 'var(--color-success, #16a34a)',
-      color: '#ffffff',
-      boxShadow: '0 4px 14px 0 rgba(34,197,94,0.25)'
+      background: 'var(--color-success)',
+      borderColor: 'var(--color-success)',
+      color: 'var(--color-primary-foreground)',
+      boxShadow: '0 4px 14px 0 rgba(16, 185, 129, 0.25)'
     }
   }
 
   if (step.current) {
     return {
-      background: 'var(--color-primary, #2563eb)',
-      borderColor: 'var(--color-primary, #2563eb)',
-      color: '#ffffff',
-      boxShadow: '0 4px 14px 0 rgba(59,130,246,0.25)'
+      background: 'var(--color-primary)',
+      borderColor: 'var(--color-primary)',
+      color: 'var(--color-primary-foreground)',
+      boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.25)'
     }
   }
 
   return {
-    background: 'var(--color-surface, #ffffff)',
-    borderColor: 'var(--color-border, #d1d5db)',
-    color: 'var(--color-muted-foreground, #6b7280)',
-    boxShadow: '0 2px 8px 0 rgba(107,114,128,0.06)'
+    background: 'var(--surface-bg)',
+    borderColor: 'var(--color-border)',
+    color: 'var(--color-muted-foreground)',
+    boxShadow: '0 2px 8px 0 rgba(107, 114, 128, 0.06)'
   }
 }
 

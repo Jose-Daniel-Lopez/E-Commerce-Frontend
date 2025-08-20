@@ -172,7 +172,13 @@
   .accent-primary { accent-color: var(--color-primary) !important; }
 
   /* Overlay background utility */
-  .bg-overlay { background-color: rgba(0, 0, 0, 0.5) !important; }
+  .bg-overlay {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .dark .bg-overlay {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+  }
 
   /* Additional theme-aware utilities */
   .bg-section { background: var(--surface-bg) !important; }
@@ -184,6 +190,10 @@
   .bg-success { background: var(--color-success) !important; }
   .bg-warning { background: var(--color-warning) !important; }
   .bg-error { background: var(--color-error) !important; }
+  .bg-success-bg { background: var(--color-success-bg) !important; }
+  .bg-warning-bg { background: var(--color-warning-bg) !important; }
+  .bg-error-bg { background: var(--color-error-bg) !important; }
+  .bg-primary-bg { background: var(--color-primary-bg) !important; }
   .bg-input { background: var(--color-input-background) !important; }
   .border-input { border-color: var(--color-input-border) !important; }
 

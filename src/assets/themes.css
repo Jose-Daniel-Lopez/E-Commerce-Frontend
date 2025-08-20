@@ -41,6 +41,12 @@
   --color-warning: #d97706;       /* Amber-600: High-contrast warning */
   --color-error: #dc2626;         /* Red-600: High-contrast error */
 
+  /* Feedback Background Colors */
+  --color-success-bg: #dcfce7;    /* Emerald-100: Light success background */
+  --color-warning-bg: #fef3c7;    /* Amber-100: Light warning background */
+  --color-error-bg: #fee2e2;      /* Red-100: Light error background */
+  --color-primary-bg: #dbeafe;    /* Blue-100: Light primary background */
+
   /* E-commerce Specific */
   --color-cart: #dc2626;          /* Red-600: Clear, urgent cart indicator */
   --color-favorite: #be123c;      /* Rose-700: Deep rose for favorites */
@@ -96,6 +102,12 @@
   --color-success: #10b981;             /* Emerald-500: Clear and readable */
   --color-warning: #f59e0b;             /* Amber-500: Consistent across themes */
   --color-error: #ef4444;               /* Red-500: Bright, visible on dark */
+
+  /* Feedback Background Colors */
+  --color-success-bg: #065f46;          /* Emerald-800: Dark success background */
+  --color-warning-bg: #92400e;          /* Amber-800: Dark warning background */
+  --color-error-bg: #991b1b;            /* Red-800: Dark error background */
+  --color-primary-bg: #1e40af;          /* Blue-800: Dark primary background */
 
   /* E-commerce - Softer but still visible */
   --color-cart: #ef4444;                /* Red-500: Clear without being aggressive */
