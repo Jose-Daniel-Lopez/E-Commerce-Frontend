@@ -5,7 +5,7 @@
     role="region"
     aria-label="Debug information panel"
   >
-    <div class="p-4 rounded-lg shadow-lg theme-warning-bg theme-warning-text">
+    <div class="p-4 rounded-lg shadow-lg bg-surface border border-gray-200 theme-warning-text">
       <div class="flex items-center justify-between mb-2">
         <span class="text-sm font-bold theme-warning-text">🛠️ Debug Panel</span>
         <button

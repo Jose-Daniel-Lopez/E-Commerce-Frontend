@@ -106,7 +106,7 @@
       }"
     >
       <div
-        class="p-6 border border-blue-100 rounded-lg dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20"
+        class="p-6 border border-gray-600 dark:border-gray-600 rounded-lg bg-surface"
       >
         <form @submit.prevent="$emit('saveProfile')" class="space-y-6">
           <!-- Avatar Section -->
@@ -177,7 +177,7 @@
                 id="email"
                 :value="user.email"
                 disabled
-                class="w-full px-4 py-3 text-blue-700 placeholder-blue-400 border border-blue-200 rounded-lg shadow-sm cursor-not-allowed dark:text-blue-300 dark:placeholder-blue-500 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 font-srProDisplay opacity-80"
+                class="w-full px-4 py-3 text-muted placeholder-blue-400 border border-gray-200 rounded-lg shadow-sm cursor-not-allowed dark:text-muted dark:placeholder-gray-500 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/20 font-srProDisplay opacity-80"
                 :placeholder="$t('account.profile.editModal.emailPlaceholder')"
               />
             </div>
