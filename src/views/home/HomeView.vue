@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-white dark:bg-gray-900 text-black dark:text-white animate-fadeInUp transition-colors duration-200">
+  <div class="pt-[85px] lg:pt-0 animate-fadeInUp" :class="pageBackgroundClasses">
 
 
     <!-- hero section -->
@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import '@/assets/base.css'
+import { useThemeClasses } from '@/composables/useThemeClasses'
 
 // Import components
 import BannerSection from '@/components/home/BannerSection.vue'
@@ -32,4 +33,6 @@ import BrowseCategorySection from '@/components/home/BrowseCategorySection.vue'
 import DiscountProductSection from '@/components/home/DiscountProductSection.vue'
 import HeroSection from '@/components/home/HeroSection.vue'
 import ProductsSection from '@/components/home/ProductsSection.vue'
+
+const { pageBackgroundClasses } = useThemeClasses()
 </script>

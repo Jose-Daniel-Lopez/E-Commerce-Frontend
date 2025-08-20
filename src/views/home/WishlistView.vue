@@ -34,10 +34,14 @@ const toast = useToast()
 
 // Theme classes
 const {
+  pageBackgroundClasses,
   cardClasses,
   textClasses,
   textSecondaryClasses,
   actionButtonClasses,
+  buttonPrimaryClasses,
+  buttonSecondaryClasses,
+  iconBackgroundClasses,
 } = useThemeClasses()
 
 const authStore = useAuthStore()
@@ -221,7 +225,7 @@ watch(() => wishlistProducts.value, () => {
 </script>
 
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-background text-foreground min-h-screen">
+  <div class="pt-[85px] lg:pt-0 min-h-screen" :class="pageBackgroundClasses">
     <Wrapper class="py-8">
       <!-- Breadcrumb -->
       <BreadcrumbNav :breadcrumbs="[{ label: t('wishlist.title') || 'Wishlist', to: '/wishlist' }]" />
@@ -256,7 +260,7 @@ watch(() => wishlistProducts.value, () => {
               <button :class="[
                 'absolute z-10 flex items-center justify-center w-8 h-8 transition rounded-full top-3 right-3',
                 actionButtonClasses,
-                'bg-gray-100 dark:bg-gray-800'
+                iconBackgroundClasses
               ]" @click.stop="removeFromWishlist(item.id)" :aria-label="t('wishlist.remove') || 'Remove'">
                 <span class="text-lg font-bold">&times;</span>
               </button>
@@ -287,24 +291,27 @@ watch(() => wishlistProducts.value, () => {
                     :class="['px-2 py-1 text-xs font-medium rounded', 'bg-gray-100 dark:bg-gray-800', textSecondaryClasses]">{{
                       item.operatingSystem }}</span>
                   <span v-if="item.totalStock !== undefined"
-                    :class="['px-2 py-1 text-xs font-medium rounded', 'bg-green-100 dark:bg-green-900/30', 'text-green-700 dark:text-green-300']">Stock:
+                    :class="['px-2 py-1 text-xs font-medium rounded', 'bg-success', 'text-success']">Stock:
                     {{ item.totalStock }}</span>
                 </div>
                 <div class="flex flex-col items-center mt-auto space-y-2">
                   <button v-if="!addedToCartItems.has(item.id)" :disabled="loadingItems.has(item.id)" :class="[
                     'w-full py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium',
                     'disabled:opacity-50 disabled:cursor-not-allowed',
-                    'bg-primary text-primary-foreground hover:opacity-95 transition-colors'
+                    buttonPrimaryClasses
                   ]" @click.stop="addToCartFromWishlist(item.id)">
                     <span v-if="loadingItems.has(item.id)">Adding...</span>
                     <span v-else>{{ t('cart.addToCart') || 'Add to Cart' }}</span>
                   </button>
                   <button v-else disabled
-                    class="w-full bg-green-600 text-white py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium cursor-not-allowed"
+                    :class="[
+                      'w-full py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium cursor-not-allowed',
+                      buttonSecondaryClasses
+                    ]"
                     @click.stop>{{ t('cart.addedToCart') || 'Added to Cart' }}</button>
                   <button :class="[
                     'w-full py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium transition-colors',
-                    'bg-gray-100 dark:bg-gray-800 text-foreground dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    buttonSecondaryClasses
                   ]" @click.stop="goToProduct(item.id)">{{ t('wishlist.details') || 'View details' }}</button>
                 </div>
               </div>

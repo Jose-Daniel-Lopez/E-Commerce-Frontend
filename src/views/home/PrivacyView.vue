@@ -39,7 +39,7 @@
             personal data. Contact us for requests related to your information.
           </p>
 
-          <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+          <div class="mt-4 text-sm" :class="textSecondaryClasses">
             <p>Last updated: August 2025</p>
           </div>
         </div>
