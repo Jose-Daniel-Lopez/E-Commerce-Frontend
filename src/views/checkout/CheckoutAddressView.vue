@@ -66,11 +66,12 @@
         </div>
 
         <!-- Address List -->
-        <div v-else-if="addresses.length > 0" class="space-y-6">
+    <div v-else-if="addresses.length > 0" class="space-y-6">
           <div
             v-for="address in addresses"
             :key="address.id"
-            class="flex items-center justify-between p-6 bg-surface rounded-xl"
+      :class="[cardClasses]"
+      class="flex items-center justify-between p-6 rounded-xl"
           >
             <label class="flex items-start flex-1 gap-4 cursor-pointer">
               <input
@@ -131,7 +132,7 @@
 
         <!-- No Addresses State -->
         <div v-else class="py-12 text-center">
-          <div class="p-8 rounded-lg bg-surface">
+          <div :class="[cardClasses]" class="p-8 rounded-lg">
             <v-icon name="md-locationon" scale="3" class="mb-4 text-muted" />
             <h3 class="mb-2 text-lg font-semibold text-muted">No addresses found</h3>
             <p class="mb-4 text-muted">Add your first shipping address to continue</p>
@@ -221,7 +222,8 @@
           <transition name="fade-slide">
             <div
               v-if="showAddForm || editingAddress"
-              class="z-20 w-full max-w-lg p-8 mt-8 border rounded-lg shadow bg-background border-border"
+              :class="[cardClasses]"
+              class="z-20 w-full max-w-lg p-8 mt-8 rounded-lg shadow"
             >
               <h3 class="mb-4 text-lg font-semibold font-srProDisplay">
                 {{ editingAddress ? 'Edit Address' : 'Add New Address' }}
@@ -230,24 +232,24 @@
               <form @submit.prevent="submitAddressForm" class="space-y-4">
                 <!-- Title -->
                 <div>
-                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Title</label>
+                  <label :class="formLabelClasses" class="block mb-2">Title</label>
 
                   <input
                     v-model="addressForm.title"
                     type="text"
                     required
-                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border"
+                    :class="formInputClasses"
                     placeholder="e.g. Home, Work, etc."
                   />
                 </div>
 
                 <!-- Type -->
                 <div>
-                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Type</label>
+                  <label :class="formLabelClasses" class="block mb-2">Type</label>
                   <select
                     v-model="addressForm.addressType"
                     required
-                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground focus:outline-none focus:border-border"
+                    :class="formInputClasses"
                   >
                     <option value="" disabled>Select type</option>
                     <option value="HOME">Home</option>
@@ -258,60 +260,60 @@
 
                 <!-- Street Address -->
                 <div>
-                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Street Address</label>
+                  <label :class="formLabelClasses" class="block mb-2">Street Address</label>
                   <input
                     v-model="addressForm.street"
                     type="text"
                     required
-                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border"
+                    :class="formInputClasses"
                     placeholder="Street name and number"
                   />
                 </div>
 
                 <!-- City -->
                 <div>
-                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">City</label>
+                  <label :class="formLabelClasses" class="block mb-2">City</label>
                   <input
                     v-model="addressForm.city"
                     type="text"
                     required
-                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border"
+                    :class="formInputClasses"
                     placeholder="City"
                   />
                 </div>
 
                 <!-- State -->
                 <div>
-                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">State</label>
+                  <label :class="formLabelClasses" class="block mb-2">State</label>
                   <input
                     v-model="addressForm.state"
                     type="text"
                     required
-                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border"
+                    :class="formInputClasses"
                     placeholder="State or Province"
                   />
                 </div>
 
                 <!-- Zip Code -->
                 <div>
-                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Zip Code</label>
+                  <label :class="formLabelClasses" class="block mb-2">Zip Code</label>
                   <input
                     v-model="addressForm.zipCode"
                     type="text"
                     required
-                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border"
+                    :class="formInputClasses"
                     placeholder="Zip or Postal Code"
                   />
                 </div>
 
                 <!-- Country -->
                 <div>
-                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Country</label>
+                  <label :class="formLabelClasses" class="block mb-2">Country</label>
                   <input
                     v-model="addressForm.country"
                     type="text"
                     required
-                    class="w-full px-4 py-3 transition-colors duration-200 border rounded-md border-border bg-background font-srProDisplay text-foreground placeholder-muted focus:outline-none focus:border-border"
+                    :class="formInputClasses"
                     placeholder="Country"
                   />
                 </div>
@@ -321,14 +323,16 @@
                   <button
                     type="button"
                     @click="cancelAddressForm"
-                    class="px-4 py-2 rounded bg-surface text-muted hover:bg-surface/90 font-srProDisplay"
+                    :class="buttonOutlineClasses"
+                    class="px-4 py-2 rounded font-srProDisplay"
                     :disabled="formSubmitting"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    class="flex items-center gap-2 px-4 py-2 rounded bg-primary text-primary-foreground hover:opacity-95 font-srProDisplay"
+                    :class="buttonPrimaryClasses"
+                    class="flex items-center gap-2 px-4 py-2 rounded font-srProDisplay"
                     :disabled="formSubmitting"
                   >
                     <div v-if="formSubmitting" class="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
@@ -342,16 +346,17 @@
       </section>
 
       <!-- Navigation Buttons -->
-    <div class="flex justify-end max-w-5xl gap-4 mx-auto mt-8">
+  <div class="flex justify-end max-w-5xl gap-4 mx-auto mt-8">
         <button
-          class="px-22 py-5 border border-border rounded-[6px] font-srProDisplay text-foreground bg-background hover:bg-surface transition"
+      :class="buttonOutlineClasses"
+      class="px-22 py-5 rounded-[6px] font-srProDisplay transition"
           @click="goBack"
         >
           Back
         </button>
         <button
-      class="px-22 py-5 rounded-[6px] font-srProDisplay transition"
-      :class="buttonPrimaryClasses"
+    class="px-22 py-5 rounded-[6px] font-srProDisplay transition"
+    :class="buttonPrimaryClasses"
           @click="goNext"
           :disabled="!selectedAddressId"
         >
@@ -372,7 +377,7 @@ import { useCheckoutStore } from '@/stores/checkout'
 import type { ShippingAddress, CreateShippingAddressRequest, UpdateShippingAddressRequest } from '@/types/shippingAddress'
 import { useThemeClasses } from '@/composables/useThemeClasses'
 
-const { pageBackgroundClasses, buttonPrimaryClasses } = useThemeClasses()
+const { pageBackgroundClasses, buttonPrimaryClasses, buttonOutlineClasses, cardClasses, formInputClasses, formLabelClasses } = useThemeClasses()
 
 // ========== STORES ==========
 const shippingAddressStore = useShippingAddressStore()

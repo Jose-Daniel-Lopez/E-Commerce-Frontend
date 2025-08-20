@@ -78,39 +78,38 @@
               <form @submit.prevent="processPayment" class="space-y-4">
                 <!-- Cardholder Name -->
                 <div>
-                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Cardholder
-                    Name</label>
+                  <label :class="formLabelClasses" class="block mb-2">Cardholder Name</label>
                   <input v-model="paymentForm.cardholderName" type="text" required @focus="focusedField = 'name'"
                     @blur="focusedField = ''" @input="
                       paymentForm.cardholderName = paymentForm.cardholderName.replace(/\d/g, '')
                       "
-                    class="w-full px-4 py-4 text-base transition-colors duration-200 border rounded-md lg:py-3 border-border bg-background font-srProDisplay lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border"
+                    :class="formInputClasses"
                     placeholder="Enter cardholder name" />
                 </div>
 
                 <!-- Card Number -->
                 <div>
-                  <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Card Number</label>
+                  <label :class="formLabelClasses" class="block mb-2">Card Number</label>
                   <input v-model="paymentForm.cardNumber" type="text" required maxlength="19"
                     @focus="focusedField = 'number'" @blur="focusedField = ''" @input="formatCardNumber"
-                    class="w-full px-4 py-4 text-base transition-colors duration-200 border rounded-md lg:py-3 border-border bg-background font-srProDisplay lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border"
+                    :class="formInputClasses"
                     placeholder="1234 5678 9012 3456" />
                 </div>
 
                 <!-- Exp Date and CVV -->
                 <div class="flex gap-4">
                   <div class="flex-1">
-                    <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">Exp Date</label>
+                    <label :class="formLabelClasses" class="block mb-2">Exp Date</label>
                     <input v-model="paymentForm.expDate" type="text" required maxlength="5"
                       @focus="focusedField = 'expiry'" @blur="focusedField = ''" @input="formatExpDate"
-                      class="w-full px-4 py-4 text-base transition-colors duration-200 border rounded-md lg:py-3 border-border bg-background font-srProDisplay lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border"
+                      :class="formInputClasses"
                       placeholder="MM/YY" />
                   </div>
                   <div class="flex-1">
-                    <label class="block mb-2 text-sm font-medium font-srProDisplay text-foreground">CVV</label>
+                    <label :class="formLabelClasses" class="block mb-2">CVV</label>
                     <input v-model="paymentForm.cvv" type="text" required maxlength="3" @focus="focusedField = 'cvv'"
                       @blur="focusedField = ''"
-                      class="w-full px-4 py-4 text-base transition-colors duration-200 border rounded-md lg:py-3 border-border bg-background font-srProDisplay lg:text-sm text-foreground placeholder-muted focus:outline-none focus:border-border"
+                      :class="formInputClasses"
                       placeholder="123" />
                   </div>
                 </div>
@@ -150,7 +149,7 @@
 
         <!-- Summary Section - Shows second on mobile -->
         <div class="flex-1 order-1 lg:order-1">
-          <div class="border border-border rounded-[10px] p-4 lg:p-8">
+          <div :class="[cardClasses]" class="rounded-[10px] p-4 lg:p-8">
             <section>
               <h2 class="mb-6 text-lg font-semibold font-srProDisplay text-foreground">{{ $t('checkout.summary') }}</h2>
 
@@ -189,7 +188,7 @@
                     selectedAddress.state }} {{ selectedAddress.zipCode }}</span>
                   <span class="text-sm font-srProDisplay text-foreground">{{ selectedAddress.country }}</span>
                   <span v-if="selectedAddress.addressType"
-                    class="font-srProDisplay text-xs text-white bg-black rounded px-2 py-0.5 w-fit mt-1">{{
+                    class="font-srProDisplay text-xs rounded px-2 py-0.5 w-fit mt-1 bg-primary text-primary-foreground">{{
                     selectedAddress.addressType }}</span>
                 </div>
                 <p v-else class="text-sm font-srProDisplay text-muted">{{ $t('checkout.noAddress') }}</p>
@@ -244,13 +243,15 @@
       <!-- Navigation Buttons - Mobile optimized -->
       <div class="flex flex-col justify-between max-w-5xl gap-4 px-4 mx-auto mt-8 sm:flex-row lg:px-0">
         <button
-          class="px-8 sm:px-28 py-4 lg:py-5 border border-border rounded-[6px] font-srProDisplay text-muted bg-surface hover:bg-surface/95 transition min-h-[48px] order-2 sm:order-1"
+          :class="buttonOutlineClasses"
+          class="px-8 sm:px-28 py-4 lg:py-5 rounded-[6px] font-srProDisplay transition min-h-[48px] order-2 sm:order-1"
           @click="goBack">
           Back
         </button>
         <button
-          class="px-8 sm:px-28 py-4 lg:py-5 rounded-[6px] font-srProDisplay bg-primary text-primary-foreground hover:bg-primary/90 transition min-h-[48px] order-1 sm:order-2"
-          @click="processPayment" :disabled="!isFormValid" :class="{ 'opacity-50 cursor-not-allowed': !isFormValid }">
+          :class="[buttonPrimaryClasses, { 'opacity-50 cursor-not-allowed': !isFormValid }]"
+          class="px-8 sm:px-28 py-4 lg:py-5 rounded-[6px] font-srProDisplay transition min-h-[48px] order-1 sm:order-2"
+          @click="processPayment" :disabled="!isFormValid">
           Pay
         </button>
       </div>
@@ -270,7 +271,7 @@ import { useToast } from '@/composables/useToast'
 import { useAuthStore } from '@/stores/auth'
 import { useThemeClasses } from '@/composables/useThemeClasses'
 
-const { pageBackgroundClasses } = useThemeClasses()
+const { pageBackgroundClasses, buttonPrimaryClasses, buttonOutlineClasses, cardClasses, formLabelClasses, formInputClasses } = useThemeClasses()
 
 const router = useRouter()
 const userCartStore = useUserCartStore()

@@ -50,7 +50,8 @@
           <div
             v-for="method in shippingMethods"
             :key="method.id"
-            class="bg-surface rounded-xl p-6 flex items-center justify-between overflow-visible relative"
+            :class="[cardClasses]"
+            class="rounded-xl p-6 flex items-center justify-between overflow-visible relative"
           >
             <label class="flex items-start gap-4 cursor-pointer flex-1 w-full">
               <input
@@ -80,7 +81,7 @@
         </div>
 
         <!-- DatePicker Section - Outside of shipping methods loop for better mobile UX -->
-        <div v-if="selectedShippingId === '3'" class="mt-8 p-6 bg-surface rounded-xl">
+  <div v-if="selectedShippingId === '3'" :class="[cardClasses]" class="mt-8 p-6 rounded-xl">
           <h3 class="font-srProDisplay text-base font-semibold text-foreground mb-4">Select your preferred delivery date</h3>
           <div class="w-full">
             <DatePicker v-model="selectedScheduleDate" class="w-full min-h-[300px] sm:min-h-[350px]" />
@@ -91,7 +92,8 @@
       <!-- Navigation Buttons -->
     <div class="flex justify-end gap-4 max-w-5xl mx-auto mt-8">
         <button
-      class="px-22 py-5 border border-border rounded-[6px] font-srProDisplay text-foreground bg-background hover:bg-surface transition"
+      :class="buttonOutlineClasses"
+      class="px-22 py-5 rounded-[6px] font-srProDisplay transition"
           @click="goBack"
         >
           Back
@@ -117,7 +119,7 @@ import { useCheckoutStore, type ShippingMethod } from '@/stores/checkout'
 import { useUserCartStore } from '@/stores/userCart'
 import { useThemeClasses } from '@/composables/useThemeClasses'
 
-const { pageBackgroundClasses, buttonPrimaryClasses } = useThemeClasses()
+const { pageBackgroundClasses, buttonPrimaryClasses, buttonOutlineClasses, cardClasses } = useThemeClasses()
 
 const router = useRouter()
 const checkoutStore = useCheckoutStore()
