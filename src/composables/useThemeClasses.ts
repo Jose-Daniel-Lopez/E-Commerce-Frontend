@@ -407,6 +407,30 @@ export const useThemeClasses = () => {
   const catalogDebugTextClasses = computed(() => 'text-xs text-warning-foreground space-y-2 max-h-40 overflow-y-auto')
 
   // ===========================================================================
+  // 📊 Progress & Rating Elements
+  // ===========================================================================
+
+  /**
+   * Progress bar background (neutral background for rating bars).
+   */
+  const progressBarBgClasses = computed(() => 'bg-muted rounded-full transition-colors duration-200')
+
+  /**
+   * Progress bar fill (active portion).
+   */
+  const progressBarFillClasses = computed(() => 'bg-primary rounded-full transition-all duration-200')
+
+  /**
+   * Rating text (used for rating labels).
+   */
+  const ratingTextClasses = computed(() => 'text-muted transition-colors duration-200')
+
+  /**
+   * Rating count text (smaller, more muted).
+   */
+  const ratingCountClasses = computed(() => 'text-muted-foreground transition-colors duration-200')
+
+  // ===========================================================================
   // ✅ Return all theme-aware classes
   // ===========================================================================
 
@@ -497,5 +521,11 @@ export const useThemeClasses = () => {
     catalogFilterSummaryClasses,
     catalogDebugPanelClasses,
     catalogDebugTextClasses,
+
+    // Progress & Rating
+    progressBarBgClasses,
+    progressBarFillClasses,
+    ratingTextClasses,
+    ratingCountClasses,
   }
 }

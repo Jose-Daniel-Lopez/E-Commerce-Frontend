@@ -153,7 +153,11 @@ const {
   iconBackgroundClasses,
   iconColorClasses,
   dividerClasses,
-  hoverClasses
+  hoverClasses,
+  progressBarBgClasses,
+  progressBarFillClasses,
+  ratingTextClasses,
+  ratingCountClasses
 } = useThemeClasses()
 
 // === Reactive refs ===
@@ -1253,7 +1257,7 @@ const fetchProductVariants = async (productId: number) => {
               :disabled="wishlistLoading || !isAuthenticated || (!!currentProduct?.id && wishlistStore.isProductInWishlist(currentProduct.id))"
               :class="['flex-1 border py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors', buttonSecondaryClasses]">
               <span v-if="wishlistLoading" class="flex items-center justify-center">
-                <div class="w-4 h-4 mr-2 border-b-2 border-gray-600 rounded-full animate-spin"></div>
+                <div :class="['w-4 h-4 mr-2 border-b-2 rounded-full animate-spin', dividerClasses]"></div>
                 Adding...
               </span>
               <span v-else-if="!isAuthenticated">
@@ -1374,7 +1378,7 @@ const fetchProductVariants = async (productId: number) => {
                           </div>
                         </div>
                         <div v-if="currentProduct.specifications?.refreshRate"
-                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          :class="['flex items-center py-4 border-b', dividerClasses]">
                           <div :class="['flex-1', textSecondaryClasses]">Refresh rate</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.refreshRate }}Hz</div>
@@ -1436,7 +1440,7 @@ const fetchProductVariants = async (productId: number) => {
                     <!-- Battery Section -->
                     <div v-if="currentProduct.specifications?.battery">
                       <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Battery</h3>
-                      <div :class="['border-t', 'border-gray-200 dark:border-gray-600']">
+                      <div :class="['border-t', dividerClasses]">
                         <div class="flex items-center py-4">
                           <div :class="['flex-1', textSecondaryClasses]">Battery capacity</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
@@ -1450,9 +1454,9 @@ const fetchProductVariants = async (productId: number) => {
                     <!-- Performance Section -->
                     <div>
                       <h3 :class="['mt-8 mb-4 text-xl font-semibold', textClasses]">Performance</h3>
-                      <div :class="['border-t', 'border-gray-200 dark:border-gray-600']">
+                      <div :class="['border-t', dividerClasses]">
                         <div v-if="currentProduct.specifications?.dpi"
-                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          :class="['flex items-center py-4 border-b', dividerClasses]">
                           <div :class="['flex-1', textSecondaryClasses]">DPI</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.dpi }}</div>
@@ -1467,27 +1471,27 @@ const fetchProductVariants = async (productId: number) => {
                     <!-- Input Features Section -->
                     <div>
                       <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Input Features</h3>
-                      <div :class="['border-t', 'border-gray-200 dark:border-gray-600']">
+                      <div :class="['border-t', dividerClasses]">
                         <div v-if="currentProduct.specifications?.switchType"
-                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          :class="['flex items-center py-4 border-b', dividerClasses]">
                           <div :class="['flex-1', textSecondaryClasses]">Switch type</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.switchType }}</div>
                         </div>
                         <div v-if="currentProduct.specifications?.backlighting"
-                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          :class="['flex items-center py-4 border-b', dividerClasses]">
                           <div :class="['flex-1', textSecondaryClasses]">Backlighting</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.backlighting }}</div>
                         </div>
                         <div v-if="currentProduct.specifications?.programmableButtons !== undefined"
-                          :class="['flex items-center py-4 border-b', 'border-gray-100 dark:border-gray-700']">
+                          :class="['flex items-center py-4 border-b', dividerClasses]">
                           <div :class="['flex-1', textSecondaryClasses]">Programmable buttons</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.programmableButtons ? 'Yes' : 'No' }}</div>
                         </div>
                         <div v-if="currentProduct.specifications?.ergonomic !== undefined"
-                          class="flex items-center py-4">
+                          :class="['flex items-center py-4']">
                           <div :class="['flex-1', textSecondaryClasses]">Ergonomic design</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.ergonomic ? 'Yes' : 'No' }}</div>
@@ -1497,7 +1501,7 @@ const fetchProductVariants = async (productId: number) => {
                     <!-- Power Section -->
                     <div v-if="currentProduct.specifications?.batteryLife">
                       <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Power</h3>
-                      <div :class="['border-t', 'border-gray-200 dark:border-gray-600']">
+                      <div :class="['border-t', dividerClasses]">
                         <div class="flex items-center py-4">
                           <div :class="['flex-1', textSecondaryClasses]">Battery life</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
@@ -1511,14 +1515,14 @@ const fetchProductVariants = async (productId: number) => {
 
                 <!-- Fade overlay when not showing all details -->
                 <div v-if="!showAllDetails"
-                  class="absolute bottom-0 left-0 w-full h-32 pointer-events-none bg-gradient-to-t from-white dark:from-gray-900 to-transparent">
+                  :class="['absolute bottom-0 left-0 w-full h-32 pointer-events-none bg-gradient-to-t to-transparent', pageBackgroundClasses.includes('dark') ? 'from-gray-900' : 'from-white']">
                 </div>
               </div>
 
               <!-- View More/Less Button -->
               <div class="flex justify-center mt-6">
                 <button @click="showAllDetails = !showAllDetails"
-                  class="flex items-center justify-center gap-2 px-8 py-3 font-medium text-gray-800 transition-all bg-white border border-gray-400 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                  :class="[buttonSecondaryClasses, 'flex items-center justify-center gap-2 px-8 py-3 font-medium transition-all rounded-lg focus:outline-none focus:ring-2 focus:ring-primary']">
                   <span>{{ showAllDetails ? 'View Less' : 'View More' }}</span>
                   <v-icon v-if="!showAllDetails" name="hi-chevron-down" class="w-5 h-5" scale="1.2" />
                   <v-icon v-else name="hi-chevron-up" class="w-5 h-5" scale="1.2" />
@@ -1536,7 +1540,7 @@ const fetchProductVariants = async (productId: number) => {
         <div class="flex items-center justify-between mb-2">
           <h2 :class="['text-xl lg:text-2xl font-semibold mb-4 lg:mb-8', textClasses]">Reviews</h2>
           <button @click="toggleReviews"
-            class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+            :class="[hoverClasses, 'p-2 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center']"
             type="button" aria-label="Toggle reviews section">
             <v-icon name="hi-chevron-down"
               :class="['w-5 h-5 transition-transform duration-200', textSecondaryClasses, { 'rotate-180': reviewsCollapsed }]"
@@ -1561,19 +1565,19 @@ const fetchProductVariants = async (productId: number) => {
                     <v-icon v-for="star in 5" :key="star" :name="star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'
                       " :class="star <= Math.floor(reviewStats.averageRating)
                       ? 'text-yellow-400'
-                      : 'text-gray-300'
+                      : textMutedClasses
                     " scale="1.1" />
                   </div>
                 </div>
               </div>
 
               <!-- Rating Breakdown - Mobile -->
-              <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+              <div :class="['p-4 rounded-2xl', cardClasses]">
                 <h3 :class="['text-base font-semibold mb-4', textClasses]">Rating Breakdown</h3>
                 <div class="space-y-3">
                   <div class="flex items-center gap-3">
                     <span :class="['text-sm w-20 flex-shrink-0', textSecondaryClasses]">Excellent</span>
-                    <div class="flex-1 h-2 bg-gray-200 rounded-full dark:bg-gray-600">
+                    <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
                       }"></div>
@@ -1582,39 +1586,39 @@ const fetchProductVariants = async (productId: number) => {
                   </div>
                   <div class="flex items-center gap-3">
                     <span :class="['text-sm w-20 flex-shrink-0', textSecondaryClasses]">Good</span>
-                    <div class="flex-1 h-2 bg-gray-200 rounded-full dark:bg-gray-600">
+                    <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.good / reviewStats.totalReviews) * 100 + '%',
                       }"></div>
                     </div>
-                    <span class="w-6 text-xs text-right text-gray-400">{{ reviewStats.good }}</span>
+                    <span :class="['w-6 text-xs text-right', ratingCountClasses]">{{ reviewStats.good }}</span>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span class="flex-shrink-0 w-20 text-sm text-gray-600">Average</span>
-                    <div class="flex-1 h-2 bg-gray-200 rounded-full">
+                    <span :class="['flex-shrink-0 w-20 text-sm', ratingTextClasses]">Average</span>
+                    <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.average / reviewStats.totalReviews) * 100 + '%',
                       }"></div>
                     </div>
-                    <span class="w-6 text-xs text-right text-gray-400">{{ reviewStats.average }}</span>
+                    <span :class="['w-6 text-xs text-right', ratingCountClasses]">{{ reviewStats.average }}</span>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span class="flex-shrink-0 w-20 text-sm text-gray-600">Below Avg</span>
-                    <div class="flex-1 h-2 bg-gray-200 rounded-full">
+                    <span :class="['flex-shrink-0 w-20 text-sm', ratingTextClasses]">Below Avg</span>
+                    <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
                       }"></div>
                     </div>
-                    <span class="w-6 text-xs text-right text-gray-400">{{ reviewStats.belowAverage }}</span>
+                    <span :class="['w-6 text-xs text-right', ratingCountClasses]">{{ reviewStats.belowAverage }}</span>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span class="flex-shrink-0 w-20 text-sm text-gray-600">Poor</span>
-                    <div class="flex-1 h-2 bg-gray-200 rounded-full">
+                    <span :class="['flex-shrink-0 w-20 text-sm', ratingTextClasses]">Poor</span>
+                    <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.poor / reviewStats.totalReviews) * 100 + '%',
                       }"></div>
                     </div>
-                    <span class="w-6 text-xs text-right text-gray-400">{{ reviewStats.poor }}</span>
+                    <span :class="['w-6 text-xs text-right', ratingCountClasses]">{{ reviewStats.poor }}</span>
                   </div>
                 </div>
               </div>
@@ -1636,7 +1640,7 @@ const fetchProductVariants = async (productId: number) => {
                     <v-icon v-for="star in 5" :key="star" :name="star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'
                       " :class="star <= Math.floor(reviewStats.averageRating)
                       ? 'text-yellow-400'
-                      : 'text-gray-300'
+                      : textMutedClasses
                     " scale="1.2" />
                   </div>
                 </div>
@@ -1646,49 +1650,49 @@ const fetchProductVariants = async (productId: number) => {
               <div class="flex-1 max-w-7xl">
                 <div class="space-y-2">
                   <div class="flex items-center gap-4">
-                    <span class="text-lg text-gray-600 w-30">Excellent</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                    <span :class="['text-lg w-30', ratingTextClasses]">Excellent</span>
+                    <div :class="['flex-1 h-1.5', progressBarBgClasses]">
                       <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
                         width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
                       }"></div>
                     </div>
-                    <span class="w-8 text-sm text-gray-400">{{ reviewStats.excellent }}</span>
+                    <span :class="['w-8 text-sm', ratingCountClasses]">{{ reviewStats.excellent }}</span>
                   </div>
                   <div class="flex items-center gap-4">
-                    <span class="text-lg text-gray-600 w-30">Good</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                    <span :class="['text-lg w-30', ratingTextClasses]">Good</span>
+                    <div :class="['flex-1 h-1.5', progressBarBgClasses]">
                       <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
                         width: (reviewStats.good / reviewStats.totalReviews) * 100 + '%',
                       }"></div>
                     </div>
-                    <span class="w-8 text-sm text-gray-400">{{ reviewStats.good }}</span>
+                    <span :class="['w-8 text-sm', ratingCountClasses]">{{ reviewStats.good }}</span>
                   </div>
                   <div class="flex items-center gap-4">
-                    <span class="text-lg text-gray-600 w-30">Average</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                    <span :class="['text-lg w-30', ratingTextClasses]">Average</span>
+                    <div :class="['flex-1 h-1.5', progressBarBgClasses]">
                       <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
                         width: (reviewStats.average / reviewStats.totalReviews) * 100 + '%',
                       }"></div>
                     </div>
-                    <span class="w-8 text-sm text-gray-400">{{ reviewStats.average }}</span>
+                    <span :class="['w-8 text-sm', ratingCountClasses]">{{ reviewStats.average }}</span>
                   </div>
                   <div class="flex items-center gap-4">
-                    <span class="text-lg text-gray-600 w-30">Below Average</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                    <span :class="['text-lg w-30', ratingTextClasses]">Below Average</span>
+                    <div :class="['flex-1 h-1.5', progressBarBgClasses]">
                       <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
                         width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
                       }"></div>
                     </div>
-                    <span class="w-8 text-sm text-gray-400">{{ reviewStats.belowAverage }}</span>
+                    <span :class="['w-8 text-sm', ratingCountClasses]">{{ reviewStats.belowAverage }}</span>
                   </div>
                   <div class="flex items-center gap-4">
-                    <span class="text-lg text-gray-600 w-30">Poor</span>
-                    <div class="flex-1 bg-gray-200 rounded-full h-1.5">
+                    <span :class="['text-lg w-30', ratingTextClasses]">Poor</span>
+                    <div :class="['flex-1 h-1.5', progressBarBgClasses]">
                       <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
                         width: (reviewStats.poor / reviewStats.totalReviews) * 100 + '%',
                       }"></div>
                     </div>
-                    <span class="w-8 text-sm text-gray-400">{{ reviewStats.poor }}</span>
+                    <span :class="['w-8 text-sm', ratingCountClasses]">{{ reviewStats.poor }}</span>
                   </div>
                 </div>
               </div>
@@ -1697,7 +1701,7 @@ const fetchProductVariants = async (productId: number) => {
             <!-- Leave Comment Button -->
             <div class="mb-8">
               <button @click="showReviewModal = true"
-                :class="['w-full border rounded-[7px] px-4 py-4 text-base font-medium transition-all focus:outline-none focus:ring-2 min-h-[48px]', 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-gray-200 dark:focus:ring-gray-600']">
+                :class="['w-full border rounded-[7px] px-4 py-4 text-base font-medium transition-all focus:outline-none focus:ring-2 min-h-[48px]', buttonSecondaryClasses]">
                 Leave Comment
               </button>
             </div>
@@ -1708,46 +1712,46 @@ const fetchProductVariants = async (productId: number) => {
                 <div
                   :class="['rounded-xl shadow-lg p-6 lg:p-8 w-full max-w-md relative max-h-[90vh] overflow-y-auto', cardClasses]">
                   <button @click="closeReviewModal"
-                    :class="['absolute top-4 right-4 min-w-[44px] min-h-[44px] flex items-center justify-center', 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300']"
+                    :class="['absolute top-4 right-4 min-w-[44px] min-h-[44px] flex items-center justify-center', iconColorClasses]"
                     aria-label="Close">
                     <v-icon name="hi-x" scale="1.2" />
                   </button>
                   <h3 :class="['text-lg lg:text-xl font-semibold mb-4 pr-8', textClasses]">Leave a Review</h3>
                   <form @submit.prevent="submitReview">
                     <div class="mb-4">
-                      <label class="block mb-2 font-medium text-gray-700">Rating</label>
+                      <label :class="['block mb-2 font-medium', textClasses]">Rating</label>
                       <div class="flex gap-2">
                         <button v-for="star in 5" :key="star" type="button" @click="reviewRating = star"
                           :aria-label="`Set rating to ${star}`"
                           class="focus:outline-none min-w-[44px] min-h-[44px] flex items-center justify-center">
                           <v-icon :name="star <= reviewRating ? 'bi-star-fill' : 'bi-star'"
-                            :class="star <= reviewRating ? 'text-yellow-400' : 'text-gray-300'" scale="1.5" />
+                            :class="star <= reviewRating ? 'text-yellow-400' : textMutedClasses" scale="1.5" />
                         </button>
                       </div>
                       <div v-if="reviewErrors.rating" class="mt-1 text-sm text-red-500">{{ reviewErrors.rating }}</div>
                     </div>
                     <div class="mb-4">
-                      <label class="block mb-2 font-medium text-gray-700">Comment</label>
+                      <label :class="['block mb-2 font-medium', textClasses]">Comment</label>
                       <textarea v-model="reviewComment" maxlength="1000" rows="5"
-                        class="w-full border border-gray-200 rounded-[7px] px-4 py-3 text-gray-700 text-base focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all resize-none"
+                        :class="['w-full border rounded-[7px] px-4 py-3 text-base focus:outline-none focus:ring-2 transition-all resize-none', 'border-border text-foreground focus:ring-primary']"
                         placeholder="Share your experience..."></textarea>
-                      <div class="flex justify-between mt-1 text-xs text-gray-400">
+                      <div :class="['flex justify-between mt-1 text-xs', textMutedClasses]">
                         <span>{{ reviewComment.length }}/1000</span>
                         <span v-if="reviewErrors.comment" class="text-red-500">{{ reviewErrors.comment }}</span>
                       </div>
                     </div>
                     <div class="flex flex-col justify-end gap-3 mt-6 sm:flex-row">
                       <button type="button" @click="closeReviewModal" :class="[
-                        'flex-1 border border-gray-300 py-3 lg:py-4 px-4 lg:px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors min-h-[48px]',
-                        'text-gray-700 hover:bg-gray-50'
+                        'flex-1 border py-3 lg:py-4 px-4 lg:px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors min-h-[48px]',
+                        buttonSecondaryClasses
                       ]">
                         Cancel
                       </button>
                       <button type="submit" :disabled="reviewSubmitting" :class="[
                         'flex-1 py-3 lg:py-4 px-4 lg:px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors min-h-[48px]',
                         !reviewSubmitting
-                          ? 'bg-black text-white hover:bg-gray-800'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                          ? buttonPrimaryClasses
+                          : textMutedClasses
                       ]">
                         <span v-if="reviewSubmitting">Submitting...</span>
                         <span v-else>Submit Review</span>
@@ -1763,8 +1767,8 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- Loading State for Reviews -->
             <div v-if="productReviewsLoading" class="flex items-center justify-center py-8">
-              <div class="w-8 h-8 border-b-2 border-gray-900 rounded-full animate-spin"></div>
-              <span class="ml-3 text-gray-600">Loading reviews...</span>
+              <div :class="['w-8 h-8 border-b-2 rounded-full animate-spin', dividerClasses]"></div>
+              <span :class="['ml-3', textMutedClasses]">Loading reviews...</span>
             </div>
 
             <!-- Error State for Reviews -->
@@ -1775,8 +1779,8 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- No Reviews State -->
             <div v-else-if="productReviews.length === 0" class="py-8 text-center">
-              <div class="text-lg text-gray-500">No reviews yet</div>
-              <div class="mt-2 text-sm text-gray-400">Be the first to leave a review!</div>
+              <div :class="['text-lg', textMutedClasses]">No reviews yet</div>
+              <div :class="['mt-2 text-sm', textMutedClasses]">Be the first to leave a review!</div>
             </div>
 
             <!-- Individual Reviews with View More/Less and Fade -->
@@ -1812,14 +1816,14 @@ const fetchProductVariants = async (productId: number) => {
                           <h4 class="text-sm font-medium lg:text-base">{{ review.userName || 'Anonymous'
                             }}
                           </h4>
-                          <span class="text-xs text-gray-500 lg:text-sm">{{ review.date }}</span>
+                          <span :class="['text-xs lg:text-sm', textMutedClasses]">{{ review.date }}</span>
                         </div>
 
                         <!-- Star Rating -->
                         <div class="flex mb-2">
                           <v-icon v-for="star in 5" :key="star"
                             :name="star <= review.rating ? 'bi-star-fill' : 'bi-star'"
-                            :class="star <= review.rating ? 'text-yellow-400' : 'text-gray-300'" scale="1.0"
+                            :class="star <= review.rating ? 'text-yellow-400' : textMutedClasses" scale="1.0"
                             class="lg:scale-110" />
                         </div>
 
@@ -1855,7 +1859,7 @@ const fetchProductVariants = async (productId: number) => {
       <div class="w-full max-w-[1640px] px-8">
         <div class="flex items-center justify-between mb-2">
           <h2 :class="['text-2xl font-semibold text-left mb-8', textClasses]">Related Products</h2>
-          <button @click="toggleRelated" class="p-1 transition-colors rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+          <button @click="toggleRelated" :class="['p-1 transition-colors rounded', hoverClasses]"
             type="button" aria-label="Toggle related products section">
             <v-icon name="hi-chevron-down"
               :class="['w-5 h-5 transition-transform duration-200', textSecondaryClasses, { 'rotate-180': relatedCollapsed }]"
