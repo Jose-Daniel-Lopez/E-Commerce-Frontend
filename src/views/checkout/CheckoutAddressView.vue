@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-background text-foreground min-h-screen">
+  <div class="pt-[85px] lg:pt-0 min-h-screen" :class="pageBackgroundClasses">
     <Wrapper class="py-20 max-w-[1300px] mx-auto">
       <!-- Stepper -->
       <div class="flex items-center justify-center mb-20">
@@ -53,11 +53,12 @@
 
         <!-- Error State -->
         <div v-else-if="shippingAddressStore.error" class="py-8 text-center">
-          <div class="p-4 border border-red-200 rounded-lg bg-red-50">
-            <p class="text-red-600">{{ shippingAddressStore.error }}</p>
+          <div class="p-4 rounded-lg theme-error-bg">
+            <p>{{ shippingAddressStore.error }}</p>
             <button
               @click="loadAddresses"
-              class="px-4 py-2 mt-2 text-white bg-red-600 rounded hover:bg-red-700"
+              class="px-4 py-2 mt-2 rounded"
+              :class="buttonPrimaryClasses"
             >
               Try Again
             </button>
@@ -167,7 +168,7 @@
                     gradientUnits="userSpaceOnUse"
                   >
                     <stop />
-                    <stop offset="1" stop-color="#E6E6E6" />
+                    <stop offset="1" style="stop-color: var(--color-border)" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -208,7 +209,7 @@
                     gradientUnits="userSpaceOnUse"
                   >
                     <stop />
-                    <stop offset="1" stop-color="#E6E6E6" />
+                    <stop offset="1" style="stop-color: var(--color-border)" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -341,7 +342,7 @@
       </section>
 
       <!-- Navigation Buttons -->
-      <div class="flex justify-end max-w-5xl gap-4 mx-auto mt-8">
+    <div class="flex justify-end max-w-5xl gap-4 mx-auto mt-8">
         <button
           class="px-22 py-5 border border-border rounded-[6px] font-srProDisplay text-foreground bg-background hover:bg-surface transition"
           @click="goBack"
@@ -349,7 +350,8 @@
           Back
         </button>
         <button
-          class="px-22 py-5 rounded-[6px] font-srProDisplay text-primary-foreground bg-primary hover:opacity-95 transition"
+      class="px-22 py-5 rounded-[6px] font-srProDisplay transition"
+      :class="buttonPrimaryClasses"
           @click="goNext"
           :disabled="!selectedAddressId"
         >
@@ -368,6 +370,9 @@ import { useShippingAddressStore } from '@/stores/shippingAddresses'
 import { useAuthStore } from '@/stores/auth'
 import { useCheckoutStore } from '@/stores/checkout'
 import type { ShippingAddress, CreateShippingAddressRequest, UpdateShippingAddressRequest } from '@/types/shippingAddress'
+import { useThemeClasses } from '@/composables/useThemeClasses'
+
+const { pageBackgroundClasses, buttonPrimaryClasses } = useThemeClasses()
 
 // ========== STORES ==========
 const shippingAddressStore = useShippingAddressStore()

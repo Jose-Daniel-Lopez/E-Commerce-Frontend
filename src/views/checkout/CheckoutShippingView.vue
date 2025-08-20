@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-background text-foreground min-h-screen">
+  <div class="pt-[85px] lg:pt-0 min-h-screen" :class="pageBackgroundClasses">
     <Wrapper class="py-20 max-w-[1300px] mx-auto">
       <!-- Stepper -->
       <div class="flex items-center justify-center mb-20">
@@ -89,15 +89,16 @@
       </section>
 
       <!-- Navigation Buttons -->
-      <div class="flex justify-end gap-4 max-w-5xl mx-auto mt-8">
+    <div class="flex justify-end gap-4 max-w-5xl mx-auto mt-8">
         <button
-          class="px-22 py-5 border border-border rounded-[6px] font-srProDisplay text-foreground bg-background hover:bg-gray-50 transition"
+      class="px-22 py-5 border border-border rounded-[6px] font-srProDisplay text-foreground bg-background hover:bg-surface transition"
           @click="goBack"
         >
           Back
         </button>
         <button
-          class="px-22 py-5 rounded-[6px] font-srProDisplay text-primary-foreground bg-primary hover:opacity-95 transition"
+      class="px-22 py-5 rounded-[6px] font-srProDisplay transition"
+      :class="buttonPrimaryClasses"
           @click="goNext"
         >
           Next
@@ -114,6 +115,9 @@ import DatePicker from '@/components/shared/DatePicker.vue'
 import { useRouter } from 'vue-router'
 import { useCheckoutStore, type ShippingMethod } from '@/stores/checkout'
 import { useUserCartStore } from '@/stores/userCart'
+import { useThemeClasses } from '@/composables/useThemeClasses'
+
+const { pageBackgroundClasses, buttonPrimaryClasses } = useThemeClasses()
 
 const router = useRouter()
 const checkoutStore = useCheckoutStore()

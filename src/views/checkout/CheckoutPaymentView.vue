@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 bg-background text-foreground min-h-screen">
+  <div class="pt-[85px] lg:pt-0 min-h-screen" :class="pageBackgroundClasses">
     <Wrapper class="py-20 max-w-[1300px] mx-auto">
       <!-- Stepper - Mobile optimized -->
       <div class="flex items-center justify-center mb-12 lg:mb-20">
@@ -268,6 +268,9 @@ import { useUserCartStore } from '@/stores/userCart'
 import { useCheckoutStore } from '@/stores/checkout'
 import { useToast } from '@/composables/useToast'
 import { useAuthStore } from '@/stores/auth'
+import { useThemeClasses } from '@/composables/useThemeClasses'
+
+const { pageBackgroundClasses } = useThemeClasses()
 
 const router = useRouter()
 const userCartStore = useUserCartStore()
