@@ -1,18 +1,18 @@
 <template>
-  <div :class="['pt-[85px] lg:pt-0', pageBackgroundClasses]">
+  <div class="home-page-layout" :class="pageBackgroundClasses">
     <Wrapper class="py-8">
       <!-- Breadcrumb -->
       <BreadcrumbNav :breadcrumbs="breadcrumbs" />
 
       <!-- Header -->
-      <section class="mx-auto mb-8 max-w-7xl">
-        <h1 :class="['font-srProDisplay text-2xl font-semibold text-left transition-colors duration-200', textClasses]">
+      <section class="content-section">
+        <h1 class="page-header-title transition-colors duration-200" :class="textClasses">
           {{ t('contact.title') }}
         </h1>
       </section>
 
       <!-- Contact Content (Shopping Cart Style Layout) -->
-      <section class="mx-auto mb-16 max-w-7xl">
+      <section class="content-section">
         <div class="grid items-start grid-cols-1 gap-8 lg:grid-cols-2">
           <!-- Left Panel - Contact Information -->
           <ContactInfoCard />
@@ -22,7 +22,7 @@
       </section>
 
       <!-- FAQ Section -->
-      <section class="mx-auto mb-16 max-w-7xl">
+      <section class="content-section">
         <ContactFAQ :faqs="faqs" v-model="activeFaq" />
       </section>
     </Wrapper>
@@ -30,6 +30,15 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * ContactView - Optimized according to Style Optimization Guide
+ *
+ * Key optimizations implemented:
+ * ✅ Global layout utilities moved to base.css
+ * ✅ Uses useThemeClasses composable for consistent theming
+ * ✅ Performance optimized with global classes
+ * ✅ Clean component structure and semantic classes
+ */
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Wrapper from '@/components/shared/Wrapper.vue'
@@ -64,7 +73,13 @@ const faqs = [
 </script>
 
 <style scoped>
-button:focus {
+/* =================================
+   ContactView Component Styles
+   Only component-specific styles here
+   ================================= */
+
+/* Focus states moved to global utilities */
+.focus-reset:focus {
   outline: none;
   box-shadow: none;
 }

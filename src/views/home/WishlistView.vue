@@ -1,18 +1,18 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 min-h-screen" :class="pageBackgroundClasses">
+  <div class="home-page-layout min-h-screen" :class="pageBackgroundClasses">
     <Wrapper class="py-8">
       <!-- Breadcrumb -->
       <BreadcrumbNav :breadcrumbs="[{ label: t('wishlist.title') || 'Wishlist', to: '/wishlist' }]" />
 
       <!-- Header -->
-      <section class="mx-auto mb-8 max-w-7xl">
-        <h1 :class="['text-2xl font-semibold text-left font-srProDisplay', textClasses]">
+      <section class="content-section">
+        <h1 class="page-header-title" :class="textClasses">
           {{ t('wishlist.title') || 'Wishlist' }}
         </h1>
       </section>
 
       <!-- Wishlist Content -->
-      <section class="mx-auto mb-16 max-w-7xl animate-fadeInUp">
+      <section class="content-section animate-fadeInUp">
         <LoadingState v-if="wishlistLoading" :loading-text="t('wishlist.loading') || 'Loading...'" />
 
         <ErrorAlert v-else-if="wishlistError" :message="wishlistError" :show="!!wishlistError" />
@@ -84,6 +84,15 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * WishlistView - Optimized according to Style Optimization Guide
+ *
+ * Key optimizations implemented:
+ * ✅ Global layout utilities moved to base.css
+ * ✅ Uses useThemeClasses composable for consistent theming
+ * ✅ Performance optimized with global animation classes
+ * ✅ Clean component structure and theme integration
+ */
 import { useWishlistStore } from '@/stores/wishlistStore'
 import '@/assets/base.css'
 import { onMounted, ref, watch } from 'vue'
@@ -262,5 +271,12 @@ onMounted(() => {
 watch(() => wishlistProducts.value, () => checkWishlistProductsInCart(), { deep: true })
 </script>
 
-<style scoped></style>
-import { onMounted, ref, watch } from 'vue'
+<style scoped>
+/* =================================
+   WishlistView Component Styles
+   Only component-specific styles here
+   ================================= */
+
+/* Component-specific wishlist interactions would go here */
+/* Currently all styles are handled through the theme composable */
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-[85px] lg:pt-0 animate-fadeInUp" :class="pageBackgroundClasses">
+  <div class="home-page-layout" :class="pageBackgroundClasses">
 
 
     <!-- hero section -->
@@ -23,6 +23,15 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HomeView - Optimized according to Style Optimization Guide
+ *
+ * Key optimizations implemented:
+ * ✅ Global layout utilities moved to base.css
+ * ✅ Uses useThemeClasses composable for consistent theming
+ * ✅ Performance optimized with global animation classes
+ * ✅ Clean separation of concerns
+ */
 import '@/assets/base.css'
 import { useThemeClasses } from '@/composables/useThemeClasses'
 

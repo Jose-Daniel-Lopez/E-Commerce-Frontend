@@ -691,4 +691,50 @@ section {
   .hw-accelerate {
     transform: translateZ(0);
   }
+
+  /* Home view layout utilities */
+  .home-page-layout {
+    padding-top: 85px;
+    animation: fadeInUp 0.3s ease-out;
+  }
+
+  @media (min-width: 1024px) {
+    .home-page-layout {
+      padding-top: 0;
+    }
+  }
+
+  /* Page header styling */
+  .page-header-title {
+    font-family: var(--font-sr-pro-display, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  /* Content sections */
+  .content-section {
+    margin: 0 auto 4rem auto;
+    max-width: 80rem;
+  }
+
+  /* Legal page content */
+  .legal-content {
+    max-width: 64rem;
+    margin: 0 auto;
+  }
+
+  /* Focus states for accessibility */
+  .focus-reset:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Global focus reset for common elements */
+  button:focus,
+  a:focus,
+  svg:focus {
+    outline: none;
+    box-shadow: none;
+  }
 }

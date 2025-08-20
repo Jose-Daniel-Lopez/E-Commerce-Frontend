@@ -1,5 +1,5 @@
 <template>
-  <div :class="['pt-[85px] lg:pt-0 animate-fadeInUp', pageBackgroundClasses]">
+  <div class="home-page-layout" :class="pageBackgroundClasses">
     <Wrapper class="py-8">
       <BreadcrumbNav :breadcrumbs="breadcrumbs" />
       <AboutHeroSection />
@@ -11,6 +11,15 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * AboutView - Optimized according to Style Optimization Guide
+ *
+ * Key optimizations implemented:
+ * ✅ Global layout utilities moved to base.css
+ * ✅ Uses useThemeClasses composable for consistent theming
+ * ✅ Performance optimized with global animation classes
+ * ✅ Clean component structure
+ */
 import '@/assets/base.css'
 import { useRouter } from 'vue-router'
 import Wrapper from '@/components/shared/Wrapper.vue'

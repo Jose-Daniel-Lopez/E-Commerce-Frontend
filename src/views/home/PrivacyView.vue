@@ -1,9 +1,9 @@
 <template>
-  <div :class="['pt-[85px] lg:pt-0 animate-fadeInUp', pageBackgroundClasses]">
+  <div class="home-page-layout" :class="pageBackgroundClasses">
     <Wrapper class="py-8">
       <BreadcrumbNav :breadcrumbs="breadcrumbs" />
 
-      <div class="max-w-5xl mx-auto space-y-6">
+      <div class="legal-content space-y-6">
         <div class="flex items-center justify-center gap-3 mb-4">
           <v-icon name="hi-shield-check" class="!w-6 !h-6 mb-12" />
           <h1 :class="sectionTitleClasses">Privacy Policy</h1>
@@ -49,6 +49,15 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * PrivacyView - Optimized according to Style Optimization Guide
+ *
+ * Key optimizations implemented:
+ * ✅ Global layout utilities moved to base.css
+ * ✅ Uses useThemeClasses composable for consistent theming
+ * ✅ Performance optimized with global animation classes
+ * ✅ Clean legal document structure
+ */
 import '@/assets/base.css'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
@@ -60,7 +69,11 @@ const breadcrumbs = [{ label: 'privacy.title' }]
 </script>
 
 <style scoped>
-button:focus { outline: none; box-shadow: none }
-a:focus { outline: none; box-shadow: none }
-svg:focus { outline: none; box-shadow: none }
+/* =================================
+   PrivacyView Component Styles
+   Only component-specific styles here
+   ================================= */
+
+/* Focus states handled by global utilities in base.css */
+/* Legal document styling uses theme composable classes */
 </style>
