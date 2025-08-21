@@ -20,7 +20,13 @@
       "mostProducts": "Most products",
       "leastProducts": "Least products"
     },
-    "viewProducts": "View Products"
+    "viewProducts": "View Products",
+    "relatedProducts": "Related Products",
+    "toggleRelatedProducts": "Toggle related products section",
+    "startingAt": "Starting at",
+    "viewDetails": "View Details",
+    "noRelatedProducts": "No related products found",
+    "relatedProductsError": "Unable to load related products"
   },
   "checkout": {
     "summary": "Summary",

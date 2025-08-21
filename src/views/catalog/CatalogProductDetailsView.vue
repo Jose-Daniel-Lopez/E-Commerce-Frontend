@@ -7,10 +7,6 @@ const toggleDetails = () => (detailsCollapsed.value = !detailsCollapsed.value)
 const reviewsCollapsed = ref(false)
 const toggleReviews = () => (reviewsCollapsed.value = !reviewsCollapsed.value)
 
-// === Related Products Section Collapsing ===
-const relatedCollapsed = ref(false)
-const toggleRelated = () => (relatedCollapsed.value = !relatedCollapsed.value)
-
 // === Image & Variant Selection ===
 const selectImage = (index: number) => {
   selectedImageIndex.value = index
@@ -31,6 +27,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useUserCartStore } from '@/stores/userCart'
 import { useReviewsStore } from '@/stores/reviews'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+import RelatedProducts from '@/components/products/RelatedProducts.vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import axios from 'axios'
@@ -1854,63 +1851,12 @@ const fetchProductVariants = async (productId: number) => {
 
 
     <!-- Related Products Section -->
-    <section :class="['w-full flex justify-center py-32', 'theme-surface']">
-      <div class="w-full max-w-[1640px] px-8">
-        <div class="flex items-center justify-between mb-2">
-          <h2 :class="['text-2xl font-semibold text-left mb-8', textClasses]">Related Products</h2>
-          <button @click="toggleRelated" :class="['p-1 transition-colors rounded', hoverClasses]"
-            type="button" aria-label="Toggle related products section">
-            <v-icon name="hi-chevron-down"
-              :class="['w-5 h-5 transition-transform duration-200', textSecondaryClasses, { 'rotate-180': relatedCollapsed }]"
-              scale="1.2" />
-          </button>
-        </div>
-        <transition name="fade-details">
-          <div v-show="!relatedCollapsed">
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-              <!-- Product 1 -->
-              <div
-                :class="['rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300', cardClasses]">
-                <div class="flex items-center justify-center w-full h-32 mb-6">
-                  <img src="/images/Apple-phone.png" alt="iPhone 14" class="object-contain h-full" />
-                </div>
-                <h3 :class="['font-srProDisplay text-lg font-medium mb-2', textClasses]">iPhone 14</h3>
-                <p :class="['font-srProDisplay text-sm mb-4', textMutedClasses]">Starting at $699</p>
-                <button :class="['w-full py-2 px-4 rounded-lg transition-colors', buttonPrimaryClasses]">
-                  View Details
-                </button>
-              </div>
-
-              <!-- Product 2 -->
-              <div
-                :class="['rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300', cardClasses]">
-                <div class="flex items-center justify-center w-full h-32 mb-6">
-                  <img src="/images/Apple-iPad.png" alt="iPad Pro" class="object-contain h-full" />
-                </div>
-                <h3 :class="['font-srProDisplay text-lg font-medium mb-2', textClasses]">iPad Pro</h3>
-                <p :class="['font-srProDisplay text-sm mb-4', textMutedClasses]">Starting at $999</p>
-                <button :class="['w-full py-2 px-4 rounded-lg transition-colors', buttonPrimaryClasses]">
-                  View Details
-                </button>
-              </div>
-
-              <!-- Product 3 -->
-              <div
-                :class="['rounded-[15px] p-8 text-center hover:shadow-lg transition-shadow duration-300', cardClasses]">
-                <div class="flex items-center justify-center w-full h-32 mb-6">
-                  <img src="/images/Apple-airPods.png" alt="AirPods Pro" class="object-contain h-full" />
-                </div>
-                <h3 :class="['font-srProDisplay text-lg font-medium mb-2', textClasses]">AirPods Pro</h3>
-                <p :class="['font-srProDisplay text-sm mb-4', textMutedClasses]">Starting at $249</p>
-                <button :class="['w-full py-2 px-4 rounded-lg transition-colors', buttonPrimaryClasses]">
-                  View Details
-                </button>
-              </div>
-            </div>
-          </div>
-        </transition>
-      </div>
-    </section>
+    <RelatedProducts
+      :product-id="parseInt(props.productId)"
+      :limit="3"
+      :collapsible="true"
+      :show-title="true"
+    />
   </div>
 </template>
 

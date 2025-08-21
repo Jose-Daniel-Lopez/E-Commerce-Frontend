@@ -981,6 +981,32 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
+  /**
+   * Fetches related products for a given product ID.
+   *
+   * @param productId - ID of the product to find related products for
+   * @param limit - Maximum number of related products to return (default: 3, max: 10)
+   * @returns Promise<RelatedProduct[]> - List of related products
+   */
+  const fetchRelatedProducts = async (productId: number, limit = 3): Promise<{ name: string; imageUrl: string; basePrice: number }[]> => {
+    try {
+      const response = await api.get(`/products/${productId}/related`, {
+        params: {
+          limit: Math.min(limit, 10) // Ensure we don't exceed max of 10
+        }
+      })
+
+      const relatedProducts = response.data || []
+
+      console.log(`🔍 [fetchRelatedProducts] Fetched ${relatedProducts.length} related products for product ${productId}`)
+
+      return relatedProducts
+    } catch (err) {
+      console.error(`Error fetching related products for product ${productId}:`, err)
+      throw err
+    }
+  }
+
   // =======================
   // 🧮 Utility Functions
   // =======================
@@ -1035,6 +1061,7 @@ export const useProductStore = defineStore('product', () => {
     fetchProductsByCategory,
     fetchProductsByCategoryName,
     fetchProductById,
+    fetchRelatedProducts,
     addProduct,
     removeProduct,
     updateProduct,

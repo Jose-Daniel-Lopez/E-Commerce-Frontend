@@ -208,7 +208,13 @@
       "mostProducts": "Más productos",
       "leastProducts": "Menos productos"
     },
-    "viewProducts": "Ver Productos"
+    "viewProducts": "Ver Productos",
+    "relatedProducts": "Productos Relacionados",
+    "toggleRelatedProducts": "Alternar sección de productos relacionados",
+    "startingAt": "Desde",
+    "viewDetails": "Ver Detalles",
+    "noRelatedProducts": "No se encontraron productos relacionados",
+    "relatedProductsError": "No se pudieron cargar los productos relacionados"
   },
   "home": {
     "title": "Inicio"
