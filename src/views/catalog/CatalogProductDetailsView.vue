@@ -1514,7 +1514,7 @@ const fetchProductVariants = async (productId: number) => {
 
                 <!-- Fade overlay when not showing all details -->
                 <div v-if="!showAllDetails"
-                  :class="['absolute bottom-0 left-0 w-full h-32 pointer-events-none bg-gradient-to-t to-transparent', pageBackgroundClasses.includes('dark') ? 'from-gray-900' : 'from-white']">
+                  :class="['absolute bottom-0 left-0 w-full h-32 pointer-events-none bg-gradient-to-t to-transparent from-[var(--color-background)]']">
                 </div>
               </div>
 
