@@ -119,9 +119,12 @@
       "smartwatches": "Smart Watches",
       "cameras": "Cameras",
       "headphones": "Headphones",
-      "computers": "Computers",
+  "computers": "Computers",
+  "laptops": "Laptops",
+  "handhelds": "Handhelds",
       "keyboards": "Keyboards",
       "mice": "Mice",
+  "controllers": "Controllers",
       "gaming": "Gaming",
       "tablets": "Tablets",
       "smartHome": "Smart Home",
@@ -230,6 +233,9 @@
   },
   "smartphones": {
     "title": "Smartphones"
+  },
+   "laptops": {
+    "title": "Laptops"
   },
   "wishlist": {
     "title": "Wishlist",

@@ -123,17 +123,12 @@ const categories = [
   { name: t('shop.categories.all'), route: '/catalog' },
   { name: 'All Products', route: '/catalog/all-products' },
   { name: t('shop.categories.smartphones'), route: '/catalog/smartphones' },
-  { name: t('shop.categories.smartwatches'), route: '/catalog/smartwatches' },
-  { name: t('shop.categories.cameras'), route: '/catalog/cameras' },
-  { name: t('shop.categories.headphones'), route: '/catalog/headphones' },
-  { name: t('shop.categories.computers'), route: '/catalog/computers' },
+  { name: t('shop.categories.tablets'), route: '/catalog/tablets' },
+  { name: t('shop.categories.laptops'), route: '/catalog/laptops' },
+  { name: t('shop.categories.handhelds'), route: '/catalog/handhelds' },
   { name: t('shop.categories.keyboards'), route: '/catalog/keyboards' },
   { name: t('shop.categories.mice'), route: '/catalog/mice' },
-  { name: t('shop.categories.gaming'), route: '/catalog/gaming' },
-  { name: t('shop.categories.tablets'), route: '/catalog/tablets' },
-  { name: t('shop.categories.smartHome'), route: '/catalog/smart-home' },
-  { name: t('shop.categories.music'), route: '/catalog/audio' },
-  { name: t('shop.categories.accessories'), route: '/catalog/accessories' },
+  { name: t('shop.categories.controllers'), route: '/catalog/controllers' },
 ]
 
 // Function to show/hide the categories dropdown
