@@ -32,7 +32,7 @@ export const useThemeClasses = () => {
    * Standard container for cards, sections, and panels.
    * Includes background, border, and subtle transition.
    */
-  const cardClasses = computed(() => 'text-foreground border border-border transition-colors duration-200')
+  const cardClasses = computed(() => 'border border-border text-foreground transition-colors duration-200')
 
   /**
    * Full-page background with consistent text color.
@@ -360,7 +360,7 @@ export const useThemeClasses = () => {
   /**
    * CTA section wrapper (dark background, rounded, padded).
    */
-  const ctaSectionClasses = computed(() => 'max-w-4xl mx-auto text-center bg-primary dark:bg-gray-700 rounded-[15px] p-12 text-primary-foreground transition-colors duration-200')
+  const ctaSectionClasses = computed(() => 'max-w-4xl mx-auto text-center bg-surface dark:bg-gray-700 rounded-[15px] p-12 text-primary-foreground transition-colors duration-200')
 
   // ===========================================================================
   // 🔍 Catalog-Specific UI
