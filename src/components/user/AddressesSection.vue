@@ -77,7 +77,7 @@
       <div
         v-for="address in addresses"
         :key="address.id"
-        :class="['transition-all duration-200 group', listItemClasses]"
+        :class="['relative transition-all duration-200 group', listItemClasses]"
       >
         <div class="flex items-start justify-between mb-3">
           <div class="flex items-center gap-2">
@@ -87,20 +87,18 @@
               {{ address.name }}
             </h4>
           </div>
-          <div class="flex gap-1 transition-opacity opacity-0 group-hover:opacity-100">
+          <div class="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100">
             <button
-              :class="['p-1 transition-colors rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300 hover:bg-gray-100 dark:hover:bg-gray-700', interactiveIconClasses]"
+              :class="['w-8 h-8 flex items-center justify-center rounded-full bg-surface border border-border transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 cursor-pointer', interactiveIconClasses]"
               aria-label="Editar dirección"
-              tabindex="0"
             >
-              <v-icon name="hi-pencil" scale="0.9" />
+              <v-icon name="hi-pencil" scale="0.95" class="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </button>
             <button
-              :class="['p-1 transition-colors rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400', interactiveIconClasses]"
+              :class="['w-8 h-8 flex items-center justify-center rounded-full bg-surface border border-border text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-900/20 focus:outline-none focus:ring-2 focus:ring-red-300 cursor-pointer', interactiveIconClasses]"
               aria-label="Eliminar dirección"
-              tabindex="0"
             >
-              <v-icon name="hi-trash" scale="0.9" />
+              <v-icon name="hi-trash" scale="0.95" class="w-4 h-4 text-red-600" />
             </button>
           </div>
         </div>
