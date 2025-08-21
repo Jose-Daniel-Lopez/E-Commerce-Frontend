@@ -66,12 +66,12 @@
           <button
             @click="$emit('remove-from-wishlist', item.id, item.name)"
             :disabled="removeItemLoading[item.id]"
-            class="absolute flex items-center justify-center w-6 h-6 transition-opacity rounded-full opacity-0 cursor-pointer -top-2 -right-2 group-hover:opacity-100 focus:outline-none focus:ring-2 hover:theme-error-bg disabled:opacity-50 disabled:cursor-not-allowed"
+            class="absolute flex items-center justify-center w-8 h-8 transition-opacity border rounded-full opacity-0 cursor-pointer -top-3 -right-3 group-hover:opacity-100 focus:opacity-100 focus-visible:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error-500 bg-surface border-border hover:bg-theme-error-bg disabled:opacity-50 disabled:cursor-not-allowed"
             :aria-label="`Remove ${item.name} from wishlist`"
             type="button"
           >
-            <div v-if="removeItemLoading[item.id]" class="w-3 h-3 border rounded-full border-t-transparent animate-spin" :class="['border-theme-text']" aria-hidden="true"></div>
-            <v-icon v-else name="hi-x" scale="0.8" class="theme-text" aria-hidden="true" />
+            <div v-if="removeItemLoading[item.id]" class="w-3 h-3 border-2 rounded-full border-t-transparent animate-spin" :class="['border-theme-text']" aria-hidden="true"></div>
+            <v-icon v-else name="hi-x" scale="1.1" class="w-4 h-4 text-red-600" aria-hidden="true" />
           </button>
         </div>
         <div class="flex-1 min-w-0">
