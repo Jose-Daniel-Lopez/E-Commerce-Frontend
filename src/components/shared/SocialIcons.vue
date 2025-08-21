@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 type Link = {
   href: string
   label?: string
@@ -7,9 +9,19 @@ type Link = {
 }
 
 const props = defineProps<{
-  links: Link[]
+  links?: Link[]
   linkClass?: string
 }>()
+
+// Default placeholder links used when the `links` prop is not provided
+const defaultLinks: Link[] = [
+  { href: 'https://x.com/', label: 'X', target: '_blank' },
+  { href: 'https://facebook.com/', label: 'Facebook', target: '_blank' },
+  { href: 'https://github.com/', label: 'GitHub', target: '_blank' }
+]
+
+// Use provided links when available, otherwise fall back to defaults
+const links = computed(() => (props.links && props.links.length ? props.links : defaultLinks))
 
 // Function to compute the rel attribute based on target
 // If target is '_blank', default to 'noopener noreferrer' for security
@@ -18,15 +30,15 @@ const computedRel = (l: Link) =>
 </script>
 
 <template>
-  <div class="mx-auto mt-2 flex w-[173px] items-center justify-between md:mx-0 lg:h-[16px]">
+    <div class="mx-auto mt-2 flex w-[173px] items-center justify-between md:mx-0 lg:h-[16px]">
     <!-- Twitter/X -->
     <a
-      v-if="props.links[0]"
-      :href="props.links[0].href"
-      :aria-label="props.links[0].label || 'Twitter'"
+      v-if="links[0]"
+      :href="links[0].href"
+      :aria-label="links[0].label || 'Twitter'"
       :class="props.linkClass"
-      :target="props.links[0].target || undefined"
-      :rel="computedRel(props.links[0])"
+      :target="links[0].target || undefined"
+      :rel="computedRel(links[0])"
     >
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
         <path
@@ -37,12 +49,12 @@ const computedRel = (l: Link) =>
 
     <!-- Facebook -->
     <a
-      v-if="props.links[1]"
-      :href="props.links[1].href"
-      :aria-label="props.links[1].label || 'Facebook'"
+      v-if="links[1]"
+      :href="links[1].href"
+      :aria-label="links[1].label || 'Facebook'"
       :class="props.linkClass"
-      :target="props.links[1].target || undefined"
-      :rel="computedRel(props.links[1])"
+      :target="links[1].target || undefined"
+      :rel="computedRel(links[1])"
     >
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
         <path
@@ -55,12 +67,12 @@ const computedRel = (l: Link) =>
 
     <!-- GitHub -->
     <a
-      v-if="props.links[2]"
-      :href="props.links[2].href"
-      :aria-label="props.links[2].label || 'GitHub'"
+      v-if="links[2]"
+      :href="links[2].href"
+      :aria-label="links[2].label || 'GitHub'"
       :class="props.linkClass"
-      :target="props.links[2].target || undefined"
-      :rel="computedRel(props.links[2])"
+      :target="links[2].target || undefined"
+      :rel="computedRel(links[2])"
     >
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
         <path

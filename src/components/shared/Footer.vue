@@ -74,9 +74,9 @@ import { computed } from 'vue'
 import SocialIcons from './SocialIcons.vue'
 
 const links = [
-  { href: '#', label: 'Twitter', target: '_blank' as const },
-  { href: '#', label: 'Facebook', target: '_blank' as const },
-  { href: '#', label: 'GitHub', target: '_blank' as const },
+  { href: 'https://x.com/', label: 'X', target: '_blank' as const },
+  { href: 'https://facebook.com/', label: 'Facebook', target: '_blank' as const },
+  { href: 'https://github.com/', label: 'GitHub', target: '_blank' as const },
 ]
 
 // Define component name
