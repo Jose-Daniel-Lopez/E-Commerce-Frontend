@@ -1006,7 +1006,7 @@ const fetchProductVariants = async (productId: number) => {
             <div v-if="currentProduct.specifications?.screenSize"
               :class="['flex items-center space-x-3 rounded-[8px] w-auto h-auto p-3', cardClasses]">
               <div :class="['flex items-center justify-center w-10 h-10', iconBackgroundClasses]">
-                <v-icon name="io-resize" scale="1.2" :class="iconColorClasses" />
+                <v-icon name="co-resize-both" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">Screen size</p>
@@ -1020,7 +1020,7 @@ const fetchProductVariants = async (productId: number) => {
             <div v-if="currentProduct.specifications?.cpu"
               :class="['flex items-center space-x-3 rounded-[8px] w-auto h-auto p-3', cardClasses]">
               <div :class="['flex items-center justify-center w-10 h-10 rounded-lg', iconBackgroundClasses]">
-                <v-icon name="hi-solid-chip" scale="1.2" :class="iconColorClasses" />
+                <v-icon name="hi-chip" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">CPU</p>
@@ -1092,7 +1092,7 @@ const fetchProductVariants = async (productId: number) => {
             <div v-if="currentProduct.specifications?.frontCamera"
               :class="['flex items-center space-x-3 rounded-[8px] w-auto h-auto p-3', cardClasses]">
               <div :class="['flex items-center justify-center w-10 h-10 rounded-lg', iconBackgroundClasses]">
-                <v-icon name="io-camera-reverse-outline" scale="1.2" :class="iconColorClasses" />
+                <v-icon name="io-camera-reverse" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">Front Camera</p>
@@ -1138,7 +1138,7 @@ const fetchProductVariants = async (productId: number) => {
             <div v-if="currentProduct.specifications?.dpi"
               :class="['flex items-center space-x-3 rounded-[8px] w-auto h-auto p-3', cardClasses]">
               <div :class="['flex items-center justify-center w-10 h-10 rounded-lg', iconBackgroundClasses]">
-                <v-icon name="io-locate" scale="1.2" :class="iconColorClasses" />
+                <v-icon name="bi-bullseye" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">DPI</p>

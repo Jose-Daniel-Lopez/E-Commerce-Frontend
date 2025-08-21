@@ -112,7 +112,7 @@ addIcons(
   AllIcons.HiEye,
   AllIcons.HiEyeOff,
   AllIcons.HiColorSwatch,
-  AllIcons.IoResize,
+  AllIcons.CoResizeBoth,
   AllIcons.RiSeparator,
   AllIcons.FaRegularClock,  // FontAwesome outlined clock (fa-clock-o)
 
@@ -133,15 +133,15 @@ addIcons(
 
   // ====== Device & Hardware Details ======
   AllIcons.HiChip,           // CPU
-  AllIcons.HiSolidChip,      // GPU / Chip
+  AllIcons.HiChip,      // GPU / Chip
   AllIcons.HiCube,           // Generic product placeholder
   AllIcons.HiDatabase,       // Storage
   AllIcons.HiRefresh,        // Refresh rate (already added above but kept for reference)
   AllIcons.BiCamera,         // Camera
-  AllIcons.IoCameraReverseOutline, // Front camera
+  AllIcons.IoCameraReverse, // Front camera
   AllIcons.GiBattery75,      // Battery
   AllIcons.IoSettings,       // Operating system / settings
-  AllIcons.IoLocate,         // DPI / precision
+  AllIcons.BiBullseye,         // DPI / precision
   AllIcons.HiLightningBolt,  // Polling rate / speed
   AllIcons.IoKeypad,         // Switch type / keyboard
   AllIcons.IoBulb,           // Backlighting
