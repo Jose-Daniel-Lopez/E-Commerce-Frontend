@@ -28,7 +28,7 @@
               }}</router-link>
           </li>
           <li
-            class="relative flex cursor-pointer items-center justify-between p-3 hover:bg-blue-200 lg:gap-[2px] lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+            class="relative flex cursor-pointer items-center justify-between p-3 hover:bg-blue-200 lg:gap-[2px] lg:p-0 hover:lg:bg-transparent hover:lg:text-foreground">
             <div @click.stop="toggleCategoriesDropdown" class="flex items-center w-full">
               <span>{{ $t('nav.categories') }}</span>
               <svg class="w-4 h-4 ml-1 transition-transform duration-200"
@@ -55,12 +55,12 @@
               </div>
             </div>
           </li>
-          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-foreground">
             <router-link to="/about" class="block">
               {{ $t('nav.about') }}
             </router-link>
           </li>
-          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-black">
+          <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-foreground">
             <router-link to="/contact">{{ $t('nav.contact') }}</router-link>
           </li>
         </ul>
