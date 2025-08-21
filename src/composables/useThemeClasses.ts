@@ -32,7 +32,7 @@ export const useThemeClasses = () => {
    * Standard container for cards, sections, and panels.
    * Includes background, border, and subtle transition.
    */
-  const cardClasses = computed(() => 'bg-surface text-foreground border border-border transition-colors duration-200')
+  const cardClasses = computed(() => 'text-foreground border border-border transition-colors duration-200')
 
   /**
    * Full-page background with consistent text color.

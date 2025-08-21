@@ -351,6 +351,20 @@
   "discountProducts": {
     "title": "Discount Products"
   },
+  "footer": {
+    "location": "Location",
+    "headOffice": "Head Office: Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+  "emailLabel": "Email",
+    "emailAddress": "webteam@tejontech.com",
+    "support": "Support",
+    "supportHours": "9AM - 8PM",
+    "supportPhone": "16744",
+    "about": "About Us",
+    "contact": "Contact Us",
+    "terms": "Terms & Conditions",
+    "privacy": "Privacy Policy",
+    "refund": "Refund & Return Policy"
+  },
   "hero": {
     "smallTitle": "Pro. Beyond.",
     "bigTitle": "iPhone 14",

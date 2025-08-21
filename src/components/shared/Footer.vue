@@ -8,42 +8,39 @@
             <img :src="logoSrc" alt="logo" class="w-20 h-auto mb-4 transition-transform duration-200 hover:scale-105" />
           </router-link>
           <div class="w-[295px] xl:w-full">
-            <p class="text-base font-semibold font-srProDisplay theme-text">Location</p>
+            <p class="text-base font-semibold font-srProDisplay theme-text">{{ $t('footer.location') }}</p>
             <address class="h-[48px] font-srProDisplay text-sm font-light theme-muted-text">
-              Head Office: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+              {{ $t('footer.headOffice') }}
             </address>
-            <h4 class="text-base font-medium font-srProDisplay theme-text">Email:</h4>
-            <a href="mailto:webteam@tejontech.com"
-              class="font-normal theme-primary transition-colors font-srProDisplay hover:theme-accent">webteam@tejontech.com</a>
+            <h4 class="text-base font-medium font-srProDisplay theme-text">{{ $t('footer.emailLabel') }}</h4>
+            <a :href="`mailto:${$t('footer.emailAddress')}`"
+              class="font-normal theme-primary transition-colors font-srProDisplay hover:theme-accent">{{ $t('footer.emailAddress') }}</a>
           </div>
         </div>
         <div
           class="flex basis-auto flex-col justify-between gap-8 text-center md:text-left lg:basis-[623px] lg:flex-row">
           <div class="max-w-[295px]">
-            <h4 class="text-base font-medium font-srProDisplay text-foreground">About Us</h4>
+      <h4 class="text-base font-medium font-srProDisplay text-foreground">{{ $t('footer.about') }}</h4>
             <ul class="mt-2 font-srProDisplay text-sm font-light *:pb-2">
               <li>
-                <router-link to="#" :class="footerLinkClasses">Payment Method</router-link>
+        <router-link :to="{ name: 'terms' }" :class="footerLinkClasses">{{ $t('footer.terms') }}</router-link>
               </li>
               <li>
-                <router-link :to="{ name: 'terms' }" :class="footerLinkClasses">Terms & Conditions</router-link>
+        <router-link :to="{ name: 'privacy' }" :class="footerLinkClasses">{{ $t('footer.privacy') }}</router-link>
               </li>
               <li>
-                <router-link :to="{ name: 'privacy' }" :class="footerLinkClasses">Privacy Policy</router-link>
+        <router-link :to="{ name: 'refund' }" :class="footerLinkClasses">{{ $t('footer.refund') }}</router-link>
               </li>
               <li>
-                <router-link :to="{ name: 'refund' }" :class="footerLinkClasses">Refund & Return Policy</router-link>
+        <router-link :to="{ name: 'about' }" :class="footerLinkClasses">{{ $t('footer.about') }}</router-link>
               </li>
               <li>
-                <router-link to="#" :class="footerLinkClasses">About Us</router-link>
-              </li>
-              <li>
-                <router-link to="#" :class="footerLinkClasses">Contact Us</router-link>
+        <router-link :to="{ name: 'contact' }" :class="footerLinkClasses">{{ $t('footer.contact') }}</router-link>
               </li>
             </ul>
           </div>
           <div class="max-w-[295px]">
-            <h4 class="text-base font-medium font-srProDisplay text-foreground">Support</h4>
+            <h4 class="text-base font-medium font-srProDisplay text-foreground">{{ $t('footer.support') }}</h4>
             <div class="flex items-center justify-start p-2 mt-2 border border-border rounded-2xl bg-surface">
               <div class="px-3 border-r border-border">
                 <svg class="w-8 h-8 text-foreground" fill="currentColor" viewBox="0 0 20 20">
@@ -52,8 +49,8 @@
                 </svg>
               </div>
               <div class="px-3">
-                <p class="text-sm font-thin text-muted-foreground font-srProDisplay">9AM - 8PM</p>
-                <p class="font-semibold text-primary font-srProDisplay">16744</p>
+                <p class="text-sm font-thin text-muted-foreground font-srProDisplay">{{ $t('footer.supportHours') }}</p>
+                <p class="font-semibold text-primary font-srProDisplay">{{ $t('footer.supportPhone') }}</p>
               </div>
             </div>
           </div>

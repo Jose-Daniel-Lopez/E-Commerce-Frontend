@@ -348,6 +348,20 @@
   "discountProducts": {
     "title": "Productos en descuento"
   },
+  "footer": {
+    "location": "Ubicación",
+    "headOffice": "Oficina Principal: Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+  "emailLabel": "Correo electrónico",
+    "emailAddress": "webteam@tejontech.com",
+    "support": "Soporte",
+    "supportHours": "9AM - 8PM",
+    "supportPhone": "16744",
+    "about": "Acerca de",
+    "contact": "Contáctanos",
+    "terms": "Términos y Condiciones",
+    "privacy": "Política de Privacidad",
+    "refund": "Política de Reembolsos y Devoluciones"
+  },
   "hero": {
     "smallTitle": "Pro. Beyond.",
     "bigTitle": "iPhone 14",
