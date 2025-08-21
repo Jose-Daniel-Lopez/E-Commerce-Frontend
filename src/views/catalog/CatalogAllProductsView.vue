@@ -1,17 +1,17 @@
 <script setup lang="ts">
 // Debug panel state
 const showDebug = ref(false)
-import { onMounted, ref, computed, watch } from 'vue'
-import { useProductStore } from '@/stores/products'
-import { useCategoriesStore } from '@/stores/categories'
-import { useWishlistStore } from '@/stores/wishlistStore'
-import { useAuthStore } from '@/stores/auth'
-import { useRouter } from 'vue-router'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import DualRangeSlider from '@/components/shared/DualRangeSlider.vue'
-import { storeToRefs } from 'pinia'
-import api from '@/lib/axios'
 import { useThemeClasses } from '@/composables/useThemeClasses'
+import api from '@/lib/axios'
+import { useAuthStore } from '@/stores/auth'
+import { useCategoriesStore } from '@/stores/categories'
+import { useProductStore } from '@/stores/products'
+import { useWishlistStore } from '@/stores/wishlistStore'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const productStore = useProductStore()
@@ -1134,7 +1134,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                 <button
                   @click="toggleFavorite(product.id)"
                   :disabled="wishlistLoading"
-                  class="w-6 h-6 text-gray-600 transition-colors hover:text-red-600 disabled:opacity-50"
+                  class="w-11 h-11 flex items-center justify-center text-gray-600 transition-all hover:text-red-600 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 rounded-full border border-gray-300/50 dark:border-gray-600/50 disabled:opacity-50"
                   type="button"
                   aria-label="Toggle favorite"
                 >
