@@ -155,7 +155,6 @@ const {
   dividerClasses,
   hoverClasses,
   progressBarBgClasses,
-  progressBarFillClasses,
   ratingTextClasses,
   ratingCountClasses
 } = useThemeClasses()
@@ -878,7 +877,7 @@ const fetchProductVariants = async (productId: number) => {
 
     <!-- Error State -->
     <div v-else-if="error" :class="['max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8', pageBackgroundClasses]">
-      <div class="px-4 py-3 text-center bg-error-bg border-border rounded-lg">
+      <div class="px-4 py-3 text-center rounded-lg bg-error-bg border-border">
         <span :class="textClasses">{{ error }}</span>
       </div>
     </div>
@@ -949,7 +948,7 @@ const fetchProductVariants = async (productId: number) => {
                 'px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium transition-all',
                 selectedStorage === size
                   ? buttonPrimaryClasses
-                  : [buttonSecondaryClasses, 'hover:' + buttonPrimaryClasses.split(' ').slice(0, 2).join(' ')]
+                  : [buttonSecondaryClasses, 'hover:bg-primary', 'hover:text-primary-foreground']
               ]">
                 {{ size }}
               </button>
