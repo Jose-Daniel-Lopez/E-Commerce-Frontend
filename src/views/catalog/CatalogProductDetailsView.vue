@@ -285,30 +285,17 @@ const getUserInitials = (userName: string) => {
     .toUpperCase()
     .slice(0, 2)
 }
-const getAvatarColor = (userName: string) => {
-  const colors = [
-    'from-blue-500 to-purple-600',
-    'from-green-500 to-teal-600',
-    'from-pink-500 to-rose-600',
-    'from-yellow-500 to-orange-600',
-    'from-indigo-500 to-blue-600',
-    'from-red-500 to-pink-600',
-    'from-purple-500 to-indigo-600',
-    'from-teal-500 to-green-600',
-  ]
-  const nameHash = (userName || 'Anonymous').split('').reduce((a, b) => {
-    a = (a << 5) - a + b.charCodeAt(0)
-    return a & a
-  }, 0)
-  return colors[Math.abs(nameHash) % colors.length]
-}
-const handleAvatarError = (event: Event) => {
+// Track avatar images that failed to load so we can show the initials fallback reliably
+const erroredAvatars = ref<Set<number | string>>(new Set())
+
+const handleAvatarError = (event: Event, key?: number | string) => {
   const img = event.target as HTMLImageElement
-  const fallback = img.nextElementSibling as HTMLElement
-  if (img && fallback) {
-    img.style.display = 'none'
-    fallback.style.display = 'flex'
+  // mark this avatar as errored so the template shows the fallback
+  if (typeof key !== 'undefined') {
+    erroredAvatars.value.add(key)
   }
+  // hide the broken image immediately to avoid the browser broken-image icon flash
+  if (img) img.style.display = 'none'
 }
 const getProductImage = (productName: string, category?: string): string => {
   const cat = category?.toLowerCase() || currentProduct.value?.category?.toLowerCase()
@@ -1793,16 +1780,20 @@ const fetchProductVariants = async (productId: number) => {
                     <div class="flex items-start gap-3 lg:gap-4 rounded-[10px] w-auto h-auto p-4 lg:p-8" :style="{ background: 'var(--color-input-background)' }">
                       <!-- Avatar -->
                       <div class="flex-shrink-0 w-10 h-10 lg:w-12 lg:h-12">
-                        <img v-if="review.userAvatar" :src="review.userAvatar"
+                        <!-- Show image only when a valid avatar URL exists and it hasn't errored -->
+                        <img
+                          v-if="review.userAvatar && !erroredAvatars.has(review.id)"
+                          :src="review.userAvatar"
                           :alt="`${review.userName || 'User'} avatar`"
                           class="object-cover w-10 h-10 border-2 border-white rounded-full shadow-lg lg:w-12 lg:h-12 avatar-hover"
-                          @error="handleAvatarError" />
-                        <div v-else
-                          class="flex items-center justify-center w-10 h-10 rounded-full shadow-lg lg:w-12 lg:h-12 bg-gradient-to-br avatar-hover"
-                          :class="`bg-gradient-to-br ${getAvatarColor(review.userName || 'Anonymous')} ${review.userAvatar ? 'hidden' : ''}`">
-                          <span class="text-xs font-semibold text-white lg:text-sm">{{
-                            getUserInitials(review.userName || 'Anonymous')
-                            }}</span>
+                          @error="(e) => handleAvatarError(e, review.id ?? review.userName)" />
+
+                        <!-- Fallback when there is no avatar or the image failed to load -->
+                        <div
+                          v-if="!review.userAvatar || erroredAvatars.has(review.id)"
+                          class="flex items-center justify-center w-10 h-10 rounded-full bg-surface shadow-lg lg:w-12 lg:h-12 avatar-hover"
+                        >
+                          <span class="text-xs font-semibold text-white lg:text-sm">{{ getUserInitials(review.userName || 'Anonymous') }}</span>
                         </div>
                       </div>
 

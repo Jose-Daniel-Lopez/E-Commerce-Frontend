@@ -269,7 +269,7 @@ const toggleFavorite = async (productId: number) => {
         isFeatured: product.isFeatured,
         basePrice: product.basePrice,
         totalStock: product.totalStock,
-        imageUrl: product.imageUrl
+        imageUrl: product.imageUrl ?? undefined
       })
       console.log('✅ [CATALOG] Product added to wishlist')
     } else {
