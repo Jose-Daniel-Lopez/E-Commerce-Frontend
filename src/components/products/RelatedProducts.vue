@@ -1,35 +1,73 @@
 <script setup lang="ts">
+// ============================================================================
+// IMPORTS
+// ============================================================================
+
+// Core Vue utilities
 import { ref, onMounted, computed } from 'vue'
+
+// Routing and i18n
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+
+// UI & Theme utilities
 import { useThemeClasses } from '@/composables/useThemeClasses'
 import { useToast } from '@/composables/useToast'
+
+// API client
 import api from '@/lib/axios'
 
-// === Interfaces ===
+// ============================================================================
+// INTERFACES & PROPS
+// ============================================================================
+
+/**
+ * Represents a related product with minimal essential data.
+ * This structure matches the API response exactly.
+ */
 interface RelatedProduct {
+  id: number // Required — API always returns this
   name: string
   imageUrl: string
   basePrice: number
+  category: {
+    id: number
+    name: string
+    icon: string
+  }
 }
 
+/**
+ * Component configuration options.
+ */
 interface Props {
-  productId: number
-  limit?: number
-  collapsible?: boolean
-  showTitle?: boolean
+  productId: number // Required — used to fetch related items
+  limit?: number // Optional — max number of products to show (default: 3)
+  collapsible?: boolean // Optional — whether section can be collapsed (default: true)
+  showTitle?: boolean // Optional — whether to display the title (default: true)
 }
 
+// Define props with defaults
 const props = withDefaults(defineProps<Props>(), {
   limit: 3,
   collapsible: true,
   showTitle: true
 })
 
-// === Composables ===
+// ============================================================================
+// COMPOSABLES & STORES
+// ============================================================================
+
+// Internationalization for multilingual support
 const { t } = useI18n()
+
+// User feedback system
 const toast = useToast()
 
-// === Theme Classes ===
+// Navigation
+const router = useRouter()
+
+// Dynamic theme classes for consistent UI
 const {
   cardClasses,
   textClasses,
@@ -38,33 +76,100 @@ const {
   hoverClasses
 } = useThemeClasses()
 
-// === State ===
+// =============================================================================
+// REACTIVE STATE
+// =============================================================================
+
+// List of related products fetched from API
 const relatedProducts = ref<RelatedProduct[]>([])
+
+// Loading state to manage UX during fetch
 const loading = ref(false)
+
+// Error message if fetch fails
 const error = ref('')
+
+// Whether the section is collapsed (if collapsible)
 const collapsed = ref(false)
 
-// === Computed ===
+// =============================================================================
+// COMPUTED PROPERTIES
+// =============================================================================
+
+/**
+ * Determines if there are any related products to display.
+ * Used to conditionally render content or fallbacks.
+ */
 const hasRelatedProducts = computed(() => relatedProducts.value.length > 0)
 
-// === Methods ===
-const formatPrice = (price: number) => `$${price.toLocaleString()}`
+// =============================================================================
+// 🛠️ UTILITY FUNCTIONS
+// =============================================================================
 
+/**
+ * Formats a price number into a localized currency string.
+ * Uses toLocaleString for better formatting (e.g., 1,000 instead of 1000).
+ */
+const formatPrice = (price: number): string => {
+  return `$${price.toLocaleString()}`
+}
+
+/**
+ * Toggles the visibility of the related products section.
+ * Only active if `collapsible` prop is true.
+ */
 const toggleCollapse = () => {
   collapsed.value = !collapsed.value
 }
 
+/**
+ * Handles click on a related product.
+ * Safely navigates to product details with scroll-to-top behavior.
+ */
 const handleProductClick = (product: RelatedProduct) => {
-  // For now, we'll show a toast since we don't have product slugs or IDs
-  // In a real implementation, you'd navigate to the product details page
-  toast.info(`Viewing ${product.name}`, {
-    duration: 2000
-  })
+  try {
+    if (!product) {
+      console.warn('RelatedProducts: handleProductClick received falsy product')
+      return
+    }
 
-  // Example of how you might navigate if you had product IDs:
-  // router.push(`/catalog/products/${productId}`)
+    if (!product.id) {
+      console.warn('RelatedProducts: Product missing ID', product)
+      toast.info(product.name || 'Product', { duration: 2000 })
+      return
+    }
+
+    // Normalize category name for routing
+    const rawCategory = product.category?.name
+    const categoryName = rawCategory ? String(rawCategory).toLowerCase() : 'all-products'
+
+    const to = {
+      name: 'productDetails',
+      params: { categoryName, productId: String(product.id) }
+    }
+
+    // Perform navigation
+    router.push(to).then(() => {
+      // Smooth scroll to top after navigation
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } catch {
+        window.scrollTo(0, 0) // Fallback for older browsers
+      }
+    }).catch((navErr) => {
+      console.error('RelatedProducts: Navigation failed:', navErr)
+      toast.error('Could not navigate to product details', { duration: 3000 })
+    })
+  } catch (err) {
+    console.error('RelatedProducts: Unexpected error in handleProductClick:', err)
+    toast.error('An unexpected error occurred', { duration: 3000 })
+  }
 }
 
+/**
+ * Fallback handler for broken image URLs.
+ * Replaces broken image with a default placeholder.
+ */
 const handleImageError = (event: Event) => {
   const target = event.target as HTMLImageElement
   if (target) {
@@ -72,9 +177,17 @@ const handleImageError = (event: Event) => {
   }
 }
 
+// ============================================================================
+// DATA FETCHING
+// ============================================================================
+
+/**
+ * Fetches related products from the backend API.
+ * Respects the `limit` prop (capped at 10 for performance).
+ */
 const fetchRelatedProducts = async () => {
   if (!props.productId) {
-    console.warn('No product ID provided for related products')
+    console.warn('RelatedProducts: No productId provided, skipping fetch')
     return
   }
 
@@ -84,40 +197,48 @@ const fetchRelatedProducts = async () => {
   try {
     const response = await api.get(`/products/${props.productId}/related`, {
       params: {
-        limit: Math.min(props.limit, 10) // Ensure we don't exceed max of 10
+        limit: Math.min(props.limit, 10) // Prevent excessive requests
       }
     })
 
     relatedProducts.value = response.data || []
 
-    console.log(`Fetched ${relatedProducts.value.length} related products for product ${props.productId}`)
+    console.log(`RelatedProducts: Fetched ${relatedProducts.value.length} items for product ID ${props.productId}`)
   } catch (err) {
-    console.error('Error fetching related products:', err)
+    console.error('RelatedProducts: Failed to fetch related products:', err)
     error.value = 'Failed to load related products'
 
-    // Optional: Show error toast
-    toast.error('Failed to load related products', {
-      duration: 3000
-    })
+    // Notify user of failure
+    toast.error('Failed to load related products', { duration: 3000 })
   } finally {
     loading.value = false
   }
 }
 
-// === Lifecycle ===
+// ============================================================================
+// LIFECYCLE HOOKS
+// ============================================================================
+
+// On mount: fetch related products
 onMounted(() => {
   fetchRelatedProducts()
 })
 </script>
 
 <template>
-  <section v-if="hasRelatedProducts || loading" :class="['w-full flex justify-center py-32', 'theme-surface']">
+  <!-- Main Section: Only shown if loading or has products -->
+  <section
+    v-if="hasRelatedProducts || loading"
+    :class="['w-full flex justify-center py-32', 'theme-surface']"
+  >
     <div class="w-full max-w-[1640px] px-8">
-      <!-- Header with optional collapse button -->
+      <!-- Header with Title and Collapse Toggle -->
       <div v-if="showTitle" class="flex items-center justify-between mb-2">
         <h2 :class="['text-2xl font-semibold text-left mb-8', textClasses]">
           {{ t('catalog.relatedProducts', 'Related Products') }}
         </h2>
+
+        <!-- Collapse Button (only if collapsible) -->
         <button
           v-if="collapsible"
           @click="toggleCollapse"
@@ -127,7 +248,11 @@ onMounted(() => {
         >
           <v-icon
             name="hi-chevron-down"
-            :class="['w-5 h-5 transition-transform duration-200', textClasses, { 'rotate-180': collapsed }]"
+            :class="[
+              'w-5 h-5 transition-transform duration-200',
+              textClasses,
+              { 'rotate-180': collapsed }
+            ]"
             scale="1.2"
           />
         </button>
@@ -135,22 +260,25 @@ onMounted(() => {
 
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center py-16">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div class="w-8 h-8 border-b-2 border-blue-600 rounded-full animate-spin"></div>
         <span :class="['ml-3', textClasses]">{{ t('common.loading', 'Loading...') }}</span>
       </div>
 
       <!-- Error State -->
-      <div v-else-if="error && !hasRelatedProducts" :class="['text-center py-16', textMutedClasses]">
+      <div
+        v-else-if="error && !hasRelatedProducts"
+        :class="['text-center py-16', textMutedClasses]"
+      >
         <p>{{ t('catalog.relatedProductsError', 'Unable to load related products') }}</p>
       </div>
 
-      <!-- Related Products Grid -->
+      <!-- Related Products Grid (with collapse animation) -->
       <transition name="fade-details">
         <div v-show="!collapsed && hasRelatedProducts">
           <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div
-              v-for="(product, index) in relatedProducts"
-              :key="`${product.name}-${index}`"
+              v-for="product in relatedProducts"
+              :key="product.id"
               :class="[
                 'rounded-[15px] p-8 text-center hover:shadow-lg transition-all duration-300 cursor-pointer',
                 cardClasses,
@@ -158,7 +286,7 @@ onMounted(() => {
               ]"
               @click="handleProductClick(product)"
               role="button"
-              :tabindex="0"
+              tabindex="0"
               @keydown.enter="handleProductClick(product)"
               @keydown.space.prevent="handleProductClick(product)"
             >
@@ -181,8 +309,10 @@ onMounted(() => {
                 {{ t('catalog.startingAt', 'Starting at') }} {{ formatPrice(product.basePrice) }}
               </p>
 
-              <!-- View Details Button -->
-              <button :class="['w-full py-2 px-4 rounded-lg transition-colors', buttonPrimaryClasses]">
+              <!-- Action Button -->
+              <button
+                :class="['w-full py-2 px-4 rounded-lg transition-colors', buttonPrimaryClasses]"
+              >
                 {{ t('catalog.viewDetails', 'View Details') }}
               </button>
             </div>
@@ -190,7 +320,7 @@ onMounted(() => {
         </div>
       </transition>
 
-      <!-- Empty State (when no related products found) -->
+      <!-- Empty State: No products found -->
       <div
         v-if="!loading && !hasRelatedProducts && !error"
         :class="['text-center py-16', textMutedClasses]"
@@ -202,7 +332,12 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* Collapsible section animations */
+/* ============================================================================
+   ANIMATIONS
+   ============================================================================
+*/
+
+/* Fade in/out animation for related products section */
 .fade-details-enter-active,
 .fade-details-leave-active {
   transition: all 0.3s ease;
@@ -214,12 +349,17 @@ onMounted(() => {
   transform: translateY(-10px);
 }
 
-/* Product card hover effects */
+/* ============================================================================
+   HOVER EFFECTS
+   ============================================================================
+*/
+
+/* Subtle lift effect on hover */
 .product-card:hover {
   transform: translateY(-2px);
 }
 
-/* Image hover effect */
+/* Image scale on hover */
 .product-image-hover {
   transition: transform 0.3s ease;
 }

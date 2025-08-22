@@ -20,7 +20,7 @@ const selectStorage = (size: string) => {
   selectedStorage.value = size
 }
 
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useProductStore } from '@/stores/products'
 import { useWishlistStore } from '@/stores/wishlistStore'
 import { useAuthStore } from '@/stores/auth'
@@ -763,9 +763,11 @@ const addToWishlist = async () => {
 }
 
 // === Fetch Data ===
-onMounted(async () => {
+// Extracted helper to load product data so it can be reused on param changes
+const loadProduct = async (productId: number) => {
+  loading.value = true
+  error.value = ''
   try {
-    const productId = parseInt(props.productId)
     if (!productId || isNaN(productId)) throw new Error('Invalid product ID')
     const backendProduct = await productStore.fetchProductById(productId) as BackendProduct
     product.value = {
@@ -800,16 +802,19 @@ onMounted(async () => {
         colors: getColorOptions(),
       },
     }
+
+    // Reset selections based on new product
     selectedColor.value = availableColors.value[0] || ''
     selectedStorage.value = ''
+
+    // Load additional data
     await fetchProductVariants(productId)
-    // Fetch product reviews
     await fetchProductReviews(productId)
-    // Initialize wishlist if user is authenticated
+
+    // Initialize wishlist and cart for authenticated users
     if (isAuthenticated.value && user.value?.id) {
       console.log('🟣 [CATALOG PRODUCT DETAILS] Initializing wishlist for user:', user.value.id)
       await wishlistStore.fetchUserWishlist(user.value.id)
-      // Also initialize cart for authenticated user
       console.log('🟣 [CATALOG PRODUCT DETAILS] Initializing cart for user:', user.value.id)
       await userCartStore.fetchUserCart(user.value.id)
     }
@@ -819,6 +824,19 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+}
+
+// Load product initially on mount
+onMounted(() => {
+  const initialId = parseInt(props.productId)
+  loadProduct(initialId)
+})
+
+// Watch for changes to the route param so the component updates when navigating between products
+watch(() => props.productId, (newVal, oldVal) => {
+  if (newVal === oldVal) return
+  const newId = parseInt(newVal)
+  loadProduct(newId)
 })
 
 const fetchProductVariants = async (productId: number) => {
