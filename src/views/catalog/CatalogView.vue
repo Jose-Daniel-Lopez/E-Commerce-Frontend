@@ -7,7 +7,7 @@ import { useThemeClasses } from '@/composables/useThemeClasses'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
 /**
- * === 🔧 Dependencies & Composables ===
+ * === Dependencies & Composables ===
  * We initialize essential composables and stores here.
  * These provide routing, internationalization, state, and UI theming.
  */
@@ -67,7 +67,7 @@ const collapsedFilters = ref({
 })
 
 /**
- * === 🔍 Computed Properties ===
+ * === Computed Properties ===
  * Derived state for filtering, sorting, pagination, and display.
  * These automatically update when dependencies change.
  */
@@ -87,7 +87,7 @@ const filteredCategories = computed(() => {
     )
   }
 
-  // 🧩 Filter by selected category types (only checked ones)
+  // Filter by selected category types (only checked ones)
   const selectedTypes = categoryTypes.value
     .filter(type => type.checked)
     .map(type => type.originalName)
@@ -250,7 +250,7 @@ const translatedPaginatedCategories = computed(() =>
 )
 
 /**
- * === 🚀 Lifecycle & Initialization ===
+ * === Lifecycle & Initialization ===
  * Load data and initialize filter options when component mounts.
  */
 onMounted(async () => {
@@ -344,7 +344,7 @@ const clearTypeFilters = () => {
 }
 
 /**
- * === 🔔 Watchers ===
+ * === Watchers ===
  * Automatically reset pagination when filters change.
  */
 watch(searchQuery, () => {
