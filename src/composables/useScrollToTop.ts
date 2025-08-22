@@ -12,33 +12,68 @@ export function useScrollToTop() {
   const scrollToTop = async (smooth: boolean = true) => {
     // Wait for DOM to be updated
     await nextTick()
+    // Determine the actual scrolling element (html or body depending on CSS)
+  // Detect the actual element used for scrolling. Some layouts keep html overflow hidden
+  // and make body the scroll container. Prefer an element that currently has scroll
+  // or one whose scrollHeight exceeds its clientHeight.
+  const detectScroller = (): HTMLElement | null => {
+    const scrollingElement = (document.scrollingElement as HTMLElement) || null
+    const body = document.body as HTMLElement | null
+    const docEl = document.documentElement as HTMLElement | null
 
-    const scrollOptions = smooth 
+    const candidates: Array<HTMLElement | null> = [scrollingElement, body, docEl]
+
+    // If any has a non-zero scrollTop, pick that one
+    for (const c of candidates) {
+      if (c && (c.scrollTop ?? 0) > 0) return c
+    }
+
+    // Otherwise pick the first whose scrollHeight > clientHeight
+    for (const c of candidates) {
+      if (c && c.scrollHeight > c.clientHeight) return c
+    }
+
+    // Fallback order
+    return scrollingElement || docEl || body
+  }
+
+  const scroller: HTMLElement | null = detectScroller()
+  console.debug('[useScrollToTop] detected scroller:', scroller && (scroller === document.body ? 'body' : scroller === document.documentElement ? 'documentElement' : 'scrollingElement/other'))
+
+    const scrollOptions = smooth
       ? { top: 0, behavior: 'smooth' as ScrollBehavior }
       : { top: 0, behavior: 'auto' as ScrollBehavior }
 
-    try {
-      // Method 1: Modern scroll with behavior
+    // Try to scroll the best candidate scroller first
+    if (typeof scroller?.scrollTo === 'function') {
+      scroller.scrollTo(scrollOptions)
+    } else {
+      // Fallback to window
       window.scrollTo(scrollOptions)
-      
-      // Method 2: Fallback after short delay
-      setTimeout(() => {
-        if (window.pageYOffset > 0) {
-          window.scrollTo(0, 0)
-        }
-      }, 100)
-
-      // Method 3: Double-check with requestAnimationFrame
-      requestAnimationFrame(() => {
-        if (window.pageYOffset > 0) {
-          window.scrollTo(0, 0)
-        }
-      })
-    } catch (error) {
-      // Fallback for older browsers
-      console.warn('Smooth scroll not supported, using instant scroll:', error)
-      window.scrollTo(0, 0)
     }
+
+    // Return a promise that resolves when the scroll reaches top, or rejects by timeout
+    return new Promise<void>((resolve, reject) => {
+      const start = performance.now()
+      const timeout = 1200 // ms to wait for smooth scroll to complete
+
+      const check = () => {
+        // Read from the most reliable sources: if scroller is body use its scrollTop,
+        // otherwise fall back to documentElement/window.
+        const current = (scroller && (scroller.scrollTop ?? 0)) || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
+        if (current <= 0) {
+          resolve()
+          return
+        }
+        if (performance.now() - start > timeout) {
+          reject(new Error('scroll timeout'))
+          return
+        }
+        requestAnimationFrame(check)
+      }
+
+      requestAnimationFrame(check)
+    })
   }
 
   /**
@@ -58,7 +93,7 @@ export function useScrollToTop() {
   const scrollToElement = (elementId: string, smooth: boolean = true) => {
     const element = document.getElementById(elementId)
     if (element) {
-      element.scrollIntoView({ 
+      element.scrollIntoView({
         behavior: smooth ? 'smooth' : 'auto',
         block: 'start'
       })
