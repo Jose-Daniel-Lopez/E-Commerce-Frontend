@@ -105,10 +105,10 @@ const discount = ref(0)
 /**
  * Computed values for order summary
  * - Tax and shipping are currently static; could be made dynamic in the future
- * - Values are in cents to align with monetary best practices (avoiding float arithmetic)
+ * - Values are in dollars to align with the rest of the application
  */
-const estimatedTax = computed(() => 5000) // 50.00 € in cents
-const estimatedShipping = computed(() => 2900) // 29.00 € in cents
+const estimatedTax = computed(() => 50.00) // $50.00
+const estimatedShipping = computed(() => 29.00) // $29.00
 
 /**
  * Lifecycle: Fetch user cart on component mount if user is authenticated

@@ -82,14 +82,11 @@ defineEmits<{
  * Format price with proper currency formatting
  * Converts from cents (API format) to euros and formats with Spanish locale
  */
-const formatPrice = (priceInCents: number): string => {
-  const priceInEuros = priceInCents / 100
-  return new Intl.NumberFormat('es-ES', {
+const formatPrice = (price: number): string => {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(priceInEuros)
+    currency: 'USD',
+  }).format(price)
 }
 
 // Helper to get product image. This is a placeholder since the API doesn't provide images.

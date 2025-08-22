@@ -127,13 +127,13 @@ const {
 /**
  * Props definition for OrderSummary component
  *
- * All values are expected in cents (integer) to avoid floating-point precision issues.
+ * All values are in dollars to match the USD currency used throughout the application.
  */
 interface Props {
-  subtotal: number // Cart subtotal in cents
-  estimatedTax: number // Estimated tax in cents
-  estimatedShipping: number // Estimated shipping cost in cents
-  discount: number // Discount amount in euros (converted to cents internally)
+  subtotal: number // Cart subtotal in dollars
+  estimatedTax: number // Estimated tax in dollars
+  estimatedShipping: number // Estimated shipping cost in dollars
+  discount: number // Discount amount in dollars
   isCartEmpty: boolean // Flag to disable checkout if cart is empty
 }
 
@@ -157,14 +157,14 @@ const couponEffect = ref<boolean>(false) // Controls visual feedback animation
 
 /**
  * Computed total price
- * - Subtotal (in cents)
- * - Minus discount (converted from euros to cents)
- * - Plus tax and shipping (in cents)
+ * - Subtotal (in dollars)
+ * - Minus discount (in dollars)
+ * - Plus tax and shipping (in dollars)
  */
 const total = computed<number>(() => {
   return (
     props.subtotal -
-    props.discount * 100 + // Convert euros to cents
+    props.discount +
     props.estimatedTax +
     props.estimatedShipping
   )
@@ -172,19 +172,16 @@ const total = computed<number>(() => {
 
 /**
  * Format price from cents to localized currency string
- * Uses Spanish locale (es-ES) with EUR currency formatting
+ * Uses US locale (en-US) with USD currency formatting
  *
- * @param priceInCents - The amount in cents (e.g., 1299 = €12.99)
- * @returns Formatted currency string (e.g., "12,99 €")
+ * @param price - The amount in dollars (e.g., 12.99 = $12.99)
+ * @returns Formatted currency string (e.g., "$12.99")
  */
-const formatPrice = (priceInCents: number): string => {
-  const priceInEuros = priceInCents / 100
-  return new Intl.NumberFormat('es-ES', {
+const formatPrice = (price: number): string => {
+  return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(priceInEuros)
+    currency: 'USD',
+  }).format(price)
 }
 
 /**
