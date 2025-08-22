@@ -285,9 +285,24 @@ export const useThemeClasses = () => {
   const aboutValueCardClasses = computed(() => 'text-center p-6 bg-surface border border-border rounded-lg transition-colors duration-200')
 
   /**
+   * Title for about/value cards
+   */
+  const aboutValueTitleClasses = computed(() => 'text-lg font-medium text-foreground')
+
+  /**
    * Featured product card (used in homepage).
    */
   const featuredProductCardClasses = computed(() => 'bg-surface-secondary border border-border rounded-[15px] p-8 text-center hover:shadow-lg transition-all duration-300')
+
+  /**
+   * Featured product title (used in About/Featured components)
+   */
+  const featuredProductTitleClasses = computed(() => 'text-xl font-semibold text-foreground')
+
+  /**
+   * Featured product description (used in About/Featured components)
+   */
+  const featuredProductDescriptionClasses = computed(() => 'text-muted-foreground')
 
   /**
    * Catalog product card (individual items).
@@ -494,7 +509,10 @@ export const useThemeClasses = () => {
     reviewContentClasses,
     infoCardClasses,
     aboutValueCardClasses,
+  aboutValueTitleClasses,
     featuredProductCardClasses,
+  featuredProductTitleClasses,
+  featuredProductDescriptionClasses,
     catalogProductCardClasses,
 
     // Navigation

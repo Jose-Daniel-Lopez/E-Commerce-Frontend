@@ -12,9 +12,9 @@
       <div class="mb-6">
   <h1 :class="['text-2xl lg:text-3xl font-bold mb-2', textClasses]">Search Results</h1>
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div class="text-gray-600">
+          <div :class="textSecondaryClasses">
             <span v-if="searchQuery">
-              Showing results for "<span class="font-semibold text-gray-900">{{ searchQuery }}</span>"
+              Showing results for "<span :class="['font-semibold', textClasses]">{{ searchQuery }}</span>"
             </span>
             <span class="ml-2">
               ({{ pagination.totalElements }} {{ pagination.totalElements === 1 ? 'product' : 'products' }} found)
@@ -22,8 +22,8 @@
           </div>
 
           <!-- Sort Controls -->
-      <div class="flex items-center gap-4">
-            <label for="sort-select" class="text-sm font-medium text-gray-700 whitespace-nowrap">
+          <div class="flex items-center gap-4">
+            <label for="sort-select" :class="['text-sm font-medium whitespace-nowrap', textSecondaryClasses]">
               Sort by:
             </label>
             <select
@@ -44,19 +44,19 @@
 
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-border"></div>
       </div>
 
       <!-- No Results -->
   <div v-else-if="!loading && products.length === 0" class="text-center py-12">
         <div class="max-w-md mx-auto">
           <div class="flex justify-center mb-4">
-            <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg :class="['w-12 h-12', emptyStateIconClasses]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
-          <h3 class="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
-          <p class="text-gray-600 mb-6">
+          <h3 :class="['text-xl font-semibold mb-2', textClasses]">No products found</h3>
+          <p :class="['mb-6', emptyStateTextClasses]">
             <span v-if="searchQuery">
               Sorry, we couldn't find any products matching "<strong>{{ searchQuery }}</strong>".
             </span>
@@ -64,7 +64,7 @@
               Try adjusting your search terms or browse our categories.
             </span>
           </p>
-          <div class="space-y-2 text-sm text-gray-500">
+          <div :class="['space-y-2 text-sm', textMutedClasses]">
             <p>• Check your spelling</p>
             <p>• Try more general keywords</p>
             <p>• Browse our product categories</p>
@@ -85,10 +85,10 @@
           <div
             v-for="product in products"
             :key="product.id"
-            class="group relative bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-shadow h-[420px] flex flex-col"
+            :class="['group relative rounded-lg shadow-sm hover:shadow-lg transition-shadow h-[420px] flex flex-col', cardClasses]"
           >
             <!-- Product Image -->
-            <div class="relative overflow-hidden rounded-t-lg bg-gray-100 aspect-square">
+            <div class="relative overflow-hidden rounded-t-lg bg-surface aspect-square">
               <img
                 :src="product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp'"
                 :alt="product.name"
@@ -100,9 +100,9 @@
               <button
                 @click="toggleFavorite(product.id)"
                 :disabled="wishlistLoading"
-                class="absolute top-3 right-3 w-6 h-6 text-gray-600 hover:text-red-600 transition-colors disabled:opacity-50"
                 type="button"
                 aria-label="Toggle favorite"
+                :class="['absolute top-3 right-3 w-6 h-6 transition-colors disabled:opacity-50', interactiveIconClasses]"
               >
                 <svg
                   v-if="!isProductInWishlist(product.id)"
@@ -117,7 +117,7 @@
                   v-else
                   fill="currentColor"
                   viewBox="0 0 24 24"
-                  class="w-6 h-6 text-red-600"
+                  class="w-6 h-6 text-error"
                 >
                   <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
@@ -126,7 +126,7 @@
               <!-- Stock Badge -->
               <div
                 v-if="product.totalStock === 0"
-                class="absolute top-3 left-3 px-2 py-1 bg-red-500 text-white text-xs font-medium rounded"
+                class="absolute top-3 left-3 px-2 py-1 text-xs font-medium rounded bg-error text-error-foreground"
               >
                 Out of Stock
               </div>
@@ -138,16 +138,16 @@
               <div class="mb-3 h-[70px] flex flex-col justify-center">
                 <h3
                   @click="goToProductDetails(product.id)"
-                  class="font-medium text-gray-900 line-clamp-2 cursor-pointer hover:text-black transition-colors text-center"
+                  :class="['font-medium line-clamp-2 cursor-pointer transition-colors text-center', textClasses]"
                 >
                   {{ product.name }}
                 </h3>
-                <p class="text-sm text-gray-500 text-center truncate mt-1">{{ product.brand }}</p>
+                <p :class="['text-sm truncate mt-1 text-center', textSecondaryClasses]">{{ product.brand }}</p>
               </div>
 
               <!-- Price -->
               <div class="mb-3 text-center">
-                <span class="text-lg font-bold text-gray-900">
+                <span :class="['text-lg font-bold', textClasses]">
                   {{ formatPrice(product.basePrice) }}
                 </span>
               </div>
@@ -158,14 +158,14 @@
                   <template v-for="i in 5" :key="i">
                     <svg
                       class="w-4 h-4"
-                      :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : 'text-gray-300'"
+                      :class="i <= Math.round(product.rating || 0) ? 'text-warning' : 'text-muted-foreground'"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 1 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
                     </svg>
                   </template>
-                  <span class="ml-2 text-sm text-gray-500">{{ (product.rating ?? 0).toFixed(1) }}</span>
+                  <span :class="['ml-2 text-sm', textSecondaryClasses]">{{ (product.rating ?? 0).toFixed(1) }}</span>
                 </div>
               </div>
               <!-- Placeholder for products without rating to maintain layout -->
@@ -175,7 +175,7 @@
               <div class="flex justify-center">
                 <button
                   @click="goToProductDetails(product.id)"
-                  class="w-full py-2 bg-primary text-primary-foreground text-xs sm:text-sm font-medium rounded hover:opacity-95 transition-colors mt-auto"
+                  :class="['w-full py-2 text-xs sm:text-sm font-medium rounded transition-colors mt-auto', buttonPrimaryClasses]"
                   :disabled="product.totalStock === 0"
                 >
                   {{ product.totalStock === 0 ? 'Out of Stock' : 'View Details' }}
@@ -191,7 +191,7 @@
             <button
               @click="goToPage(currentPage - 1)"
               :disabled="currentPage <= 1"
-              class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              :class="['px-3 py-2 text-sm font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed', catalogPaginationButtonClasses]"
             >
               Previous
             </button>
@@ -201,12 +201,7 @@
                 v-for="page in visiblePages"
                 :key="page"
                 @click="goToPage(page)"
-                :class="[
-                  'px-3 py-2 text-sm font-medium rounded-lg',
-                  page === currentPage
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
-                ]"
+                :class="page === currentPage ? catalogPaginationActiveClasses : catalogPaginationButtonClasses"
               >
                 {{ page }}
               </button>
@@ -215,7 +210,7 @@
             <button
               @click="goToPage(currentPage + 1)"
               :disabled="currentPage >= pagination.totalPages"
-              class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              :class="['px-3 py-2 text-sm font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed', catalogPaginationButtonClasses]"
             >
               Next
             </button>
@@ -247,7 +242,20 @@ const { user } = storeToRefs(authStore)
 const { wishlistLoading } = storeToRefs(wishlistStore)
 
 // Theme classes
-const { pageBackgroundClasses, cardClasses, textClasses, catalogSortSelectClasses, buttonPrimaryClasses } = useThemeClasses()
+const {
+  pageBackgroundClasses,
+  cardClasses,
+  textClasses,
+  textSecondaryClasses,
+  textMutedClasses,
+  emptyStateIconClasses,
+  emptyStateTextClasses,
+  interactiveIconClasses,
+  catalogSortSelectClasses,
+  buttonPrimaryClasses,
+  catalogPaginationButtonClasses,
+  catalogPaginationActiveClasses
+} = useThemeClasses()
 
 // =======================
 // 📦 State
