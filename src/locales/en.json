@@ -155,8 +155,8 @@
       "title": "Information",
       "email": {
         "title": "Email",
-        "info": "info@tejontech.com",
-        "support": "support@tejontech.com"
+        "info": "info{'@'}tejontech.com",
+        "support": "support{'@'}tejontech.com"
       },
       "phone": {
         "title": "Phone",
@@ -183,7 +183,7 @@
         },
         "email": {
           "label": "Email",
-          "placeholder": "your@email.com"
+          "placeholder": "your{'@'}email.com"
         },
         "subject": {
           "label": "Subject",
@@ -284,7 +284,7 @@
         "nameLabel": "Full Name",
         "namePlaceholder": "Enter your full name",
         "emailLabel": "Email",
-        "emailPlaceholder": "your@email.com",
+        "emailPlaceholder": "your{'@'}email.com",
         "locationLabel": "Location",
         "locationPlaceholder": "Enter your location",
         "avatarTitle": "Profile Picture",
@@ -355,7 +355,7 @@
     "location": "Location",
     "headOffice": "Head Office: Lorem ipsum dolor sit amet, consectetur adipiscing elit",
   "emailLabel": "Email",
-    "emailAddress": "webteam@tejontech.com",
+  "emailAddress": "tejontech{'@'}gmail.com",
     "support": "Support",
     "supportHours": "9AM - 8PM",
     "supportPhone": "16744",

@@ -126,8 +126,8 @@
       "title": "Información",
       "email": {
         "title": "Correo electrónico",
-        "info": "info@tejontech.com",
-        "support": "soporte@tejontech.com"
+        "info": "info{'@'}tejontech.com",
+        "support": "soporte{'@'}tejontech.com"
       },
       "phone": {
         "title": "Teléfono",
@@ -154,7 +154,7 @@
         },
         "email": {
           "label": "Correo electrónico",
-          "placeholder": "tu@email.com"
+          "placeholder": "tu{'@'}email.com"
         },
         "subject": {
           "label": "Asunto",
@@ -281,7 +281,7 @@
         "nameLabel": "Nombre completo",
         "namePlaceholder": "Introduce tu nombre completo",
         "emailLabel": "Correo electrónico",
-        "emailPlaceholder": "tu@email.com",
+        "emailPlaceholder": "tu{'@'}email.com",
         "locationLabel": "Ubicación",
         "locationPlaceholder": "Introduce tu ubicación",
         "avatarTitle": "Foto de perfil",
@@ -352,7 +352,7 @@
     "location": "Ubicación",
     "headOffice": "Oficina Principal: Lorem ipsum dolor sit amet, consectetur adipiscing elit",
   "emailLabel": "Correo electrónico",
-    "emailAddress": "webteam@tejontech.com",
+  "emailAddress": "tejontech{'@'}gmail.com",
     "support": "Soporte",
     "supportHours": "9AM - 8PM",
     "supportPhone": "16744",
