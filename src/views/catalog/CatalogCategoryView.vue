@@ -630,10 +630,19 @@ onMounted(async () => {
 
           <!-- Products Grid - Mobile optimized -->
           <div v-else class="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-            <div v-for="product in paginatedProducts" :key="product.id" :class="catalogProductCardClasses"
-              class="relative h-auto rounded-lg px-4 py-4 duration-300 hover:scale-[1.01] hover:shadow-md md:h-[410px] lg:px-4">
+            <div
+              v-for="product in paginatedProducts"
+              :key="product.id"
+              @click="goToProductDetails(product.id)"
+              role="link"
+              :aria-label="`View ${product.name}`"
+              tabindex="0"
+              @keyup.enter="goToProductDetails(product.id)"
+              :class="`${catalogProductCardClasses} cursor-pointer`"
+              class="relative h-auto rounded-lg px-4 py-4 duration-300 hover:scale-[1.01] hover:shadow-md md:h-[410px] lg:px-4"
+            >
               <div class="absolute z-10 top-3 right-3">
-                <button @click="toggleFavorite(product.id)" :disabled="wishlistLoading"
+                <button @click.stop="toggleFavorite(product.id)" :disabled="wishlistLoading"
                   :class="[textSecondaryClasses, 'hover:text-red-600 dark:hover:text-red-400']"
                   class="flex items-center justify-center w-8 h-8 transition-colors disabled:opacity-50" type="button"
                   aria-label="Toggle favorite">
@@ -659,7 +668,7 @@ onMounted(async () => {
                 <div class="flex flex-col flex-1 gap-3">
                   <div class="flex flex-col gap-2">
                     <div class="h-[48px]">
-                      <a href="#" @click.prevent="goToProductDetails(product.id)" class="block cursor-pointer">
+                      <a href="#" @click.stop.prevent="goToProductDetails(product.id)" class="block cursor-pointer">
                         <h3 :class="textClasses"
                           class="text-base font-medium text-center transition-colors font-srProDisplay hover:text-indigo-600 dark:hover:text-indigo-400 line-clamp-2">
                           {{ product.name }}
@@ -684,12 +693,12 @@ onMounted(async () => {
                         formatPrice(product.basePrice) }}</span>
                     </div>
                   </div>
-                  <div class="flex items-center justify-center pt-2 mt-6">
-                    <button @click="buyNow(product.id)" :class="buttonPrimaryClasses"
+                    <div class="flex items-center justify-center pt-2 mt-6">
+                    <button @click.stop="buyNow(product.id)" :class="buttonPrimaryClasses"
                       class="w-full max-w-[160px] h-[40px] text-sm font-medium rounded transition-colors">
                       Buy Now
                     </button>
-                  </div>
+                    </div>
                 </div>
               </div>
             </div>
