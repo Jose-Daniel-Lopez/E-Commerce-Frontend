@@ -73,14 +73,14 @@
         <span>Subtotal</span>
         <span>{{ formatPrice(subtotal) }}</span>
       </div>
-      <div :class="[
+      <div v-if="!props.isCartEmpty" :class="[
         'flex justify-between font-srProDisplay',
         textSecondaryClasses
       ]">
         <span>Estimated Tax</span>
         <span>{{ formatPrice(estimatedTax) }}</span>
       </div>
-      <div :class="[
+      <div v-if="!props.isCartEmpty" :class="[
         'flex justify-between font-srProDisplay',
         textSecondaryClasses
       ]">
@@ -162,12 +162,9 @@ const couponEffect = ref<boolean>(false) // Controls visual feedback animation
  * - Plus tax and shipping (in dollars)
  */
 const total = computed<number>(() => {
-  return (
-    props.subtotal -
-    props.discount +
-    props.estimatedTax +
-    props.estimatedShipping
-  )
+  const tax = props.isCartEmpty ? 0 : props.estimatedTax
+  const shipping = props.isCartEmpty ? 0 : props.estimatedShipping
+  return props.subtotal - props.discount + tax + shipping
 })
 
 /**
