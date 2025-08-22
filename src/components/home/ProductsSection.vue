@@ -234,6 +234,7 @@ const filteredProducts = computed(() => {
     originalPrice: product.basePrice,
     discountPrice: '', // Set to empty for now, you can add discount logic later
     featureType: value.value === t('productsSection.tabs.upcoming') ? 'Up Coming...' : 'New Arrival',
+    category: product.categoryName || 'smartphones', // Add category for navigation
     image: {
       url: product.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1752495175/logo_egh7pf.webp',
       altText: product.name

@@ -1,6 +1,7 @@
 <template>
   <div
-    :class="['relative h-auto rounded-[9px] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4 transition-colors', cardClasses]"
+    :class="['relative h-auto rounded-[9px] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4 transition-colors cursor-pointer', cardClasses]"
+    @click="navigateToProduct"
   >
     <!-- Debug Panel (only visible in development) -->
     <div
@@ -18,7 +19,7 @@
 
     <div class="absolute top-4 right-4 z-40">
       <button
-        @click="toggleFavorite"
+        @click.stop="toggleFavorite"
         class="p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 transform hover:scale-110"
         type="button"
         aria-label="Toggle favorite"
@@ -92,19 +93,21 @@
         </div>
 
         <div class="flex items-center justify-center mt-auto">
-          <Button
-            height="48px"
-            width="183px"
-            bg-color="black"
-            text-color="white"
-            text-size="14px"
-            font-weight="500"
-            hover-bg-color="#1a1a1a"
-            :disabled="isUpcoming"
-            @click="handleBuyNow"
-          >
-            {{ isUpcoming ? 'Próximamente' : 'Comprar' }}
-          </Button>
+          <div @click.stop>
+            <Button
+              height="48px"
+              width="183px"
+              bg-color="black"
+              text-color="white"
+              text-size="14px"
+              font-weight="500"
+              hover-bg-color="#1a1a1a"
+              :disabled="isUpcoming"
+              @click="handleBuyNow"
+            >
+              {{ isUpcoming ? 'Próximamente' : 'Comprar' }}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
@@ -113,6 +116,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useToast } from '@/composables/useToast'
 import { storeToRefs } from 'pinia'
 import Button from './Button.vue'
@@ -132,6 +136,7 @@ interface Product {
   discountPrice?: string | number
   originalPrice: string | number
   featureType?: string
+  category?: string  // Add category for navigation
 }
 
 interface Props {
@@ -146,6 +151,7 @@ const props = withDefaults(defineProps<Props>(), {
 const isToggling = ref(false)
 const showDebug = ref(true) // Set to false to hide debug info
 
+const router = useRouter()
 const authStore = useAuthStore()
 const wishlistStore = useWishlistStore()
 const { user } = storeToRefs(authStore)
@@ -177,6 +183,20 @@ const isFavorite = computed(() => {
 })
 
 const toast = useToast()
+
+const navigateToProduct = () => {
+  // Default category if none provided
+  const category = props.product.category || 'smartphones'
+
+  router.push({
+    name: 'productDetails',
+    params: {
+      categoryName: category.toLowerCase(),
+      productId: props.product.id.toString()
+    }
+  })
+}
+
 const toggleFavorite = async () => {
   console.log('🔵 [PRODUCT CARD] toggleFavorite called for product:', props.product.id)
   console.log('🔵 [PRODUCT CARD] Full product object:', props.product)

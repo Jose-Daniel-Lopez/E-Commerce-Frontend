@@ -57,6 +57,7 @@ interface BackendProductResponse {
   camera?: string
   createdAt?: string
   rating?: number | null
+  categoryName?: string // Add optional categoryName
 }
 
 /**
@@ -416,12 +417,24 @@ export const useProductStore = defineStore('product', () => {
 
       console.log(`🔍 [fetchNewProducts] Received ${backendProducts.length} products from backend`)
 
-      return backendProducts.map((product, index) => {
+      // Transform backend data and fetch category names for each product
+      const transformedProducts = await Promise.all(backendProducts.map(async (product, index) => {
         console.log(`🔍 [fetchNewProducts] Processing product ${index}:`, {
           id: product.id,
           name: product.name,
           basePrice: product.basePrice
         })
+
+        // Fetch category name for the product if it has an ID
+        let categoryName = 'smartphones' // Default fallback
+        try {
+          if (product.id) {
+            const categoryResponse = await api.get(`/products/${product.id}/category`)
+            categoryName = categoryResponse.data?.name?.toLowerCase() || 'smartphones'
+          }
+        } catch (err) {
+          console.warn(`Could not fetch category for product ${product.id}:`, err)
+        }
 
         return {
           id: product.id ?? index, // Keep fallback just in case
@@ -437,8 +450,11 @@ export const useProductStore = defineStore('product', () => {
           camera: product.camera ?? '',
           createdAt: product.createdAt ?? new Date().toISOString(),
           rating: typeof product.rating === 'number' ? product.rating : 0,
+          categoryName: categoryName, // Add fetched categoryName
         }
-      })
+      }))
+
+      return transformedProducts
     } catch (err) {
       console.error('Error fetching new products:', err)
       error.value = 'Error al cargar los productos nuevos'
