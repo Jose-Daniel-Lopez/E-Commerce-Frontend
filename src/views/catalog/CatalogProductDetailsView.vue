@@ -930,7 +930,7 @@ const fetchProductVariants = async (productId: number) => {
           </div>
 
           <!-- Color Selection -->
-            <div v-if="availableColors.length > 0" class="flex items-center gap-4">
+          <div v-if="availableColors.length > 0" class="flex items-center gap-4">
             <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">Select color:</span>
             <div class="flex space-x-3">
               <button v-for="color in availableColors" :key="color" @click="selectColor(color)" :class="[
