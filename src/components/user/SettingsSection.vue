@@ -17,7 +17,7 @@
             <div>
               <h4 :class="['font-medium font-srProDisplay', textClasses]">
                 {{ $t('account.settings.language.title') }}
-                <WipTag variant="compact" :show-icon="false" text="WIP" tooltip="Theme system is still under development" />
+                <WipTag variant="compact" :show-icon="false" text="WIP" tooltip="Translation system is still under development" />
               </h4>
               <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
                 {{ $t('account.settings.language.description') }}
