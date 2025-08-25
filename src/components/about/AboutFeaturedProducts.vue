@@ -30,19 +30,19 @@ const {
 
 const products = [
   {
-    img: '/images/Apple-phone.png',
+    img: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151643/e-commerce/Apple-phone.png',
     alt: 'iPhone',
     title: 'about.featuredProducts.iphone.title',
     description: 'about.featuredProducts.iphone.description',
   },
   {
-    img: '/images/Macbook.png',
+    img: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151663/e-commerce/Macbook.png',
     alt: 'MacBook',
     title: 'about.featuredProducts.macbook.title',
     description: 'about.featuredProducts.macbook.description',
   },
   {
-    img: '/images/Apple-airPods.png',
+    img: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151640/e-commerce/Apple-airPods.png',
     alt: 'AirPods',
     title: 'about.featuredProducts.airpods.title',
     description: 'about.featuredProducts.airpods.description',

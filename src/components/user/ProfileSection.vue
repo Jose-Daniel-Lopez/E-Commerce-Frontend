@@ -62,7 +62,7 @@
       <div class="flex flex-col items-start gap-6 md:flex-row">
         <div class="relative">
           <img
-            :src="user?.avatar || '/images/User.png'"
+            :src="user?.avatar || 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151670/e-commerce/User.png'"
             :alt="`${user?.username || 'User'} profile picture`"
             class="object-cover w-24 h-24 rounded-full border theme-border"
             loading="eager"
@@ -113,7 +113,7 @@
           <div class="flex items-center gap-6">
             <div class="relative group">
               <img
-                :src="user?.avatar || '/images/User.png'"
+                :src="user?.avatar || 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151670/e-commerce/User.png'"
                 alt="User avatar"
                 class="object-cover w-24 h-24 transition-all duration-200 rounded-full cursor-pointer group-hover:theme-surface group-hover:shadow-lg"
                 @click="$emit('openAvatarSelector')"

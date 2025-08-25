@@ -1,6 +1,6 @@
 <template>
   <div class="rounded-xl p-6 flex flex-col shadow-sm hover:shadow-lg transition cursor-pointer animate-fadeInUp theme-card theme-border" @click="$emit('goToProduct', product.id)">
-  <img :src="product.image || '/images/Favorites.png'" :alt="product.name" class="w-full h-48 object-contain mb-4 rounded-lg" />
+  <img :src="product.image || 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151651/e-commerce/Favorites.png'" :alt="product.name" class="w-full h-48 object-contain mb-4 rounded-lg" />
     <h3 class="font-srProDisplay text-lg font-semibold mb-2">{{ product.name }}</h3>
     <p class="font-srProDisplay theme-muted-text text-sm mb-4">{{ product.description }}</p>
     <div class="flex items-center justify-between mt-auto">

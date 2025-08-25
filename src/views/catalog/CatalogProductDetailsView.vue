@@ -184,7 +184,7 @@ const mockProduct: Product = {
     'Enhanced capabilities thanks to an enlarged display of 6.7 inches and work without recharging throughout the day. Incredible photos as in weak, yes and in bright light using the new system with two cameras.',
   basePrice: 1399,
   totalStock: 50,
-  image: '/images/placeholder-phone-red.webp',
+  image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151705/e-commerce/placeholder-phone-red.webp',
   brand: 'Apple',
   category: 'Smartphones',
   specifications: {
@@ -212,7 +212,7 @@ const productImages = computed(() => {
       .filter(url => typeof url === 'string' && url.length > 0)
   }
   // Fallback to product image or default
-  return currentProduct.value?.image ? [currentProduct.value.image] : ['/images/placeholder-phone-red.webp']
+  return currentProduct.value?.image ? [currentProduct.value.image] : ['https://res.cloudinary.com/tejon-tech/image/upload/v1756151705/e-commerce/placeholder-phone-red.webp']
 })
 
 // === Computed ===
@@ -300,19 +300,19 @@ const handleAvatarError = (event: Event, key?: number | string) => {
 }
 const getProductImage = (productName: string, category?: string): string => {
   const cat = category?.toLowerCase() || currentProduct.value?.category?.toLowerCase()
-  if (cat === 'smartphones' || cat === 'phones') return '/images/placeholder-phone-red.webp'
-  if (cat === 'tablets') return '/images/placeholder-tablet-red.webp'
+  if (cat === 'smartphones' || cat === 'phones') return 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151705/e-commerce/placeholder-phone-red.webp'
+  if (cat === 'tablets') return 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151711/e-commerce/placeholder-tablet-red.webp'
   const productImageMap: Record<string, string> = {
-    iphone: '/images/Iphone-14-pro-Gold.png',
-    samsung: '/images/Galaxy-Z-Mobile.png',
-    apple: '/images/Iphone-14-pro-Gold.png',
-    realme: '/images/placeholder-phone-red.webp',
+    iphone: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151657/e-commerce/Iphone-14-pro-Gold.png',
+    samsung: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151652/e-commerce/Galaxy-Z-Mobile.png',
+    apple: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151657/e-commerce/Iphone-14-pro-Gold.png',
+    realme: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151705/e-commerce/placeholder-phone-red.webp',
   }
   const lowerName = productName.toLowerCase()
   for (const [key, path] of Object.entries(productImageMap)) {
     if (lowerName.includes(key)) return path
   }
-  return '/images/placeholder-phone-red.webp'
+  return 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151705/e-commerce/placeholder-phone-red.webp'
 }
 const getColorOptions = (): string[] => {
   return currentProduct.value?.category === 'Smartphones'
@@ -904,7 +904,7 @@ const fetchProductVariants = async (productId: number) => {
                 : 'border-border'
             ]" style="width: 64px; height: 64px;">
               <img
-                :src="img && typeof img === 'string' ? img : (img as any)?.imageUrl || '/images/placeholder-phone-red.webp'"
+                :src="img && typeof img === 'string' ? img : (img as any)?.imageUrl || 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151705/e-commerce/placeholder-phone-red.webp'"
                 :alt="`Product view ${idx + 1}`" class="object-cover w-full h-full transition-opacity duration-200"
                 :style="selectedImageIndex === idx ? '' : 'opacity: 0.4;'" />
             </button>

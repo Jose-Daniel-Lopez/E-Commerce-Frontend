@@ -71,6 +71,7 @@ import { useThemeClasses } from '@/composables/useThemeClasses'
 import { useThemeStore } from '@/stores/theme'
 import { storeToRefs } from 'pinia'
 import { computed } from 'vue'
+import { getLogoImage } from '@/composables/useCloudinaryImages'
 import SocialIcons from './SocialIcons.vue'
 
 const links = [
@@ -96,7 +97,7 @@ const logoSrc = computed(() => {
   const theme = selectedTheme?.value ?? 'light'
   const systemPrefersDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
   const darkActive = document.documentElement.classList.contains('dark') || theme === 'dark' || (theme === 'system' && systemPrefersDark)
-  return darkActive ? '/images/logo-full-white.webp' : '/images/logo-full.webp'
+  return getLogoImage(darkActive, { width: 80, quality: 'auto' })
 })
 </script>
 

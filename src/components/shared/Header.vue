@@ -6,7 +6,7 @@
       <!-- logo start -->
       <div class="w-[96px]">
         <router-link to="/">
-          <img src="/images/logo_black.png" alt="logo" class="w-24 h-8" />
+          <img src="https://res.cloudinary.com/tejon-tech/image/upload/v1756151701/e-commerce/logo_black.png" alt="logo" class="w-24 h-8" />
         </router-link>
       </div>
       <!-- logo end -->

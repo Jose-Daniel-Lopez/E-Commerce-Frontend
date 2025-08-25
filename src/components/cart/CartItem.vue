@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center gap-6 py-8">
   <img
-      :src="item.product?.imageUrl || getProductImage(item.product?.name)"
+      :src="item.product?.imageUrl || getProductImage(item.product?.name, { width: 96, height: 96, quality: 'auto' })"
       :alt="item.product?.name"
       :class="[
         'w-24 h-24 object-contain rounded-lg',
@@ -48,6 +48,7 @@
 <script setup lang="ts">
 import QuantityButton from '@/components/cart/QuantityButton.vue'
 import { useThemeClasses } from '@/composables/useThemeClasses'
+import { getProductImage } from '@/composables/useCloudinaryImages'
 
 // Theme classes
 const { textClasses, textSecondaryClasses } = useThemeClasses()
@@ -87,15 +88,5 @@ const formatPrice = (price: number): string => {
     style: 'currency',
     currency: 'USD',
   }).format(price)
-}
-
-// Helper to get product image. This is a placeholder since the API doesn't provide images.
-function getProductImage(productName: string | undefined) {
-  if (!productName) return '/public/images/logo.webp'
-  if (productName.toLowerCase().includes('iphone 14'))
-    return '/public/images/Iphone-14-pro-purple.png'
-  if (productName.toLowerCase().includes('airpods max')) return '/public/images/Apple-airPods.png'
-  if (productName.toLowerCase().includes('apple watch')) return '/public/images/Apple-Watch.png'
-  return '/public/images/logo.webp'
 }
 </script>

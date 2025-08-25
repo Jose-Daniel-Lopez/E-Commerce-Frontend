@@ -39,63 +39,63 @@ const mockProducts = [
     id: 1,
     name: 'Apple iPhone 14 Pro 512GB Gold (MQ233)',
     price: 1437,
-    image: '/images/Iphone-14-pro-Gold.png',
+    image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151657/e-commerce/Iphone-14-pro-Gold.png',
     favorite: false
   },
   {
     id: 2,
     name: 'Apple iPhone 11 128GB White (MQ233)',
     price: 510,
-    image: '/images/Apple-phone.png',
+    image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151643/e-commerce/Apple-phone.png',
     favorite: false
   },
   {
     id: 3,
     name: 'Apple iPhone 11 128GB White (MQ233)',
     price: 550,
-    image: '/images/Apple-phone.png',
+    image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151643/e-commerce/Apple-phone.png',
     favorite: false
   },
   {
     id: 4,
     name: 'Apple iPhone 14 Pro 1TB Gold (MQ2YJ)',
     price: 1490,
-    image: '/images/Iphone-14-pro-Gold.png',
+    image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151657/e-commerce/Iphone-14-pro-Gold.png',
     favorite: false
   },
   {
     id: 5,
     name: 'Apple iPhone 14 Pro 1TB Gold (MQ2YJ)',
     price: 1399,
-    image: '/images/Iphone-14-pro-Gold.png',
+    image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151657/e-commerce/Iphone-14-pro-Gold.png',
     favorite: false
   },
   {
     id: 6,
     name: 'Apple iPhone 14 Pro 128GB Deep Purple (MQ0G3)',
     price: 1600,
-    image: '/images/Iphone-14-pro-purple.png',
+    image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151660/e-commerce/Iphone-14-pro-purple.png',
     favorite: false
   },
   {
     id: 7,
     name: 'Apple iPhone 13 mini 128GB Pink (MLK23)',
     price: 850,
-    image: '/images/Iphone-14-pro-pink.png',
+    image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151659/e-commerce/Iphone-14-pro-pink.png',
     favorite: false
   },
   {
     id: 8,
     name: 'Apple iPhone 14 Pro 256GB Space Black (MQ0T3)',
     price: 1399,
-    image: '/images/Iphone-14-pro-black.png',
+    image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151658/e-commerce/Iphone-14-pro-black.png',
     favorite: false
   },
   {
     id: 9,
     name: 'Apple iPhone 14 Pro 256GB Silver (MQ103)',
     price: 1399,
-    image: '/images/Iphone-14-pro-silver.png',
+    image: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151661/e-commerce/Iphone-14-pro-silver.png',
     favorite: false
   }
 ]

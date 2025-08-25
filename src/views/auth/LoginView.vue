@@ -144,7 +144,7 @@ const handleSubmit = async (): Promise<void> => {
       <!-- Left: welcoming image for visual appeal -->
       <div
         class="flex-1 min-w-[320px] max-[900px]:hidden bg-cover bg-center bg-no-repeat"
-        style="background-image: url('/images/login.webp')"
+        style="background-image: url('https://res.cloudinary.com/tejon-tech/image/upload/v1756151696/e-commerce/login.webp')"
       ></div>
       <!-- Right: login form for user authentication -->
       <div

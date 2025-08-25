@@ -433,12 +433,12 @@ async function processPayment() {
 
 // Helper to get product image. This is a placeholder since the API doesn't provide images.
 function getProductImage(productName: string | undefined) {
-  if (!productName) return '/public/images/logo.webp'
+  if (!productName) return 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151700/e-commerce/logo.webp'
   if (productName.toLowerCase().includes('iphone 14'))
-    return '/public/images/Iphone-14-pro-purple.png'
-  if (productName.toLowerCase().includes('airpods max')) return '/public/images/Apple-airPods.png'
-  if (productName.toLowerCase().includes('apple watch')) return '/public/images/Apple-Watch.png'
-  return '/public/images/logo.webp'
+    return 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151660/e-commerce/Iphone-14-pro-purple.png'
+  if (productName.toLowerCase().includes('airpods max')) return 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151640/e-commerce/Apple-airPods.png'
+  if (productName.toLowerCase().includes('apple watch')) return 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151639/e-commerce/Apple-Watch.png'
+  return 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151700/e-commerce/logo.webp'
 }
 </script>
 

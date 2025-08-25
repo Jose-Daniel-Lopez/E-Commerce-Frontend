@@ -110,7 +110,7 @@ const logoSrc = computed(() => {
   const theme = selectedTheme?.value ?? 'light'
   const systemPrefersDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
   const darkActive = document.documentElement.classList.contains('dark') || theme === 'dark' || (theme === 'system' && systemPrefersDark)
-  return darkActive ? '/images/logo-full-white.webp' : '/images/logo-full.webp'
+  return darkActive ? 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151697/e-commerce/logo-full-white.webp' : 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151699/e-commerce/logo-full.webp'
 })
 
 // Categories dropdown state

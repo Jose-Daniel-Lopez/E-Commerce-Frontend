@@ -1,6 +1,6 @@
 <template>
   <section
-    class="h-[448px] w-full bg-[url('/images/banner-2.png')] bg-cover bg-center bg-no-repeat md:bg-[url('/images/banner.png')] transition-all duration-200"
+    class="h-[448px] w-full bg-[url('https://res.cloudinary.com/tejon-tech/image/upload/v1756151672/e-commerce/banner-2.png')] bg-cover bg-center bg-no-repeat md:bg-[url('https://res.cloudinary.com/tejon-tech/image/upload/v1756151673/e-commerce/banner.png')] transition-all duration-200"
   >
     <Wrapper class="flex h-[448px] items-center justify-center">
       <div>

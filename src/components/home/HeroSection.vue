@@ -53,7 +53,7 @@
         :style="rightSideStyle"
       >
         <img
-          src="/images/iphone.png"
+          src="https://res.cloudinary.com/tejon-tech/image/upload/v1756151693/e-commerce/iphone.png"
           alt="iphone"
           class="h-[289px] w-full object-fill object-center xs:object-contain md:h-full md:object-fill lg:w-[343px] transition-opacity duration-200"
         />
@@ -103,7 +103,7 @@ export default defineComponent({
           },
         },
         right: {
-          imageUrl: '/images/iphone.png',
+          imageUrl: 'https://res.cloudinary.com/tejon-tech/image/upload/v1756151693/e-commerce/iphone.png',
           imageAlt: 'iphone',
           paddingTop: '',
           paddingBottom: '',

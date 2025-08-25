@@ -14,14 +14,19 @@
     "lint": "run-s lint:*",
     "format": "prettier --write src/",
     "start": "node scripts/automation.js",
-    "install-browsers": "npx playwright install"
+    "install-browsers": "npx playwright install",
+    "migrate-images": "node scripts/migrate-images-to-cloudinary.cjs",
+    "update-image-paths": "node scripts/update-image-paths.cjs",
+    "cloudinary-migration": "node scripts/cloudinary-migration.cjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@heroicons/vue": "^2.2.0",
     "@tailwindcss/vite": "^4.1.10",
     "axios": "^1.10.0",
+    "cloudinary": "^2.7.0",
     "emailjs": "^4.0.3",
+    "glob": "^11.0.3",
     "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^3.0.1",
     "playwright": "^1.54.1",

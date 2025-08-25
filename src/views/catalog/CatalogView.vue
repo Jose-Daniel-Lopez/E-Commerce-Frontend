@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useLanguage } from '@/composables/useLanguage'
 import { useCategoriesStore } from '@/stores/categories'
 import { useThemeClasses } from '@/composables/useThemeClasses'
+import { getCategoryImage } from '@/composables/useCloudinaryImages'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 
 /**
@@ -178,66 +179,10 @@ const translateCategoryName = (categoryName: string): string => {
   return categoryName
 }
 
-// Map category names to standardized image filenames with smart matching
-const getCategoryImageName = (categoryName: string): string => {
-  const normalizedName = removeAccents(categoryName).toLowerCase()
-
-  const categoryMapping: { [key: string]: string } = {
-    // Audio
-    audio: 'audio', sonido: 'audio',
-    // Gaming
-    gaming: 'gaming', juegos: 'gaming', videojuegos: 'gaming', consolas: 'gaming',
-    // Tablets
-    tablets: 'tablets', tabletas: 'tablets', ipad: 'tablets',
-    // Smartphones
-    smartphones: 'smartphones', phones: 'smartphones', teléfonos: 'smartphones',
-    telefonos: 'smartphones', móviles: 'smartphones', moviles: 'smartphones',
-    celulares: 'smartphones', iphone: 'smartphones',
-    // Computers
-    computers: 'computers', computadoras: 'computers', ordenadores: 'computers',
-    laptops: 'computers', pc: 'computers', macbook: 'computers',
-    // Cameras
-    cameras: 'cameras', cámaras: 'cameras', camaras: 'cameras',
-    fotografía: 'cameras', fotografia: 'cameras',
-    // Headphones
-    headphones: 'headphones', auriculares: 'headphones',
-    audífonos: 'headphones', cascos: 'headphones',
-    // Accessories
-    accessories: 'accessories', accesorios: 'accessories', complementos: 'accessories',
-    // Keyboards
-    keyboards: 'keyboards', teclados: 'keyboards',
-    // Mice
-    mice: 'mice', ratones: 'mice', mouse: 'mice', ratón: 'mice',
-    // Smart Home
-    'smart home': 'smarthome', smarthome: 'smarthome',
-    'casa inteligente': 'smarthome', 'hogar inteligente': 'smarthome',
-    hogarinteligente: 'smarthome', casainteligente: 'smarthome',
-    domótica: 'smarthome', domotica: 'smarthome',
-    // Smart Watches
-    'smart watches': 'smartwatches', smartwatches: 'smartwatches',
-    'relojes inteligentes': 'smartwatches', relojesinteligentes: 'smartwatches',
-    'apple watch': 'smartwatches', wearables: 'smartwatches',
-  }
-
-  // Exact match first
-  if (categoryMapping[normalizedName]) return categoryMapping[normalizedName]
-
-  // Partial match: sort keys by length (longest first) to avoid false matches
-  const sortedKeys = Object.keys(categoryMapping).sort((a, b) => b.length - a.length)
-  for (const key of sortedKeys) {
-    if (normalizedName.includes(key)) return categoryMapping[key]
-  }
-
-  // Fallback: sanitize name
-  return normalizedName.replace(/\s+/g, '').replace(/-/g, '')
-}
-
-// Generate image candidates (WebP first, PNG fallback)
-const getCategoryImage = (categoryName: string): string[] => {
-  const imageName = getCategoryImageName(categoryName)
-  const base = `/images/categories-${imageName}`
-  console.log(`Categoria: "${categoryName}" → Imagen: "${imageName}" → Path: "${base}"`)
-  return [`${base}.webp`, `${base}.png`]
+// Generate optimized category image URL using Cloudinary
+const getCategoryImageUrl = (categoryName: string): string => {
+  // Use the Cloudinary helper for category images
+  return getCategoryImage(categoryName, { width: 160, height: 160, quality: 'auto' })
 }
 
 // Enhanced paginated categories with translated names and image candidates
@@ -245,7 +190,7 @@ const translatedPaginatedCategories = computed(() =>
   paginatedCategories.value.map(category => ({
     ...category,
     name: translateCategoryName(category.name),
-    imageCandidates: getCategoryImage(category.name),
+    imageCandidates: [getCategoryImageUrl(category.name)], // Single optimized URL
   }))
 )
 
@@ -269,38 +214,18 @@ onMounted(async () => {
  * Functions triggered by user interaction.
  */
 
-// Handle image loading failure by trying next format or showing fallback
+// Handle image loading failure by showing fallback
 const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement
-  const currentSrc = img.src
-
-  // Find the category associated with this image
-  const category = translatedPaginatedCategories.value.find(cat =>
-    cat.imageCandidates?.some(candidate =>
-      currentSrc.includes(candidate.split('/').pop()?.split('.')[0] || '')
-    )
-  )
-
-  if (category && category.imageCandidates) {
-    const currentIndex = category.imageCandidates.findIndex(candidate =>
-      currentSrc.includes(candidate.split('/').pop()?.split('.')[0] || '')
-    )
-
-    // Try the next image format (e.g., PNG after WebP)
-    if (currentIndex !== -1 && currentIndex < category.imageCandidates.length - 1) {
-      img.src = category.imageCandidates[currentIndex + 1]
-      return
-    }
-  }
-
-  // If no more formats, show fallback UI
+  
+  // Hide the failed image and show fallback UI
   img.style.display = 'none'
   const parent = img.parentElement
   if (parent) {
     parent.innerHTML = `
-      <div class="w-[80px] h-[80px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
-        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      <div class="w-[80px] h-[80px] bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-lg flex items-center justify-center">
+        <svg class="w-12 h-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l-1 10H6L5 9z" />
         </svg>
       </div>
     `

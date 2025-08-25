@@ -15,7 +15,7 @@
   <div class="h-[640px] theme-card pb-[56px] transition-colors duration-200">
           <div class="h-[338px] w-full overflow-hidden">
             <img
-              src="/images/Smart-watch.png"
+              src="https://res.cloudinary.com/tejon-tech/image/upload/v1756151668/e-commerce/Smart-watch.png"
               alt=""
               class="object-contain object-center w-full h-[338px] transition-opacity duration-200"
             />
@@ -52,7 +52,7 @@
   <div class="h-[640px] theme-surface pb-[56px] transition-colors duration-200">
           <div class="h-[338px] w-full overflow-hidden">
             <img
-              src="/images/apple-tablet.png"
+              src="https://res.cloudinary.com/tejon-tech/image/upload/v1756151671/e-commerce/apple-tablet.png"
               alt=""
               class="object-contain object-center w-full h-[338px]"
             />
@@ -89,7 +89,7 @@
   <div class="h-[640px] theme-surface pb-[56px] transition-colors duration-200">
           <div class="h-[338px] w-full overflow-hidden">
             <img
-              src="/images/Apple-phone.png"
+              src="https://res.cloudinary.com/tejon-tech/image/upload/v1756151643/e-commerce/Apple-phone.png"
               alt=""
               class="object-contain object-center w-full h-[338px] transition-opacity duration-200"
             />
@@ -126,7 +126,7 @@
   <div class="h-[640px] theme-card pb-[56px] transition-colors duration-200">
           <div class="h-[338px] w-full overflow-hidden">
             <img
-              src="/images/Macbook.png"
+              src="https://res.cloudinary.com/tejon-tech/image/upload/v1756151663/e-commerce/Macbook.png"
               alt=""
               class="object-contain object-center w-full h-[338px] transition-opacity duration-200"
             />
