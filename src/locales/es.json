@@ -198,11 +198,15 @@
     "totalCategories": "Total Categorías:",
     "totalProducts": "Total Productos:",
     "filtered": "Filtradas:",
+  "brandsLabel": "Marcas",
     "sort": {
       "nameAZ": "Nombre A-Z",
       "nameZA": "Nombre Z-A",
-      "mostProducts": "Más productos",
-      "leastProducts": "Menos productos"
+  "mostProducts": "Más productos",
+  "leastProducts": "Menos productos",
+  "rating": "Por valoración",
+  "priceLow": "Precio: Menor a Mayor",
+  "priceHigh": "Precio: Mayor a Menor"
     },
     "viewProducts": "Ver Productos",
     "relatedProducts": "Productos Relacionados",
@@ -210,7 +214,39 @@
     "startingAt": "Desde",
     "viewDetails": "Ver Detalles",
     "noRelatedProducts": "No se encontraron productos relacionados",
-    "relatedProductsError": "No se pudieron cargar los productos relacionados"
+  "relatedProductsError": "No se pudieron cargar los productos relacionados",
+  "debugPanelTitle": "Panel de depuración",
+  "debugTestButton": "Prueba de navegación (ID: {id})",
+    "debug": {
+      "user": "Usuario",
+      "wishlistId": "ID de lista",
+      "wishlistCount": "Conteo de lista",
+      "wishlistProductIds": "IDs de productos en la lista",
+      "currentPage": "Páginas actual",
+      "itemsPerPage": "Elementos por página",
+      "filteredProducts": "Productos filtrados",
+      "checkedBrands": "Marcas seleccionadas",
+      "priceRange": "Rango de precios",
+      "sortBy": "Ordenar por",
+      "category": "Categoría",
+      "displayName": "Nombre para mostrar"
+    },
+  "filters": "Filtros",
+  "filtersTitle": "Filtros",
+  "activeBadge": "Activo",
+  "productsFound": "{count} productos encontrados",
+  "loadingProducts": "Cargando productos...",
+  "noProductsFound": "No se encontraron productos",
+  "noProductsMatchFilters": "Ningún producto coincide con tus filtros actuales",
+  "noProductsInCategory": "No se encontraron productos en esta categoría",
+  "clearAllFilters": "Limpiar todos los filtros",
+  "activeFilters": "Filtros activos",
+  "summary": "Resumen",
+  "filteredResults": "Resultados filtrados:",
+  "currentPageLabel": "Página actual:",
+  "searchBrands": "Buscar marcas",
+  "showResults": "Mostrar {count} resultados"
+  ,"viewProduct": "Ver {name}"
   },
   "home": {
     "title": "Inicio"
@@ -237,7 +273,14 @@
     "goToCatalog": "Ir al catálogo",
     "viewProduct": "Ver producto",
     "details": "Ver detalles",
-    "remove": "Quitar"
+    "remove": "Quitar",
+    "loginRequired": "Por favor inicia sesión para añadir productos a tu lista de deseos",
+    "productNotFound": "Producto no encontrado",
+    "updateError": "Error al actualizar la lista de deseos"
+  },
+  "errors": {
+    "productNotFound": "Producto no encontrado",
+    "wishlistUpdateError": "Error al actualizar la lista de deseos"
   },
   "common": {
     "loading": "Cargando...",

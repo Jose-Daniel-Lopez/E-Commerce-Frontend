@@ -14,9 +14,13 @@
     "totalCategories": "Total Categories:",
     "totalProducts": "Total Products:",
     "filtered": "Filtered:",
+  "brandsLabel": "Brands",
     "sort": {
       "nameAZ": "Name A-Z",
       "nameZA": "Name Z-A",
+  "rating": "By rating",
+  "priceLow": "Price: Low to High",
+  "priceHigh": "Price: High to Low",
       "mostProducts": "Most products",
       "leastProducts": "Least products"
     },
@@ -26,7 +30,40 @@
     "startingAt": "Starting at",
     "viewDetails": "View Details",
     "noRelatedProducts": "No related products found",
-    "relatedProductsError": "Unable to load related products"
+  "relatedProductsError": "Unable to load related products",
+  "debugPanelTitle": "Debug Panel",
+  "debugTestButton": "Test Navigation (ID: {id})",
+    "debug": {
+      "user": "User",
+      "wishlistId": "Wishlist ID",
+      "wishlistCount": "Wishlist Count",
+      "wishlistProductIds": "Wishlist Product IDs",
+      "currentPage": "Current Page",
+      "itemsPerPage": "Items Per Page",
+      "filteredProducts": "Filtered Products",
+      "checkedBrands": "Checked Brands",
+      "priceRange": "Price Range",
+      "sortBy": "Sort By",
+      "category": "Category",
+      "displayName": "Display Name"
+    },
+  "filters": "Filters",
+  "filtersTitle": "Filters",
+  "activeBadge": "Active",
+  "productsFound": "{count} products found",
+  "loadingProducts": "Loading products...",
+  "noProductsFound": "No products found",
+  "noProductsMatchFilters": "No products match your current filters",
+  "noProductsInCategory": "No products found in this category",
+  "clearAllFilters": "Clear All Filters",
+  "activeFilters": "Active Filters",
+  "summary": "Summary",
+  "filteredResults": "Filtered Results:",
+  "currentPageLabel": "Current Page:",
+  "paginationOf": "of",
+  "searchBrands": "Search brands",
+  "showResults": "Show {count} Results"
+  ,"viewProduct": "View {name}"
   },
   "checkout": {
     "summary": "Summary",
@@ -199,7 +236,7 @@
       "questions": {
         "delivery": {
           "question": "What is the delivery time?",
-          "answer": "Standard delivery takes 2–3 business days for mainland Spain and 3–5 days for the Balearic and Canary Islands."
+          "answer": "Standard delivery takes 2-3 business days for mainland Spain and 3-5 days for the Balearic and Canary Islands."
         },
         "payment": {
           "question": "What payment methods do you accept?",
@@ -240,10 +277,21 @@
     "goToCatalog": "Go to Catalog",
     "viewProduct": "View product",
     "details": "View details",
-    "remove": "Remove"
+  "remove": "Remove",
+  "loginRequired": "Please log in to add products to your wishlist",
+    "productNotFound": "Product not found",
+    "updateError": "Error updating wishlist"
+  },
+  "errors": {
+    "productNotFound": "Product not found",
+    "wishlistUpdateError": "Error updating wishlist"
   },
   "common": {
     "loading": "Loading...",
+    "show": "Show",
+    "hide": "Hide",
+    "view": "View",
+  "toggleFavorite": "Toggle favorite",
     "error": "Error",
     "success": "Success",
     "cancel": "Cancel",
