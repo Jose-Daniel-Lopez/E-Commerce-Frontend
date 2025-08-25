@@ -112,8 +112,8 @@ const showCategoriesDropdown = ref(false)
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const categories = [
-  { name: t('shop.categories.all'), route: '/catalog' },
-  { name: 'All Products', route: '/catalog/all-products' },
+  { name: t('shop.categories.allCategories'), route: '/catalog' },
+  { name: t('shop.categories.allProducts'), route: '/catalog/all-products' },
   { name: t('shop.categories.smartphones'), route: '/catalog/smartphones' },
   { name: t('shop.categories.tablets'), route: '/catalog/tablets' },
   { name: t('shop.categories.laptops'), route: '/catalog/laptops' },
