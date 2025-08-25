@@ -931,7 +931,7 @@ const fetchProductVariants = async (productId: number) => {
 
           <!-- Color Selection -->
           <div v-if="availableColors.length > 0" class="flex items-center gap-4">
-            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">Select color:</span>
+            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.selectColor') }}</span>
             <div class="flex space-x-3">
               <button v-for="color in availableColors" :key="color" @click="selectColor(color)" :class="[
                 'w-8 h-8 rounded-full border-2 transition-all',
@@ -959,7 +959,7 @@ const fetchProductVariants = async (productId: number) => {
 
           <!-- Storage Display (for Mobile & Compute) - fallback for when no variants -->
           <div v-else-if="isMobileComputeCategory && currentProduct.specifications?.storage" class="space-y-3">
-            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">Storage:</span>
+            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.storage') }}</span>
             <div
               :class="['px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium', cardClasses]">
               {{ currentProduct.specifications?.storage ?? '' }}
@@ -969,24 +969,23 @@ const fetchProductVariants = async (productId: number) => {
           <!-- Stock Information -->
             <div v-if="currentVariant || productVariants.length > 0" class="space-y-2">
             <div class="flex items-center gap-2">
-              <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">Stock:</span>
+              <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.stock') }}</span>
               <span :class="[
                 'font-srProDisplay text-sm font-semibold',
                 isInStock ? 'text-success' : 'text-error'
               ]">
-                {{ isInStock ? `${currentStock} available` : 'Out of stock' }}
+                {{ isInStock ? t('product.stockAvailable', { count: currentStock }) : t('product.outOfStock') }}
               </span>
             </div>
             <div v-if="currentVariant" :class="['text-xs', textMutedClasses]">
-              SKU: {{ currentVariant?.sku ?? '' }}
+              {{ t('product.sku') }}: {{ currentVariant?.sku ?? '' }}
             </div>
           </div>
 
           <!-- DEBUG: Raw product data -->
           <div v-if="product"
             :class="['p-4 space-y-3 border rounded', cardClasses]">
-            <h3 :class="['text-sm font-bold', textClasses]">🔍 DEBUG: Product & Variant Data (REMOVE
-              LATER)</h3>
+            <h3 :class="['text-sm font-bold', textClasses]">🔍 {{ t('debug.productVariantData') }}</h3>
             <div :class="['space-y-1 text-xs', textMutedClasses]">
               <p><strong>Category:</strong> {{ product?.category ?? '' }}</p>
               <p><strong>Is Mobile/Compute:</strong> {{ isMobileComputeCategory }}</p>
@@ -1014,7 +1013,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="co-resize-both" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Screen size</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.screenSize') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.screenSize ?? '' }}
                 </p>
@@ -1028,7 +1027,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-chip" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">CPU</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.cpu') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.cpu ?? '' }}
                 </p>
@@ -1042,7 +1041,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-chip" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">GPU</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.gpu') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.gpu ?? '' }}
                 </p>
@@ -1056,7 +1055,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-cube" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">RAM</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.ram') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications && currentProduct.specifications.ram ?
                     currentProduct.specifications.ram + 'GB' : '' }}
@@ -1071,7 +1070,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-refresh" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Refresh Rate</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.refreshRate') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications && currentProduct.specifications.refreshRate ?
                     currentProduct.specifications.refreshRate + 'Hz' : '' }}
@@ -1086,7 +1085,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="bi-camera" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Camera</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.camera') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.camera ?? '' }}
                 </p>
@@ -1100,7 +1099,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="io-camera-reverse" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Front Camera</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.frontCamera') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.frontCamera ?? '' }}
                 </p>
@@ -1114,7 +1113,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="gi-battery-75" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Battery</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.battery') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.battery ?? '' }}
                 </p>
@@ -1128,7 +1127,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="io-settings" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">OS</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.os') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.os ?? '' }}
                 </p>
@@ -1146,7 +1145,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="bi-bullseye" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">DPI</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.dpi') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.dpi ?? '' }}
                 </p>
@@ -1160,7 +1159,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-lightning-bolt" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Polling Rate</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.pollingRate') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications && currentProduct.specifications.pollingRate ?
                     currentProduct.specifications.pollingRate + 'Hz' : '' }}
@@ -1175,7 +1174,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="io-keypad" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Switch Type</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.switchType') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.switchType ?? '' }}
                 </p>
@@ -1189,7 +1188,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="io-bulb" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Backlighting</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.backlighting') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.backlighting ?? '' }}
                 </p>
@@ -1203,7 +1202,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="io-options" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Programmable</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.programmable') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications && currentProduct.specifications.programmableButtons !== undefined ?
                     (currentProduct.specifications.programmableButtons ? 'Yes' : 'No') : '' }}
@@ -1218,7 +1217,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="gi-battery-75" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Battery Life</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.batteryLife') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.batteryLife ?? '' }}
                 </p>
@@ -1232,7 +1231,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="io-hand-left" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Ergonomic</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.ergonomic') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications && currentProduct.specifications.ergonomic !== undefined ?
                     (currentProduct.specifications.ergonomic ? 'Yes' : 'No') : '' }}
@@ -1248,7 +1247,7 @@ const fetchProductVariants = async (productId: number) => {
             </p>
             <button v-if="isDescriptionLong" @click="toggleDescription"
               :class="['font-srProDisplay text-sm font-medium underline focus:outline-none', textClasses]">
-              {{ showFullDescription ? 'less...' : 'more...' }}
+              {{ showFullDescription ? t('product.less') : t('product.more') }}
             </button>
           </div>
 
@@ -1259,16 +1258,16 @@ const fetchProductVariants = async (productId: number) => {
               :class="['flex-1 border py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors', buttonSecondaryClasses]">
               <span v-if="wishlistLoading" class="flex items-center justify-center">
                 <div :class="['w-4 h-4 mr-2 border-b-2 rounded-full animate-spin', dividerClasses]"></div>
-                Adding...
+                {{ t('product.adding') }}
               </span>
               <span v-else-if="!isAuthenticated">
-                Login to Add to Wishlist
+                {{ t('product.loginToWishlist') }}
               </span>
               <span v-else-if="currentProduct?.id && wishlistStore.isProductInWishlist(currentProduct.id)">
-                Already in Wishlist
+                {{ t('product.alreadyInWishlist') }}
               </span>
               <span v-else>
-                Add to Wishlist
+                {{ t('product.addToWishlist') }}
               </span>
             </button>
             <button @click="addToCart"
@@ -1276,22 +1275,22 @@ const fetchProductVariants = async (productId: number) => {
               :class="['flex-1 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors', buttonPrimaryClasses]">
               <span v-if="cartLoading" class="flex items-center justify-center">
                 <div class="w-4 h-4 mr-2 border-b-2 border-white rounded-full animate-spin"></div>
-                Adding...
+                {{ t('product.adding') }}
               </span>
               <span v-else-if="!isAuthenticated">
-                Login to Add to Cart
+                {{ t('product.loginToCart') }}
               </span>
               <span v-else-if="!isInStock">
-                Out of Stock
+                {{ t('product.outOfStock') }}
               </span>
               <span v-else-if="availableColors.length > 0 && !selectedColor">
-                Select Color
+                {{ t('product.selectColor') }}
               </span>
               <span v-else-if="availableSizes.length > 0 && !selectedStorage">
-                Select {{ availableSizes.length > 0 && availableSizes[0].includes('GB') ? 'Storage' : 'Size' }}
+                {{ t('product.selectStorageOrSize', { type: availableSizes.length > 0 && availableSizes[0].includes('GB') ? t('product.storage') : t('product.size') }) }}
               </span>
               <span v-else>
-                Add to Cart
+                {{ t('product.addToCart') }}
               </span>
             </button>
           </div>
@@ -1303,8 +1302,8 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-truck" scale="1.2" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Free Delivery</p>
-                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">1-2 day</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.freeDelivery') }}</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">{{ t('product.deliveryTime') }}</p>
               </div>
             </div>
             <div :class="['flex items-center rounded-[8px] p-3', cardClasses]">
@@ -1312,8 +1311,8 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="bi-shop" scale="1.2" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">In Stock</p>
-                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">Today</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.inStock') }}</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">{{ t('product.today') }}</p>
               </div>
             </div>
             <div :class="['flex items-center rounded-[8px] p-3', cardClasses]">
@@ -1321,8 +1320,8 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-badge-check" scale="1.2" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Guaranteed</p>
-                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">1 year</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.guaranteed') }}</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">{{ t('product.guaranteeTime') }}</p>
               </div>
             </div>
           </div>
