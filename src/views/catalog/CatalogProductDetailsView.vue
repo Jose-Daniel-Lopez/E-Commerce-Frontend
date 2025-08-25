@@ -31,6 +31,7 @@ import RelatedProducts from '@/components/products/RelatedProducts.vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import axios from 'axios'
+import api from '@/lib/axios'
 import { useToast } from '@/composables/useToast'
 import { useThemeClasses } from '@/composables/useThemeClasses'
 
@@ -843,9 +844,8 @@ const fetchProductVariants = async (productId: number) => {
   variantsLoading.value = true
   variantsError.value = ''
   try {
-    const res = await fetch(`http://localhost:8080/api/products/${productId}/productVariants`)
-    if (!res.ok) throw new Error('Failed to fetch variants')
-    const data: ProductVariantsResponse = await res.json()
+    const response = await api.get(`/products/${productId}/productVariants`)
+    const data: ProductVariantsResponse = response.data
     const variants = data._embedded?.productVariants || data.productVariants || []
     productVariants.value = variants
     if (variants.length > 0) {
