@@ -21,7 +21,7 @@
 
   /* 🏗️ Backgrounds & Surfaces - Deep, layered, not flat */
   --color-background: #f1f3f5;        /* Google-inspired light gray (not pure white) */
-  --surface-bg: #ffffff;              /* White cards/panels (creates lift) */
+  --surface-bg: #f1f1f1;              /* White cards/panels (creates lift) */
   --subnav-bg: #f8f9fa;               /* Very light gray for sub-navigation */
   --subnav-hover: #e9ecef;            /* Subtle hover on nav items */
   --header-bg: #ffffff;               /* Clean white header */

@@ -42,7 +42,7 @@ export const useThemeClasses = () => {
   /**
    * Section-level container with padding, border, and shadow.
    */
-  const sectionContainerClasses = computed(() => 'bg-surface border border-border shadow-md rounded-2xl p-6 transition-colors duration-200')
+  const sectionContainerClasses = computed(() => 'bg-surface border border-border shadow-md rounded-2xl p-3 transition-colors duration-200')
 
   /**
    * Header style for sections (uppercase, muted, small font).
@@ -204,7 +204,7 @@ export const useThemeClasses = () => {
   /**
    * Catalog search input (used in filtering UI).
    */
-  const catalogSearchInputClasses = computed(() => 'w-full bg-surface text-foreground font-srProDisplay text-sm font-medium placeholder-muted-foreground outline-none rounded-lg border border-border transition-colors duration-200')
+  const catalogSearchInputClasses = computed(() => 'w-full text-foreground font-srProDisplay text-sm font-medium placeholder-muted-foreground outline-none rounded-lg transition-colors duration-200')
 
   /**
    * Catalog sort select dropdown.
