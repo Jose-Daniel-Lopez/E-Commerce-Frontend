@@ -6,56 +6,61 @@
 */
 
 /* =========================
-   Light Theme (Default) - Bold & Modern
+   Light Theme (Modern High-Contrast)
+   ✅ Deep text, pure blacks, dark grays, vibrant accents
+   ✅ Crisp white surfaces, elegant depth
    ========================= */
 :root {
-  /* 🔥 Brand Colors - Vibrant, accessible, professional */
-  --color-primary: #0a66c2;           /* LinkedIn Blue: trusted, high-contrast */
-  --color-secondary: #5850d6;         /* Indigo-600: strong secondary */
-  --color-accent: #035fc4;            /* Blue-700: deeper hover/active state */
+  /* ✨ Brand Colors - Confident, modern, with presence */
+  --color-primary: #3b5ddd;              /* Bright but not loud — trustworthy blue */
+  --color-secondary: #7e5da0;            /* Deeper, richer lilac — more authority */
+  --color-accent: #2a46c1;               /* Darker primary for hover — strong contrast */
 
-  /* 🖋️ Text & Foreground - High contrast, sharp */
-  --color-text: #0f172a;              /* slate-900: near-black, excellent contrast */
-  --color-muted: #475569;             /* slate-700: clear secondary text */
-  --color-muted-foreground: #64748b;  /* slate-600: helper text, still readable */
+  /* 🖋️ Text & Foreground - High contrast, premium feel */
+  --color-text: #0a0a0a;                 /* Near-pure black — maximum readability */
+  --color-muted: #4a4f5c;                /* Deep cool gray — clear but not harsh */
+  --color-muted-foreground: #606673;     /* Mid-gray — subtle helper text */
 
-  /* 🏗️ Backgrounds & Surfaces - Deep, layered, not flat */
-  --color-background: #f1f3f5;        /* Google-inspired light gray (not pure white) */
-  --surface-bg: #f1f1f1;              /* White cards/panels (creates lift) */
-  --subnav-bg: #f8f9fa;               /* Very light gray for sub-navigation */
-  --subnav-hover: #e9ecef;            /* Subtle hover on nav items */
-  --header-bg: #ffffff;               /* Clean white header */
-  --color-input-background: #ffffff;  /* Inputs on white or card surfaces */
+  /* 🏗️ Backgrounds & Surfaces - Clean, layered, intentional */
+  --color-background: #ffffff;           /* Pure white background — crisp canvas */
+  --surface-bg: #ffffff;                 /* Cards, panels — same as bg for floating effect */
+  --subnav-bg: #f8f9fb;                  /* Very light cool gray — subtle separation */
+  --subnav-hover: #edf0f5;               /* Soft hover — noticeable but clean */
+  --header-bg: #ffffff;                  /* Clean header — matches background */
+  --color-input-background: #ffffff;     /* Inputs on white — minimal, elegant */
 
-  /* 🔲 Borders & Dividers - Crisp but not harsh */
-  --color-border: #e2e8f0;            /* Soft but visible (slate-200) */
-  --color-input-border: #cbd5e1;      /* slate-300: clear input borders */
+  /* 🔲 Borders & Dividers - Defined but refined */
+  --color-border: #d8dde3;               /* Soft cool gray — present but not heavy */
+  --color-input-border: #c5c9d0;         /* Slightly darker — defines inputs clearly */
 
-  /* 🧱 Surface Variations - Layered UI */
-  --color-surface-secondary: #f8f9fa; /* Slightly lifted surfaces */
-  --color-surface-tertiary: #f1f3f5;  /* Deeper layer (e.g., banners) */
-  --color-surface-hover: #f1f3f5;     /* Hover state for interactive elements */
+  /* 🧱 Surface Variations - Elevation with intent */
+  --color-surface-secondary: #f5f7fa;    /* Light sky-blue tint — indicates secondary area */
+  --color-surface-tertiary: #edf0f6;     /* Noticeable step down — for hover or active states */
+  --color-surface-hover: #e2e8f0;        /* Clear hover state — readable and responsive */
 
-  /* ✅❌⚠️ Feedback Colors - Bold and clear */
-  --color-success: #059669;           /* Emerald-600: confident, positive */
-  --color-warning: #d97706;           /* Amber-600: attention-grabbing */
-  --color-error: #dc2626;             /* Red-600: urgent, high-contrast */
+  /* ✅❌⚠️ Feedback Colors - Clear, bold, elegant */
+  --color-success: #2c965c;              /* Deep emerald — mature and confident */
+  --color-warning: #b38a3a;              /* Muted gold — warm but not loud */
+  --color-error: #c03038;                /* Deep coral-red — impactful, not cartoonish */
 
-  /* 🟩🟨🟥 Feedback Backgrounds - Subtle but clear */
-  --color-success-bg: #ecfdf5;        /* Very light green */
-  --color-warning-bg: #fffbeb;        /* Warm light yellow */
-  --color-error-bg: #fef2f2;          /* Soft red background */
-  --color-primary-bg: #eff6ff;        /* Light blue tint for primary */
+  /* 🟩🟨🟥 Feedback Backgrounds - Subtle tints */
+  --color-success-bg: #ecf6f0;           /* Whisper of green */
+  --color-warning-bg: #fdf6e8;           /* Warm cream */
+  --color-error-bg: #faeaea;             /* Pale rose */
+  --color-primary-bg: #f0f5ff;           /* Soft blue highlight */
 
-  /* 🛒 E-commerce Specific - Bold and emotional */
-  --color-cart: #dc2626;              /* Red-600: urgent, action-driven */
-  --color-favorite: #be123c;          /* Rose-700: passionate, deep */
-  --color-discount: #ea580c;          /* Orange-600: energetic, sale-focused */
-  --color-price: #1e293b;             /* slate-900: bold, legible, blackish */
+  /* 🛒 E-commerce Specific - Bold & Emotional */
+  --color-cart: #c03038;                 /* Matches error — urgency with class */
+  --color-favorite: #a84e68;             /* Dusty rose — emotional but refined */
+  --color-discount: #e0753a;             /* Terracotta orange — draws attention */
+  --color-price: #0a0a0a;                /* Pure black — premium, bold pricing */
 
   /* 🧍‍♂️ Foreground on Brand Colors */
-  --color-primary-foreground: #ffffff;     /* White text on primary buttons */
-  --color-secondary-foreground: #ffffff;   /* White on secondary */
+  --color-primary-foreground: #ffffff;   /* White on primary — crisp */
+  --color-secondary-foreground: #ffffff;
+  --color-success-foreground: #ffffff;
+  --color-warning-foreground: #0a0a0a;   /* Dark text on soft yellow — readable */
+  --color-error-foreground: #ffffff;
 
   /* 📝 Typography */
   --font-figtree: 'Figtree', sans-serif;
@@ -64,7 +69,6 @@
   /* 📏 Utility */
   --breakpoint-xs: 420px;
 }
-
 
 /* =========================
    Dark Theme Overrides
