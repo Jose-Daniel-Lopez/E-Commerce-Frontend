@@ -17,6 +17,7 @@
             <div>
               <h4 :class="['font-medium font-srProDisplay', textClasses]">
                 {{ $t('account.settings.language.title') }}
+                <WipTag variant="compact" :show-icon="false" text="WIP" tooltip="Theme system is still under development" />
               </h4>
               <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
                 {{ $t('account.settings.language.description') }}
@@ -45,6 +46,7 @@
             <div>
               <h4 :class="['font-medium font-srProDisplay', textClasses]">
                 {{ $t('account.settings.theme.title') }}
+                <WipTag variant="compact" :show-icon="false" text="WIP" tooltip="Theme system is still under development" />
               </h4>
               <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
                 {{ $t('account.settings.theme.description') }}
@@ -148,6 +150,7 @@
 
 <script setup lang="ts">
 import Button from '@/components/shared/Button.vue'
+import WipTag from '../shared/WipTag.vue'
 
 interface Locale {
   code: string

@@ -249,6 +249,7 @@ import { useToast } from '@/composables/useToast'
 import { useThemeClasses } from '@/composables/useThemeClasses'
 import Wrapper from '@/components/shared/Wrapper.vue'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
+import WipTag from '@/components/shared/WipTag.vue'
 
 // Lazy load heavy components for better performance
 import { defineAsyncComponent } from 'vue'
