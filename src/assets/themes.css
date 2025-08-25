@@ -6,54 +6,54 @@
 */
 
 /* =========================
-   Light Theme (Modern High-Contrast)
-   ✅ Deep text, pure blacks, dark grays, vibrant accents
-   ✅ Crisp white surfaces, elegant depth
+   Light Theme (Elegant Sophistication)
+   ✅ Sophisticated grays, rich navy, refined blues
+   ✅ Layered backgrounds with intentional contrast and depth
    ========================= */
 :root {
-  /* ✨ Brand Colors - Confident, modern, with presence */
-  --color-primary: #3b5ddd;              /* Bright but not loud — trustworthy blue */
-  --color-secondary: #7e5da0;            /* Deeper, richer lilac — more authority */
-  --color-accent: #2a46c1;               /* Darker primary for hover — strong contrast */
+  /* ✨ Brand Colors - Sophisticated, trustworthy, premium */
+  --color-primary: #1e40af;              /* Deep navy blue — authoritative and premium */
+  --color-secondary: #475569;            /* Rich charcoal gray — sophisticated contrast */
+  --color-accent: #3b82f6;               /* Bright blue accent — modern and vibrant */
 
-  /* 🖋️ Text & Foreground - High contrast, premium feel */
-  --color-text: #0a0a0a;                 /* Near-pure black — maximum readability */
-  --color-muted: #4a4f5c;                /* Deep cool gray — clear but not harsh */
-  --color-muted-foreground: #606673;     /* Mid-gray — subtle helper text */
+  /* 🖋️ Text & Foreground - Elegant contrast hierarchy */
+  --color-text: #0f172a;                 /* Deep slate — sophisticated, readable */
+  --color-muted: #475569;                /* Charcoal gray — clear secondary text */
+  --color-muted-foreground: #64748b;     /* Cool gray — subtle but readable */
 
-  /* 🏗️ Backgrounds & Surfaces - Clean, layered, intentional */
-  --color-background: #ffffff;           /* Pure white background — crisp canvas */
-  --surface-bg: #ffffff;                 /* Cards, panels — same as bg for floating effect */
-  --subnav-bg: #f8f9fb;                  /* Very light cool gray — subtle separation */
-  --subnav-hover: #edf0f5;               /* Soft hover — noticeable but clean */
-  --header-bg: #ffffff;                  /* Clean header — matches background */
-  --color-input-background: #ffffff;     /* Inputs on white — minimal, elegant */
+  /* 🏗️ Backgrounds & Surfaces - Layered sophistication */
+  --color-background: #f8fafc;           /* Soft blue-white — elegant canvas */
+  --surface-bg: #ffffff;                 /* Pure white cards — clean contrast */
+  --subnav-bg: #f1f5f9;                  /* Light slate — subtle navigation background */
+  --subnav-hover: #e2e8f0;               /* Slate hover — noticeable interaction */
+  --header-bg: #ffffff;                  /* Clean white header — premium feel */
+  --color-input-background: #ffffff;     /* White inputs — crisp and clean */
 
-  /* 🔲 Borders & Dividers - Defined but refined */
-  --color-border: #d8dde3;               /* Soft cool gray — present but not heavy */
-  --color-input-border: #c5c9d0;         /* Slightly darker — defines inputs clearly */
+  /* 🔲 Borders & Dividers - Refined definition */
+  --color-border: #cbd5e1;               /* Cool gray border — present but elegant */
+  --color-input-border: #94a3b8;         /* Medium gray — clear input definition */
 
-  /* 🧱 Surface Variations - Elevation with intent */
-  --color-surface-secondary: #f5f7fa;    /* Light sky-blue tint — indicates secondary area */
-  --color-surface-tertiary: #edf0f6;     /* Noticeable step down — for hover or active states */
-  --color-surface-hover: #e2e8f0;        /* Clear hover state — readable and responsive */
+  /* 🧱 Surface Variations - Sophisticated elevation */
+  --color-surface-secondary: #f1f5f9;    /* Light slate — secondary surface */
+  --color-surface-tertiary: #e2e8f0;     /* Medium slate — tertiary surface */
+  --color-surface-hover: #cbd5e1;        /* Slate hover — clear interaction feedback */
 
-  /* ✅❌⚠️ Feedback Colors - Clear, bold, elegant */
-  --color-success: #2c965c;              /* Deep emerald — mature and confident */
-  --color-warning: #b38a3a;              /* Muted gold — warm but not loud */
-  --color-error: #c03038;                /* Deep coral-red — impactful, not cartoonish */
+  /* ✅❌⚠️ Feedback Colors - Sophisticated and clear */
+  --color-success: #059669;              /* Rich emerald — premium success state */
+  --color-warning: #d97706;              /* Warm amber — elegant warning */
+  --color-error: #dc2626;                /* Deep red — clear but not harsh */
 
-  /* 🟩🟨🟥 Feedback Backgrounds - Subtle tints */
-  --color-success-bg: #ecf6f0;           /* Whisper of green */
-  --color-warning-bg: #fdf6e8;           /* Warm cream */
-  --color-error-bg: #faeaea;             /* Pale rose */
-  --color-primary-bg: #f0f5ff;           /* Soft blue highlight */
+  /* 🟩🟨🟥 Feedback Backgrounds - Elegant tints */
+  --color-success-bg: #ecfdf5;           /* Soft mint background */
+  --color-warning-bg: #fef3c7;           /* Warm cream background */
+  --color-error-bg: #fef2f2;             /* Soft rose background */
+  --color-primary-bg: #eff6ff;           /* Light blue background */
 
-  /* 🛒 E-commerce Specific - Bold & Emotional */
-  --color-cart: #c03038;                 /* Matches error — urgency with class */
-  --color-favorite: #a84e68;             /* Dusty rose — emotional but refined */
-  --color-discount: #e0753a;             /* Terracotta orange — draws attention */
-  --color-price: #0a0a0a;                /* Pure black — premium, bold pricing */
+  /* 🛒 E-commerce Specific - Elegant and engaging */
+  --color-cart: #dc2626;                 /* Deep red — urgency with sophistication */
+  --color-favorite: #be185d;             /* Deep pink — emotional engagement */
+  --color-discount: #ea580c;             /* Rich orange — attention without being loud */
+  --color-price: #0f172a;                /* Deep slate — premium pricing display */
 
   /* 🧍‍♂️ Foreground on Brand Colors */
   --color-primary-foreground: #ffffff;   /* White on primary — crisp */
