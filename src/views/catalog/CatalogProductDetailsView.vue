@@ -671,7 +671,7 @@ const addToCart = async () => {
           label: 'View Cart',
           handler: () => {
             // Navigate to cart - you might need to adjust this route
-            window.location.href = '/cart'
+            window.location.href = '/tejon-tech/cart'
           },
         },
       })
