@@ -204,7 +204,7 @@ export const useThemeClasses = () => {
   /**
    * Catalog search input (used in filtering UI).
    */
-  const catalogSearchInputClasses = computed(() => 'w-full text-foreground font-srProDisplay text-sm font-medium placeholder-muted-foreground outline-none rounded-lg transition-colors duration-200')
+  const catalogSearchInputClasses = computed(() => 'w-full bg-background text-foreground font-srProDisplay text-sm font-medium placeholder-muted-foreground outline-none rounded-lg transition-colors duration-200')
 
   /**
    * Catalog sort select dropdown.

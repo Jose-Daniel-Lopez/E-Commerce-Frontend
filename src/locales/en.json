@@ -152,7 +152,10 @@
     "description": "Discover our selection of the latest technology products. From smartphones to accessories, find everything you need.",
     "categories": {
       "allCategories": "All categories",
-      "allProducts": "All products",
+      "allProducts": "All Products",
+      "price": "Price",
+      "brands": "Brands",
+      "buyNow": "Buy Now",
       "smartphones": "Smartphones",
       "tablets": "Tablets",
       "laptops": "Laptops",

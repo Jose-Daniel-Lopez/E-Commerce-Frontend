@@ -6,7 +6,7 @@
       <form @submit.prevent="performSearch" class="flex-1">
         <input
           v-model="searchQuery"
-          :class="catalogSearchInputClasses"
+          :class="[catalogSearchInputClasses, 'bg-surface']"
           type="search"
           id="search"
           placeholder="Search products, brands, categories..."

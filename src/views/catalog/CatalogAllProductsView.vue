@@ -246,7 +246,7 @@ const filteredBrands = computed(() => {
  */
 const breadcrumbs = computed(() => [
   { label: 'catalog.title', to: '/catalog' },
-  { label: 'All Products' },
+  { label: 'catalog.allProducts' },
 ])
 
 // =======================
@@ -543,8 +543,8 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
         <div class="mb-6">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h1 :class="['font-srProDisplay text-lg sm:text-xl font-semibold', textClasses]">All Products</h1>
-              <p :class="['font-srProDisplay text-sm', textSecondaryClasses]">{{ productStore.pagination.totalElements || filteredProducts.length }} products found</p>
+              <h1 :class="['font-srProDisplay text-lg sm:text-xl font-semibold', textClasses]">{{ $t('catalog.allProducts') }}</h1>
+              <p :class="['font-srProDisplay text-sm', textSecondaryClasses]">{{ productStore.pagination.totalElements || filteredProducts.length }} {{ $t('catalog.productsFound') }}</p>
             </div>
           </div>
 
@@ -560,7 +560,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
               </svg>
-              Filters
+              {{ $t('catalog.filters') }}
               <span v-if="hasActiveFilters()" class="ml-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
                 Active
               </span>
@@ -574,7 +574,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5v6m0 0V9a2 2 0 012-2h4a2 2 0 012 2v2M8 11l4 4 4-4" />
               </svg>
-              Sort
+              {{ $t('catalog.sort') }}
             </button>
           </div>
 
@@ -582,7 +582,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
             <div v-if="showMobileFilters" :class="catalogMobileFilterClasses">
             <!-- Price Filter -->
             <div>
-              <h3 :class="['font-srProDisplay text-base font-semibold mb-3', textClasses]">Price Range</h3>
+              <h3 :class="['font-srProDisplay text-base font-semibold mb-3', textClasses]">{{ $t('catalog.priceRange') }}</h3>
               <DualRangeSlider
                 :min="minValue"
                 :max="maxValue"
@@ -594,7 +594,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
 
             <!-- Category Filter -->
             <div v-if="availableCategories.length > 0">
-              <h3 :class="['font-srProDisplay text-base font-semibold mb-3', textClasses]">Categories</h3>
+              <h3 :class="['font-srProDisplay text-base font-semibold mb-3', textClasses]">{{ $t('catalog.categories') }}</h3>
               <div class="grid grid-cols-2 gap-3 overflow-y-auto max-h-48">
                 <label
                   v-for="category in availableCategories.slice(0, 12)"
@@ -613,7 +613,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
 
             <!-- Brand Filter -->
             <div>
-              <h3 :class="['font-srProDisplay text-base font-semibold mb-3', textClasses]">Brands</h3>
+              <h3 :class="['font-srProDisplay text-base font-semibold mb-3', textClasses]">{{ $t('catalog.brands') }}</h3>
               <div class="flex items-center gap-2 p-3 mb-3 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600">
                 <v-icon name="fa-search" scale="1" :class="['text-gray-400 dark:text-gray-300']" />
                 <input
@@ -645,13 +645,13 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                 @click="clearAllFilters"
                 class="flex-1 py-2 text-sm text-error transition-colors border rounded-lg"
               >
-                Clear All
+                {{ $t('catalog.clearAll') }}
               </button>
               <button
                 @click="showMobileFilters = false"
                 :class="['flex-1 py-2 text-sm rounded-lg', buttonPrimaryClasses]"
               >
-                Apply Filters
+                {{ $t('catalog.applyFilters') }}
               </button>
             </div>
           </div>
@@ -660,11 +660,11 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           <div v-if="showMobileSorting" class="mb-4 overflow-hidden bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-600">
             <button
               v-for="option in [
-                { value: 'name', label: 'Name A-Z' },
-                { value: 'name-desc', label: 'Name Z-A' },
-                { value: 'price-low', label: 'Price: Low to High' },
-                { value: 'price-high', label: 'Price: High to Low' },
-                { value: 'rating', label: 'By rating' }
+                { value: 'name', label: $t('catalog.sortNameAZ') },
+                { value: 'name-desc', label: $t('catalog.sortNameZA') },
+                { value: 'price-low', label: $t('catalog.sortPriceLowHigh') },
+                { value: 'price-high', label: $t('catalog.sortPriceHighLow') },
+                { value: 'rating', label: $t('catalog.sortByRating') }
               ]"
               :key="option.value"
               @click="sortBy = option.value; showMobileSorting = false"
@@ -806,7 +806,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                       @click="buyNow(product.id)"
                       class="w-full max-w-[160px] h-[40px] bg-primary text-primary-foreground text-sm font-medium rounded hover:opacity-95 transition-colors"
                     >
-                      Buy Now
+                      {{ $t('catalog.buyNow') }}
                     </button>
                   </div>
                 </div>
@@ -850,7 +850,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           <!-- Price Filter -->
           <div :class="catalogFilterSectionClasses">
             <div :class="catalogFilterHeaderClasses">
-              <h3 :class="catalogFilterTitleClasses">Price</h3>
+              <h3 :class="catalogFilterTitleClasses">{{ $t('catalog.price') }}</h3>
               <button
                 @click="toggleFilter('price')"
                 class="p-1 transition-colors rounded hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -893,7 +893,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           <!-- Category Filter -->
           <div :class="catalogFilterSectionClasses" v-if="availableCategories.length > 0">
             <div :class="catalogFilterHeaderClasses">
-              <h3 :class="catalogFilterTitleClasses">Categories</h3>
+              <h3 :class="catalogFilterTitleClasses">{{ $t('catalog.categories') }}</h3>
               <div class="flex items-center space-x-2">
                 <button
                   v-if="availableCategories.some(category => category.checked)"
@@ -947,7 +947,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           <!-- Brand Filter -->
           <div :class="catalogFilterSectionClasses">
             <div :class="catalogFilterHeaderClasses">
-              <h3 :class="catalogFilterTitleClasses">Brand</h3>
+              <h3 :class="catalogFilterTitleClasses">{{ $t('catalog.brands') }}</h3>
               <div class="flex items-center space-x-2">
                 <button
                   v-if="productStore.brands.some(brand => brand.checked)"
@@ -1009,18 +1009,18 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
 
           <!-- Active Filters Summary -->
           <div v-if="hasActiveFilters()" :class="catalogFilterSummaryClasses">
-            <h4 :class="['font-srProDisplay text-sm font-semibold mb-3', textClasses]">Active Filters</h4>
+            <h4 :class="['font-srProDisplay text-sm font-semibold mb-3', textClasses]">{{ $t('catalog.activeFilters') }}</h4>
             <div class="space-y-2">
               <div v-if="priceRange[0] > 0 || priceRange[1] < 5000" class="flex items-center justify-between text-sm">
-                <span :class="textSecondaryClasses">Price:</span>
+                <span :class="textSecondaryClasses">{{ $t('catalog.price') }}:</span>
                 <span :class="['font-medium', textClasses]">${{ priceRange[0] }} - ${{ priceRange[1] }}</span>
               </div>
               <div v-if="productStore.brands.some(brand => brand.checked)" class="flex items-center justify-between text-sm">
-                <span :class="textSecondaryClasses">Brands:</span>
+                <span :class="textSecondaryClasses">{{ $t('catalog.brands') }}:</span>
                 <span :class="['font-medium', textClasses]">{{ productStore.brands.filter(brand => brand.checked).map(brand => brand.name).join(', ') }}</span>
               </div>
               <div v-if="availableCategories.some(category => category.checked)" class="flex items-center justify-between text-sm">
-                <span :class="textSecondaryClasses">Categories:</span>
+                <span :class="textSecondaryClasses">{{ $t('catalog.categories') }}:</span>
                 <span :class="['font-medium', textClasses]">{{ availableCategories.filter(category => category.checked).map(category => category.name).join(', ') }}</span>
               </div>
             </div>
@@ -1029,13 +1029,13 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
               class="mt-3 text-xs text-red-600 underline transition-colors dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
               type="button"
             >
-              Clear All Filters
+              {{ $t('catalog.clearAllFilters') }}
             </button>
           </div>
 
           <!-- Quick Stats -->
           <div :class="catalogFilterSummaryClasses">
-            <h4 :class="['font-srProDisplay text-sm font-semibold mb-2', textClasses]">Summary</h4>
+            <h4 :class="['font-srProDisplay text-sm font-semibold mb-2', textClasses]">{{ $t('catalog.summary') }}</h4>
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
                 <span :class="textSecondaryClasses">Total Products:</span>
@@ -1058,8 +1058,8 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
           <!-- Header -->
           <div class="flex items-center justify-between mb-6">
             <div>
-              <h1 :class="['font-srProDisplay text-xl font-semibold', textClasses]">All Products</h1>
-              <p :class="['font-srProDisplay', textSecondaryClasses]">{{ productStore.pagination.totalElements || filteredProducts.length }} products found</p>
+              <h1 :class="['font-srProDisplay text-xl font-semibold', textClasses]">{{ $t('catalog.allProducts') }}</h1>
+              <p :class="['font-srProDisplay', textSecondaryClasses]">{{ productStore.pagination.totalElements || filteredProducts.length }} {{ $t('catalog.productsFound') }}</p>
             </div>
             <div class="flex items-center space-x-4">
               <button
@@ -1201,7 +1201,7 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
                       @click="buyNow(product.id)"
                       class="w-[183px] h-[48px] bg-primary text-primary-foreground text-sm font-medium rounded hover:opacity-95 transition-colors"
                     >
-                      Buy Now
+                      {{ $t('catalog.buyNow') }}
                     </button>
                   </div>
                 </div>

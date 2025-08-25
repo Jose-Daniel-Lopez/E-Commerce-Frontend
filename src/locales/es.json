@@ -87,6 +87,9 @@
     "categories": {
       "allCategories": "Todas las categorías",
       "allProducts": "Todos los productos",
+      "price": "Precio",
+      "brands": "Marcas",
+      "buyNow": "Comprar ahora",
       "smartphones": "Móviles",
       "tablets": "Tablets",
       "laptops": "Portátiles",
@@ -185,6 +188,10 @@
   },
   "catalog": {
     "title": "Catálogo",
+    "price": "Precio",
+    "brands": "Marcas",
+    "buyNow": "Comprar ahora",
+    "allProducts": "Todos los productos",
     "category": "categoría",
     "categories": "categorías",
     "searchCategories": "Buscar Categorías",
