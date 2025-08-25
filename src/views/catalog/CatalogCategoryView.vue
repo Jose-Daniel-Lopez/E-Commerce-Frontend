@@ -69,7 +69,19 @@ const {
   catalogCheckboxClasses,
   catalogFilterLabelClasses,
   catalogClearFilterClasses,
-  catalogFilterSummaryClasses
+  catalogFilterSummaryClasses,
+  catalogDebugPanelClasses,
+  catalogDebugTextClasses,
+  loadingSpinnerClasses,
+  errorMessageClasses,
+  emptyStateContainerClasses,
+  ratingStarFilledClasses,
+  ratingStarEmptyClasses,
+  modalOverlayClasses,
+  modalContentClasses,
+  iconColorClasses,
+  priceTextClasses,
+  smallBadgeClasses
 } = useThemeClasses()
 
 // ============================================================================
@@ -439,15 +451,15 @@ onMounted(async () => {
 
     <!-- Debug Panel (DEV ONLY) -->
     <div class="fixed bottom-4 right-4 z-50 max-w-[300px] sm:max-w-[420px] w-full">
-      <div :class="['p-3 rounded-lg shadow-lg sm:p-4', 'theme-debug-bg']">
+      <div :class="catalogDebugPanelClasses">
         <div class="flex items-center justify-between mb-2">
-          <span :class="['text-xs font-bold sm:text-sm', 'theme-debug-text']">🛠️ Debug Panel</span>
-          <button @click="showDebug = !showDebug" :class="['text-xs underline', 'theme-debug-text']">
+          <span :class="['text-xs font-bold sm:text-sm', textClasses]">🛠️ Debug Panel</span>
+          <button @click="showDebug = !showDebug" :class="['text-xs underline', textClasses]">
             {{ showDebug ? 'Hide' : 'Show' }}
           </button>
         </div>
         <transition name="fade-debug">
-          <div v-show="showDebug" :class="['space-y-2 overflow-y-auto text-xs max-h-40', 'theme-debug-text']">
+          <div v-show="showDebug" :class="catalogDebugTextClasses">
             <div><b>User:</b> {{ user }}</div>
             <div><b>Wishlist ID:</b> {{ wishlistStore.wishlistId }}</div>
             <div><b>Wishlist Count:</b> {{ wishlistProducts.length }}</div>
@@ -462,7 +474,8 @@ onMounted(async () => {
             <div><b>Display Name:</b> {{ categoryDisplayName }}</div>
             <button
               @click="console.log('🧪 [TEST] Debug button clicked!'); goToProductDetails(76)"
-              class="px-2 py-1 mt-2 text-xs text-white bg-blue-500 rounded hover:bg-blue-600"
+              :class="buttonPrimaryClasses"
+              class="px-2 py-1 mt-2 text-xs rounded"
             >
               Test Navigation (ID: 76)
             </button>
@@ -699,12 +712,12 @@ onMounted(async () => {
 
           <!-- Loading State -->
           <div v-if="productStore.loading" class="flex items-center justify-center py-12">
-            <div class="w-12 h-12 border-b-2 rounded-full animate-spin border-emerald-500"></div>
+            <div :class="loadingSpinnerClasses"></div>
             <span :class="textSecondaryClasses" class="ml-3">Loading products...</span>
           </div>
 
           <!-- Error State -->
-          <div v-else-if="productStore.error" class="flex items-center justify-center px-4 py-3 mb-8 space-x-2 text-center text-red-700 bg-red-100 border border-red-400 rounded-lg dark:bg-red-900/20 dark:border-red-500 dark:text-red-300">
+          <div v-else-if="productStore.error" :class="[errorMessageClasses, 'flex items-center justify-center px-4 py-3 mb-8 space-x-2 text-center']">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -714,10 +727,10 @@ onMounted(async () => {
           </div>
 
           <!-- Empty State -->
-          <div v-else-if="filteredProducts.length === 0" class="py-12 text-center">
+          <div v-else-if="filteredProducts.length === 0" :class="emptyStateContainerClasses">
             <div class="flex justify-center mb-4">
               <div :class="cardClasses" class="p-6 rounded-full">
-                <svg :class="textMutedClasses" class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg :class="iconColorClasses" class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
@@ -755,7 +768,7 @@ onMounted(async () => {
                 <button
                   @click.stop="toggleFavorite(product.id)"
                   :disabled="wishlistLoading"
-                  :class="[textSecondaryClasses, 'hover:text-red-600 dark:hover:text-red-400']"
+                  :class="[textSecondaryClasses, 'hover:text-error']"
                   class="flex items-center justify-center w-8 h-8 transition-colors disabled:opacity-50"
                   type="button"
                   aria-label="Toggle favorite"
@@ -764,7 +777,7 @@ onMounted(async () => {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
-                  <svg v-else fill="currentColor" viewBox="0 0 24 24" class="w-6 h-6 text-red-600">
+                  <svg v-else fill="currentColor" viewBox="0 0 24 24" class="w-6 h-6 text-error">
                     <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 </button>
@@ -787,7 +800,7 @@ onMounted(async () => {
                     <div class="h-[48px]">
                       <a href="#" @click.stop.prevent="goToProductDetails(product.id)" class="block cursor-pointer">
                         <h3 :class="textClasses"
-                          class="text-base font-medium text-center transition-colors font-srProDisplay hover:text-indigo-600 dark:hover:text-indigo-400 line-clamp-2">
+                          class="text-base font-medium text-center transition-colors font-srProDisplay hover:text-primary line-clamp-2">
                           {{ product.name }}
                         </h3>
                       </a>
@@ -795,8 +808,8 @@ onMounted(async () => {
                     <div class="flex items-center justify-center gap-2 mb-1">
                       <span class="flex items-center">
                         <template v-for="i in 5" :key="i">
-                          <svg class="w-4 h-4"
-                            :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : textSecondaryClasses"
+                          <svg
+                            :class="[i <= Math.round(product.rating || 0) ? ratingStarFilledClasses : ratingStarEmptyClasses]"
                             fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 0 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
                           </svg>
@@ -805,7 +818,7 @@ onMounted(async () => {
                       </span>
                     </div>
                     <div class="flex items-center justify-center gap-2">
-                      <span :class="textClasses" class="text-lg font-semibold font-figtree">{{ formatPrice(product.basePrice) }}</span>
+                      <span :class="[priceTextClasses, 'text-lg font-semibold font-figtree']">{{ formatPrice(product.basePrice) }}</span>
                     </div>
                   </div>
                   <div class="flex items-center justify-center pt-2 mt-6">
@@ -882,8 +895,8 @@ onMounted(async () => {
     </div>
 
     <!-- Mobile Filters Modal -->
-    <div v-if="showMobileFilters" class="fixed inset-0 z-50 bg-black bg-opacity-50 lg:hidden" @click="closeMobileFilters">
-      <div :class="catalogMobileFilterClasses" class="flex flex-col w-full h-full max-w-sm ml-auto overflow-hidden" @click.stop>
+    <div v-if="showMobileFilters" :class="modalOverlayClasses" class="lg:hidden" @click="closeMobileFilters">
+      <div :class="[modalContentClasses, catalogMobileFilterClasses]" class="flex flex-col w-full h-full max-w-sm ml-auto overflow-hidden" @click.stop>
         <div :class="[cardClasses, 'flex items-center justify-between p-4']">
           <h2 :class="textClasses" class="text-lg font-semibold">Filters</h2>
           <button @click="closeMobileFilters" :class="hoverClasses" class="p-2 transition-colors rounded-full">
@@ -981,7 +994,7 @@ onMounted(async () => {
                   <span
                     v-for="brand in productStore.brands.filter(brand => brand.checked)"
                     :key="brand.name"
-                    class="inline-block px-2 py-1 text-xs text-white bg-black rounded dark:bg-white dark:text-black"
+                    :class="smallBadgeClasses"
                   >
                     {{ brand.name }}
                   </span>
@@ -1036,37 +1049,15 @@ button:focus {
   width: 2px;
 }
 .overflow-y-auto::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--color-surface-secondary);
   border-radius: 4px;
 }
 .overflow-y-auto::-webkit-scrollbar-thumb {
-  background: #000;
+  background: var(--color-border);
   border-radius: 4px;
 }
 .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background: #222;
-}
-.custom-checkbox {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 3px;
-  background-color: white;
-  cursor: pointer;
-  position: relative;
-}
-.custom-checkbox:hover {
-  border-color: #9ca3af;
-}
-.custom-checkbox:checked {
-  background-color: #000;
-  border-color: #000;
-  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M13.854 3.646L6.354 11.146a.5.5 0 01-.708 0L2.146 7.646a.5.5 0 11.708-.708L6 10.293l7.146-7.147a.5.5 0 01.708.708z'/%3e%3c/svg%3e");
-  background-size: 8px 8px;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: var(--color-muted);
 }
 body.modal-open {
   overflow: hidden;
