@@ -360,7 +360,7 @@
       "emptyMessage": "No tienes productos en tu lista de deseos."
     },
     "addresses": {
-      "title": "Mis direcciones",
+      "title": "Mis direcciones personales",
       "addButton": "Añadir nueva dirección"
     },
     "reviews": {
