@@ -15,7 +15,7 @@ export const useUserDropdown = () => {
     { label: 'My addresses', route: '/account', hash: '#addresses' },
     { label: 'My reviews', route: '/account', hash: '#reviews' },
     { label: 'Settings', route: '/account', hash: '#settings' },
-    { label: 'Log out', route: null, isLogout: true },
+    { label: 'Log out', route: '/login', isLogout: true },
   ]
 
   const toggleUserDropdown = () => {
