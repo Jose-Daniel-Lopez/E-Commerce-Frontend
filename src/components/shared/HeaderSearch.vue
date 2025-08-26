@@ -9,7 +9,7 @@
           :class="[catalogSearchInputClasses, 'bg-surface']"
           type="search"
           id="search"
-          placeholder="Search products, brands, categories..."
+          :placeholder="t('search.placeholder')"
           @keyup.enter="performSearch"
           @focus="handleInputFocus"
           @blur="handleInputBlur"
@@ -24,7 +24,7 @@
         :class="[buttonPrimaryClasses, 'px-3 py-1 text-sm rounded-lg']"
         :disabled="!searchQuery.trim()"
       >
-        Search
+        {{ t('search.button') }}
       </button>
     </div>
 
@@ -43,11 +43,12 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import SearchSuggestions from './SearchSuggestions.vue'
 import { useThemeClasses } from '@/composables/useThemeClasses'
-
 const router = useRouter()
 const route = useRoute()
+const { t } = useI18n()
 
 // =======================
 // State
