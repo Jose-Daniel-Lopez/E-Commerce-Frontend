@@ -480,4 +480,12 @@
   "translationTooltip": "El sistema de traducción aún está en desarrollo. Algunos textos pueden no estar traducidos o ser inexactos.",
   "themeTooltip": "El sistema de temas aún está en desarrollo. El tema claro puede presentar partes sin terminar."
   }
+  ,"theme": {
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema",
+    "lightTooltip": "Claro",
+    "darkTooltip": "Oscuro",
+    "systemTooltip": "Sistema"
+  }
 }
