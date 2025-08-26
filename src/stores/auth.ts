@@ -180,11 +180,6 @@ export const useAuthStore = defineStore('auth', () => {
       title: 'Logout Successful',
       duration: 3000
     })
-
-    // Small delay to allow toast to be seen before redirect
-    setTimeout(() => {
-      window.location.href = '/login'
-    }, 100)
   }
 
   const requestPasswordReset = async (email: string) => {

@@ -15,7 +15,7 @@ export const useUserDropdown = () => {
     { label: 'My addresses', route: '/account', hash: '#addresses' },
     { label: 'My reviews', route: '/account', hash: '#reviews' },
     { label: 'Settings', route: '/account', hash: '#settings' },
-    { label: 'Log out', route: '/login', isLogout: true },
+    { label: 'Log out', route: null, isLogout: true },
   ]
 
   const toggleUserDropdown = () => {
@@ -48,13 +48,25 @@ export const useUserDropdown = () => {
 
   const handleLogout = async () => {
     try {
-      // Use the auth store logout method instead of direct fetch
-      authStore.logout()
+      // Prefer awaiting the auth store logout if it exists
+      if (typeof authStore.logout === 'function') {
+        await authStore.logout()
+      } else {
+        // Fallback to clearing auth state if logout isn't provided
+        if (typeof authStore.clearAuth === 'function') {
+          authStore.clearAuth()
+        }
+      }
+
+      // Force correct redirect and replace history so back button won't return to authenticated pages
+      await router.replace('/login')
     } catch (error) {
       console.error('Error during logout:', error)
-      // Fallback: clear auth and redirect manually
-      authStore.clearAuth()
-      router.push('/login')
+      // Ensure auth cleared and redirect as a fallback
+      if (typeof authStore.clearAuth === 'function') {
+        authStore.clearAuth()
+      }
+      await router.replace('/login')
     }
   }
 
