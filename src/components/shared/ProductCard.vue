@@ -3,19 +3,6 @@
     :class="['relative h-auto rounded-[9px] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4 transition-colors cursor-pointer', cardClasses]"
     @click="navigateToProduct"
   >
-    <!-- Debug Panel (only visible in development) -->
-    <div
-      v-if="showDebug"
-      class="absolute bottom-0 left-0 right-0 bg-yellow-100 border border-yellow-300 p-2 text-xs z-30 rounded-b-[9px] max-h-32 overflow-y-auto"
-    >
-      <div><strong>Debug Info:</strong></div>
-      <div class="font-bold" :class="product.id > 0 ? 'text-green-600' : 'text-red-600'">
-        Product ID: {{ product.id }} ({{ typeof product.id }}) {{ product.id > 0 ? '✅' : '❌ INVALID' }}
-      </div>
-      <div>Fav: {{ isFavorite ? '❤️' : '🤍' }} | Toggle: {{ isToggling ? '⏳' : '✅' }}</div>
-      <div>User: {{ user?.id || 'None' }} | WL ID: {{ wishlistId || 'None' }} | Count: {{ wishlistProducts.length }}</div>
-      <div v-if="wishlistStore.wishlistError" class="text-red-600">Error: {{ wishlistStore.wishlistError }}</div>
-    </div>
 
     <div class="absolute top-4 right-4 z-40">
       <button
