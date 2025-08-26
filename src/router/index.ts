@@ -211,6 +211,34 @@ const router = createRouter({
       name: 'sliderDemo',
       component: () => import('../views/testing/DualRangeSliderTest.vue'),
       meta: { title: 'Slider Demo' }
+    },
+    {
+      path: '/error-demo',
+      name: 'errorDemo',
+      component: () => import('../views/testing/ErrorDemo.vue'),
+      meta: { title: 'Error Pages Demo' }
+    },
+
+    // ========================
+    // Error Pages
+    // ========================
+    {
+      path: '/error/:errorCode(400|401|403|404|500|502)',
+      name: 'error',
+      component: () => import('../views/shared/ErrorView.vue'),
+      props: route => ({ errorCode: parseInt(route.params.errorCode as string) }),
+      meta: { title: 'Error' }
+    },
+
+    // ========================
+    // Catch All / 404 Route
+    // ========================
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'notFound',
+      component: () => import('../views/shared/ErrorView.vue'),
+      props: { errorCode: 404 },
+      meta: { title: '404 - Page Not Found' }
     }
   ]
 })

@@ -57,6 +57,8 @@ addIcons(
   AllIcons.HiCheckCircle,
   AllIcons.HiExclamationCircle,
   AllIcons.BiExclamationTriangle,
+  AllIcons.HiQuestionMarkCircle,
+  AllIcons.HiServer,
   AllIcons.HiBadgeCheck,
   AllIcons.HiUsers,
   AllIcons.HiMenu,
