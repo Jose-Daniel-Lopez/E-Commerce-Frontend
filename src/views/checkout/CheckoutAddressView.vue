@@ -376,6 +376,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useCheckoutStore } from '@/stores/checkout'
 import type { ShippingAddress, CreateShippingAddressRequest, UpdateShippingAddressRequest } from '@/types/shippingAddress'
 import { useThemeClasses } from '@/composables/useThemeClasses'
+import { useToast } from '@/composables/useToast'
 
 const { pageBackgroundClasses, buttonPrimaryClasses, buttonOutlineClasses, cardClasses, formInputClasses, formLabelClasses } = useThemeClasses()
 
@@ -383,6 +384,9 @@ const { pageBackgroundClasses, buttonPrimaryClasses, buttonOutlineClasses, cardC
 const shippingAddressStore = useShippingAddressStore()
 const authStore = useAuthStore()
 const checkoutStore = useCheckoutStore()
+
+// Toast notifications
+const toast = useToast()
 
 // ========== COMPUTED ==========
 const addresses = computed(() => shippingAddressStore.shippingAddresses)
@@ -472,12 +476,14 @@ const submitAddressForm = async () => {
 
       const success = await shippingAddressStore.updateAddress(updateData)
       if (success) {
+        toast.success('Address updated successfully')
         cancelAddressForm()
       }
     } else {
       // Create new address
       const newAddress = await shippingAddressStore.createAddress(addressForm.value)
       if (newAddress) {
+        toast.success('Address created successfully')
         // Auto-select the new address
         selectedAddressId.value = newAddress.id!
         checkoutStore.setSelectedAddress(newAddress)
@@ -486,6 +492,7 @@ const submitAddressForm = async () => {
     }
   } catch (error) {
     console.error('Error submitting address form:', error)
+    toast.error('Failed to save address')
   } finally {
     formSubmitting.value = false
   }
@@ -551,6 +558,12 @@ const removeAddress = async (addressId: number) => {
   try {
     const success = await shippingAddressStore.deleteAddress(addressId)
     if (success) {
+      // Find the address title for the success message
+      const deletedAddress = addresses.value.find(addr => addr.id === addressId)
+      const addressTitle = deletedAddress?.title || 'Address'
+
+      toast.success(`${addressTitle} deleted successfully`)
+
       // If the deleted address was selected, clear selection
       if (selectedAddressId.value === addressId) {
         selectedAddressId.value = null
@@ -565,6 +578,25 @@ const removeAddress = async (addressId: number) => {
     }
   } catch (error) {
     console.error('Error removing address:', error)
+
+    // Check if it's the specific error about address being used by orders
+    const isAxiosError = error && typeof error === 'object' && 'response' in error
+    const errorMessage = isAxiosError ? (error as { response: { data: { error: string } } }).response?.data?.error : ''
+
+    if (errorMessage && errorMessage.includes('being used by') && errorMessage.includes('order(s)')) {
+      // Clear the store error since we're handling this specific case
+      shippingAddressStore.error = null
+
+      const deletedAddress = addresses.value.find(addr => addr.id === addressId)
+      const addressTitle = deletedAddress?.title || 'Address'
+
+      toast.error(`Cannot delete "${addressTitle}" - it's being used by existing orders`, {
+        title: 'Address In Use',
+        duration: 6000
+      })
+    } else {
+      toast.error('Failed to delete address')
+    }
   } finally {
     deletingAddress.value = false
   }

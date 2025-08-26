@@ -132,9 +132,7 @@
             <!-- Addresses Section -->
             <AddressesSection
               :section-id="sections[4].id"
-              :addresses="addresses"
-              :addresses-loading="addressesLoading"
-              :addresses-error="addressesError"
+              :user-id="authStore.user?.id || 0"
               :section-container-classes="sectionContainerClasses"
               :text-classes="textClasses"
               :section-header-classes="sectionHeaderClasses"
@@ -268,6 +266,7 @@ import ReviewsSection from '@/components/user/ReviewsSection.vue'
 import SettingsSection from '@/components/user/SettingsSection.vue'
 
 import axios from '@/lib/axios'
+import type { ShippingAddress } from '@/types/shippingAddress'
 
 // Performance optimizations
 const showDebug = ref(import.meta.env.DEV) // Debug toggle state - show by default in dev mode
@@ -466,8 +465,6 @@ const refunds = computed(() =>
 )
 
 const addresses = computed(() => usersStore.userAddresses)
-const addressesLoading = computed(() => usersStore.addressesLoading)
-const addressesError = computed(() => usersStore.addressesError)
 
 interface Review {
   id: number
@@ -1165,7 +1162,32 @@ const refreshAddresses = async () => {
 }
 
 // ===========================
-// 🛒 Cart Functionality
+// Address Management
+// ===========================
+
+const handleCreateAddress = () => {
+  // TODO: Implement address creation modal or navigation
+  toast.info('Create address functionality coming soon!', {
+    duration: 3000
+  })
+}
+
+const handleEditAddress = (address: any) => {
+  // TODO: Implement address editing modal or navigation
+  console.log('Edit address:', address)
+  toast.info('Edit address functionality coming soon!', {
+    duration: 3000
+  })
+}
+
+const handleAddressDeleted = (addressId: number) => {
+  toast.success(`Address ${addressId} deleted successfully!`, {
+    duration: 2500
+  })
+}
+
+// ===========================
+// �🛒 Cart Functionality
 // ===========================
 
 // Loading states for cart operations

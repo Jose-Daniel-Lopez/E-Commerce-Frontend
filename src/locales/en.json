@@ -360,7 +360,7 @@
       "emptyMessage": "You have no products in your wishlist."
     },
     "addresses": {
-      "title": "My personal addresses",
+      "title": "My addresses",
       "addButton": "Add new address"
     },
     "reviews": {
