@@ -474,4 +474,10 @@
   "debug": {
     "productVariantData": "DEBUG: Datos del producto y variante (ELIMINAR MÁS TARDE)"
   }
+  ,"wip": {
+  "tooltip": "Trabajo en curso - Esta característica aún está en desarrollo",
+  "text": "WIP",
+  "translationTooltip": "El sistema de traducción aún está en desarrollo. Algunos textos pueden no estar traducidos o ser inexactos.",
+  "themeTooltip": "El sistema de temas aún está en desarrollo. El tema claro puede presentar partes sin terminar."
+  }
 }

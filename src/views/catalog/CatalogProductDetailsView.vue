@@ -983,9 +983,9 @@ const fetchProductVariants = async (productId: number) => {
           </div>
 
           <!-- DEBUG: Raw product data -->
-          <!-- <div v-if="product"
+           <div v-if="product"
             :class="['p-4 space-y-3 border rounded', cardClasses]">
-            <h3 :class="['text-sm font-bold', textClasses]">🔍 {{ t('debug.productVariantData') }}</h3>
+            <h3 :class="['text-sm font-bold', textClasses]">{{ t('debug.productVariantData') }}</h3>
             <div :class="['space-y-1 text-xs', textMutedClasses]">
               <p><strong>Category:</strong> {{ product?.category ?? '' }}</p>
               <p><strong>Is Mobile/Compute:</strong> {{ isMobileComputeCategory }}</p>
@@ -1001,7 +1001,6 @@ const fetchProductVariants = async (productId: number) => {
               <p><strong>Total Variants:</strong> {{ productVariants.length }}</p>
             </div>
           </div>
-          -->
 
           <!-- Product Specifications - Mobile & Compute Template -->
           <div v-if="isMobileComputeCategory && currentProduct.specifications"

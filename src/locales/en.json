@@ -478,4 +478,10 @@
   "debug": {
     "productVariantData": "DEBUG: Product & Variant Data (REMOVE LATER)"
   }
+  ,"wip": {
+  "tooltip": "Work In Progress - This feature is still under development",
+  "text": "WIP",
+  "translationTooltip": "Translation system is still under development. Some texts may not be translated or accurate.",
+  "themeTooltip": "Theme system is still under development. Light theme may present unfinished parts."
+  }
 }
