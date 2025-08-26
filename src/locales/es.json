@@ -414,7 +414,7 @@
   },
   "product": {
     "selectColor": "Seleccionar color:",
-    "storage": "Almacenamiento:",
+    "storage": "Almacenamiento",
     "stock": "Stock:",
     "stockAvailable": "{count} disponibles",
     "outOfStock": "Sin stock",
@@ -450,7 +450,26 @@
     "inStock": "En stock",
     "today": "Hoy",
     "guaranteed": "Garantizado",
-    "guaranteeTime": "1 año"
+    "guaranteeTime": "1 año",
+    "details": "Detalles",
+    "displayAndScreen": "Pantalla y visualización",
+    "performance": "Rendimiento",
+    "operatingSystem": "Sistema Operativo",
+    "rearCamera": "Cámara Trasera",
+    "batteryCapacity": "Capacidad de Batería",
+    "reviews": "Reseñas",
+    "excellent": "Excelente",
+    "good": "Bueno",
+    "average": "Promedio",
+    "belowAverage": "Por debajo del promedio",
+    "poor": "Pobre",
+    "leaveComment": "Dejar un comentario",
+    "leaveReview": "Dejar una reseña",
+    "rating": "Calificación",
+    "comment": "Comentario",
+    "submitReview": "Enviar reseña",
+    "viewMore": "Ver más",
+    "viewLess": "Ver menos"
   },
   "debug": {
     "productVariantData": "DEBUG: Datos del producto y variante (ELIMINAR MÁS TARDE)"

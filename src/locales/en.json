@@ -454,7 +454,26 @@
     "inStock": "In Stock",
     "today": "Today",
     "guaranteed": "Guaranteed",
-    "guaranteeTime": "1 year"
+    "guaranteeTime": "1 year",
+    "details": "Details",
+    "displayAndScreen": "Display & Screen",
+    "performance": "Performance",
+    "operatingSystem": "Operating System",
+    "rearCamera": "Rear Camera",
+    "batteryCapacity": "Battery Capacity",
+    "reviews": "Reviews",
+    "excellent": "Excellent",
+    "good": "Good",
+    "average": "Average",
+    "belowAverage": "Below Average",
+    "poor": "Poor",
+    "leaveComment": "Leave a Comment",
+    "leaveReview": "Leave a Review",
+    "rating": "Rating",
+    "comment": "Comment",
+    "submitReview": "Submit Review",
+    "viewMore": "View More",
+    "viewLess": "View Less"
   },
   "debug": {
     "productVariantData": "DEBUG: Product & Variant Data (REMOVE LATER)"
