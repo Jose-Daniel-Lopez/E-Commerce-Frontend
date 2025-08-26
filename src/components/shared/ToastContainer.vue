@@ -35,9 +35,9 @@
 
         <!-- Toast Content -->
         <div class="p-4">
-          <div class="flex items-start space-x-3">
-            <!-- Icon -->
-            <div class="flex-shrink-0">
+          <div class="flex items-start space-x-6">
+            <!-- Icon - vertically centered -->
+            <div class="flex-shrink-0 self-center">
               <v-icon
                 :name="toast.icon"
                 :class="[
@@ -84,11 +84,11 @@
               </button>
             </div>
 
-            <!-- Close Button -->
+            <!-- Close Button - vertically centered -->
             <button
               @click="closeToast(toast.id)"
               :class="[
-                'flex-shrink-0 p-1 rounded-md transition-all duration-200 hover:scale-110',
+                'flex-shrink-0 p-1 rounded-md transition-all duration-200 hover:scale-110 self-center',
                 getCloseButtonClasses(toast.type)
               ]"
               :aria-label="`Close ${toast.type} notification`"
