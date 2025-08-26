@@ -930,8 +930,8 @@ const fetchProductVariants = async (productId: number) => {
           </div>
 
           <!-- Color Selection -->
-            <div v-if="availableColors.length > 0" class="flex items-center gap-4">
-            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">Select color:</span>
+          <div v-if="availableColors.length > 0" class="flex items-center gap-4">
+            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.selectColor') }}</span>
             <div class="flex space-x-3">
               <button v-for="color in availableColors" :key="color" @click="selectColor(color)" :class="[
                 'w-8 h-8 rounded-full border-2 transition-all',
@@ -959,7 +959,7 @@ const fetchProductVariants = async (productId: number) => {
 
           <!-- Storage Display (for Mobile & Compute) - fallback for when no variants -->
           <div v-else-if="isMobileComputeCategory && currentProduct.specifications?.storage" class="space-y-3">
-            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">Storage:</span>
+            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.storage') }}</span>
             <div
               :class="['px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium', cardClasses]">
               {{ currentProduct.specifications?.storage ?? '' }}
@@ -969,24 +969,23 @@ const fetchProductVariants = async (productId: number) => {
           <!-- Stock Information -->
             <div v-if="currentVariant || productVariants.length > 0" class="space-y-2">
             <div class="flex items-center gap-2">
-              <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">Stock:</span>
+              <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.stock') }}</span>
               <span :class="[
                 'font-srProDisplay text-sm font-semibold',
                 isInStock ? 'text-success' : 'text-error'
               ]">
-                {{ isInStock ? `${currentStock} available` : 'Out of stock' }}
+                {{ isInStock ? t('product.stockAvailable', { count: currentStock }) : t('product.outOfStock') }}
               </span>
             </div>
             <div v-if="currentVariant" :class="['text-xs', textMutedClasses]">
-              SKU: {{ currentVariant?.sku ?? '' }}
+              {{ t('product.sku') }}: {{ currentVariant?.sku ?? '' }}
             </div>
           </div>
 
           <!-- DEBUG: Raw product data -->
-          <div v-if="product"
+           <div v-if="product"
             :class="['p-4 space-y-3 border rounded', cardClasses]">
-            <h3 :class="['text-sm font-bold', textClasses]">🔍 DEBUG: Product & Variant Data (REMOVE
-              LATER)</h3>
+            <h3 :class="['text-sm font-bold', textClasses]">{{ t('debug.productVariantData') }}</h3>
             <div :class="['space-y-1 text-xs', textMutedClasses]">
               <p><strong>Category:</strong> {{ product?.category ?? '' }}</p>
               <p><strong>Is Mobile/Compute:</strong> {{ isMobileComputeCategory }}</p>
@@ -1003,7 +1002,6 @@ const fetchProductVariants = async (productId: number) => {
             </div>
           </div>
 
-
           <!-- Product Specifications - Mobile & Compute Template -->
           <div v-if="isMobileComputeCategory && currentProduct.specifications"
             class="grid grid-cols-2 gap-3 md:grid-cols-3">
@@ -1014,7 +1012,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="co-resize-both" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Screen size</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.screenSize') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.screenSize ?? '' }}
                 </p>
@@ -1028,7 +1026,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-chip" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">CPU</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.cpu') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.cpu ?? '' }}
                 </p>
@@ -1042,7 +1040,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-chip" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">GPU</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.gpu') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.gpu ?? '' }}
                 </p>
@@ -1056,7 +1054,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-cube" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">RAM</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.ram') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications && currentProduct.specifications.ram ?
                     currentProduct.specifications.ram + 'GB' : '' }}
@@ -1071,7 +1069,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-refresh" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Refresh Rate</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.refreshRate') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications && currentProduct.specifications.refreshRate ?
                     currentProduct.specifications.refreshRate + 'Hz' : '' }}
@@ -1086,7 +1084,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="bi-camera" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Camera</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.camera') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.camera ?? '' }}
                 </p>
@@ -1100,7 +1098,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="io-camera-reverse" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Front Camera</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.frontCamera') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.frontCamera ?? '' }}
                 </p>
@@ -1114,7 +1112,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="gi-battery-75" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Battery</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.battery') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.battery ?? '' }}
                 </p>
@@ -1128,7 +1126,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="io-settings" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">OS</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.os') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.os ?? '' }}
                 </p>
@@ -1146,7 +1144,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="bi-bullseye" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">DPI</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.dpi') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.dpi ?? '' }}
                 </p>
@@ -1160,7 +1158,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-lightning-bolt" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Polling Rate</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.pollingRate') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications && currentProduct.specifications.pollingRate ?
                     currentProduct.specifications.pollingRate + 'Hz' : '' }}
@@ -1175,7 +1173,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="io-keypad" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Switch Type</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.switchType') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.switchType ?? '' }}
                 </p>
@@ -1189,7 +1187,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="io-bulb" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Backlighting</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.backlighting') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.backlighting ?? '' }}
                 </p>
@@ -1203,7 +1201,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="io-options" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Programmable</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.programmable') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications && currentProduct.specifications.programmableButtons !== undefined ?
                     (currentProduct.specifications.programmableButtons ? 'Yes' : 'No') : '' }}
@@ -1218,7 +1216,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="gi-battery-75" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Battery Life</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.batteryLife') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications?.batteryLife ?? '' }}
                 </p>
@@ -1232,7 +1230,7 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="io-hand-left" scale="1.2" :class="iconColorClasses" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Ergonomic</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.ergonomic') }}</p>
                 <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">
                   {{ currentProduct.specifications && currentProduct.specifications.ergonomic !== undefined ?
                     (currentProduct.specifications.ergonomic ? 'Yes' : 'No') : '' }}
@@ -1248,7 +1246,7 @@ const fetchProductVariants = async (productId: number) => {
             </p>
             <button v-if="isDescriptionLong" @click="toggleDescription"
               :class="['font-srProDisplay text-sm font-medium underline focus:outline-none', textClasses]">
-              {{ showFullDescription ? 'less...' : 'more...' }}
+              {{ showFullDescription ? t('product.less') : t('product.more') }}
             </button>
           </div>
 
@@ -1259,16 +1257,16 @@ const fetchProductVariants = async (productId: number) => {
               :class="['flex-1 border py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors', buttonSecondaryClasses]">
               <span v-if="wishlistLoading" class="flex items-center justify-center">
                 <div :class="['w-4 h-4 mr-2 border-b-2 rounded-full animate-spin', dividerClasses]"></div>
-                Adding...
+                {{ t('product.adding') }}
               </span>
               <span v-else-if="!isAuthenticated">
-                Login to Add to Wishlist
+                {{ t('product.loginToWishlist') }}
               </span>
               <span v-else-if="currentProduct?.id && wishlistStore.isProductInWishlist(currentProduct.id)">
-                Already in Wishlist
+                {{ t('product.alreadyInWishlist') }}
               </span>
               <span v-else>
-                Add to Wishlist
+                {{ t('product.addToWishlist') }}
               </span>
             </button>
             <button @click="addToCart"
@@ -1276,22 +1274,22 @@ const fetchProductVariants = async (productId: number) => {
               :class="['flex-1 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors', buttonPrimaryClasses]">
               <span v-if="cartLoading" class="flex items-center justify-center">
                 <div class="w-4 h-4 mr-2 border-b-2 border-white rounded-full animate-spin"></div>
-                Adding...
+                {{ t('product.adding') }}
               </span>
               <span v-else-if="!isAuthenticated">
-                Login to Add to Cart
+                {{ t('product.loginToCart') }}
               </span>
               <span v-else-if="!isInStock">
-                Out of Stock
+                {{ t('product.outOfStock') }}
               </span>
               <span v-else-if="availableColors.length > 0 && !selectedColor">
-                Select Color
+                {{ t('product.selectColor') }}
               </span>
               <span v-else-if="availableSizes.length > 0 && !selectedStorage">
-                Select {{ availableSizes.length > 0 && availableSizes[0].includes('GB') ? 'Storage' : 'Size' }}
+                {{ t('product.selectStorageOrSize', { type: availableSizes.length > 0 && availableSizes[0].includes('GB') ? t('product.storage') : t('product.size') }) }}
               </span>
               <span v-else>
-                Add to Cart
+                {{ t('product.addToCart') }}
               </span>
             </button>
           </div>
@@ -1303,8 +1301,8 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-truck" scale="1.2" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Free Delivery</p>
-                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">1-2 day</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.freeDelivery') }}</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">{{ t('product.deliveryTime') }}</p>
               </div>
             </div>
             <div :class="['flex items-center rounded-[8px] p-3', cardClasses]">
@@ -1312,8 +1310,8 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="bi-shop" scale="1.2" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">In Stock</p>
-                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">Today</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.inStock') }}</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">{{ t('product.today') }}</p>
               </div>
             </div>
             <div :class="['flex items-center rounded-[8px] p-3', cardClasses]">
@@ -1321,8 +1319,8 @@ const fetchProductVariants = async (productId: number) => {
                 <v-icon name="hi-badge-check" scale="1.2" />
               </div>
               <div>
-                <p :class="['text-xs', textMutedClasses]">Guaranteed</p>
-                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">1 year</p>
+                <p :class="['text-xs', textMutedClasses]">{{ t('product.guaranteed') }}</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">{{ t('product.guaranteeTime') }}</p>
               </div>
             </div>
           </div>
@@ -1334,7 +1332,7 @@ const fetchProductVariants = async (productId: number) => {
     <section :class="['w-full flex justify-center py-24', 'theme-surface']">
       <div :class="['w-full max-w-[1640px] rounded-2xl shadow-sm px-8 py-10', cardClasses]">
         <div class="flex items-center justify-between mb-2">
-          <h2 :class="['text-2xl font-semibold', textClasses]">Details</h2>
+          <h2 :class="['text-2xl font-semibold', textClasses]">{{ t('product.details') }}</h2>
           <button @click="toggleDetails" :class="['p-1 transition-colors rounded', hoverClasses]"
             type="button" aria-label="Toggle details section">
             <v-icon name="hi-chevron-down"
@@ -1369,18 +1367,18 @@ const fetchProductVariants = async (productId: number) => {
                   <template v-if="isMobileComputeCategory && hasMobileComputeSpecs">
                     <!-- Display Section -->
                     <div>
-                      <h3 :class="['mt-8 mb-4 text-xl font-semibold', textClasses]">Display & Screen</h3>
+                      <h3 :class="['mt-8 mb-4 text-xl font-semibold', textClasses]">{{ t('product.displayAndScreen') }}</h3>
                       <div :class="['border-t', dividerClasses]">
                         <div v-if="currentProduct.specifications?.screenSize"
                           :class="['flex items-center py-4 border-b', dividerClasses]">
-                          <div :class="['flex-1', textSecondaryClasses]">Screen size</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.screenSize') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">
                             {{ currentProduct.specifications.screenSize }}
                           </div>
                         </div>
                         <div v-if="currentProduct.specifications?.refreshRate"
                           :class="['flex items-center py-4 border-b', dividerClasses]">
-                          <div :class="['flex-1', textSecondaryClasses]">Refresh rate</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.refreshRate') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.refreshRate }}Hz</div>
                         </div>
@@ -1388,7 +1386,7 @@ const fetchProductVariants = async (productId: number) => {
                     </div>
                     <!-- Performance Section -->
                     <div>
-                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Performance</h3>
+                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">{{ t('product.performance') }}</h3>
                       <div :class="['border-t', dividerClasses]">
                         <div v-if="currentProduct.specifications?.cpu"
                           :class="['flex items-center py-4 border-b', dividerClasses]">
@@ -1410,12 +1408,12 @@ const fetchProductVariants = async (productId: number) => {
                         </div>
                         <div v-if="currentProduct.specifications?.storage"
                           :class="['flex items-center py-4 border-b', dividerClasses]">
-                          <div :class="['flex-1', textSecondaryClasses]">Storage</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.storage') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.storage }}</div>
                         </div>
                         <div v-if="currentProduct.specifications?.os" class="flex items-center py-4">
-                          <div :class="['flex-1', textSecondaryClasses]">Operating System</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.operatingSystem') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{ currentProduct.specifications.os
                             }}</div>
                         </div>
@@ -1423,16 +1421,16 @@ const fetchProductVariants = async (productId: number) => {
                     </div>
                     <!-- Camera Section -->
                     <div v-if="currentProduct.specifications?.camera || currentProduct.specifications?.frontCamera">
-                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Camera</h3>
+                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">{{ t('product.camera') }}</h3>
                       <div :class="['border-t', dividerClasses]">
                         <div v-if="currentProduct.specifications?.camera"
                           :class="['flex items-center py-4 border-b', dividerClasses]">
-                          <div :class="['flex-1', textSecondaryClasses]">Rear camera</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.rearCamera') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.camera }}</div>
                         </div>
                         <div v-if="currentProduct.specifications?.frontCamera" class="flex items-center py-4">
-                          <div :class="['flex-1', textSecondaryClasses]">Front camera</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.frontCamera') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.frontCamera }}</div>
                         </div>
@@ -1440,10 +1438,10 @@ const fetchProductVariants = async (productId: number) => {
                     </div>
                     <!-- Battery Section -->
                     <div v-if="currentProduct.specifications?.battery">
-                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Battery</h3>
+                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">{{ t('product.battery') }}</h3>
                       <div :class="['border-t', dividerClasses]">
                         <div class="flex items-center py-4">
-                          <div :class="['flex-1', textSecondaryClasses]">Battery capacity</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.batteryCapacity') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.battery }}</div>
                         </div>
@@ -1454,7 +1452,7 @@ const fetchProductVariants = async (productId: number) => {
                   <template v-else-if="isInputControlCategory && hasInputControlSpecs">
                     <!-- Performance Section -->
                     <div>
-                      <h3 :class="['mt-8 mb-4 text-xl font-semibold', textClasses]">Performance</h3>
+                      <h3 :class="['mt-8 mb-4 text-xl font-semibold', textClasses]">{{ t('product.performance') }}</h3>
                       <div :class="['border-t', dividerClasses]">
                         <div v-if="currentProduct.specifications?.dpi"
                           :class="['flex items-center py-4 border-b', dividerClasses]">
@@ -1463,7 +1461,7 @@ const fetchProductVariants = async (productId: number) => {
                             currentProduct.specifications.dpi }}</div>
                         </div>
                         <div v-if="currentProduct.specifications?.pollingRate" class="flex items-center py-4">
-                          <div :class="['flex-1', textSecondaryClasses]">Polling rate</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.pollingRate') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.pollingRate }}Hz</div>
                         </div>
@@ -1471,29 +1469,29 @@ const fetchProductVariants = async (productId: number) => {
                     </div>
                     <!-- Input Features Section -->
                     <div>
-                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Input Features</h3>
+                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">{{ t('product.inputFeatures') }}</h3>
                       <div :class="['border-t', dividerClasses]">
                         <div v-if="currentProduct.specifications?.switchType"
                           :class="['flex items-center py-4 border-b', dividerClasses]">
-                          <div :class="['flex-1', textSecondaryClasses]">Switch type</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.switchType') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.switchType }}</div>
                         </div>
                         <div v-if="currentProduct.specifications?.backlighting"
                           :class="['flex items-center py-4 border-b', dividerClasses]">
-                          <div :class="['flex-1', textSecondaryClasses]">Backlighting</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.backlighting') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.backlighting }}</div>
                         </div>
                         <div v-if="currentProduct.specifications?.programmableButtons !== undefined"
                           :class="['flex items-center py-4 border-b', dividerClasses]">
-                          <div :class="['flex-1', textSecondaryClasses]">Programmable buttons</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.programmableButtons') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.programmableButtons ? 'Yes' : 'No' }}</div>
                         </div>
                         <div v-if="currentProduct.specifications?.ergonomic !== undefined"
                           :class="['flex items-center py-4']">
-                          <div :class="['flex-1', textSecondaryClasses]">Ergonomic design</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.ergonomicDesign') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.ergonomic ? 'Yes' : 'No' }}</div>
                         </div>
@@ -1501,10 +1499,10 @@ const fetchProductVariants = async (productId: number) => {
                     </div>
                     <!-- Power Section -->
                     <div v-if="currentProduct.specifications?.batteryLife">
-                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">Power</h3>
+                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">{{ t('product.power') }}</h3>
                       <div :class="['border-t', dividerClasses]">
                         <div class="flex items-center py-4">
-                          <div :class="['flex-1', textSecondaryClasses]">Battery life</div>
+                          <div :class="['flex-1', textSecondaryClasses]">{{ t('product.batteryLife') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{
                             currentProduct.specifications.batteryLife }}</div>
                         </div>
@@ -1524,7 +1522,7 @@ const fetchProductVariants = async (productId: number) => {
               <div class="flex justify-center mt-6">
                 <button @click="showAllDetails = !showAllDetails"
                   :class="[buttonSecondaryClasses, 'flex items-center justify-center gap-2 px-8 py-3 font-medium transition-all rounded-lg focus:outline-none focus:ring-2 focus:ring-primary']">
-                  <span>{{ showAllDetails ? 'View Less' : 'View More' }}</span>
+                  <span>{{ showAllDetails ? t('product.viewLess') : t('product.viewMore') }}</span>
                   <v-icon v-if="!showAllDetails" name="hi-chevron-down" class="w-5 h-5" scale="1.2" />
                   <v-icon v-else name="hi-chevron-up" class="w-5 h-5" scale="1.2" />
                 </button>
@@ -1539,7 +1537,7 @@ const fetchProductVariants = async (productId: number) => {
     <section :class="['w-full flex justify-center py-12 lg:py-24', pageBackgroundClasses]">
       <div :class="['w-full max-w-[1640px] rounded-2xl px-4 lg:px-8 py-6 lg:py-10', cardClasses]">
         <div class="flex items-center justify-between mb-2">
-          <h2 :class="['text-xl lg:text-2xl font-semibold mb-4 lg:mb-8', textClasses]">Reviews</h2>
+          <h2 :class="['text-xl lg:text-2xl font-semibold mb-4 lg:mb-8', textClasses]">{{ t('product.reviews') }}</h2>
           <button @click="toggleReviews"
             :class="[hoverClasses, 'p-2 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center']"
             type="button" aria-label="Toggle reviews section">
@@ -1574,10 +1572,10 @@ const fetchProductVariants = async (productId: number) => {
 
               <!-- Rating Breakdown - Mobile -->
               <div :class="['p-4 rounded-2xl', cardClasses]">
-                <h3 :class="['text-base font-semibold mb-4', textClasses]">Rating Breakdown</h3>
+                <h3 :class="['text-base font-semibold mb-4', textClasses]">{{ t('product.ratingBreakdown') }}</h3>
                 <div class="space-y-3">
                   <div class="flex items-center gap-3">
-                    <span :class="['text-sm w-20 flex-shrink-0', textSecondaryClasses]">Excellent</span>
+                    <span :class="['text-sm w-20 flex-shrink-0', textSecondaryClasses]">{{ t('product.excellent') }}</span>
                     <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
@@ -1586,7 +1584,7 @@ const fetchProductVariants = async (productId: number) => {
                     <span :class="['text-xs w-6 text-right', textMutedClasses]">{{ reviewStats.excellent }}</span>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span :class="['text-sm w-20 flex-shrink-0', textSecondaryClasses]">Good</span>
+                    <span :class="['text-sm w-20 flex-shrink-0', textSecondaryClasses]">{{ t('product.good') }}</span>
                     <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.good / reviewStats.totalReviews) * 100 + '%',
@@ -1595,7 +1593,7 @@ const fetchProductVariants = async (productId: number) => {
                     <span :class="['w-6 text-xs text-right', ratingCountClasses]">{{ reviewStats.good }}</span>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span :class="['flex-shrink-0 w-20 text-sm', ratingTextClasses]">Average</span>
+                    <span :class="['flex-shrink-0 w-20 text-sm', ratingTextClasses]">{{ t('product.average') }}</span>
                     <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.average / reviewStats.totalReviews) * 100 + '%',
@@ -1604,7 +1602,7 @@ const fetchProductVariants = async (productId: number) => {
                     <span :class="['w-6 text-xs text-right', ratingCountClasses]">{{ reviewStats.average }}</span>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span :class="['flex-shrink-0 w-20 text-sm', ratingTextClasses]">Below Avg</span>
+                    <span :class="['flex-shrink-0 w-20 text-sm', ratingTextClasses]">{{ t('product.belowAverage') }}</span>
                     <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
@@ -1613,7 +1611,7 @@ const fetchProductVariants = async (productId: number) => {
                     <span :class="['w-6 text-xs text-right', ratingCountClasses]">{{ reviewStats.belowAverage }}</span>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span :class="['flex-shrink-0 w-20 text-sm', ratingTextClasses]">Poor</span>
+                    <span :class="['flex-shrink-0 w-20 text-sm', ratingTextClasses]">{{ t('product.poor') }}</span>
                     <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.poor / reviewStats.totalReviews) * 100 + '%',
@@ -1651,7 +1649,7 @@ const fetchProductVariants = async (productId: number) => {
               <div class="flex-1 max-w-7xl">
                 <div class="space-y-2">
                   <div class="flex items-center gap-4">
-                    <span :class="['text-lg w-30', ratingTextClasses]">Excellent</span>
+                    <span :class="['text-lg w-30', ratingTextClasses]">{{ t('product.excellent') }}</span>
                     <div :class="['flex-1 h-1.5', progressBarBgClasses]">
                       <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
                         width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
@@ -1660,7 +1658,7 @@ const fetchProductVariants = async (productId: number) => {
                     <span :class="['w-8 text-sm', ratingCountClasses]">{{ reviewStats.excellent }}</span>
                   </div>
                   <div class="flex items-center gap-4">
-                    <span :class="['text-lg w-30', ratingTextClasses]">Good</span>
+                    <span :class="['text-lg w-30', ratingTextClasses]">{{ t('product.good') }}</span>
                     <div :class="['flex-1 h-1.5', progressBarBgClasses]">
                       <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
                         width: (reviewStats.good / reviewStats.totalReviews) * 100 + '%',
@@ -1669,7 +1667,7 @@ const fetchProductVariants = async (productId: number) => {
                     <span :class="['w-8 text-sm', ratingCountClasses]">{{ reviewStats.good }}</span>
                   </div>
                   <div class="flex items-center gap-4">
-                    <span :class="['text-lg w-30', ratingTextClasses]">Average</span>
+                    <span :class="['text-lg w-30', ratingTextClasses]">{{ t('product.average') }}</span>
                     <div :class="['flex-1 h-1.5', progressBarBgClasses]">
                       <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
                         width: (reviewStats.average / reviewStats.totalReviews) * 100 + '%',
@@ -1678,7 +1676,7 @@ const fetchProductVariants = async (productId: number) => {
                     <span :class="['w-8 text-sm', ratingCountClasses]">{{ reviewStats.average }}</span>
                   </div>
                   <div class="flex items-center gap-4">
-                    <span :class="['text-lg w-30', ratingTextClasses]">Below Average</span>
+                    <span :class="['text-lg w-30', ratingTextClasses]">{{ t('product.belowAverage') }}</span>
                     <div :class="['flex-1 h-1.5', progressBarBgClasses]">
                       <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
                         width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
@@ -1687,7 +1685,7 @@ const fetchProductVariants = async (productId: number) => {
                     <span :class="['w-8 text-sm', ratingCountClasses]">{{ reviewStats.belowAverage }}</span>
                   </div>
                   <div class="flex items-center gap-4">
-                    <span :class="['text-lg w-30', ratingTextClasses]">Poor</span>
+                    <span :class="['text-lg w-30', ratingTextClasses]">{{ t('product.poor') }}</span>
                     <div :class="['flex-1 h-1.5', progressBarBgClasses]">
                       <div class="bg-yellow-400 h-1.5 rounded-full" :style="{
                         width: (reviewStats.poor / reviewStats.totalReviews) * 100 + '%',
@@ -1703,7 +1701,7 @@ const fetchProductVariants = async (productId: number) => {
             <div class="mb-8">
               <button @click="showReviewModal = true"
                 :class="['w-full border rounded-[7px] px-4 py-4 text-base font-medium transition-all focus:outline-none focus:ring-2 min-h-[48px]', buttonSecondaryClasses]">
-                Leave Comment
+                {{ t('product.leaveComment') }}
               </button>
             </div>
 
@@ -1717,10 +1715,10 @@ const fetchProductVariants = async (productId: number) => {
                     aria-label="Close">
                     <v-icon name="hi-x" scale="1.2" />
                   </button>
-                  <h3 :class="['text-lg lg:text-xl font-semibold mb-4 pr-8', textClasses]">Leave a Review</h3>
+                  <h3 :class="['text-lg lg:text-xl font-semibold mb-4 pr-8', textClasses]">{{ t('product.leaveReview') }}</h3>
                   <form @submit.prevent="submitReview">
                     <div class="mb-4">
-                      <label :class="['block mb-2 font-medium', textClasses]">Rating</label>
+                      <label :class="['block mb-2 font-medium', textClasses]">{{ t('product.rating') }}</label>
                       <div class="flex gap-2">
                         <button v-for="star in 5" :key="star" type="button" @click="reviewRating = star"
                           :aria-label="`Set rating to ${star}`"
@@ -1732,7 +1730,7 @@ const fetchProductVariants = async (productId: number) => {
                       <div v-if="reviewErrors.rating" class="mt-1 text-sm text-red-500">{{ reviewErrors.rating }}</div>
                     </div>
                     <div class="mb-4">
-                      <label :class="['block mb-2 font-medium', textClasses]">Comment</label>
+                      <label :class="['block mb-2 font-medium', textClasses]">{{ t('product.comment') }}</label>
                       <textarea v-model="reviewComment" maxlength="1000" rows="5"
                         :class="['w-full border rounded-[7px] px-4 py-3 text-base focus:outline-none focus:ring-2 transition-all resize-none', 'border-border text-foreground focus:ring-primary']"
                         placeholder="Share your experience..."></textarea>
@@ -1754,8 +1752,8 @@ const fetchProductVariants = async (productId: number) => {
                           ? buttonPrimaryClasses
                           : textMutedClasses
                       ]">
-                        <span v-if="reviewSubmitting">Submitting...</span>
-                        <span v-else>Submit Review</span>
+                        <span v-if="reviewSubmitting">{{ t('product.submitting') }}</span>
+                        <span v-else>{{ t('product.submitReview') }}</span>
                       </button>
                     </div>
                     <div v-if="reviewErrors.submit" class="mt-4 text-sm text-center text-red-500">{{ reviewErrors.submit
@@ -1769,7 +1767,7 @@ const fetchProductVariants = async (productId: number) => {
             <!-- Loading State for Reviews -->
             <div v-if="productReviewsLoading" class="flex items-center justify-center py-8">
               <div :class="['w-8 h-8 border-b-2 rounded-full animate-spin', dividerClasses]"></div>
-              <span :class="['ml-3', textMutedClasses]">Loading reviews...</span>
+              <span :class="['ml-3', textMutedClasses]">{{ t('product.loadingReviews') }}</span>
             </div>
 
             <!-- Error State for Reviews -->
@@ -1780,8 +1778,8 @@ const fetchProductVariants = async (productId: number) => {
 
             <!-- No Reviews State -->
             <div v-else-if="productReviews.length === 0" class="py-8 text-center">
-              <div :class="['text-lg', textMutedClasses]">No reviews yet</div>
-              <div :class="['mt-2 text-sm', textMutedClasses]">Be the first to leave a review!</div>
+              <div :class="['text-lg', textMutedClasses]">{{ t('product.noReviews') }}</div>
+              <div :class="['mt-2 text-sm', textMutedClasses]">{{ t('product.beFirstToReview') }}</div>
             </div>
 
             <!-- Individual Reviews with View More/Less and Fade -->
@@ -1796,8 +1794,10 @@ const fetchProductVariants = async (productId: number) => {
                   ">
                   <div v-for="review in displayedReviews" :key="review.id" class="relative mb-4 lg:mb-6">
                     <div class="flex items-start gap-3 lg:gap-4 rounded-[10px] w-auto h-auto p-4 lg:p-8" :style="{ background: 'var(--color-input-background)' }">
+
                       <!-- Avatar -->
                       <div class="flex-shrink-0 w-10 h-10 lg:w-12 lg:h-12">
+
                         <!-- Show image only when a valid avatar URL exists and it hasn't errored -->
                         <img
                           v-if="review.userAvatar && !erroredAvatars.has(review.id)"
@@ -1847,7 +1847,7 @@ const fetchProductVariants = async (productId: number) => {
               <div v-if="hasMoreReviews" class="flex justify-center mt-6">
                 <button @click="toggleShowAllReviews"
                   :class="['flex items-center justify-center gap-2 px-6 lg:px-8 py-3 border rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary min-h-[48px]', buttonSecondaryClasses]">
-                  <span>{{ showAllReviews ? 'View Less' : 'View More' }}</span>
+                  <span>{{ showAllReviews ? t('product.viewLess') : t('product.viewMore') }}</span>
                   <v-icon v-if="!showAllReviews" name="hi-chevron-down" class="w-5 h-5" scale="1.2" />
                   <v-icon v-else name="hi-chevron-up" class="w-5 h-5" scale="1.2" />
                 </button>

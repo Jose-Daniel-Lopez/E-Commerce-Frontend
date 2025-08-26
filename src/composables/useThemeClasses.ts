@@ -42,7 +42,7 @@ export const useThemeClasses = () => {
   /**
    * Section-level container with padding, border, and shadow.
    */
-  const sectionContainerClasses = computed(() => 'bg-surface border border-border shadow-md rounded-2xl p-6 transition-colors duration-200')
+  const sectionContainerClasses = computed(() => 'bg-surface border border-border shadow-md rounded-2xl p-3 transition-colors duration-200')
 
   /**
    * Header style for sections (uppercase, muted, small font).
@@ -84,29 +84,29 @@ export const useThemeClasses = () => {
   const heroDescriptionClasses = computed(() => 'font-srProDisplay text-lg text-muted-foreground mb-8 leading-relaxed transition-colors duration-200')
 
   /**
-   * CTA section title (white text for contrast on dark background).
+   * CTA section title (uses primary foreground for contrast).
    */
-  const ctaTitleClasses = computed(() => 'font-srProDisplay text-3xl font-medium mb-4 text-white transition-colors duration-200')
+  const ctaTitleClasses = computed(() => 'font-srProDisplay text-3xl font-medium mb-4 text-primary-foreground transition-colors duration-200')
 
   /**
-   * CTA section description (light gray on dark).
+   * CTA section description (uses muted foreground, no dark override).
    */
-  const ctaDescriptionClasses = computed(() => 'font-srProDisplay text-gray-300 dark:text-gray-200 mb-8 leading-relaxed transition-colors duration-200')
+  const ctaDescriptionClasses = computed(() => 'font-srProDisplay text-muted-foreground mb-8 leading-relaxed transition-colors duration-200')
 
   /**
    * Review-specific header text.
    */
-  const reviewHeaderClasses = computed(() => 'text-muted dark:text-gray-200 font-medium')
+  const reviewHeaderClasses = computed(() => 'text-muted font-medium')
 
   /**
    * Review body content (readable line height and subdued tone).
    */
-  const reviewBodyClasses = computed(() => 'text-muted-foreground dark:text-gray-300 leading-relaxed')
+  const reviewBodyClasses = computed(() => 'text-muted-foreground leading-relaxed')
 
   /**
    * Review metadata (dates, ratings, small text).
    */
-  const reviewMetaClasses = computed(() => 'text-muted-foreground dark:text-gray-400 text-sm')
+  const reviewMetaClasses = computed(() => 'text-muted-foreground text-sm')
 
   /**
    * Loading state text appearance.
@@ -145,17 +145,17 @@ export const useThemeClasses = () => {
   /**
    * Theme toggle base classes: padding, border, focus ring, transform.
    */
-  const themeButtonBaseClasses = computed(() => 'p-3 rounded-lg border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transform')
+  const themeButtonBaseClasses = computed(() => 'p-3 rounded-lg border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-bg transform')
 
   /**
-   * Theme toggle inactive state: light/dark neutral appearance.
+   * Theme toggle inactive state: uses surface and muted text.
    */
-  const themeButtonInactiveClasses = computed(() => 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 border-gray-300 dark:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-400 hover:scale-105')
+  const themeButtonInactiveClasses = computed(() => 'bg-surface text-muted-foreground border-border hover:bg-surface-hover hover:border-border hover:scale-105')
 
   /**
-   * Theme toggle active state: blue highlight with shadow and scale.
+   * Theme toggle active state: uses primary with shadow and scale.
    */
-  const themeButtonActiveClasses = computed(() => 'bg-primary text-white border-primary shadow-lg scale-110 ring-2 ring-primary-bg')
+  const themeButtonActiveClasses = computed(() => 'bg-primary text-primary-foreground border-primary shadow-lg scale-110 ring-2 ring-primary-bg')
 
   /**
    * Action buttons in lists (small, subtle, interactive).
@@ -204,7 +204,7 @@ export const useThemeClasses = () => {
   /**
    * Catalog search input (used in filtering UI).
    */
-  const catalogSearchInputClasses = computed(() => 'w-full bg-surface text-foreground font-srProDisplay text-sm font-medium placeholder-muted-foreground outline-none rounded-lg border border-border transition-colors duration-200')
+  const catalogSearchInputClasses = computed(() => 'w-full bg-background text-foreground font-srProDisplay text-sm font-medium placeholder-muted-foreground outline-none rounded-lg transition-colors duration-200')
 
   /**
    * Catalog sort select dropdown.
@@ -214,7 +214,7 @@ export const useThemeClasses = () => {
   /**
    * Checkbox inputs in catalog filters.
    */
-  const catalogCheckboxClasses = computed(() => 'w-4 h-4 accent-primary dark:accent-white rounded transition-colors duration-200')
+  const catalogCheckboxClasses = computed(() => 'w-4 h-4 accent-primary rounded transition-colors duration-200')
 
   // ===========================================================================
   // 🖼️ Icons & Visual Elements
@@ -316,7 +316,7 @@ export const useThemeClasses = () => {
   /**
    * Navigation bar base classes.
    */
-  const navClasses = computed(() => 'bg-background text-foreground transition-colors duration-200')
+  const navClasses = computed(() => 'bg-surface text-foreground transition-colors duration-200')
 
   /**
    * Standard link styling (subtle color, hover to foreground).
@@ -370,12 +370,12 @@ export const useThemeClasses = () => {
   /**
    * FAQ content panel (below the toggle button).
    */
-  const faqContentClasses = computed(() => 'px-6 pb-4 py-4 bg-surface')
+  const faqContentClasses = computed(() => 'px-6 pb-4 py-4 bg-surface transition-colors duration-200')
 
   /**
    * CTA section wrapper (dark background, rounded, padded).
    */
-  const ctaSectionClasses = computed(() => 'max-w-4xl mx-auto text-center bg-surface dark:bg-gray-700 rounded-[15px] p-12 text-primary-foreground transition-colors duration-200')
+  const ctaSectionClasses = computed(() => 'max-w-4xl mx-auto text-center bg-surface rounded-[15px] p-12 text-primary-foreground transition-colors duration-200')
 
   // ===========================================================================
   // 🔍 Catalog-Specific UI
@@ -412,14 +412,54 @@ export const useThemeClasses = () => {
   const catalogFilterSummaryClasses = computed(() => 'p-4 bg-surface-secondary border border-border rounded-lg transition-colors duration-200')
 
   /**
-   * Debug panel in catalog (yellow highlight for dev tools).
+   * Debug panel in catalog (visible contrast for dev tools).
    */
-  const catalogDebugPanelClasses = computed(() => 'bg-warning-bg border border-warning rounded-lg shadow-lg p-3 sm:p-4')
+  const catalogDebugPanelClasses = computed(() => 'bg-surface border border-border rounded-lg shadow-lg p-3 sm:p-4 ring-2 ring-primary')
 
   /**
-   * Text inside debug panel (small, readable, contrast).
+   * Text inside debug panel (readable, contrast).
    */
-  const catalogDebugTextClasses = computed(() => 'text-xs text-warning-foreground space-y-2 max-h-40 overflow-y-auto')
+  const catalogDebugTextClasses = computed(() => 'text-xs text-foreground space-y-2 max-h-40 overflow-y-auto')
+
+  /**
+   * Loading spinner classes.
+   */
+  const loadingSpinnerClasses = computed(() => 'w-12 h-12 border-b-2 rounded-full animate-spin border-primary')
+
+  /**
+   * Error message classes.
+   */
+  const errorMessageClasses = computed(() => 'bg-error-bg text-error border border-error rounded-lg')
+
+  /**
+   * Empty state container classes.
+   */
+  const emptyStateContainerClasses = computed(() => 'py-12 text-center')
+
+  /**
+   * Product rating star classes (filled).
+   */
+  const ratingStarFilledClasses = computed(() => 'w-4 h-4 text-warning')
+
+  /**
+   * Product rating star classes (empty).
+   */
+  const ratingStarEmptyClasses = computed(() => 'w-4 h-4 text-muted-foreground')
+
+  /**
+   * Modal overlay classes.
+   */
+  const modalOverlayClasses = computed(() => 'fixed inset-0 z-50 bg-overlay backdrop-blur-sm')
+
+  /**
+   * Modal content classes.
+   */
+  const modalContentClasses = computed(() => 'bg-surface border border-border rounded-lg shadow-xl transition-colors duration-200')
+
+  /**
+   * Small badge for tags, brands, etc.
+   */
+  const smallBadgeClasses = computed(() => 'inline-block px-2 py-1 text-xs bg-primary text-primary-foreground rounded transition-colors duration-200')
 
   // ===========================================================================
   // 📊 Progress & Rating Elements
@@ -509,10 +549,10 @@ export const useThemeClasses = () => {
     reviewContentClasses,
     infoCardClasses,
     aboutValueCardClasses,
-  aboutValueTitleClasses,
+    aboutValueTitleClasses,
     featuredProductCardClasses,
-  featuredProductTitleClasses,
-  featuredProductDescriptionClasses,
+    featuredProductTitleClasses,
+    featuredProductDescriptionClasses,
     catalogProductCardClasses,
 
     // Navigation
@@ -545,5 +585,15 @@ export const useThemeClasses = () => {
     progressBarFillClasses,
     ratingTextClasses,
     ratingCountClasses,
+
+    // Additional UI Classes
+    loadingSpinnerClasses,
+    errorMessageClasses,
+    emptyStateContainerClasses,
+    ratingStarFilledClasses,
+    ratingStarEmptyClasses,
+    modalOverlayClasses,
+    modalContentClasses,
+    smallBadgeClasses,
   }
 }

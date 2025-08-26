@@ -17,6 +17,7 @@
             <div>
               <h4 :class="['font-medium font-srProDisplay', textClasses]">
                 {{ $t('account.settings.language.title') }}
+                <WipTag variant="compact" :show-icon="false" :text="$t('wip.text')" :tooltip="$t('wip.translationTooltip')" />
               </h4>
               <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
                 {{ $t('account.settings.language.description') }}
@@ -45,13 +46,22 @@
             <div>
               <h4 :class="['font-medium font-srProDisplay', textClasses]">
                 {{ $t('account.settings.theme.title') }}
+                <WipTag variant="compact" :show-icon="false" :text="$t('wip.text')" :tooltip="$t('wip.themeTooltip')" />
               </h4>
               <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
                 {{ $t('account.settings.theme.description') }}
               </p>
               <!-- Current theme indicator -->
               <p class="mt-1 text-xs font-medium theme-text">
-                Current: {{ selectedTheme === 'system' ? `System (${effectiveTheme})` : selectedTheme }}
+                {{ $t('common.show') }}:
+                <span>
+                  <template v-if="selectedTheme === 'system'">
+                    {{ $t('theme.system') }} ({{ $t('theme.' + effectiveTheme) }})
+                  </template>
+                  <template v-else>
+                    {{ $t('theme.' + selectedTheme) }}
+                  </template>
+                </span>
               </p>
             </div>
           </div>
@@ -63,14 +73,14 @@
                   themeButtonBaseClasses,
                   selectedTheme === 'light' ? themeButtonActiveClasses : themeButtonInactiveClasses
                 ]"
-                aria-label="Tema claro"
+                :aria-label="$t('theme.light')"
                 tabindex="0"
               >
                 <v-icon name="hi-sun" class="w-4 h-4" />
               </button>
               <!-- Tooltip -->
               <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
-                Light theme
+                {{ $t('theme.lightTooltip') }}
               </div>
             </div>
 
@@ -81,14 +91,14 @@
                   themeButtonBaseClasses,
                   selectedTheme === 'dark' ? themeButtonActiveClasses : themeButtonInactiveClasses
                 ]"
-                aria-label="Tema oscuro"
+                :aria-label="$t('theme.dark')"
                 tabindex="0"
               >
                 <v-icon name="hi-moon" class="w-4 h-4" />
               </button>
               <!-- Tooltip -->
               <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
-                Dark theme
+                {{ $t('theme.darkTooltip') }}
               </div>
             </div>
 
@@ -99,14 +109,14 @@
                   themeButtonBaseClasses,
                   selectedTheme === 'system' ? themeButtonActiveClasses : themeButtonInactiveClasses
                 ]"
-                aria-label="Tema del sistema"
+                :aria-label="$t('theme.system')"
                 tabindex="0"
               >
                 <v-icon name="hi-desktop-computer" class="w-4 h-4" />
               </button>
               <!-- Tooltip -->
               <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
-                Follow system preference
+                {{ $t('theme.systemTooltip') }}
               </div>
             </div>
           </div>
@@ -148,6 +158,7 @@
 
 <script setup lang="ts">
 import Button from '@/components/shared/Button.vue'
+import WipTag from '../shared/WipTag.vue'
 
 interface Locale {
   code: string

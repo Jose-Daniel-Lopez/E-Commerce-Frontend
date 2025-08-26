@@ -10,21 +10,21 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
       <!-- Search Header -->
       <div class="mb-6">
-  <h1 :class="['text-2xl lg:text-3xl font-bold mb-2', textClasses]">Search Results</h1>
+        <h1 :class="['text-2xl lg:text-3xl font-bold mb-2', textClasses]">{{ t('search.title') }}</h1>
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div :class="textSecondaryClasses">
             <span v-if="searchQuery">
-              Showing results for "<span :class="['font-semibold', textClasses]">{{ searchQuery }}</span>"
+              {{ t('search.resultsFor', { query: searchQuery }) }}
             </span>
             <span class="ml-2">
-              ({{ pagination.totalElements }} {{ pagination.totalElements === 1 ? 'product' : 'products' }} found)
+              ({{ pagination.totalElements }} {{ pagination.totalElements === 1 ? t('search.product') : t('search.products') }})
             </span>
           </div>
 
           <!-- Sort Controls -->
           <div class="flex items-center gap-4">
             <label for="sort-select" :class="['text-sm font-medium whitespace-nowrap', textSecondaryClasses]">
-              Sort by:
+              {{ t('catalog.sort.label') }}:
             </label>
             <select
               id="sort-select"
@@ -32,11 +32,11 @@
               @change="handleSortChange"
         :class="['px-3 py-2 text-sm rounded-lg', catalogSortSelectClasses]"
             >
-              <option value="name,asc">Name A-Z</option>
-              <option value="name,desc">Name Z-A</option>
-              <option value="basePrice,asc">Price: Low to High</option>
-              <option value="basePrice,desc">Price: High to Low</option>
-              <option value="rating,desc">Rating: High to Low</option>
+              <option value="name,asc">{{ t('catalog.sort.nameAZ') }}</option>
+              <option value="name,desc">{{ t('catalog.sort.nameZA') }}</option>
+              <option value="basePrice,asc">{{ t('catalog.sort.priceLow') }}</option>
+              <option value="basePrice,desc">{{ t('catalog.sort.priceHigh') }}</option>
+              <option value="rating,desc">{{ t('catalog.sort.rating') }}</option>
             </select>
           </div>
         </div>
@@ -55,25 +55,25 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
-          <h3 :class="['text-xl font-semibold mb-2', textClasses]">No products found</h3>
+          <h3 :class="['text-xl font-semibold mb-2', textClasses]">{{ t('search.noResults') }}</h3>
           <p :class="['mb-6', emptyStateTextClasses]">
             <span v-if="searchQuery">
-              Sorry, we couldn't find any products matching "<strong>{{ searchQuery }}</strong>".
+              {{ t('search.noResultsFor', { query: searchQuery }) }}
             </span>
             <span v-else>
-              Try adjusting your search terms or browse our categories.
+              {{ t('search.noResultsGeneral') }}
             </span>
           </p>
           <div :class="['space-y-2 text-sm', textMutedClasses]">
-            <p>• Check your spelling</p>
-            <p>• Try more general keywords</p>
-            <p>• Browse our product categories</p>
+            <p>• {{ t('search.checkSpelling') }}</p>
+            <p>• {{ t('search.tryGeneralKeywords') }}</p>
+            <p>• {{ t('search.browseCategories') }}</p>
           </div>
           <router-link
             to="/catalog"
             :class="['inline-block mt-6 px-6 py-2 rounded-lg transition-colors', buttonPrimaryClasses]"
           >
-            Browse Categories
+            {{ t('search.browseCategories') }}
           </router-link>
         </div>
       </div>
@@ -230,12 +230,13 @@ import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import { useThemeClasses } from '@/composables/useThemeClasses'
-
+import { useI18n } from 'vue-i18n'
 const route = useRoute()
 const router = useRouter()
 const productStore = useProductStore()
 const wishlistStore = useWishlistStore()
 const authStore = useAuthStore()
+const { t } = useI18n()
 
 const { products, loading, pagination } = storeToRefs(productStore)
 const { user } = storeToRefs(authStore)

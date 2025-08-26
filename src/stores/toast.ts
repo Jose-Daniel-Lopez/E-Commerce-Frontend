@@ -90,7 +90,7 @@ export const useToastStore = defineStore('toast', () => {
     const iconMap: Record<ToastType, string> = {
       success: 'hi-check-circle',
       error: 'hi-x-circle',
-      warning: 'hi-exclamation-triangle',
+      warning: 'bi-exclamation-triangle',
       info: 'hi-information-circle',
     }
     return iconMap[type]

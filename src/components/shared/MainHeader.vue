@@ -69,14 +69,6 @@
 
       <!-- icons start -->
       <div class="flex items-center gap-3">
-        <!-- DEBUG: TEMP: Theme Switcher for testing -->
-        <select v-model="selectedTheme" @change="themeStore.setTheme(selectedTheme)"
-          class="px-2 py-1 text-sm text-gray-700 transition-colors duration-200 bg-white border border-gray-300 rounded dark:bg-gray-900 dark:text-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          style="min-width: 90px;">
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-          <option value="system">System</option>
-        </select>
         <IconMenu @update-mobile-menu="setShowMobileMenu" @update-search-bar="setPositionSearchBar" />
       </div>
       <!-- icons end -->
@@ -120,8 +112,8 @@ const showCategoriesDropdown = ref(false)
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const categories = [
-  { name: t('shop.categories.all'), route: '/catalog' },
-  { name: 'All Products', route: '/catalog/all-products' },
+  { name: t('shop.categories.allCategories'), route: '/catalog' },
+  { name: t('shop.categories.allProducts'), route: '/catalog/all-products' },
   { name: t('shop.categories.smartphones'), route: '/catalog/smartphones' },
   { name: t('shop.categories.tablets'), route: '/catalog/tablets' },
   { name: t('shop.categories.laptops'), route: '/catalog/laptops' },

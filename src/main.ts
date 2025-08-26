@@ -56,6 +56,7 @@ addIcons(
   AllIcons.HiCheck,
   AllIcons.HiCheckCircle,
   AllIcons.HiExclamationCircle,
+  AllIcons.BiExclamationTriangle,
   AllIcons.HiBadgeCheck,
   AllIcons.HiUsers,
   AllIcons.HiMenu,

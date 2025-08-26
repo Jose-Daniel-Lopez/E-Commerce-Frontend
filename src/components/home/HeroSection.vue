@@ -1,5 +1,5 @@
 <template>
-  <section class="h-auto md:h-[472px] lg:h-[632px] transition-colors duration-200" :style="sectionStyle">
+  <section :class="pageBackgroundClasses" class="h-auto md:h-[472px] lg:h-[632px]" :style="sectionStyle">
     <Wrapper
       class="flex h-auto flex-col p-[88px_16px_0px_16px] md:h-[472px] md:flex-row md:gap-8 md:p-[0px_16px_0px_16px] lg:h-[632px] lg:gap-0"
     >
@@ -7,23 +7,23 @@
       <div class="flex h-auto basis-[60%] flex-col justify-center gap-4 md:gap-8 md:px-2">
         <div class="flex flex-col text-center md:gap-3 md:text-left">
             <p
-              class="font-figtree text-[25px] font-semibold theme-muted-text transition-colors duration-200"
+              :class="['font-figtree text-[25px] font-semibold', textMutedClasses]"
             >
             {{ $t('hero.smallTitle') }}
           </p>
             <h1
-              class="font-srProDisplay text-[75px] font-thin leading-[1.1] md:text-[60px] md:leading-[0.7] lg:text-[96px] theme-text transition-colors duration-200"
+              :class="['font-srProDisplay text-[75px] font-thin leading-[1.1] md:text-[60px] md:leading-[0.7] lg:text-[96px]', textClasses]"
             >
             {{ $t('hero.bigTitle') }}
               <span
-                class="ml-2 font-srProDisplay font-semibold theme-text transition-colors duration-200"
+                :class="['ml-2 font-srProDisplay font-semibold', textClasses]"
               >
               {{ $t('hero.bigTitleBold') }}
             </span>
           </h1>
         </div>
           <p
-            class="text-wrap text-center font-srProDisplay text-[19px] font-medium md:pr-3 md:text-left md:text-lg lg:pr-0 theme-muted-text transition-colors duration-200"
+            :class="['text-wrap text-center font-srProDisplay text-[19px] font-medium md:pr-3 md:text-left md:text-lg lg:pr-0', textMutedClasses]"
           >
           {{ $t('hero.description') }}
         </p>
@@ -38,7 +38,7 @@
             border-width="1px"
             border-color="var(--color-border)"
             hover-bg-color="var(--color-accent)"
-            hover-text-color=""
+            hover-text-color="var(--color-primary-foreground)"
             @click="goToCatalog"
           >
             {{ $t('hero.buttonText') }}
@@ -55,7 +55,7 @@
         <img
           src="https://res.cloudinary.com/tejon-tech/image/upload/v1756151693/e-commerce/iphone.png"
           alt="iphone"
-          class="h-[289px] w-full object-fill object-center xs:object-contain md:h-full md:object-fill lg:w-[343px] transition-opacity duration-200"
+          class="h-[289px] w-full object-fill object-center xs:object-contain md:h-full md:object-fill lg:w-[343px] transition-all duration-200"
         />
       </div>
       <!-- right side end -->
@@ -67,6 +67,7 @@
 import { defineComponent } from 'vue'
 import Wrapper from '../shared/Wrapper.vue'
 import CustomButton from '../shared/Button.vue'
+import { useThemeClasses } from '@/composables/useThemeClasses'
 
 export default defineComponent({
   name: 'HeroSection',
@@ -74,32 +75,51 @@ export default defineComponent({
     Wrapper,
     CustomButton,
   },
+  setup() {
+    const {
+      pageBackgroundClasses,
+      heroTitleClasses,
+      heroDescriptionClasses,
+      textMutedClasses,
+      textClasses,
+      buttonPrimaryClasses
+    } = useThemeClasses()
+
+    return {
+      pageBackgroundClasses,
+      heroTitleClasses,
+      heroDescriptionClasses,
+      textMutedClasses,
+      textClasses,
+      buttonPrimaryClasses
+    }
+  },
   data() {
     return {
       data: {
         sectionBgColor: '',
         isGradient: true,
         gradientPosition: 'to right',
-        gradientFrom: '#211c24',
-        gradientTo: '#211c24',
+        gradientFrom: 'var(--color-background)',
+        gradientTo: 'var(--color-surface-secondary)',
         left: {
           smallTitle: '', // i18n
-          smallTitleColor: '#909090',
+          smallTitleColor: 'var(--color-muted)',
           bigTitle: '', // i18n
-          bigTitleColor: 'white',
+          bigTitleColor: 'var(--color-text)',
           bigTitleBold: '', // i18n
-          bigTitleBoldColor: 'white',
+          bigTitleBoldColor: 'var(--color-text)',
           description: '', // i18n
-          descriptionColor: '#909090',
+          descriptionColor: 'var(--color-muted)',
           isButton: true,
           button: {
-            buttonBgColor: '',
+            buttonBgColor: 'var(--color-primary)',
             buttonText: '', // i18n
-            buttonTextColor: 'white',
+            buttonTextColor: 'var(--color-primary-foreground)',
             buttonBorderWidth: '1px',
-            buttonBorderColor: 'grey',
-            buttonHoverBgColor: '#333333',
-            buttonHoverTextColor: '',
+            buttonBorderColor: 'var(--color-border)',
+            buttonHoverBgColor: 'var(--color-accent)',
+            buttonHoverTextColor: 'var(--color-primary-foreground)',
           },
         },
         right: {
@@ -121,14 +141,14 @@ export default defineComponent({
       }
 
       if (data.isGradient as boolean) {
-        // Use different gradients for light and dark mode
+        // Use theme-aware gradients for light and dark mode
         const isDark = document.documentElement.classList.contains('dark')
         if (isDark) {
-          // Dark mode gradient
-          styles.backgroundImage = `linear-gradient(${data.gradientPosition as string}, #1f2937, #0e1522)`
+          // Dark mode gradient using theme variables
+          styles.backgroundImage = `linear-gradient(${data.gradientPosition as string}, var(--color-background), var(--surface-bg))`
         } else {
-          // Light mode gradient (original)
-          styles.backgroundImage = this.bgGradient(data)
+          // Light mode gradient using theme variables
+          styles.backgroundImage = `linear-gradient(${data.gradientPosition as string}, var(--color-background), var(--color-surface-secondary))`
         }
       }
 

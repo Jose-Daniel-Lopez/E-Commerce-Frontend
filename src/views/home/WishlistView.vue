@@ -26,38 +26,36 @@
 
           <div v-else class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <div v-for="item in wishlistProducts" :key="item.id" :class="[
-              'relative flex flex-col overflow-hidden transition cursor-pointer rounded-xl group',
-              cardClasses,
-              'hover:shadow-xl'
+              'relative flex flex-col overflow-hidden cursor-pointer rounded-xl group wishlist-product-card',
+              cardClasses
             ]" @click="openProductUrl(item.productUrl, item.id)">
               <!-- Remove 'x' button -->
               <button :class="[
-                'absolute z-10 flex items-center justify-center w-8 h-8 transition rounded-full top-3 right-3',
+                'absolute z-10 flex items-center justify-center w-8 h-8 rounded-full top-3 right-3 wishlist-remove-btn',
                 actionButtonClasses,
                 iconBackgroundClasses
               ]" @click.stop="removeFromWishlist(item.id)" :aria-label="t('wishlist.remove') || 'Remove'">
-                <span class="text-lg font-bold">&times;</span>
+                <span :class="textClasses">&times;</span>
               </button>
-              <div :class="['flex items-center justify-center h-48', 'bg-surface']">
+              <div :class="['flex items-center justify-center h-48 bg-surface']">
                 <img :src="item.imageUrl" :alt="item.name"
-                  class="object-contain h-40 transition-transform duration-200 group-hover:scale-105" />
+                  class="object-contain h-40 product-image" />
               </div>
               <div class="flex flex-col flex-1 p-5">
                 <h2 :class="['mb-1 text-lg font-semibold font-srProDisplay', textClasses]">{{ item.name }}</h2>
                 <p :class="['mb-2 text-sm', textSecondaryClasses]">{{ item.description }}</p>
                 <div class="flex flex-wrap gap-2 mb-2">
-                  <span :class="['px-2 py-1 text-xs font-medium rounded', 'bg-surface-secondary', textSecondaryClasses]">{{ item.brand }}</span>
-                  <span :class="['px-2 py-1 text-xs font-medium rounded', 'bg-surface-secondary', textClasses]">${{ item.basePrice }}</span>
-                  <span v-if="item.screenSize" :class="['px-2 py-1 text-xs font-medium rounded', 'bg-surface-secondary', textSecondaryClasses]">{{ item.screenSize }}</span>
-                  <span v-if="item.ramCapacity" :class="['px-2 py-1 text-xs font-medium rounded', 'bg-surface-secondary', textSecondaryClasses]">RAM: {{ item.ramCapacity }}GB</span>
-                  <span v-if="item.storageCapacity" :class="['px-2 py-1 text-xs font-medium rounded', 'bg-surface-secondary', textSecondaryClasses]">Almacenamiento: {{ item.storageCapacity }}GB</span>
-                  <span v-if="item.operatingSystem" :class="['px-2 py-1 text-xs font-medium rounded', 'bg-surface-secondary', textSecondaryClasses]">{{ item.operatingSystem }}</span>
-                  <span v-if="item.totalStock !== undefined" :class="['px-2 py-1 text-xs font-medium rounded', 'bg-surface-secondary', 'text-success']">Stock: {{ item.totalStock }}</span>
+                  <span :class="['px-2 py-1 text-xs font-medium rounded bg-surface-secondary', textSecondaryClasses]">{{ item.brand }}</span>
+                  <span :class="['px-2 py-1 text-xs font-medium rounded bg-surface-secondary', priceTextClasses]">${{ item.basePrice }}</span>
+                  <span v-if="item.screenSize" :class="['px-2 py-1 text-xs font-medium rounded bg-surface-secondary', textSecondaryClasses]">{{ item.screenSize }}</span>
+                  <span v-if="item.ramCapacity" :class="['px-2 py-1 text-xs font-medium rounded bg-surface-secondary', textSecondaryClasses]">RAM: {{ item.ramCapacity }}GB</span>
+                  <span v-if="item.storageCapacity" :class="['px-2 py-1 text-xs font-medium rounded bg-surface-secondary', textSecondaryClasses]">Almacenamiento: {{ item.storageCapacity }}GB</span>
+                  <span v-if="item.operatingSystem" :class="['px-2 py-1 text-xs font-medium rounded bg-surface-secondary', textSecondaryClasses]">{{ item.operatingSystem }}</span>
+                  <span v-if="item.totalStock !== undefined" :class="['px-2 py-1 text-xs font-medium rounded bg-surface-secondary text-success']">Stock: {{ item.totalStock }}</span>
                 </div>
                 <div class="flex flex-col items-center mt-auto space-y-2">
                   <button v-if="!addedToCartItems.has(item.id)" :disabled="loadingItems.has(item.id)" :class="[
-                    'w-full py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium',
-                    'disabled:opacity-50 disabled:cursor-not-allowed',
+                    'w-full py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed',
                     buttonPrimaryClasses
                   ]" @click.stop="addToCartFromWishlist(item.id)">
                     <span v-if="loadingItems.has(item.id)">Adding...</span>
@@ -70,7 +68,7 @@
                     ]"
                     @click.stop>{{ t('cart.addedToCart') || 'Added to Cart' }}</button>
                   <button :class="[
-                    'w-full py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium transition-colors',
+                    'w-full py-2.5 px-4 rounded-md font-srProDisplay text-sm font-medium',
                     buttonSecondaryClasses
                   ]" @click.stop="goToProduct(item.id)">{{ t('wishlist.details') || 'View details' }}</button>
                 </div>
@@ -125,6 +123,7 @@ const {
   buttonPrimaryClasses,
   buttonSecondaryClasses,
   iconBackgroundClasses,
+  priceTextClasses,
 } = useThemeClasses()
 
 const authStore = useAuthStore()
@@ -277,6 +276,39 @@ watch(() => wishlistProducts.value, () => checkWishlistProductsInCart(), { deep:
    Only component-specific styles here
    ================================= */
 
-/* Component-specific wishlist interactions would go here */
-/* Currently all styles are handled through the theme composable */
+/* Wishlist product card hover effect */
+.wishlist-product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wishlist-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Product image hover effect */
+.product-image {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.wishlist-product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+/* Remove button hover effect */
+.wishlist-remove-btn {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.wishlist-remove-btn:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+/* Remove button text styling */
+.wishlist-remove-btn span {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1;
+}
 </style>

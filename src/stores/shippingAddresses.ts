@@ -44,16 +44,32 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
     error.value = null
 
     try {
-      const response = await api.get(`/shippingAddresses/user/${userId}`)
-      const addressData: ShippingAddressApiResponse[] = response.data
+      const response = await api.get(`/shippingAddresses/${userId}`)
 
-      // Convert API response to our interface format
-      shippingAddresses.value = addressData.map(convertApiResponseToAddress)
+      // Handle single address response
+      if (response.data) {
+        const addressData: ShippingAddressApiResponse = response.data
+        const address = convertApiResponseToAddress(addressData)
+        shippingAddresses.value = [address] // Wrap single address in array
+      } else {
+        shippingAddresses.value = []
+      }
 
     } catch (e) {
       console.error('Failed to fetch user addresses:', e)
-      error.value = e instanceof Error ? e.message : 'Failed to load addresses'
-      shippingAddresses.value = []
+
+      // Handle 404 (user has no address) as a valid empty state
+      const isAxiosError = (error: unknown): error is { response?: { status: number } } => {
+        return typeof error === 'object' && error !== null && 'response' in error
+      }
+
+      if (isAxiosError(e) && e.response?.status === 404) {
+        shippingAddresses.value = []
+        error.value = null // No error for empty state
+      } else {
+        error.value = e instanceof Error ? e.message : 'Failed to load addresses'
+        shippingAddresses.value = []
+      }
     } finally {
       loading.value = false
     }
@@ -130,7 +146,9 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
     } catch (e) {
       console.error('Failed to delete address:', e)
       error.value = e instanceof Error ? e.message : 'Failed to delete address'
-      return false
+
+      // Re-throw the error so the component can handle specific cases
+      throw e
     } finally {
       loading.value = false
     }
@@ -157,11 +175,11 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
   }
 
   /**
-   * Get default address for a user
+   * Get default address for a user (using the same endpoint since only one address per user)
    */
   const fetchDefaultAddress = async (userId: number): Promise<ShippingAddress | null> => {
     try {
-      const response = await api.get(`/shippingAddresses/user/${userId}/default`)
+      const response = await api.get(`/shippingAddresses/${userId}`)
       return convertApiResponseToAddress(response.data)
     } catch (e) {
       console.error('Failed to fetch default address:', e)

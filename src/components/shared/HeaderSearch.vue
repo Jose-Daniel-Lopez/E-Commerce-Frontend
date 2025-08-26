@@ -1,16 +1,15 @@
 <template>
   <div class="relative search-container">
-    <div
-      class="flex items-center justify-start gap-2 bg-surface p-4 shadow-md lg:rounded-lg lg:shadow-none"
-    >
-      <v-icon name="fa-search" scale="1.2" class="text-gray-400" />
+  <div :class="['flex items-center justify-start gap-2', sectionContainerClasses]">
+      <v-icon name="fa-search" scale="1.2" :class="iconColorClasses" />
+
       <form @submit.prevent="performSearch" class="flex-1">
         <input
           v-model="searchQuery"
-          class="w-full bg-surface p-0.5 font-srProDisplay text-sm font-medium text-foreground outline-none"
+          :class="[catalogSearchInputClasses, 'bg-surface']"
           type="search"
           id="search"
-          placeholder="Search products, brands, categories..."
+          :placeholder="t('search.placeholder')"
           @keyup.enter="performSearch"
           @focus="handleInputFocus"
           @blur="handleInputBlur"
@@ -22,10 +21,10 @@
         v-if="searchQuery.trim() || isInputFocused"
         @click="performSearch"
         type="button"
-  class="px-3 py-1 text-sm bg-primary text-primary-foreground rounded-lg hover:opacity-95 transition-colors"
+        :class="[buttonPrimaryClasses, 'px-3 py-1 text-sm rounded-lg']"
         :disabled="!searchQuery.trim()"
       >
-        Search
+        {{ t('search.button') }}
       </button>
     </div>
 
@@ -44,13 +43,15 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import SearchSuggestions from './SearchSuggestions.vue'
-
+import { useThemeClasses } from '@/composables/useThemeClasses'
 const router = useRouter()
 const route = useRoute()
+const { t } = useI18n()
 
 // =======================
-// 📦 State
+// State
 // =======================
 
 const searchQuery = ref('')
@@ -59,8 +60,11 @@ const showSuggestions = ref(false)
 const suggestions = ref<string[]>([])
 const recentSearches = ref<string[]>([])
 
+// Theme-aware classes from composable
+const { catalogSearchInputClasses, iconColorClasses, buttonPrimaryClasses, sectionContainerClasses } = useThemeClasses()
+
 // =======================
-// 🧮 Constants
+// Constants
 // =======================
 
 const RECENT_SEARCHES_KEY = 'search-recent-queries'
@@ -85,7 +89,7 @@ const popularSuggestions = [
 ]
 
 // =======================
-// ⚙️ Methods
+// Methods
 // =======================
 
 /**
@@ -181,14 +185,7 @@ const performSearch = async () => {
   }
 }
 
-/**
- * Clears the search input and suggestions
- */
-const clearSearch = () => {
-  searchQuery.value = ''
-  suggestions.value = []
-  showSuggestions.value = false
-}
+
 
 /**
  * Selects a suggestion and performs search
@@ -251,7 +248,7 @@ const fetchSuggestions = debounce(async (query: string) => {
 }, 300)
 
 // =======================
-// 🧪 Lifecycle & Effects
+// Lifecycle & Effects
 // =======================
 
 onMounted(() => {

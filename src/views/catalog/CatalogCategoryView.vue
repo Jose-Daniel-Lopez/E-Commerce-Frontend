@@ -4,6 +4,7 @@
 // =============================================================================
 // Core Vue utilities
 import { onMounted, ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 // Pinia stores for state management
 import { useProductStore } from '@/stores/products'
@@ -40,6 +41,9 @@ const categoriesStore = useCategoriesStore()
 const authStore = useAuthStore()
 const wishlistStore = useWishlistStore()
 
+// i18n
+const { t } = useI18n()
+
 // Reactive refs from stores (auto-updating)
 const { user } = storeToRefs(authStore)
 const { wishlistProducts, wishlistLoading } = storeToRefs(wishlistStore)
@@ -69,7 +73,19 @@ const {
   catalogCheckboxClasses,
   catalogFilterLabelClasses,
   catalogClearFilterClasses,
-  catalogFilterSummaryClasses
+  catalogFilterSummaryClasses,
+  catalogDebugPanelClasses,
+  catalogDebugTextClasses,
+  loadingSpinnerClasses,
+  errorMessageClasses,
+  emptyStateContainerClasses,
+  ratingStarFilledClasses,
+  ratingStarEmptyClasses,
+  modalOverlayClasses,
+  modalContentClasses,
+  iconColorClasses,
+  priceTextClasses,
+  smallBadgeClasses
 } = useThemeClasses()
 
 // ============================================================================
@@ -239,14 +255,14 @@ const toggleFavorite = async (productId: number) => {
 
   if (!user.value || !user.value.id) {
     console.error('🔴 [CATALOG] User not authenticated')
-    alert('Please log in to add products to your wishlist')
+    alert(t('wishlist.loginRequired'))
     return
   }
 
   const product = productStore.products.find(p => p.id === productId)
   if (!product) {
     console.error('🔴 [CATALOG] Product not found:', productId)
-    alert('Product not found')
+    alert(t('errors.productNotFound'))
     return
   }
 
@@ -280,8 +296,8 @@ const toggleFavorite = async (productId: number) => {
 
     console.log('🟡 [CATALOG] Product in wishlist after action:', wishlistStore.isProductInWishlist(productId))
   } catch (error) {
-    console.error('🔴 [CATALOG] Error toggling favorite:', error)
-    alert('Error updating wishlist: ' + (error instanceof Error ? error.message : 'Unknown error'))
+  console.error('🔴 [CATALOG] Error toggling favorite:', error)
+  alert(t('wishlist.updateError') + ': ' + (error instanceof Error ? error.message : 'Unknown error'))
   }
 }
 
@@ -439,32 +455,33 @@ onMounted(async () => {
 
     <!-- Debug Panel (DEV ONLY) -->
     <div class="fixed bottom-4 right-4 z-50 max-w-[300px] sm:max-w-[420px] w-full">
-      <div :class="['p-3 rounded-lg shadow-lg sm:p-4', 'theme-debug-bg']">
+      <div :class="catalogDebugPanelClasses">
         <div class="flex items-center justify-between mb-2">
-          <span :class="['text-xs font-bold sm:text-sm', 'theme-debug-text']">🛠️ Debug Panel</span>
-          <button @click="showDebug = !showDebug" :class="['text-xs underline', 'theme-debug-text']">
-            {{ showDebug ? 'Hide' : 'Show' }}
+          <span :class="['text-xs font-bold sm:text-sm', textClasses]">{{ $t('catalog.debugPanelTitle') }}</span>
+          <button @click="showDebug = !showDebug" :class="['text-xs underline', textClasses]">
+            {{ showDebug ? $t('common.hide') : $t('common.show') }}
           </button>
         </div>
         <transition name="fade-debug">
-          <div v-show="showDebug" :class="['space-y-2 overflow-y-auto text-xs max-h-40', 'theme-debug-text']">
-            <div><b>User:</b> {{ user }}</div>
-            <div><b>Wishlist ID:</b> {{ wishlistStore.wishlistId }}</div>
-            <div><b>Wishlist Count:</b> {{ wishlistProducts.length }}</div>
-            <div><b>Wishlist Product IDs:</b> {{ wishlistProducts.map(p => p.id).join(', ') }}</div>
-            <div><b>Current Page:</b> {{ currentPage }} / {{ totalPages }}</div>
-            <div><b>Items Per Page:</b> {{ itemsPerPage }}</div>
-            <div><b>Filtered Products:</b> {{ filteredProducts.length }}</div>
-            <div><b>Checked Brands:</b> {{ productStore.brands.filter(b => b.checked).map(b => b.name).join(', ') }}</div>
-            <div><b>Price Range:</b> ${{ priceRange[0] }} - ${{ priceRange[1] }}</div>
-            <div><b>Sort By:</b> {{ sortBy }}</div>
-            <div><b>Category:</b> {{ actualCategoryName }}</div>
-            <div><b>Display Name:</b> {{ categoryDisplayName }}</div>
+          <div v-show="showDebug" :class="catalogDebugTextClasses">
+            <div><b>{{ $t('catalog.debug.user') }}:</b> {{ user }}</div>
+            <div><b>{{ $t('catalog.debug.wishlistId') }}:</b> {{ wishlistStore.wishlistId }}</div>
+            <div><b>{{ $t('catalog.debug.wishlistCount') }}:</b> {{ wishlistProducts.length }}</div>
+            <div><b>{{ $t('catalog.debug.wishlistProductIds') }}:</b> {{ wishlistProducts.map(p => p.id).join(', ') }}</div>
+            <div><b>{{ $t('catalog.debug.currentPage') }}:</b> {{ currentPage }} / {{ totalPages }}</div>
+            <div><b>{{ $t('catalog.debug.itemsPerPage') }}:</b> {{ itemsPerPage }}</div>
+            <div><b>{{ $t('catalog.debug.filteredProducts') }}:</b> {{ filteredProducts.length }}</div>
+            <div><b>{{ $t('catalog.debug.checkedBrands') }}:</b> {{ productStore.brands.filter(b => b.checked).map(b => b.name).join(', ') }}</div>
+            <div><b>{{ $t('catalog.debug.priceRange') }}:</b> ${{ priceRange[0] }} - ${{ priceRange[1] }}</div>
+            <div><b>{{ $t('catalog.debug.sortBy') }}:</b> {{ sortBy }}</div>
+            <div><b>{{ $t('catalog.debug.category') }}:</b> {{ actualCategoryName }}</div>
+            <div><b>{{ $t('catalog.debug.displayName') }}:</b> {{ categoryDisplayName }}</div>
             <button
               @click="console.log('🧪 [TEST] Debug button clicked!'); goToProductDetails(76)"
-              class="px-2 py-1 mt-2 text-xs text-white bg-blue-500 rounded hover:bg-blue-600"
+              :class="buttonPrimaryClasses"
+              class="px-2 py-1 mt-2 text-xs rounded"
             >
-              Test Navigation (ID: 76)
+              {{ $t('catalog.debugTestButton', { id: 76 }) }}
             </button>
           </div>
         </transition>
@@ -481,7 +498,7 @@ onMounted(async () => {
               {{ categoryDisplayName }}
             </h1>
             <p :class="textSecondaryClasses" class="text-sm font-srProDisplay">
-              {{ filteredProducts.length }} products found
+              {{ $t('catalog.productsFound', { count: filteredProducts.length }) }}
             </p>
           </div>
         </div>
@@ -497,9 +514,9 @@ onMounted(async () => {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
             </svg>
-            <span :class="textClasses">Filters</span>
+            <span :class="textClasses">{{ $t('catalog.filters') }}</span>
             <span v-if="hasActiveFilters()" class="ml-1 bg-primary text-primary-foreground text-xs rounded-full px-2 py-0.5">
-              Active
+              {{ $t('catalog.activeBadge') }}
             </span>
           </button>
 
@@ -514,7 +531,7 @@ onMounted(async () => {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M8 5v6m0 0V9a2 2 0 012-2h4a2 2 0 012 2v2M8 11l4 4 4-4" />
             </svg>
-            <span :class="textClasses">Sort</span>
+            <span :class="textClasses">{{ $t('common.sort') }}</span>
           </button>
         </div>
 
@@ -522,11 +539,11 @@ onMounted(async () => {
         <div v-if="showMobileSorting" :class="cardClasses" class="mt-3 overflow-hidden rounded-lg shadow-lg">
           <button
             v-for="option in [
-              { value: 'name', label: 'Name A-Z' },
-              { value: 'name-desc', label: 'Name Z-A' },
-              { value: 'price-low', label: 'Price: Low to High' },
-              { value: 'price-high', label: 'Price: High to Low' },
-              { value: 'rating', label: 'By rating' }
+              { value: 'name', label: $t('catalog.sort.nameAZ') },
+              { value: 'name-desc', label: $t('catalog.sort.nameZA') },
+              { value: 'price-low', label: $t('catalog.sort.priceLow') },
+              { value: 'price-high', label: $t('catalog.sort.priceHigh') },
+              { value: 'rating', label: $t('catalog.sort.rating') }
             ]"
             :key="option.value"
             @click="sortBy = option.value; showMobileSorting = false"
@@ -554,7 +571,7 @@ onMounted(async () => {
           <!-- Price Filter -->
           <div :class="catalogFilterSectionClasses" class="mb-6">
             <div :class="catalogFilterHeaderClasses" class="flex items-center justify-between pb-3 mb-4">
-              <h3 :class="catalogFilterTitleClasses" class="text-lg font-semibold font-srProDisplay">Price</h3>
+              <h3 :class="catalogFilterTitleClasses" class="text-lg font-semibold font-srProDisplay">{{ $t('common.price') }}</h3>
               <button @click="toggleFilter('price')" :class="hoverClasses" class="p-1 transition-colors rounded">
                 <svg
                   :class="[textSecondaryClasses, 'transition-transform duration-200', { 'rotate-180': collapsedFilters.price }]"
@@ -578,16 +595,16 @@ onMounted(async () => {
           <!-- Brand Filter -->
           <div :class="catalogFilterSectionClasses" class="mb-6">
             <div :class="catalogFilterHeaderClasses" class="flex items-center justify-between pb-3 mb-4">
-              <h3 :class="catalogFilterTitleClasses" class="text-lg font-semibold font-srProDisplay">Brand</h3>
+              <h3 :class="catalogFilterTitleClasses" class="text-lg font-semibold font-srProDisplay">{{ $t('common.brand') }}</h3>
               <div class="flex items-center space-x-2">
                 <button
                   v-if="productStore.brands.some(brand => brand.checked)"
                   @click="clearBrandFilters"
                   :class="[catalogClearFilterClasses, 'text-xs transition-colors']"
                   type="button"
-                  title="Clear brand filters"
+                  :title="$t('catalog.clearFilters')"
                 >
-                  Clear
+                  {{ $t('catalog.clear') }}
                 </button>
                 <button @click="toggleFilter('brand')" :class="hoverClasses" class="p-1 transition-colors rounded">
                   <svg
@@ -606,7 +623,7 @@ onMounted(async () => {
                   v-model="brandSearchQuery"
                   :class="[textClasses, 'w-full p-0.5 font-srProDisplay text-sm font-medium outline-none bg-transparent']"
                   type="search"
-                  placeholder="Search"
+                  :placeholder="$t('common.search')"
                 />
               </div>
               <div class="space-y-3 overflow-y-auto max-h-64">
@@ -628,39 +645,39 @@ onMounted(async () => {
 
           <!-- Active Filters Summary -->
           <div v-if="hasActiveFilters()" :class="catalogFilterSummaryClasses" class="p-4 mb-6 rounded-lg">
-            <h4 :class="textClasses" class="mb-3 text-sm font-semibold font-srProDisplay">Active Filters</h4>
+            <h4 :class="textClasses" class="mb-3 text-sm font-semibold font-srProDisplay">{{ $t('catalog.activeFilters') }}</h4>
             <div class="space-y-2">
               <div v-if="priceRange[0] > 0 || priceRange[1] < 5000" class="flex items-center justify-between text-sm">
-                <span :class="textSecondaryClasses">Price:</span>
+                <span :class="textSecondaryClasses">{{ $t('common.price') }}:</span>
                 <span :class="textClasses" class="font-medium">${{ priceRange[0] }} - ${{ priceRange[1] }}</span>
               </div>
               <div v-if="productStore.brands.some(brand => brand.checked)" class="flex items-center justify-between text-sm">
-                <span :class="textSecondaryClasses">Brands:</span>
+                <span :class="textSecondaryClasses">{{ $t('catalog.brandsLabel') }}:</span>
                 <span :class="textClasses" class="font-medium">
                   {{ productStore.brands.filter(brand => brand.checked).map(brand => brand.name).join(', ') }}
                 </span>
               </div>
             </div>
             <button @click="clearAllFilters" :class="catalogClearFilterClasses" class="mt-3 text-xs underline transition-colors">
-              Clear All Filters
+              {{ $t('catalog.clearAllFilters') }}
             </button>
           </div>
 
           <!-- Quick Stats -->
           <div :class="catalogFilterSummaryClasses" class="p-4 mb-6 rounded-lg">
-            <h4 :class="textClasses" class="mb-2 text-sm font-semibold font-srProDisplay">Summary</h4>
+            <h4 :class="textClasses" class="mb-2 text-sm font-semibold font-srProDisplay">{{ $t('catalog.summary') }}</h4>
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
-                <span :class="textSecondaryClasses">Total Products:</span>
+                <span :class="textSecondaryClasses">{{ $t('catalog.totalProducts') }}:</span>
                 <span :class="textClasses" class="font-medium">{{ productStore.products.length }}</span>
               </div>
               <div class="flex justify-between">
-                <span :class="textSecondaryClasses">Filtered Results:</span>
+                <span :class="textSecondaryClasses">{{ $t('catalog.filtered') }}:</span>
                 <span :class="textClasses" class="font-medium">{{ filteredProducts.length }}</span>
               </div>
               <div class="flex justify-between">
-                <span :class="textSecondaryClasses">Current Page:</span>
-                <span :class="textClasses" class="font-medium">{{ currentPage }} of {{ totalPages }}</span>
+                <span :class="textSecondaryClasses">{{ $t('catalog.currentPageLabel') }}:</span>
+                <span :class="textClasses" class="font-medium">{{ currentPage }} {{ $t('catalog.paginationOf') }} {{ totalPages }}</span>
               </div>
             </div>
           </div>
@@ -672,7 +689,7 @@ onMounted(async () => {
           <div class="items-center justify-between hidden mb-6 lg:flex">
             <div>
               <h1 :class="textClasses" class="text-xl font-semibold font-srProDisplay">{{ categoryDisplayName }}</h1>
-              <p :class="textSecondaryClasses" class="font-srProDisplay">{{ filteredProducts.length }} products found</p>
+              <p :class="textSecondaryClasses" class="font-srProDisplay">{{ $t('catalog.productsFound', { count: filteredProducts.length }) }}</p>
             </div>
             <div class="flex items-center space-x-4">
               <button
@@ -681,30 +698,30 @@ onMounted(async () => {
                 :class="catalogClearFilterClasses"
                 class="text-sm underline transition-colors"
               >
-                Clear All Filters
+                {{ $t('catalog.clearAllFilters') }}
               </button>
               <select
                 v-model="sortBy"
                 :class="catalogSortSelectClasses"
                 class="font-srProDisplay rounded-md w-70 px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-gray-500"
               >
-                <option value="name">Name A-Z</option>
-                <option value="name-desc">Name Z-A</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">By rating</option>
+                <option value="name">{{ $t('catalog.sort.nameAZ') }}</option>
+                <option value="name-desc">{{ $t('catalog.sort.nameZA') }}</option>
+                <option value="price-low">{{ $t('catalog.sort.priceLow') }}</option>
+                <option value="price-high">{{ $t('catalog.sort.priceHigh') }}</option>
+                <option value="rating">{{ $t('catalog.sort.rating') }}</option>
               </select>
             </div>
           </div>
 
           <!-- Loading State -->
           <div v-if="productStore.loading" class="flex items-center justify-center py-12">
-            <div class="w-12 h-12 border-b-2 rounded-full animate-spin border-emerald-500"></div>
-            <span :class="textSecondaryClasses" class="ml-3">Loading products...</span>
+            <div :class="loadingSpinnerClasses"></div>
+            <span :class="textSecondaryClasses" class="ml-3">{{ $t('catalog.loadingProducts') }}</span>
           </div>
 
           <!-- Error State -->
-          <div v-else-if="productStore.error" class="flex items-center justify-center px-4 py-3 mb-8 space-x-2 text-center text-red-700 bg-red-100 border border-red-400 rounded-lg dark:bg-red-900/20 dark:border-red-500 dark:text-red-300">
+          <div v-else-if="productStore.error" :class="[errorMessageClasses, 'flex items-center justify-center px-4 py-3 mb-8 space-x-2 text-center']">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -714,18 +731,18 @@ onMounted(async () => {
           </div>
 
           <!-- Empty State -->
-          <div v-else-if="filteredProducts.length === 0" class="py-12 text-center">
+          <div v-else-if="filteredProducts.length === 0" :class="emptyStateContainerClasses">
             <div class="flex justify-center mb-4">
               <div :class="cardClasses" class="p-6 rounded-full">
-                <svg :class="textMutedClasses" class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg :class="iconColorClasses" class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    d="M19 11H5m14 0a2 2 0 002 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
               </div>
             </div>
-            <h3 :class="textClasses" class="mb-2 text-xl font-semibold">No products found</h3>
+            <h3 :class="textClasses" class="mb-2 text-xl font-semibold">{{ $t('catalog.noProductsFound') }}</h3>
             <p :class="textSecondaryClasses">
-              {{ hasActiveFilters() ? 'No products match your current filters' : 'No products found in this category' }}
+              {{ hasActiveFilters() ? $t('catalog.noProductsMatchFilters') : $t('catalog.noProductsInCategory') }}
             </p>
             <button
               v-if="hasActiveFilters()"
@@ -733,7 +750,7 @@ onMounted(async () => {
               :class="buttonPrimaryClasses"
               class="px-4 py-2 mt-4 text-sm font-medium transition-colors rounded-md"
             >
-              Clear All Filters
+              {{ $t('catalog.clearAllFilters') }}
             </button>
           </div>
 
@@ -744,7 +761,7 @@ onMounted(async () => {
               :key="product.id"
               @click="goToProductDetails(product.id)"
               role="link"
-              :aria-label="`View ${product.name}`"
+              :aria-label="$t('catalog.viewProduct', { name: product.name })"
               tabindex="0"
               @keyup.enter="goToProductDetails(product.id)"
               :class="`${catalogProductCardClasses} cursor-pointer`"
@@ -755,16 +772,16 @@ onMounted(async () => {
                 <button
                   @click.stop="toggleFavorite(product.id)"
                   :disabled="wishlistLoading"
-                  :class="[textSecondaryClasses, 'hover:text-red-600 dark:hover:text-red-400']"
+                  :class="[textSecondaryClasses, 'hover:text-error']"
                   class="flex items-center justify-center w-8 h-8 transition-colors disabled:opacity-50"
                   type="button"
-                  aria-label="Toggle favorite"
+                  :aria-label="$t('common.toggleFavorite')"
                 >
                   <svg v-if="!wishlistStore.isProductInWishlist(product.id)" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
-                  <svg v-else fill="currentColor" viewBox="0 0 24 24" class="w-6 h-6 text-red-600">
+                  <svg v-else fill="currentColor" viewBox="0 0 24 24" class="w-6 h-6 text-error">
                     <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 </button>
@@ -787,7 +804,7 @@ onMounted(async () => {
                     <div class="h-[48px]">
                       <a href="#" @click.stop.prevent="goToProductDetails(product.id)" class="block cursor-pointer">
                         <h3 :class="textClasses"
-                          class="text-base font-medium text-center transition-colors font-srProDisplay hover:text-indigo-600 dark:hover:text-indigo-400 line-clamp-2">
+                          class="text-base font-medium text-center transition-colors font-srProDisplay hover:text-primary line-clamp-2">
                           {{ product.name }}
                         </h3>
                       </a>
@@ -795,8 +812,8 @@ onMounted(async () => {
                     <div class="flex items-center justify-center gap-2 mb-1">
                       <span class="flex items-center">
                         <template v-for="i in 5" :key="i">
-                          <svg class="w-4 h-4"
-                            :class="i <= Math.round(product.rating || 0) ? 'text-yellow-400' : textSecondaryClasses"
+                          <svg
+                            :class="[i <= Math.round(product.rating || 0) ? ratingStarFilledClasses : ratingStarEmptyClasses]"
                             fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.175 0l-3.385 2.46c-.784.57-1.838-.196-1.54-1.118l1.287-3.966a1 0 0 00-.364-1.118l-3.385-2.46c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.967z" />
                           </svg>
@@ -805,7 +822,7 @@ onMounted(async () => {
                       </span>
                     </div>
                     <div class="flex items-center justify-center gap-2">
-                      <span :class="textClasses" class="text-lg font-semibold font-figtree">{{ formatPrice(product.basePrice) }}</span>
+                      <span :class="[priceTextClasses, 'text-lg font-semibold font-figtree']">{{ formatPrice(product.basePrice) }}</span>
                     </div>
                   </div>
                   <div class="flex items-center justify-center pt-2 mt-6">
@@ -814,7 +831,7 @@ onMounted(async () => {
                       :class="buttonPrimaryClasses"
                       class="w-full max-w-[160px] h-[40px] text-sm font-medium rounded transition-colors"
                     >
-                      Buy Now
+                      {{ $t('common.buyNow') }}
                     </button>
                   </div>
                 </div>
@@ -882,10 +899,10 @@ onMounted(async () => {
     </div>
 
     <!-- Mobile Filters Modal -->
-    <div v-if="showMobileFilters" class="fixed inset-0 z-50 bg-black bg-opacity-50 lg:hidden" @click="closeMobileFilters">
-      <div :class="catalogMobileFilterClasses" class="flex flex-col w-full h-full max-w-sm ml-auto overflow-hidden" @click.stop>
+    <div v-if="showMobileFilters" :class="modalOverlayClasses" class="lg:hidden" @click="closeMobileFilters">
+      <div :class="[modalContentClasses, catalogMobileFilterClasses]" class="flex flex-col w-full h-full max-w-sm ml-auto overflow-hidden" @click.stop>
         <div :class="[cardClasses, 'flex items-center justify-between p-4']">
-          <h2 :class="textClasses" class="text-lg font-semibold">Filters</h2>
+          <h2 :class="textClasses" class="text-lg font-semibold">{{ $t('catalog.filtersTitle') }}</h2>
           <button @click="closeMobileFilters" :class="hoverClasses" class="p-2 transition-colors rounded-full">
             <svg :class="textClasses" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -896,7 +913,7 @@ onMounted(async () => {
           <!-- Price Filter -->
           <div :class="catalogFilterSectionClasses" class="mb-6">
             <div class="flex items-center justify-between mb-4">
-              <h3 :class="catalogFilterTitleClasses" class="text-lg font-semibold font-srProDisplay">Price</h3>
+              <h3 :class="catalogFilterTitleClasses" class="text-lg font-semibold font-srProDisplay">{{ $t('common.price') }}</h3>
               <button @click="toggleFilter('price')" :class="hoverClasses" class="p-1 transition-colors rounded">
                 <svg
                   :class="[textSecondaryClasses, 'transition-transform duration-200', { 'rotate-180': collapsedFilters.price }]"
@@ -920,7 +937,7 @@ onMounted(async () => {
           <!-- Brand Filter -->
           <div :class="catalogFilterSectionClasses" class="mb-6">
             <div class="flex items-center justify-between mb-4">
-              <h3 :class="catalogFilterTitleClasses" class="text-lg font-semibold font-srProDisplay">Brand</h3>
+              <h3 :class="catalogFilterTitleClasses" class="text-lg font-semibold font-srProDisplay">{{ $t('common.brand') }}</h3>
               <div class="flex items-center space-x-2">
                 <button
                   v-if="productStore.brands.some(brand => brand.checked)"
@@ -928,7 +945,7 @@ onMounted(async () => {
                   :class="catalogClearFilterClasses"
                   class="text-xs transition-colors"
                 >
-                  Clear
+                  {{ $t('catalog.clear') }}
                 </button>
                 <button @click="toggleFilter('brand')" :class="hoverClasses" class="p-1 transition-colors rounded">
                   <svg
@@ -947,7 +964,7 @@ onMounted(async () => {
                   v-model="brandSearchQuery"
                   :class="[textClasses, 'w-full p-0.5 font-srProDisplay text-sm font-medium outline-none bg-transparent']"
                   type="search"
-                  placeholder="Search brands"
+                  :placeholder="$t('catalog.searchBrands')"
                 />
               </div>
               <div class="space-y-4 overflow-y-auto max-h-64">
@@ -969,7 +986,7 @@ onMounted(async () => {
 
           <!-- Active Filters -->
           <div v-if="hasActiveFilters()" :class="catalogFilterSummaryClasses" class="p-4 mb-6 rounded-lg">
-            <h4 :class="textClasses" class="mb-3 text-sm font-semibold font-srProDisplay">Active Filters</h4>
+            <h4 :class="textClasses" class="mb-3 text-sm font-semibold font-srProDisplay">{{ $t('catalog.activeFilters') }}</h4>
             <div class="space-y-2">
               <div v-if="priceRange[0] > 0 || priceRange[1] < 5000" class="flex items-center justify-between text-sm">
                 <span :class="textSecondaryClasses">Price:</span>
@@ -981,7 +998,7 @@ onMounted(async () => {
                   <span
                     v-for="brand in productStore.brands.filter(brand => brand.checked)"
                     :key="brand.name"
-                    class="inline-block px-2 py-1 text-xs text-white bg-black rounded dark:bg-white dark:text-black"
+                    :class="smallBadgeClasses"
                   >
                     {{ brand.name }}
                   </span>
@@ -997,14 +1014,14 @@ onMounted(async () => {
             :class="buttonSecondaryClasses"
             class="w-full py-3 text-sm text-center transition-colors border rounded-lg"
           >
-            Clear All Filters
+            {{ $t('catalog.clearAllFilters') }}
           </button>
           <button
             @click="applyMobileFilters"
             :class="buttonPrimaryClasses"
             class="w-full py-4 text-sm font-medium transition-colors rounded-lg"
           >
-            Show {{ filteredProducts.length }} Results
+            {{ $t('catalog.showResults', { count: filteredProducts.length }) }}
           </button>
         </div>
       </div>
@@ -1036,37 +1053,15 @@ button:focus {
   width: 2px;
 }
 .overflow-y-auto::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--color-surface-secondary);
   border-radius: 4px;
 }
 .overflow-y-auto::-webkit-scrollbar-thumb {
-  background: #000;
+  background: var(--color-border);
   border-radius: 4px;
 }
 .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background: #222;
-}
-.custom-checkbox {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 3px;
-  background-color: white;
-  cursor: pointer;
-  position: relative;
-}
-.custom-checkbox:hover {
-  border-color: #9ca3af;
-}
-.custom-checkbox:checked {
-  background-color: #000;
-  border-color: #000;
-  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M13.854 3.646L6.354 11.146a.5.5 0 01-.708 0L2.146 7.646a.5.5 0 11.708-.708L6 10.293l7.146-7.147a.5.5 0 01.708.708z'/%3e%3c/svg%3e");
-  background-size: 8px 8px;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: var(--color-muted);
 }
 body.modal-open {
   overflow: hidden;
