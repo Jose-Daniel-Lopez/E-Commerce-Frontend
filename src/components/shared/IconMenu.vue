@@ -85,7 +85,7 @@
         <!-- User Dropdown -->
         <div
           v-show="showUserDropdown"
-          class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-2xl z-[100]"
+          class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-white border border-gray-200 rounded-xl shadow-2xl z-[100] sm:top-full sm:bottom-auto sm:mt-2 sm:mb-0"
           @click.stop
         >
           <div class="py-3">
