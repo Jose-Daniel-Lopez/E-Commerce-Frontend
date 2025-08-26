@@ -122,7 +122,7 @@
       >
         <svg
           v-if="!showMenu"
-          class="w-8 h-8 text-black"
+          class="w-8 h-8 text-white"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -136,7 +136,7 @@
         </svg>
         <svg
           v-else
-          class="text-black w-9 h-9"
+          class="text-white w-9 h-9"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
