@@ -257,7 +257,25 @@
     "viewProduct": "Ver {name}"
   },
   "home": {
-    "title": "Inicio"
+    "title": "Inicio",
+    "banner": {
+      "popularProducts": {
+        "title": "Productos Populares",
+        "description": "Descubre nuestros productos tecnológicos más queridos, desde smartphones hasta laptops, todos diseñados para mejorar tu estilo de vida digital."
+      },
+      "ipadPro": {
+        "title": "iPad Pro",
+        "description": "La experiencia definitiva en tablet con chip M2, pantalla Liquid Retina XDR y batería de todo el día para creatividad y productividad."
+      },
+      "samsungGalaxy": {
+        "title": "Samsung Galaxy",
+        "description": "Experimenta la innovación con tecnología de cámara de vanguardia, pantalla AMOLED impresionante y rendimiento potente en tu bolsillo."
+      },
+      "macbookPro": {
+        "title": "MacBook Pro",
+        "description": "Laptop de grado profesional con chip M3, pantalla Liquid Retina brillante y hasta 22 horas de batería para flujos de trabajo exigentes."
+      }
+    }
   },
   "refund": {
     "title": "Política de Reembolsos y Devoluciones"
