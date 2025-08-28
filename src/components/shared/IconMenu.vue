@@ -1,112 +1,77 @@
 <template>
   <div class="flex w-[220px] items-center justify-end lg:block lg:w-[144px]">
     <ul
-      class="fixed bottom-0 left-0 grid h-[66px] w-full grid-cols-4 items-center justify-between border-t-[1px] border-t-slate-100 bg-white sm:static sm:justify-end sm:gap-0 sm:bg-transparent lg:grid-cols-3"
-    >
+      class="fixed bottom-0 left-0 grid h-[66px] w-full grid-cols-4 items-center justify-between border-t-[1px] border-t-slate-100 dark:border-t-gray-700 bg-white dark:bg-gray-900 sm:static sm:justify-end sm:gap-0 sm:bg-transparent lg:grid-cols-3">
       <li
-        class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent lg:hidden"
-        @click="toggleSearchBar"
-      >
-        <svg class="text-gray-500 w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
+        class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 hover:bg-blue-50 dark:hover:bg-blue-900/20 sm:h-auto sm:border-none sm:hover:bg-transparent lg:hidden"
+        @click="toggleSearchBar">
+        <svg class="text-gray-500 dark:text-gray-400 w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <span class="text-sm font-medium font-srProDisplay sm:hidden"> Search </span>
+        <span class="text-sm font-medium text-gray-700 font-srProDisplay dark:text-gray-300 sm:hidden"> Search </span>
       </li>
 
       <li
-        class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 group hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent"
-      >
+        class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 group hover:bg-blue-50 dark:hover:bg-blue-900/20 sm:h-auto sm:border-none sm:hover:bg-transparent">
         <div class="relative">
           <router-link to="/wishlist" class="relative flex items-center justify-center">
-            <v-icon
-              name="hi-heart"
-              scale="1.7"
-              class="text-gray-600 transition-all duration-200 group-hover:text-pink-500 group-hover:scale-110 group-hover:drop-shadow-md"
-              aria-label="Favorites"
-            />
-            <span
-              v-if="wishlistCount > 0"
-              class="absolute -right-[3px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white shadow-md min-w-[18px] text-center"
-            >
+            <v-icon name="hi-heart" scale="1.7"
+              class="text-gray-600 transition-all duration-200 dark:text-gray-400 group-hover:text-pink-500 group-hover:scale-110 group-hover:drop-shadow-md"
+              aria-label="Favorites" />
+            <span v-if="wishlistCount > 0"
+              class="absolute -right-[3px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white shadow-md min-w-[18px] text-center">
               {{ wishlistCount }}
             </span>
           </router-link>
         </div>
         <span
-          class="mt-[-5px] font-srProDisplay text-sm font-medium sm:hidden group-hover:text-blue-600 transition-colors duration-200"
-        >
+          class="mt-[-5px] font-srProDisplay text-sm font-medium text-gray-700 dark:text-gray-300 sm:hidden group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
           Favorites
         </span>
       </li>
 
       <li
-        class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 group hover:bg-blue-50 sm:h-auto sm:border-none sm:hover:bg-transparent"
-      >
+        class="flex h-[66px] cursor-pointer flex-col items-center justify-center border-r-0 group hover:bg-blue-50 dark:hover:bg-blue-900/20 sm:h-auto sm:border-none sm:hover:bg-transparent">
         <div class="relative">
           <router-link to="/cart" class="relative flex items-center justify-center">
-            <v-icon
-              name="hi-shopping-cart"
-              scale="1.7"
-              class="text-gray-600 transition-all duration-200 group-hover:text-blue-600 group-hover:scale-110 group-hover:drop-shadow-md"
-              aria-label="Cart"
-            />
+            <v-icon name="hi-shopping-cart" scale="1.7"
+              class="text-gray-600 transition-all duration-200 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:scale-110 group-hover:drop-shadow-md"
+              aria-label="Cart" />
             <span
-              class="absolute -right-[6px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white shadow-md"
-            >
+              class="absolute -right-[6px] -top-[4px] rounded-full bg-red-600 px-1 text-[10px] font-semibold text-white shadow-md">
               {{ totalQuantity }}
             </span>
           </router-link>
         </div>
         <span
-          class="mt-[-5px] font-srProDisplay text-sm font-medium sm:hidden group-hover:text-blue-600 transition-colors duration-200"
-        >
+          class="mt-[-5px] font-srProDisplay text-sm font-medium text-gray-700 dark:text-gray-300 sm:hidden group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
           Cart
         </span>
       </li>
 
       <li
-        class="relative flex h-[66px] cursor-pointer flex-col items-center justify-center group hover:bg-blue-50 sm:hover:bg-transparent"
-        @click.stop="toggleUserDropdown"
-      >
-        <UserAvatar
-          :show-status="true"
-          :icon-scale="1.7"
-        />
+        class="relative flex h-[66px] cursor-pointer flex-col items-center justify-center group hover:bg-blue-50 dark:hover:bg-blue-900/20 sm:hover:bg-transparent"
+        @click.stop="toggleUserDropdown">
+        <UserAvatar :show-status="true" :icon-scale="1.7" />
         <span
-          class="text-sm font-medium transition-colors duration-200 font-srProDisplay sm:hidden group-hover:text-blue-600"
-        >
+          class="text-sm font-medium text-gray-700 transition-colors duration-200 font-srProDisplay dark:text-gray-300 sm:hidden group-hover:text-blue-600 dark:group-hover:text-blue-400">
           {{ isAuthenticated ? 'Account' : 'User' }}
         </span>
         <!-- User Dropdown -->
-        <div
-          v-show="showUserDropdown"
-          class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-white border border-gray-200 rounded-xl shadow-2xl z-[100] sm:top-full sm:bottom-auto sm:mt-2 sm:mb-0"
-          @click.stop
-        >
+        <div v-show="showUserDropdown"
+          class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-2xl z-[100] sm:top-full sm:bottom-auto sm:mt-2 sm:mb-0"
+          @click.stop>
           <div class="py-3">
             <div class="overflow-y-auto max-h-80 categories-scroll">
-              <div
-                v-for="option in userOptions"
-                :key="option.label"
-                @click="selectUserOption(option)"
+              <div v-for="option in userOptions" :key="option.label" @click="selectUserOption(option)"
                 class="flex items-center px-4 py-3 text-sm transition-all duration-200 border-l-4 border-transparent cursor-pointer group font-srProDisplay"
-                :class="
-                  option.isLogout
-                    ? 'text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-500'
-                    : 'text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 hover:border-gray-700'
-                "
-              >
-                <span
-                  class="flex-1 transition-all duration-200 group-hover:font-medium"
-                  :class="
-                    option.isLogout ? 'group-hover:text-red-700' : 'group-hover:text-gray-800'
-                  "
-                >
+                :class="option.isLogout
+                    ? 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-700 dark:hover:text-red-300 hover:border-red-500'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 dark:hover:from-gray-700 dark:hover:to-gray-600 hover:border-gray-700 dark:hover:border-gray-400'
+                  ">
+                <span class="flex-1 transition-all duration-200 group-hover:font-medium" :class="option.isLogout ? 'group-hover:text-red-700 dark:group-hover:text-red-300' : 'group-hover:text-gray-800 dark:group-hover:text-gray-200'
+                  ">
                   {{ option.label }}
                 </span>
               </div>
@@ -116,37 +81,13 @@
       </li>
     </ul>
     <li class="block cursor-pointer lg:hidden">
-      <div
-        class="flex items-center justify-center duration-300 ease-in-out h-9 w-9"
-        @click="toggleMenu"
-      >
-        <svg
-          v-if="!showMenu"
-          class="w-8 h-8 text-black"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          />
+      <div class="flex items-center justify-center duration-300 ease-in-out h-9 w-9" @click="toggleMenu">
+        <svg v-if="!showMenu" class="w-8 h-8 text-black dark:text-white" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
-        <svg
-          v-else
-          class="text-black w-9 h-9"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
+        <svg v-else class="text-black dark:text-white w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </div>
     </li>
