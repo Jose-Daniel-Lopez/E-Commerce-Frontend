@@ -597,6 +597,7 @@ if (typeof window !== 'undefined') {
 // === Cart Functionality ===
 const wishlistLoading = ref(false)
 const cartLoading = ref(false)
+const addedToCart = ref(false)
 const addToCart = async () => {
   if (!isAuthenticated.value) {
     toast.error('Please log in to add products to your cart', {
@@ -668,6 +669,14 @@ const addToCart = async () => {
 
     if (result.success) {
       console.log('🟢 [CATALOG PRODUCT DETAILS] Product added to cart successfully')
+
+      // Show success state on button
+      addedToCart.value = true
+
+      // Reset the success state after 3 seconds
+      setTimeout(() => {
+        addedToCart.value = false
+      }, 3000)
 
       loadingToast.success('Product added to your cart!', {
         title: 'Added Successfully',
@@ -942,7 +951,7 @@ const fetchProductVariants = async (productId: number) => {
           <!-- Color Selection -->
           <div v-if="availableColors.length > 0" class="flex items-center gap-4">
             <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.selectColor')
-              }}</span>
+            }}</span>
             <div class="flex space-x-3">
               <button v-for="color in availableColors" :key="color" @click="selectColor(color)" :class="[
                 'w-8 h-8 rounded-full border-2 transition-all',
@@ -971,7 +980,7 @@ const fetchProductVariants = async (productId: number) => {
           <!-- Storage Display (for Mobile & Compute) - fallback for when no variants -->
           <div v-else-if="isMobileComputeCategory && currentProduct.specifications?.storage" class="space-y-3">
             <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.storage')
-              }}</span>
+            }}</span>
             <div :class="['px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium', cardClasses]">
               {{ currentProduct.specifications?.storage ?? '' }}
             </div>
@@ -981,7 +990,7 @@ const fetchProductVariants = async (productId: number) => {
           <div v-if="currentVariant || productVariants.length > 0" class="space-y-2">
             <div class="flex items-center gap-2">
               <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.stock')
-                }}</span>
+              }}</span>
               <span :class="[
                 'font-srProDisplay text-sm font-semibold',
                 isInStock ? 'text-success' : 'text-error'
@@ -1281,7 +1290,7 @@ const fetchProductVariants = async (productId: number) => {
               </span>
             </button>
             <button @click="addToCart"
-              :disabled="cartLoading || !isInStock || (!selectedColor && availableColors.length > 0) || (!selectedStorage && availableSizes.length > 0)"
+              :disabled="cartLoading || !isInStock || (!selectedColor && availableColors.length > 0) || (!selectedStorage && availableSizes.length > 0) || addedToCart"
               :class="['flex-1 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors', buttonPrimaryClasses]">
               <span v-if="cartLoading" class="flex items-center justify-center">
                 <div class="w-4 h-4 mr-2 border-b-2 border-white rounded-full animate-spin"></div>
@@ -1299,7 +1308,12 @@ const fetchProductVariants = async (productId: number) => {
               <span v-else-if="availableSizes.length > 0 && !selectedStorage">
                 {{ t('product.selectStorageOrSize', {
                   type: availableSizes.length > 0 &&
-                    availableSizes[0].includes('GB') ? t('product.storage') : t('product.size') }) }}
+                    availableSizes[0].includes('GB') ? t('product.storage') : t('product.size')
+                }) }}
+              </span>
+              <span v-else-if="addedToCart">
+                <v-icon name="hi-check" scale="1.2" class="mr-2" />
+                {{ t('product.added') }}
               </span>
               <span v-else>
                 {{ t('product.addToCart') }}
@@ -1430,7 +1444,7 @@ const fetchProductVariants = async (productId: number) => {
                         <div v-if="currentProduct.specifications?.os" class="flex items-center py-4">
                           <div :class="['flex-1', textSecondaryClasses]">{{ t('product.operatingSystem') }}</div>
                           <div :class="['w-48 font-medium text-right', textClasses]">{{ currentProduct.specifications.os
-                          }}</div>
+                            }}</div>
                         </div>
                       </div>
                     </div>
@@ -1592,7 +1606,7 @@ const fetchProductVariants = async (productId: number) => {
                 <div class="space-y-3">
                   <div class="flex items-center gap-3">
                     <span :class="['text-sm w-20 flex-shrink-0', textSecondaryClasses]">{{ t('product.excellent')
-                      }}</span>
+                    }}</span>
                     <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
@@ -1620,7 +1634,7 @@ const fetchProductVariants = async (productId: number) => {
                   </div>
                   <div class="flex items-center gap-3">
                     <span :class="['flex-shrink-0 w-20 text-sm', ratingTextClasses]">{{ t('product.belowAverage')
-                      }}</span>
+                    }}</span>
                     <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
@@ -1734,7 +1748,7 @@ const fetchProductVariants = async (productId: number) => {
                     <v-icon name="hi-x" scale="1.2" />
                   </button>
                   <h3 :class="['text-lg lg:text-xl font-semibold mb-4 pr-8', textClasses]">{{ t('product.leaveReview')
-                    }}
+                  }}
                   </h3>
                   <form @submit.prevent="submitReview">
                     <div class="mb-4">
@@ -1777,7 +1791,7 @@ const fetchProductVariants = async (productId: number) => {
                       </button>
                     </div>
                     <div v-if="reviewErrors.submit" class="mt-4 text-sm text-center text-red-500">{{ reviewErrors.submit
-                    }}
+                      }}
                     </div>
                   </form>
                 </div>
@@ -1838,7 +1852,7 @@ const fetchProductVariants = async (productId: number) => {
                       <div class="flex-1">
                         <div class="flex items-center justify-between mb-1">
                           <h4 class="text-sm font-medium lg:text-base">{{ review.userName || 'Anonymous'
-                          }}
+                            }}
                           </h4>
                           <span :class="['text-xs lg:text-sm', textMutedClasses]">{{ review.date }}</span>
                         </div>
