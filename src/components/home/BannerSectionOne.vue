@@ -9,7 +9,7 @@
       :initial-slide="0"
       :pagination="paginationConfig"
       :breakpoints="breakpoints"
-      class="bannerOne w-full"
+      class="w-full bannerOne"
     >
       <SwiperSlide>
   <div class="h-[640px] theme-card pb-[56px] transition-colors duration-200">
@@ -24,15 +24,14 @@
             <h3
               class="text-center font-srProDisplay text-[33px] font-light theme-text lg:text-left transition-colors duration-200"
             >
-              Popular Products
+              {{ t('home.banner.popularProducts.title') }}
             </h3>
             <p
-              class="text-center font-srProDisplay text-sm font-medium theme-muted-text lg:text-left transition-colors duration-200"
+              class="text-sm font-medium text-center transition-colors duration-200 font-srProDisplay theme-muted-text lg:text-left"
             >
-              iPad combines a magnificent 10.2-inch Retina display, incredible performance,
-              multitasking and ease of use.
+              {{ t('home.banner.popularProducts.description') }}
             </p>
-            <div class="flex w-full items-center justify-center lg:justify-start">
+            <div class="flex items-center justify-center w-full lg:justify-start">
               <Button
                 height="56px"
                 width="184px"
@@ -41,7 +40,7 @@
                 text-color="var(--color-primary-foreground)"
                 bg-color="var(--color-primary)"
               >
-                Comprar Ahora
+                {{ t('common.buyNow') }}
               </Button>
             </div>
           </div>
@@ -61,15 +60,14 @@
             <h3
               class="text-center font-srProDisplay text-[33px] font-light theme-text lg:text-left transition-colors duration-200"
             >
-              Ipad Pro
+              {{ t('home.banner.ipadPro.title') }}
             </h3>
             <p
-              class="text-center font-srProDisplay text-sm font-medium theme-muted-text lg:text-left transition-colors duration-200"
+              class="text-sm font-medium text-center transition-colors duration-200 font-srProDisplay theme-muted-text lg:text-left"
             >
-              iPad combines a magnificent 10.2-inch Retina display, incredible performance,
-              multitasking and ease of use.
+              {{ t('home.banner.ipadPro.description') }}
             </p>
-            <div class="flex w-full items-center justify-center lg:justify-start">
+            <div class="flex items-center justify-center w-full lg:justify-start">
               <Button
                 height="56px"
                 width="184px"
@@ -78,7 +76,7 @@
                 text-color="var(--color-primary-foreground)"
                 bg-color="var(--color-primary)"
               >
-                Comprar Ahora
+                {{ t('common.buyNow') }}
               </Button>
             </div>
           </div>
@@ -98,15 +96,14 @@
             <h3
               class="text-center font-srProDisplay text-[33px] font-light theme-text lg:text-left transition-colors duration-200"
             >
-              Samsung Galaxy
+              {{ t('home.banner.samsungGalaxy.title') }}
             </h3>
             <p
               class="text-center font-srProDisplay text-sm font-medium text-[#909090] dark:text-gray-400 lg:text-left transition-colors duration-200"
             >
-              iPad combines a magnificent 10.2-inch Retina display, incredible performance,
-              multitasking and ease of use.
+              {{ t('home.banner.samsungGalaxy.description') }}
             </p>
-            <div class="flex w-full items-center justify-center lg:justify-start">
+            <div class="flex items-center justify-center w-full lg:justify-start">
               <Button
                 height="56px"
                 width="184px"
@@ -115,7 +112,7 @@
                 text-color="var(--color-primary-foreground)"
                 bg-color="var(--color-primary)"
               >
-                Comprar Ahora
+                {{ t('common.buyNow') }}
               </Button>
             </div>
           </div>
@@ -135,15 +132,14 @@
             <h3
               class="text-center font-srProDisplay text-[33px] font-light theme-text lg:text-left transition-colors duration-200"
             >
-              Macbook Pro
+              {{ t('home.banner.macbookPro.title') }}
             </h3>
             <p
               class="text-center font-srProDisplay text-sm font-medium text-[#909090] dark:text-gray-400 lg:text-left transition-colors duration-200"
             >
-              iPad combines a magnificent 10.2-inch Retina display, incredible performance,
-              multitasking and ease of use.
+              {{ t('home.banner.macbookPro.description') }}
             </p>
-            <div class="flex w-full items-center justify-center lg:justify-start">
+            <div class="flex items-center justify-center w-full lg:justify-start">
               <Button
                 height="56px"
                 width="184px"
@@ -152,7 +148,7 @@
                 text-color="var(--color-primary-foreground)"
                 bg-color="var(--color-primary)"
               >
-                Comprar Ahora
+                {{ t('common.buyNow') }}
               </Button>
             </div>
           </div>
@@ -164,6 +160,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useLanguage } from '@/composables/useLanguage'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination } from 'swiper/modules'
 import Button from '../shared/Button.vue'
@@ -171,6 +168,8 @@ import Button from '../shared/Button.vue'
 // Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/pagination'
+
+const { t } = useLanguage()
 
 // Modules
 const modules = [Pagination]
