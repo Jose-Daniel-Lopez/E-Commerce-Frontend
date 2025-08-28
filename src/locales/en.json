@@ -489,7 +489,17 @@
     "comment": "Comment",
     "submitReview": "Submit review",
     "viewMore": "View more",
-    "viewLess": "View less"
+    "viewLess": "View less",
+    "toggleFavorite": "Toggle favorite",
+    "upcoming": "Upcoming",
+    "buy": "Buy",
+    "notAvailable": "N/A",
+    "invalidProductId": "Invalid product ID ({id}). Cannot add to wishlist.",
+    "userNotAuthenticated": "User not authenticated - please log in",
+    "addedToWishlist": "Product added to wishlist",
+    "removedFromWishlist": "Product removed from wishlist",
+    "wishlistStateError": "State didn't change as expected - check console for details",
+    "unknownError": "Unknown error"
   },
   "debug": {
     "productVariantData": "DEBUG: Product and variant data (REMOVE LATER)"

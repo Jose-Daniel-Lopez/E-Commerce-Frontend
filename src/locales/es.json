@@ -489,7 +489,17 @@
     "comment": "Comentario",
     "submitReview": "Enviar reseña",
     "viewMore": "Ver más",
-    "viewLess": "Ver menos"
+    "viewLess": "Ver menos",
+    "toggleFavorite": "Alternar favorito",
+    "upcoming": "Próximamente",
+    "buy": "Comprar",
+    "notAvailable": "N/A",
+    "invalidProductId": "ID de producto inválido ({id}). No se puede añadir a la lista de deseos.",
+    "userNotAuthenticated": "Usuario no autenticado - por favor inicia sesión",
+    "addedToWishlist": "Producto añadido a la lista de deseos",
+    "removedFromWishlist": "Producto eliminado de la lista de deseos",
+    "wishlistStateError": "El estado no cambió como se esperaba - revisa la consola para más detalles",
+    "unknownError": "Error desconocido"
   },
   "debug": {
     "productVariantData": "DEBUG: Datos del producto y variante (ELIMINAR MÁS TARDE)"
