@@ -202,9 +202,9 @@
     "types": "Tipos",
     "clearFilters": "Limpiar",
     "stats": "Estadísticas",
-    "totalCategories": "Total Categorías:",
-    "totalProducts": "Total Productos:",
-    "filtered": "Filtradas:",
+    "totalCategories": "Total Categorías",
+    "totalProducts": "Total Productos",
+    "filtered": "Filtradas",
     "brandsLabel": "Marcas",
     "sort": {
       "label": "Ordenar por",
@@ -251,7 +251,7 @@
     "activeFilters": "Filtros activos",
     "summary": "Resumen",
     "filteredResults": "Resultados filtrados:",
-    "currentPageLabel": "Página actual:",
+    "currentPageLabel": "Página actual",
     "searchBrands": "Buscar marcas",
     "showResults": "Mostrar {count} resultados",
     "viewProduct": "Ver {name}"
