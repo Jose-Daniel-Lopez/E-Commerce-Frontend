@@ -39,6 +39,7 @@
                 border-color="var(--color-border)"
                 text-color="var(--color-primary-foreground)"
                 bg-color="var(--color-primary)"
+                @click="navigateToCatalog"
               >
                 {{ t('common.buyNow') }}
               </Button>
@@ -75,6 +76,7 @@
                 border-color="var(--color-border)"
                 text-color="var(--color-primary-foreground)"
                 bg-color="var(--color-primary)"
+                @click="navigateToTablets"
               >
                 {{ t('common.buyNow') }}
               </Button>
@@ -111,6 +113,7 @@
                 border-color="var(--color-border)"
                 text-color="var(--color-primary-foreground)"
                 bg-color="var(--color-primary)"
+                @click="navigateToSmartphones"
               >
                 {{ t('common.buyNow') }}
               </Button>
@@ -147,6 +150,7 @@
                 border-color="var(--color-border)"
                 text-color="var(--color-primary-foreground)"
                 bg-color="var(--color-primary)"
+                @click="navigateToLaptops"
               >
                 {{ t('common.buyNow') }}
               </Button>
@@ -160,6 +164,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useLanguage } from '@/composables/useLanguage'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination } from 'swiper/modules'
@@ -170,6 +175,24 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 
 const { t } = useLanguage()
+const router = useRouter()
+
+// Navigation handlers
+const navigateToCatalog = () => {
+  router.push('/catalog')
+}
+
+const navigateToTablets = () => {
+  router.push('/catalog/tablets')
+}
+
+const navigateToSmartphones = () => {
+  router.push('/catalog/smartphones')
+}
+
+const navigateToLaptops = () => {
+  router.push('/catalog/laptops')
+}
 
 // Modules
 const modules = [Pagination]
