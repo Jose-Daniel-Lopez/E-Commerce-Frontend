@@ -3,18 +3,31 @@
     :class="['relative h-auto rounded-[9px] px-3 py-6 duration-500 hover:scale-[1.02] hover:shadow-md md:h-[435px] md:px-4 transition-colors cursor-pointer', cardClasses]"
     @click="navigateToProduct"
   >
+    <!-- Debug Panel (only visible in development) -->
+    <!-- <div
+      v-if="showDebug"
+      class="absolute bottom-0 left-0 right-0 bg-yellow-100 border border-yellow-300 p-2 text-xs z-30 rounded-b-[9px] max-h-32 overflow-y-auto"
+    >
+      <div><strong>Debug Info:</strong></div>
+      <div class="font-bold" :class="product.id > 0 ? 'text-green-600' : 'text-red-600'">
+        Product ID: {{ product.id }} ({{ typeof product.id }}) {{ product.id > 0 ? '✅' : '❌ INVALID' }}
+      </div>
+      <div>Fav: {{ isFavorite ? '❤️' : '🤍' }} | Toggle: {{ isToggling ? '⏳' : '✅' }}</div>
+      <div>User: {{ user?.id || 'None' }} | WL ID: {{ wishlistId || 'None' }} | Count: {{ wishlistProducts.length }}</div>
+      <div v-if="wishlistStore.wishlistError" class="text-red-600">Error: {{ wishlistStore.wishlistError }}</div>
+    </div> -->
 
-    <div class="absolute top-4 right-4 z-40">
+    <div class="absolute z-40 top-4 right-4">
       <button
         @click.stop="toggleFavorite"
-        class="p-2 rounded-full bg-white/90 hover:bg-white shadow-md transition-all duration-200 transform hover:scale-110"
+        class="p-2 transition-all duration-200 transform rounded-full shadow-md bg-white/90 hover:bg-white hover:scale-110"
         type="button"
-        aria-label="Toggle favorite"
+        :aria-label="t('product.toggleFavorite')"
         :disabled="isToggling"
       >
         <svg
           v-if="!isFavorite"
-          class="w-6 h-6 text-gray-600 hover:text-red-600 transition-colors duration-200"
+          class="w-6 h-6 text-gray-600 transition-colors duration-200 hover:text-red-600"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -45,7 +58,7 @@
           <img
             :src="product.image.url"
             :alt="product.image.altText"
-            class="w-full h-full object-contain"
+            class="object-contain w-full h-full"
             loading="lazy"
           />
         </div>
@@ -63,8 +76,8 @@
             </a>
           </div>
 
-          <div class="flex justify-center items-center gap-2">
-            <span v-if="hasDiscount" class="font-figtree text-xl font-semibold text-green-600">
+          <div class="flex items-center justify-center gap-2">
+            <span v-if="hasDiscount" class="text-xl font-semibold text-green-600 font-figtree">
               ${{ product.discountPrice }}
             </span>
             <span
@@ -74,7 +87,7 @@
               ${{ product.originalPrice }}
             </span>
             <span v-if="!hasDiscount" :class="['font-figtree text-xl font-semibold', textClasses]">
-              {{ isUpcoming ? 'N/A' : `$${product.originalPrice}` }}
+              {{ isUpcoming ? t('product.notAvailable') : `$${product.originalPrice}` }}
             </span>
           </div>
         </div>
@@ -92,7 +105,7 @@
               :disabled="isUpcoming"
               @click="handleBuyNow"
             >
-              {{ isUpcoming ? 'Próximamente' : 'Comprar' }}
+              {{ isUpcoming ? t('product.upcoming') : t('product.buy') }}
             </Button>
           </div>
         </div>
@@ -104,6 +117,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useLanguage } from '@/composables/useLanguage'
 import { useToast } from '@/composables/useToast'
 import { storeToRefs } from 'pinia'
 import Button from './Button.vue'
@@ -136,9 +150,10 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const isToggling = ref(false)
-const showDebug = ref(true) // Set to false to hide debug info
+// const showDebug = ref(true) // Set to false to hide debug info
 
 const router = useRouter()
+const { t } = useLanguage()
 const authStore = useAuthStore()
 const wishlistStore = useWishlistStore()
 const { user } = storeToRefs(authStore)
@@ -198,13 +213,13 @@ const toggleFavorite = async () => {
   // Validate product ID first
   if (!props.product.id || props.product.id <= 0) {
     console.error('🔴 [PRODUCT CARD] Invalid product ID:', props.product.id)
-    toast.error('❌ Error: Invalid product ID (' + props.product.id + '). Cannot add to wishlist.')
+    toast.error(t('product.invalidProductId') + ' (' + props.product.id + ')')
     return
   }
 
   if (!user.value || !user.value.id) {
     console.error('🔴 [PRODUCT CARD] User not authenticated')
-    toast.error('User not authenticated - please log in')
+    toast.error(t('product.userNotAuthenticated'))
     return
   }
 
@@ -255,16 +270,16 @@ const toggleFavorite = async () => {
 
     // Show success feedback
     if (!favoriteStateBefore && favoriteStateAfter) {
-      toast.success('Product added to wishlist')
+      toast.success(t('product.addedToWishlist'))
     } else if (favoriteStateBefore && !favoriteStateAfter) {
-      toast.success('Product removed from wishlist')
+      toast.success(t('product.removedFromWishlist'))
     } else {
-      toast.warning('⚠️ State didn\'t change as expected - check console for details')
+      toast.warning(t('product.wishlistStateError'))
     }
 
   } catch (error) {
     console.error('🔴 [PRODUCT CARD] Error toggling favorite:', error)
-    toast.error('❌ Error: ' + (error instanceof Error ? error.message : 'Unknown error'))
+    toast.error(t('product.error') + ': ' + (error instanceof Error ? error.message : t('product.unknownError')))
   } finally {
     isToggling.value = false
     console.log('🟡 [PRODUCT CARD] Setting isToggling to false')
@@ -275,6 +290,7 @@ const handleBuyNow = () => {
   if (!isUpcoming.value) {
     // Add to cart logic or navigate to product details
     console.log('Buy now clicked for product:', props.product.id)
+    navigateToProduct()
   }
 }
 </script>

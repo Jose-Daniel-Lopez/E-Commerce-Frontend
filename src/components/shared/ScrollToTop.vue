@@ -1,13 +1,7 @@
 <template>
-  <button
-    v-show="visible"
-    @click.prevent.stop="goTop"
-    @keyup.enter.stop="goTop"
-    tabindex="0"
-    aria-label="Scroll to top"
+  <button v-show="visible" @click.prevent.stop="goTop" @keyup.enter.stop="goTop" tabindex="0" aria-label="Scroll to top"
     title="Scroll to top"
-    class="fixed right-6 bottom-6 z-50 w-12 h-12 rounded-full bg-black/80 text-white flex items-center justify-center shadow-lg hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black pointer-events-auto"
-  >
+    class="fixed z-50 flex items-center justify-center w-12 h-12 text-white rounded-full shadow-lg pointer-events-auto right-6 bottom-20 md:bottom-6 bg-black/80 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black">
     <v-icon name="hi-chevron-up" />
   </button>
 </template>
@@ -65,11 +59,11 @@ const goTop = async () => {
   })
 
   try {
-  await scrollToTop(true)
-  console.debug('[ScrollToTop] smooth scroll completed')
+    await scrollToTop(true)
+    console.debug('[ScrollToTop] smooth scroll completed')
   } catch (err) {
-  console.warn('[ScrollToTop] scrollToTop timed out or failed, forcing top', err)
-  forceScrollToTop()
+    console.warn('[ScrollToTop] scrollToTop timed out or failed, forcing top', err)
+    forceScrollToTop()
   }
 }
 </script>

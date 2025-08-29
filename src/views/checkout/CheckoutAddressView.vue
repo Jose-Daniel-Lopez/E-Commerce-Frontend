@@ -6,7 +6,8 @@
         <div class="flex items-center w-full max-w-3xl gap-8">
           <!-- Step 1: Address -->
           <div class="flex items-center justify-center flex-1">
-            <span class="flex items-center justify-center w-12 h-12 mr-3 bg-primary rounded-full text-primary-foreground ring-2 ring-primary/20 dark:ring-primary/30 shadow-sm">
+            <span
+              class="flex items-center justify-center w-12 h-12 mr-3 rounded-full shadow-sm bg-primary text-primary-foreground ring-2 ring-primary/20 dark:ring-primary/30">
               <v-icon name="md-locationon" scale="1.5" fill="currentColor" class="text-primary-foreground" />
             </span>
             <div class="flex flex-col items-start">
@@ -34,7 +35,7 @@
               <v-icon name="si-contactlesspayment" scale="2" class="text-muted" />
             </span>
             <div class="flex flex-col items-start">
-              <span class="font-srProDisplay text-xs text-muted">Step 3</span>
+              <span class="text-xs font-srProDisplay text-muted">Step 3</span>
               <span class="font-srProDisplay text-base font-semibold text-muted mt-0.5">Payment</span>
             </div>
           </div>
@@ -43,11 +44,11 @@
 
       <!-- Select Address -->
       <section class="max-w-5xl mx-auto">
-  <h2 class="mb-6 text-lg font-semibold font-srProDisplay text-foreground">{{ $t('checkout.selectAddress') }}</h2>
+        <h2 class="mb-6 text-lg font-semibold font-srProDisplay text-foreground">{{ $t('checkout.selectAddress') }}</h2>
 
         <!-- Loading State -->
         <div v-if="shippingAddressStore.loading" class="py-8 text-center">
-          <div class="inline-block w-8 h-8 border-b-2 border-primary rounded-full animate-spin"></div>
+          <div class="inline-block w-8 h-8 border-b-2 rounded-full border-primary animate-spin"></div>
           <p class="mt-2 text-muted">Loading addresses...</p>
         </div>
 
@@ -55,42 +56,27 @@
         <div v-else-if="shippingAddressStore.error" class="py-8 text-center">
           <div class="p-4 rounded-lg theme-error-bg">
             <p>{{ shippingAddressStore.error }}</p>
-            <button
-              @click="loadAddresses"
-              class="px-4 py-2 mt-2 rounded"
-              :class="buttonPrimaryClasses"
-            >
+            <button @click="loadAddresses" class="px-4 py-2 mt-2 rounded" :class="buttonPrimaryClasses">
               Try Again
             </button>
           </div>
         </div>
 
         <!-- Address List -->
-    <div v-else-if="addresses.length > 0" class="space-y-6">
-          <div
-            v-for="address in addresses"
-            :key="address.id"
-      :class="[cardClasses]"
-      class="flex items-center justify-between p-6 rounded-xl"
-          >
+        <div v-else-if="addresses.length > 0" class="space-y-6">
+          <div v-for="address in addresses" :key="address.id" :class="[cardClasses]"
+            class="flex items-center justify-between p-6 rounded-xl">
             <label class="flex items-start flex-1 gap-4 cursor-pointer">
-              <input
-                type="radio"
-                name="selectedAddress"
-                :value="address.id"
-                v-model="selectedAddressId"
-                @change="onAddressSelected(address)"
-                class="w-5 h-5 mt-1 accent-primary"
-              />
+              <input type="radio" name="selectedAddress" :value="address.id" v-model="selectedAddressId"
+                @change="onAddressSelected(address)" class="w-5 h-5 mt-1 accent-primary" />
               <div>
                 <div class="flex items-center gap-2 mb-1">
                   <span class="text-base font-semibold font-srProDisplay text-foreground">{{
                     address.title
-                  }}</span>
+                    }}</span>
                   <span
-                    class="ml-2 px-2 py-0.5 rounded bg-primary text-primary-foreground text-xs font-srProDisplay font-semibold"
-                    >{{ getAddressTypeLabel(address.addressType) }}</span
-                  >
+                    class="ml-2 px-2 py-0.5 rounded bg-primary text-primary-foreground text-xs font-srProDisplay font-semibold">{{
+                      getAddressTypeLabel(address.addressType) }}</span>
                 </div>
                 <div class="text-base font-srProDisplay text-foreground">
                   {{ address.street }}
@@ -102,28 +88,15 @@
               </div>
             </label>
             <div class="flex items-center gap-4 ml-4">
-              <button
-                class="text-xl text-foreground hover:text-muted"
-                @click="editAddress(address)"
-                :disabled="!!editingAddress"
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
+              <button class="text-xl text-foreground hover:text-muted" @click="editAddress(address)"
+                :disabled="!!editingAddress">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
                   <path d="M12.65 3.35a2.121 2.121 0 1 1 3 3L7.5 14.5l-4 1 1-4 8.15-8.15Z" />
                 </svg>
               </button>
-              <button
-                class="text-2xl text-foreground hover:text-muted"
-                @click="confirmRemoveAddress(address)"
-                :disabled="deletingAddress"
-              >
+              <button class="text-2xl text-foreground hover:text-muted" @click="confirmRemoveAddress(address)"
+                :disabled="deletingAddress">
                 &times;
               </button>
             </div>
@@ -144,30 +117,12 @@
           <div class="flex items-center w-full" style="height: 48px">
             <!-- Left dashed line -->
             <div class="flex-1 h-0.5">
-              <svg
-                width="100%"
-                height="24"
-                viewBox="0 0 548 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <line
-                  y1="11.75"
-                  x2="548"
-                  y2="11.75"
-                  stroke="url(#paint0_linear_left)"
-                  stroke-width="0.5"
-                  stroke-dasharray="3 3"
-                />
+              <svg width="100%" height="24" viewBox="0 0 548 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line y1="11.75" x2="548" y2="11.75" stroke="url(#paint0_linear_left)" stroke-width="0.5"
+                  stroke-dasharray="3 3" />
                 <defs>
-                  <linearGradient
-                    id="paint0_linear_left"
-                    x1="555.117"
-                    y1="12"
-                    x2="0"
-                    y2="12"
-                    gradientUnits="userSpaceOnUse"
-                  >
+                  <linearGradient id="paint0_linear_left" x1="555.117" y1="12" x2="0" y2="12"
+                    gradientUnits="userSpaceOnUse">
                     <stop />
                     <stop offset="1" style="stop-color: var(--color-border)" />
                   </linearGradient>
@@ -175,40 +130,19 @@
               </svg>
             </div>
             <!-- Add Address Icon -->
-            <button
-              @click="showAddForm = true"
-              class="flex items-center justify-center p-0 mx-1 mt-5 w-10 h-10 rounded-full bg-primary text-primary-foreground border-none outline-none focus:outline-none shadow-sm"
-              aria-label="Add address"
-            >
+            <button @click="showAddForm = true"
+              class="flex items-center justify-center w-10 h-10 p-0 mx-1 mt-5 border-none rounded-full shadow-sm outline-none bg-primary text-primary-foreground focus:outline-none"
+              aria-label="Add address">
               <v-icon name="md-addcircle" scale="1.4" fill="currentColor" />
             </button>
             <!-- Right dashed line -->
             <div class="flex-1 h-0.5">
-              <svg
-                width="100%"
-                height="24"
-                viewBox="0 0 548 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <line
-                  x1="548"
-                  y1="12.25"
-                  x2="0"
-                  y2="12.25"
-                  stroke="url(#paint1_linear_right)"
-                  stroke-width="0.5"
-                  stroke-dasharray="3 3"
-                />
+              <svg width="100%" height="24" viewBox="0 0 548 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="548" y1="12.25" x2="0" y2="12.25" stroke="url(#paint1_linear_right)" stroke-width="0.5"
+                  stroke-dasharray="3 3" />
                 <defs>
-                  <linearGradient
-                    id="paint1_linear_right"
-                    x1="0"
-                    y1="12"
-                    x2="548"
-                    y2="12"
-                    gradientUnits="userSpaceOnUse"
-                  >
+                  <linearGradient id="paint1_linear_right" x1="0" y1="12" x2="548" y2="12"
+                    gradientUnits="userSpaceOnUse">
                     <stop />
                     <stop offset="1" style="stop-color: var(--color-border)" />
                   </linearGradient>
@@ -220,11 +154,8 @@
 
           <!-- Add/Edit Address Form -->
           <transition name="fade-slide">
-            <div
-              v-if="showAddForm || editingAddress"
-              :class="[cardClasses]"
-              class="z-20 w-full max-w-lg p-8 mt-8 rounded-lg shadow"
-            >
+            <div v-if="showAddForm || editingAddress" :class="[cardClasses]"
+              class="z-20 w-full max-w-lg p-8 mt-8 rounded-lg shadow">
               <h3 class="mb-4 text-lg font-semibold font-srProDisplay">
                 {{ editingAddress ? 'Edit Address' : 'Add New Address' }}
               </h3>
@@ -234,23 +165,14 @@
                 <div>
                   <label :class="formLabelClasses" class="block mb-2">Title</label>
 
-                  <input
-                    v-model="addressForm.title"
-                    type="text"
-                    required
-                    :class="formInputClasses"
-                    placeholder="e.g. Home, Work, etc."
-                  />
+                  <input v-model="addressForm.title" type="text" required :class="formInputClasses"
+                    placeholder="e.g. Home, Work, etc." />
                 </div>
 
                 <!-- Type -->
                 <div>
                   <label :class="formLabelClasses" class="block mb-2">Type</label>
-                  <select
-                    v-model="addressForm.addressType"
-                    required
-                    :class="formInputClasses"
-                  >
+                  <select v-model="addressForm.addressType" required :class="formInputClasses">
                     <option value="" disabled>Select type</option>
                     <option value="HOME">Home</option>
                     <option value="OFFICE">Office</option>
@@ -261,81 +183,47 @@
                 <!-- Street Address -->
                 <div>
                   <label :class="formLabelClasses" class="block mb-2">Street Address</label>
-                  <input
-                    v-model="addressForm.street"
-                    type="text"
-                    required
-                    :class="formInputClasses"
-                    placeholder="Street name and number"
-                  />
+                  <input v-model="addressForm.street" type="text" required :class="formInputClasses"
+                    placeholder="Street name and number" />
                 </div>
 
                 <!-- City -->
                 <div>
                   <label :class="formLabelClasses" class="block mb-2">City</label>
-                  <input
-                    v-model="addressForm.city"
-                    type="text"
-                    required
-                    :class="formInputClasses"
-                    placeholder="City"
-                  />
+                  <input v-model="addressForm.city" type="text" required :class="formInputClasses" placeholder="City" />
                 </div>
 
                 <!-- State -->
                 <div>
                   <label :class="formLabelClasses" class="block mb-2">State</label>
-                  <input
-                    v-model="addressForm.state"
-                    type="text"
-                    required
-                    :class="formInputClasses"
-                    placeholder="State or Province"
-                  />
+                  <input v-model="addressForm.state" type="text" required :class="formInputClasses"
+                    placeholder="State or Province" />
                 </div>
 
                 <!-- Zip Code -->
                 <div>
                   <label :class="formLabelClasses" class="block mb-2">Zip Code</label>
-                  <input
-                    v-model="addressForm.zipCode"
-                    type="text"
-                    required
-                    :class="formInputClasses"
+                  <input v-model="addressForm.zipCode" type="text" required :class="formInputClasses"
                     placeholder="Zip or Postal Code"
-                  />
+                    @input="addressForm.zipCode = addressForm.zipCode.replace(/[^0-9]/g, '')" maxlength="10" />
                 </div>
-
                 <!-- Country -->
                 <div>
                   <label :class="formLabelClasses" class="block mb-2">Country</label>
-                  <input
-                    v-model="addressForm.country"
-                    type="text"
-                    required
-                    :class="formInputClasses"
-                    placeholder="Country"
-                  />
+                  <input v-model="addressForm.country" type="text" required :class="formInputClasses"
+                    placeholder="Country" />
                 </div>
 
                 <!-- Actions -->
                 <div class="flex justify-end gap-2 pt-4 mt-6 border-t border-border">
-                  <button
-                    type="button"
-                    @click="cancelAddressForm"
-                    :class="buttonOutlineClasses"
-                    class="px-4 py-2 rounded font-srProDisplay"
-                    :disabled="formSubmitting"
-                  >
+                  <button type="button" @click="cancelAddressForm" :class="buttonOutlineClasses"
+                    class="px-4 py-2 rounded font-srProDisplay" :disabled="formSubmitting">
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    :class="buttonPrimaryClasses"
-                    class="flex items-center gap-2 px-4 py-2 rounded font-srProDisplay"
-                    :disabled="formSubmitting"
-                  >
-                    <div v-if="formSubmitting" class="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
+                  <button type="submit" :class="buttonPrimaryClasses"
+                    class="flex items-center gap-2 px-4 py-2 rounded font-srProDisplay" :disabled="formSubmitting">
+                    <div v-if="formSubmitting"
+                      class="w-4 h-4 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
                     {{ editingAddress ? 'Update' : 'Add' }}
                   </button>
                 </div>
@@ -346,20 +234,13 @@
       </section>
 
       <!-- Navigation Buttons -->
-  <div class="flex justify-end max-w-5xl gap-4 mx-auto mt-8">
-        <button
-      :class="buttonOutlineClasses"
-      class="px-22 py-5 rounded-[6px] font-srProDisplay transition"
-          @click="goBack"
-        >
+      <div class="flex justify-end max-w-5xl gap-4 mx-auto mt-8">
+        <button :class="buttonOutlineClasses" class="px-22 py-5 rounded-[6px] font-srProDisplay transition"
+          @click="goBack">
           Back
         </button>
-        <button
-    class="px-22 py-5 rounded-[6px] font-srProDisplay transition"
-    :class="buttonPrimaryClasses"
-          @click="goNext"
-          :disabled="!selectedAddressId"
-        >
+        <button class="px-22 py-5 rounded-[6px] font-srProDisplay transition" :class="buttonPrimaryClasses"
+          @click="goNext" :disabled="!selectedAddressId">
           Next
         </button>
       </div>
@@ -644,11 +525,13 @@ const goNext = () => {
     opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .fade-slide-enter-from,
 .fade-slide-leave-to {
   opacity: 0;
   transform: translateY(24px);
 }
+
 .fade-slide-enter-to,
 .fade-slide-leave-from {
   opacity: 1;

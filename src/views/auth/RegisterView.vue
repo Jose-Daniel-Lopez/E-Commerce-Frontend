@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/lib/axios'
 import { useThemeClasses } from '@/composables/useThemeClasses'
@@ -10,6 +10,7 @@ import ErrorAlert from '@/components/shared/ErrorAlert.vue'
 import SubmitButton from '@/components/shared/SubmitButton.vue'
 import { sendVerificationEmail } from '@/lib/emailjs'
 import { useFormValidation, validationRules } from '@/composables/useFormValidation'
+import WipTag from '@/components/shared/WipTag.vue'
 
 interface RegisterForm {
   username: string
@@ -53,6 +54,7 @@ const form = ref<RegisterForm>({
 const loading = ref(false)
 const showVerificationMsg = ref(false)
 const termsAccepted = ref(false)
+const isDropdownOpen = ref(false)
 
 // Form validation setup
 const {
@@ -67,9 +69,9 @@ const {
 
 // Available user roles
 const roles = [
-  { value: 'CUSTOMER', label: 'Customer' },
-  { value: 'SELLER', label: 'Seller' },
-  { value: 'ADMIN', label: 'Admin' },
+  { value: 'CUSTOMER', label: 'Customer', isWip: false },
+  { value: 'SELLER', label: 'Seller', isWip: true },
+  { value: 'ADMIN', label: 'Admin', isWip: true },
 ]
 
 /**
@@ -126,6 +128,21 @@ const handleConfirmPasswordChange = (value: string) => {
   form.value.confirmPassword = value
   updateField('confirmPassword', value)
 }
+
+/**
+ * Handle role selection from custom dropdown
+ */
+const selectRole = (roleValue: string) => {
+  form.value.role = roleValue
+  isDropdownOpen.value = false
+}
+
+/**
+ * Get the selected role object
+ */
+const selectedRole = computed(() => {
+  return roles.find(r => r.value === form.value.role) || roles[0]
+})
 
 /**
  * Custom validation for terms acceptance
@@ -365,28 +382,89 @@ const handleSubmit = async (): Promise<void> => {
                   class="relative transition-all duration-300 hover:-translate-y-0.5 animate-[fadeInUp_0.6s_ease-out_0.3s_both]"
                 >
                   <div class="relative">
+                    <!-- Custom Dropdown Button -->
+                    <button
+                      type="button"
+                      @click="isDropdownOpen = !isDropdownOpen"
+                      :class="['peer w-full px-4 pt-6 pb-2 pr-10 border rounded-xl bg-input backdrop-blur-sm font-srProDisplay focus:outline-none focus:border-primary focus:bg-input focus:shadow-[0_0_0_3px_rgba(0,0,0,0.05)] focus:scale-[1.01] transition-all duration-300 appearance-none cursor-pointer text-left', formInputClasses]"
+                    >
+                      <span class="flex items-center gap-2">
+                        {{ selectedRole.label }}
+                        <WipTag
+                          v-if="selectedRole.isWip"
+                          variant="compact"
+                          :show-icon="false"
+                          text="WIP"
+                          tooltip="Work In Progress. Yet to be implemented."
+                        />
+                      </span>
+                    </button>
+
+                    <!-- Hidden select for form submission -->
                     <select
-                      id="role"
                       v-model="form.role"
-                      :class="['peer w-full px-4 pt-6 pb-2 pr-10 border rounded-xl bg-input backdrop-blur-sm font-srProDisplay focus:outline-none focus:border-primary focus:bg-input focus:shadow-[0_0_0_3px_rgba(0,0,0,0.05)] focus:scale-[1.01] transition-all duration-300 appearance-none cursor-pointer', formInputClasses]"
+                      class="sr-only"
+                      tabindex="-1"
+                      aria-hidden="true"
                     >
                       <option v-for="r in roles" :key="r.value" :value="r.value">
                         {{ r.label }}
                       </option>
                     </select>
+
                     <label
                       for="role"
                       :class="['absolute left-4 top-2 text-xs font-srProDisplay transition-all duration-300 transform origin-left pointer-events-none bg-background px-1.5 z-[1]', textClasses]"
                     >
                       Account Type
                     </label>
+
                     <!-- Custom dropdown arrow -->
                     <div
                       class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
                     >
-                      <v-icon name="hi-chevron-down" scale="1.2" class="text-muted-foreground" />
+                      <v-icon
+                        name="hi-chevron-down"
+                        scale="1.2"
+                        class="text-muted-foreground transition-transform duration-200"
+                        :class="{ 'rotate-180': isDropdownOpen }"
+                      />
+                    </div>
+
+                    <!-- Dropdown Menu -->
+                    <div
+                      v-if="isDropdownOpen"
+                      :class="['top-full left-0 right-0 mt-1 border rounded-xl overflow-hidden', cardClasses]"
+                    >
+                      <button
+                        v-for="role in roles"
+                        :key="role.value"
+                        type="button"
+                        @click="selectRole(role.value)"
+                        :class="[
+                          'w-full px-4 py-3 text-left font-srProDisplay hover:bg-accent transition-colors duration-200 flex items-center justify-between gap-2',
+                          textClasses,
+                          { 'bg-accent': form.role === role.value }
+                        ]"
+                      >
+                        <span>{{ role.label }}</span>
+                        <WipTag
+                          v-if="role.isWip"
+                          variant="compact"
+                          :show-icon="false"
+                          text="WIP"
+                          tooltip="Work In Progress. Yet to be implemented."
+                        />
+                      </button>
                     </div>
                   </div>
+
+                  <!-- Click outside to close -->
+                  <div
+                    v-if="isDropdownOpen"
+                    @click="isDropdownOpen = false"
+                    class="fixed inset-0 z-40"
+                  ></div>
                 </div>
 
                 <!-- Password -->
@@ -430,12 +508,12 @@ const handleSubmit = async (): Promise<void> => {
                         :class="['font-srProDisplay text-sm group-hover:text-primary transition-colors duration-200', textMutedClasses]"
                       >
                         I agree to the
-                        <a href="#" class="text-primary hover:underline cursor-pointer"
-                          >Terms of Service</a
+                        <router-link :to="{ name: 'terms' }" class="text-primary hover:underline cursor-pointer"
+                          >Terms of Service</router-link
                         >
                         and
-                        <a href="#" class="text-primary hover:underline cursor-pointer"
-                          >Privacy Policy</a
+                        <router-link :to="{ name: 'privacy' }" class="text-primary hover:underline cursor-pointer"
+                          >Privacy Policy </router-link
                         >
                       </span>
                     </label>

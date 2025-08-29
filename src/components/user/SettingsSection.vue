@@ -1,8 +1,5 @@
 <template>
-  <section
-    :id="sectionId"
-    :class="['transition-colors duration-200', sectionContainerClasses]"
-  >
+  <section :id="sectionId" :class="['transition-colors duration-200', sectionContainerClasses]">
     <h2 :class="['mb-6 text-xl font-semibold font-srProDisplay', textClasses]">
       <span :class="sectionHeaderClasses">{{ $t('account.settings.title') }}</span>
     </h2>
@@ -17,18 +14,17 @@
             <div>
               <h4 :class="['font-medium font-srProDisplay', textClasses]">
                 {{ $t('account.settings.language.title') }}
-                <WipTag variant="compact" :show-icon="false" :text="$t('wip.text')" :tooltip="$t('wip.translationTooltip')" />
+                <WipTag variant="compact" :show-icon="false" :text="$t('wip.text')"
+                  :tooltip="$t('wip.translationTooltip')" />
               </h4>
               <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
                 {{ $t('account.settings.language.description') }}
               </p>
             </div>
           </div>
-          <select
-            :value="currentLocale.code"
+          <select :value="currentLocale.code"
             @change="$emit('language-change', ($event.target as HTMLSelectElement).value)"
-            class="px-3 py-2 text-sm transition-all duration-200 rounded-lg font-srProDisplay theme-input theme-text focus:shadow-lg"
-          >
+            class="px-3 py-2 text-sm transition-all duration-200 rounded-lg font-srProDisplay theme-input theme-text focus:shadow-lg">
             <option v-for="locale in availableLocales" :key="locale.code" :value="locale.code">
               {{ locale.name }}
             </option>
@@ -51,71 +47,48 @@
               <p :class="['text-sm font-srProDisplay', textSecondaryClasses]">
                 {{ $t('account.settings.theme.description') }}
               </p>
-              <!-- Current theme indicator -->
-              <p class="mt-1 text-xs font-medium theme-text">
-                {{ $t('common.show') }}:
-                <span>
-                  <template v-if="selectedTheme === 'system'">
-                    {{ $t('theme.system') }} ({{ $t('theme.' + effectiveTheme) }})
-                  </template>
-                  <template v-else>
-                    {{ $t('theme.' + selectedTheme) }}
-                  </template>
-                </span>
-              </p>
+
             </div>
           </div>
           <div class="flex items-center gap-2">
             <div class="relative group">
-              <button
-                @click="$emit('theme-change', 'light')"
-                :class="[
-                  themeButtonBaseClasses,
-                  selectedTheme === 'light' ? themeButtonActiveClasses : themeButtonInactiveClasses
-                ]"
-                :aria-label="$t('theme.light')"
-                tabindex="0"
-              >
+              <button @click="$emit('theme-change', 'light')" :class="[
+                themeButtonBaseClasses,
+                selectedTheme === 'light' ? themeButtonActiveClasses : themeButtonInactiveClasses
+              ]" :aria-label="$t('theme.light')" tabindex="0">
                 <v-icon name="hi-sun" class="w-4 h-4" />
               </button>
               <!-- Tooltip -->
-              <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
+              <div
+                class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
                 {{ $t('theme.lightTooltip') }}
               </div>
             </div>
 
             <div class="relative group">
-              <button
-                @click="$emit('theme-change', 'dark')"
-                :class="[
-                  themeButtonBaseClasses,
-                  selectedTheme === 'dark' ? themeButtonActiveClasses : themeButtonInactiveClasses
-                ]"
-                :aria-label="$t('theme.dark')"
-                tabindex="0"
-              >
+              <button @click="$emit('theme-change', 'dark')" :class="[
+                themeButtonBaseClasses,
+                selectedTheme === 'dark' ? themeButtonActiveClasses : themeButtonInactiveClasses
+              ]" :aria-label="$t('theme.dark')" tabindex="0">
                 <v-icon name="hi-moon" class="w-4 h-4" />
               </button>
               <!-- Tooltip -->
-              <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
+              <div
+                class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
                 {{ $t('theme.darkTooltip') }}
               </div>
             </div>
 
             <div class="relative group">
-              <button
-                @click="$emit('theme-change', 'system')"
-                :class="[
-                  themeButtonBaseClasses,
-                  selectedTheme === 'system' ? themeButtonActiveClasses : themeButtonInactiveClasses
-                ]"
-                :aria-label="$t('theme.system')"
-                tabindex="0"
-              >
+              <button @click="$emit('theme-change', 'system')" :class="[
+                themeButtonBaseClasses,
+                selectedTheme === 'system' ? themeButtonActiveClasses : themeButtonInactiveClasses
+              ]" :aria-label="$t('theme.system')" tabindex="0">
                 <v-icon name="hi-desktop-computer" class="w-4 h-4" />
               </button>
               <!-- Tooltip -->
-              <div class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
+              <div
+                class="absolute z-10 px-2 py-1 mb-2 text-xs text-white transition-opacity duration-200 transform -translate-x-1/2 bg-gray-900 rounded opacity-0 pointer-events-none bottom-full left-1/2 group-hover:opacity-100 whitespace-nowrap">
                 {{ $t('theme.systemTooltip') }}
               </div>
             </div>
@@ -139,15 +112,8 @@
               </p>
             </div>
           </div>
-          <Button
-            :class="['px-4 text-sm transition-all duration-200', buttonOutlineClasses]"
-            text-color="currentColor"
-            bg-color="transparent"
-            border-width="1px"
-            width="auto"
-            height="36px"
-            @click="$emit('open-change-password')"
-          >
+          <Button :class="['px-4 text-sm transition-all duration-200', buttonOutlineClasses]" text-color="currentColor"
+            bg-color="transparent" border-width="1px" width="auto" height="36px" @click="$emit('open-change-password')">
             <span :class="buttonTextClasses">{{ $t('account.settings.security.changePasswordButton') }}</span>
           </Button>
         </div>

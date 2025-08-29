@@ -62,17 +62,6 @@
     <div v-else-if="shippingAddresses.length === 0" class="py-8 text-center">
       <v-icon name="hi-location-marker" scale="2" :class="['mb-3 opacity-80', emptyStateIconClasses]" />
       <p :class="['mb-4 text-base font-srProDisplay', emptyStateTextClasses]">You have no saved addresses</p>
-      <Button
-        @click="handleCreateAddress"
-        :class="['px-4 font-semibold transition-colors duration-200', buttonPrimaryClasses]"
-        text-color="currentColor"
-        bg-color="transparent"
-        width="auto"
-        height="36px"
-      >
-        <v-icon name="hi-plus" scale="0.9" class="mr-2" />
-        Add your first address
-      </Button>
     </div>
 
     <!-- Display grid of shipping addresses -->
