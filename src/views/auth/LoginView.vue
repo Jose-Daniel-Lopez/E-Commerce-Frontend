@@ -10,6 +10,8 @@ import PasswordInput from '@/components/shared/PasswordInput.vue'
 import ErrorAlert from '@/components/shared/ErrorAlert.vue'
 import SubmitButton from '@/components/shared/SubmitButton.vue'
 import { useFormValidation, validationRules } from '@/composables/useFormValidation'
+import WipTag from '@/components/shared/WipTag.vue'
+import { I18n } from 'vue-i18n'
 
 interface LoginForm {
   email: string
@@ -211,14 +213,14 @@ const handleSubmit = async (): Promise<void> => {
                     />
                     <span
                       :class="['font-srProDisplay text-sm group-hover:text-primary transition-colors duration-200', textMutedClasses]"
-                      >Remember me</span
+                      >Remember me <WipTag variant="compact" :show-icon="false" text="WIP" tooltip="Work In Progress. Set to always on." /></span
                     >
                   </label>
                   <a
                     href="#"
                     :class="['font-srProDisplay text-sm hover:text-primary hover:underline transition-all duration-200 cursor-pointer', textMutedClasses]"
                   >
-                    Forgot password?
+                    Forgot password? <WipTag variant="compact" :show-icon="false" text="WIP" tooltip="Work In Progress. Yet to be implemented." />
                   </a>
                 </div>
                 <!-- Sign in button with loading state -->
@@ -244,7 +246,10 @@ const handleSubmit = async (): Promise<void> => {
             <!-- Footer with terms and privacy notice -->
             <div class="mt-8 text-center">
               <p class="text-xs font-srProDisplay text-muted-foreground">
-                By signing in, you agree to our terms of service and privacy policy
+                By signing in, you agree to our
+                <router-link :to="{ name: 'terms' }" class="text-primary hover:underline cursor-pointer">terms of service</router-link>
+                and
+                <router-link :to="{ name: 'privacy' }" class="text-primary hover:underline cursor-pointer">privacy policy</router-link>
               </p>
             </div>
           </div>
