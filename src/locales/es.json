@@ -501,6 +501,13 @@
     "wishlistStateError": "El estado no cambió como se esperaba - revisa la consola para más detalles",
     "unknownError": "Error desconocido"
   },
+    "auth": {
+    "verify": {
+      "error": "Error verificando usuario",
+      "goToLogin": "Ir a iniciar sesión",
+      "registerAgain": "Registrarse de nuevo"
+    }
+  },
   "debug": {
     "productVariantData": "DEBUG: Datos del producto y variante (ELIMINAR MÁS TARDE)"
   }

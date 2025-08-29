@@ -501,6 +501,13 @@
     "wishlistStateError": "State didn't change as expected - check console for details",
     "unknownError": "Unknown error"
   },
+  "auth": {
+    "verify": {
+      "error": "Error verifying user",
+      "goToLogin": "Go to login",
+      "registerAgain": "Register again"
+    }
+  },
   "debug": {
     "productVariantData": "DEBUG: Product and variant data (REMOVE LATER)"
   },
