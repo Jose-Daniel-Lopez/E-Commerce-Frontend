@@ -110,7 +110,9 @@ const handleSubmit = async (): Promise<void> => {
 
       // Small delay to show the toast before navigation
       setTimeout(async () => {
-        await router.push({ name: 'userAccount' })
+        // DEBUG: Why is this not working in deployment?
+        // await router.push({ name: 'userAccount' })
+           await router.push("/account")
       }, 500)
     } else {
       setGlobalError(result?.error || 'Login failed. Please try again.')
@@ -153,7 +155,7 @@ const handleSubmit = async (): Promise<void> => {
         <Wrapper class="w-full max-w-[400px] px-6 py-8 rounded-[20px]">
           <div class="w-full max-w-md animate-[fadeInUp_0.8s_ease-out]">
             <!-- Welcome header -->
-            <div class="text-center mb-8">
+            <div class="mb-8 text-center">
               <h1 :class="['font-srProDisplay text-3xl font-semibold mb-2', textClasses]">
                 Welcome back
               </h1>
@@ -163,7 +165,7 @@ const handleSubmit = async (): Promise<void> => {
             </div>
             <!-- Login form card -->
             <div
-              class="bg-surface/80 backdrop-blur-sm rounded-2xl p-8 transition-all duration-500 hover:bg-surface/90"
+              class="p-8 transition-all duration-500 bg-surface/80 backdrop-blur-sm rounded-2xl hover:bg-surface/90"
               role="main"
               aria-label="Login form"
             >
@@ -201,7 +203,7 @@ const handleSubmit = async (): Promise<void> => {
                 />
                 <!-- Remember me and forgot password options -->
                 <div class="flex items-center justify-between">
-                  <label class="flex items-center group cursor-pointer">
+                  <label class="flex items-center cursor-pointer group">
                     <input
                       v-model="rememberMe"
                       type="checkbox"
@@ -228,20 +230,20 @@ const handleSubmit = async (): Promise<void> => {
                 />
               </form>
               <!-- Sign up link for new users -->
-              <div class="mt-8 pt-6 border-t border-border">
+              <div class="pt-6 mt-8 border-t border-border">
                 <p :class="['text-center font-srProDisplay text-sm', textMutedClasses]">
                   Don't have an account?
                   <RouterLink
                     to="/register"
-                    class="font-medium text-primary hover:underline ml-1 transition-all duration-200 cursor-pointer"
+                    class="ml-1 font-medium transition-all duration-200 cursor-pointer text-primary hover:underline"
                     >Create one here</RouterLink
                   >
                 </p>
               </div>
             </div>
             <!-- Footer with terms and privacy notice -->
-            <div class="text-center mt-8">
-              <p class="font-srProDisplay text-xs text-muted-foreground">
+            <div class="mt-8 text-center">
+              <p class="text-xs font-srProDisplay text-muted-foreground">
                 By signing in, you agree to our terms of service and privacy policy
               </p>
             </div>
