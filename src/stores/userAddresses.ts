@@ -36,7 +36,7 @@ export const useUserAddressesStore = defineStore('userAddresses', () => {
     error.value = null
 
     try {
-      const response = await api.get(`/users/${userId}/addresses`)
+      const response = await api.get(`/users/${userId}/shippingAddresses`)
 
       // Manejar diferentes estructuras de respuesta
       if (response.data._embedded) {

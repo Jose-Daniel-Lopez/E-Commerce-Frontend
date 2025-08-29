@@ -240,6 +240,7 @@ import '@/assets/base.css'
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useUsersStore } from '@/stores/users'
+import { useShippingAddressStore } from '@/stores/shippingAddresses'
 import type { User } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 import { useLanguage } from '@/composables/useLanguage'
@@ -316,6 +317,7 @@ const {
 const { t } = useI18n()
 const authStore = useAuthStore()
 const usersStore = useUsersStore()
+const shippingAddressStore = useShippingAddressStore()
 
 // Memoized breadcrumbs
 const breadcrumbs = computed(() => [
@@ -464,7 +466,7 @@ const refunds = computed(() =>
   })
 )
 
-const addresses = computed(() => usersStore.userAddresses)
+const addresses = computed(() => shippingAddressStore.shippingAddresses)
 
 interface Review {
   id: number

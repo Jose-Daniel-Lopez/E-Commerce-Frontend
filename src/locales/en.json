@@ -505,7 +505,9 @@
     "verify": {
       "error": "Error verifying user",
       "goToLogin": "Go to login",
-      "registerAgain": "Register again"
+      "registerAgain": "Register again",
+      "success": "Registration successful",
+      "successMessage": "You have been successfully registered."
     }
   },
   "debug": {
