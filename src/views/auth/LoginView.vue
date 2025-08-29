@@ -11,7 +11,7 @@ import ErrorAlert from '@/components/shared/ErrorAlert.vue'
 import SubmitButton from '@/components/shared/SubmitButton.vue'
 import { useFormValidation, validationRules } from '@/composables/useFormValidation'
 import WipTag from '@/components/shared/WipTag.vue'
-import { I18n } from 'vue-i18n'
+
 
 interface LoginForm {
   email: string
@@ -247,9 +247,9 @@ const handleSubmit = async (): Promise<void> => {
             <div class="mt-8 text-center">
               <p class="text-xs font-srProDisplay text-muted-foreground">
                 By signing in, you agree to our
-                <router-link :to="{ name: 'terms' }" class="text-primary hover:underline cursor-pointer">terms of service</router-link>
+                <router-link :to="{ name: 'terms' }" class="cursor-pointer text-primary hover:underline">terms of service</router-link>
                 and
-                <router-link :to="{ name: 'privacy' }" class="text-primary hover:underline cursor-pointer">privacy policy</router-link>
+                <router-link :to="{ name: 'privacy' }" class="cursor-pointer text-primary hover:underline">privacy policy</router-link>
               </p>
             </div>
           </div>
