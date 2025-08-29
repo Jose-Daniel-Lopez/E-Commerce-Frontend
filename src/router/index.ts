@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useScrollToTop } from '@/composables/useScrollToTop'
 
 /**
  * Creates a Vue Router instance with lazy-loaded routes and navigation guards.
@@ -276,35 +277,24 @@ router.beforeEach((to, from, next) => {
 // Robust Scroll to Top Handler
 // ========================
 // Ensures scroll to top works reliably with all types of navigation
-router.afterEach((to, from) => {
+router.afterEach(async (to, from) => {
   // Skip if navigating to the same route
   if (to.path === from.path) {
     return
   }
 
-  // Use multiple fallbacks to ensure scroll works
-  const scrollToTop = () => {
-    // Method 1: Standard scroll
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  // Use the robust scrollToTop composable
+  const { scrollToTop } = useScrollToTop()
 
-    // Method 2: Fallback for browsers that don't support smooth behavior
-    setTimeout(() => {
-      if (window.pageYOffset > 0) {
-        window.scrollTo(0, 0)
-      }
-    }, 100)
+  try {
+    // Wait for the smooth scroll to complete
+    await scrollToTop(true)
+  } catch (error) {
+    // Fallback if smooth scroll fails
+    console.warn('Router scroll to top failed, using fallback:', error)
+    const { forceScrollToTop } = useScrollToTop()
+    forceScrollToTop()
   }
-
-  // Execute immediately
-  scrollToTop()
-
-  // Also execute after a short delay to handle slow-loading components
-  setTimeout(scrollToTop, 150)
-
-  // Final fallback using requestAnimationFrame
-  requestAnimationFrame(() => {
-    setTimeout(scrollToTop, 50)
-  })
 })
 
 /**

@@ -1,161 +1,114 @@
 <template>
   <Transition name="modal-overlay">
-    <div
-      v-if="isOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75"
-      @click="closeModal"
-    >
+    <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75" @click="closeModal">
       <div
-        class="w-full max-w-md transform bg-white border border-gray-200 shadow-2xl rounded-xl modal-content"
-        @click.stop
-      >
-          <!-- Modal Header -->
-          <div class="sticky top-0 z-10 px-6 py-4 bg-white border-b border-gray-200 rounded-t-xl">
-            <div class="flex items-center justify-between">
-              <div>
-                <h2 class="text-xl font-semibold text-black font-srProDisplay">
-                  Change Password
-                </h2>
-                <p class="mt-1 text-sm text-gray-600 font-srProDisplay">
-                  Enter your current password and choose a new one
-                </p>
-              </div>
-              <button
-                @click="closeModal"
-                class="p-2 transition-colors rounded-full hover:bg-gray-100"
-              >
-                <v-icon name="hi-x" scale="1.4" class="text-gray-500" />
-              </button>
+        class="w-full max-w-md transform bg-white border border-gray-200 shadow-2xl dark:bg-gray-800 dark:border-gray-600 rounded-xl modal-content"
+        @click.stop>
+        <!-- Modal Header -->
+        <div
+          class="sticky top-0 z-10 px-6 py-4 bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-600 rounded-t-xl">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-xl font-semibold text-black dark:text-white font-srProDisplay">
+                Change Password
+              </h2>
+              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400 font-srProDisplay">
+                Enter your current password and choose a new one
+              </p>
             </div>
-          </div>
-
-          <!-- Modal Content -->
-          <div class="p-6 space-y-6">
-            <!-- Error Message -->
-            <div
-              v-if="error"
-              class="p-4 border border-red-200 rounded-lg bg-red-50"
-            >
-              <div class="flex items-center">
-                <v-icon name="hi-exclamation-circle" scale="1.2" class="mr-3 text-red-600" />
-                <p class="text-sm text-red-700 font-srProDisplay">{{ error }}</p>
-              </div>
-            </div>
-
-            <!-- Success Message -->
-            <div
-              v-if="success"
-              class="p-4 border border-green-200 rounded-lg bg-green-50"
-            >
-              <div class="flex items-center">
-                <v-icon name="hi-check-circle" scale="1.2" class="mr-3 text-green-600" />
-                <p class="text-sm text-green-700 font-srProDisplay">{{ success }}</p>
-              </div>
-            </div>
-
-            <!-- Form -->
-            <form @submit.prevent="handleSubmit" class="space-y-4">
-              <!-- Current Password -->
-              <PasswordInput
-                id="currentPassword"
-                label="Current Password"
-                :model-value="formData.currentPassword"
-                autocomplete="current-password"
-                :required="true"
-                :disabled="loading"
-                @update:model-value="updateCurrentPassword"
-              />
-
-              <!-- New Password -->
-              <div class="space-y-1">
-                <PasswordInput
-                  id="newPassword"
-                  label="New Password"
-                  :model-value="formData.newPassword"
-                  autocomplete="new-password"
-                  :required="true"
-                  :disabled="loading"
-                  :min-length="8"
-                  @update:model-value="updateNewPassword"
-                />
-                <p class="mt-1 text-xs text-gray-500 font-srProDisplay">
-                  Password must be at least 8 characters long
-                </p>
-              </div>
-
-              <!-- Confirm New Password -->
-              <div class="space-y-1">
-                <PasswordInput
-                  id="confirmPassword"
-                  label="Confirm New Password"
-                  :model-value="formData.confirmPassword"
-                  autocomplete="new-password"
-                  :required="true"
-                  :disabled="loading"
-                  @update:model-value="updateConfirmPassword"
-                />
-                <p
-                  v-if="formData.confirmPassword && formData.newPassword !== formData.confirmPassword"
-                  class="mt-1 text-xs text-red-500 font-srProDisplay"
-                >
-                  Passwords do not match
-                </p>
-              </div>
-
-              <!-- Password Strength Indicator -->
-              <div v-if="formData.newPassword" class="space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs text-gray-600 font-srProDisplay">Password Strength:</span>
-                  <span
-                    :class="[
-                      'font-srProDisplay text-xs font-medium',
-                      passwordStrength.color
-                    ]"
-                  >
-                    {{ passwordStrength.label }}
-                  </span>
-                </div>
-                <div class="w-full h-2 bg-gray-200 rounded-full">
-                  <div
-                    :class="[
-                      'h-2 rounded-full transition-all duration-300',
-                      passwordStrength.bgColor
-                    ]"
-                    :style="{ width: passwordStrength.width + '%' }"
-                  ></div>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <!-- Modal Footer -->
-          <div
-            class="sticky bottom-0 z-10 px-6 py-4 bg-white border-t border-gray-200 rounded-b-xl"
-          >
-            <div class="flex justify-end gap-3">
-              <button
-                @click="closeModal"
-                class="px-6 py-2 font-medium text-gray-700 transition-colors border border-gray-300 rounded-lg hover:bg-gray-50"
-                :disabled="loading"
-              >
-                Cancel
-              </button>
-              <button
-                @click="handleSubmit"
-                :disabled="!isFormValid || loading"
-                class="flex items-center px-6 py-2 font-medium text-white transition-colors bg-black rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <v-icon
-                  v-if="loading"
-                  name="hi-refresh"
-                  scale="1.1"
-                  class="mr-2 animate-spin"
-                />
-                {{ loading ? 'Changing...' : 'Change Password' }}
-              </button>
-            </div>
+            <button @click="closeModal"
+              class="p-2 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+              <v-icon name="hi-x" scale="1.4" class="text-gray-500 dark:text-gray-400" />
+            </button>
           </div>
         </div>
+
+        <!-- Modal Content -->
+        <div class="p-6 space-y-6">
+          <!-- Error Message -->
+          <div v-if="error"
+            class="p-4 border border-red-200 rounded-lg dark:border-red-800 bg-red-50 dark:bg-red-900/20">
+            <div class="flex items-center">
+              <v-icon name="hi-exclamation-circle" scale="1.2" class="mr-3 text-red-600 dark:text-red-400" />
+              <p class="text-sm text-red-700 dark:text-red-300 font-srProDisplay">{{ error }}</p>
+            </div>
+          </div>
+
+          <!-- Success Message -->
+          <div v-if="success"
+            class="p-4 border border-green-200 rounded-lg dark:border-green-800 bg-green-50 dark:bg-green-900/20">
+            <div class="flex items-center">
+              <v-icon name="hi-check-circle" scale="1.2" class="mr-3 text-green-600 dark:text-green-400" />
+              <p class="text-sm text-green-700 dark:text-green-300 font-srProDisplay">{{ success }}</p>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <form @submit.prevent="handleSubmit" class="space-y-4">
+            <!-- Current Password -->
+            <PasswordInput id="currentPassword" label="Current Password" :model-value="formData.currentPassword"
+              autocomplete="current-password" :required="true" :disabled="loading"
+              @update:model-value="updateCurrentPassword" />
+
+            <!-- New Password -->
+            <div class="space-y-1">
+              <PasswordInput id="newPassword" label="New Password" :model-value="formData.newPassword"
+                autocomplete="new-password" :required="true" :disabled="loading" :min-length="8"
+                @update:model-value="updateNewPassword" />
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 font-srProDisplay">
+                Password must be at least 8 characters long
+              </p>
+            </div>
+
+            <!-- Confirm New Password -->
+            <div class="space-y-1">
+              <PasswordInput id="confirmPassword" label="Confirm New Password" :model-value="formData.confirmPassword"
+                autocomplete="new-password" :required="true" :disabled="loading"
+                @update:model-value="updateConfirmPassword" />
+              <p v-if="formData.confirmPassword && formData.newPassword !== formData.confirmPassword"
+                class="mt-1 text-xs text-red-500 dark:text-red-400 font-srProDisplay">
+                Passwords do not match
+              </p>
+            </div>
+
+            <!-- Password Strength Indicator -->
+            <div v-if="formData.newPassword" class="space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-gray-600 dark:text-gray-400 font-srProDisplay">Password Strength:</span>
+                <span :class="[
+                  'font-srProDisplay text-xs font-medium',
+                  passwordStrength.color
+                ]">
+                  {{ passwordStrength.label }}
+                </span>
+              </div>
+              <div class="w-full h-2 bg-gray-200 rounded-full dark:bg-gray-700">
+                <div :class="[
+                  'h-2 rounded-full transition-all duration-300',
+                  passwordStrength.bgColor
+                ]" :style="{ width: passwordStrength.width + '%' }"></div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div
+          class="sticky bottom-0 z-10 px-6 py-4 bg-white border-t border-gray-200 dark:bg-gray-800 dark:border-gray-600 rounded-b-xl">
+          <div class="flex justify-end gap-3">
+            <button @click="closeModal"
+              class="px-6 py-2 font-medium text-gray-700 transition-colors border border-gray-300 rounded-lg dark:text-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+              :disabled="loading">
+              Cancel
+            </button>
+            <button @click="handleSubmit" :disabled="!isFormValid || loading"
+              class="flex items-center px-6 py-2 font-medium text-white transition-colors bg-black rounded-lg dark:bg-gray-700 hover:bg-gray-800 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed">
+              <v-icon v-if="loading" name="hi-refresh" scale="1.1" class="mr-2 animate-spin" />
+              {{ loading ? 'Changing...' : 'Change Password' }}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </Transition>
 </template>
@@ -327,12 +280,14 @@ const closeModal = () => {
 
 .overflow-y-auto::-webkit-scrollbar-track {
   background: #f1f1f1;
-  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track:dark {
+  background: #374151;
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb {
   background: #c1c1c1;
-  border-radius: 3px;
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb:hover {
@@ -360,6 +315,7 @@ const closeModal = () => {
     opacity: 0;
     transform: scale(0.95) translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -383,6 +339,7 @@ const closeModal = () => {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

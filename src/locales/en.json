@@ -202,9 +202,9 @@
     "types": "Types",
     "clearFilters": "Clear",
     "stats": "Statistics",
-    "totalCategories": "Total categories:",
-    "totalProducts": "Total products:",
-    "filtered": "Filtered:",
+    "totalCategories": "Total categories",
+    "totalProducts": "Total products",
+    "filtered": "Filtered",
     "brandsLabel": "Brands",
     "sort": {
       "label": "Sort by",
@@ -251,13 +251,31 @@
     "activeFilters": "Active filters",
     "summary": "Summary",
     "filteredResults": "Filtered results:",
-    "currentPageLabel": "Current page:",
+    "currentPageLabel": "Current page",
     "searchBrands": "Search brands",
     "showResults": "Show {count} results",
     "viewProduct": "View {name}"
   },
   "home": {
-    "title": "Home"
+    "title": "Home",
+    "banner": {
+      "popularProducts": {
+        "title": "Popular Products",
+        "description": "Discover our most loved tech products, from smartphones to laptops, all designed to enhance your digital lifestyle."
+      },
+      "ipadPro": {
+        "title": "iPad Pro",
+        "description": "The ultimate tablet experience with M2 chip, Liquid Retina XDR display, and all-day battery life for creativity and productivity."
+      },
+      "samsungGalaxy": {
+        "title": "Samsung Galaxy",
+        "description": "Experience innovation with cutting-edge camera technology, stunning AMOLED display, and powerful performance in your pocket."
+      },
+      "macbookPro": {
+        "title": "MacBook Pro",
+        "description": "Professional-grade laptop with M3 chip, brilliant Liquid Retina display, and up to 22 hours of battery life for demanding workflows."
+      }
+    }
   },
   "refund": {
     "title": "Refund & Returns Policy"
@@ -446,6 +464,7 @@
     "selectStorageOrSize": "Select {type}",
     "size": "Size",
     "addToCart": "Add to cart",
+    "added": "Added",
     "freeDelivery": "Free delivery",
     "deliveryTime": "1-2 days",
     "inStock": "In stock",
@@ -470,7 +489,26 @@
     "comment": "Comment",
     "submitReview": "Submit review",
     "viewMore": "View more",
-    "viewLess": "View less"
+    "viewLess": "View less",
+    "toggleFavorite": "Toggle favorite",
+    "upcoming": "Upcoming",
+    "buy": "Buy",
+    "notAvailable": "N/A",
+    "invalidProductId": "Invalid product ID ({id}). Cannot add to wishlist.",
+    "userNotAuthenticated": "User not authenticated - please log in",
+    "addedToWishlist": "Product added to wishlist",
+    "removedFromWishlist": "Product removed from wishlist",
+    "wishlistStateError": "State didn't change as expected - check console for details",
+    "unknownError": "Unknown error"
+  },
+  "auth": {
+    "verify": {
+      "error": "Error verifying user",
+      "goToLogin": "Go to login",
+      "registerAgain": "Register again",
+      "success": "Registration successful",
+      "successMessage": "You have been successfully registered."
+    }
   },
   "debug": {
     "productVariantData": "DEBUG: Product and variant data (REMOVE LATER)"

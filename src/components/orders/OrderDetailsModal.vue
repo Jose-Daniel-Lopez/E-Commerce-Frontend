@@ -271,17 +271,6 @@
               >
                 Close
               </button>
-              <button
-                v-if="order.status !== 'Delivered' && order.status !== 'Cancelled'"
-                class="px-6 py-2 bg-error text-primary-foreground rounded-lg hover:opacity-90 transition-colors font-medium"
-              >
-                Cancel Order
-              </button>
-              <button
-                class="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-colors font-medium"
-              >
-                Reorder
-              </button>
             </div>
           </div>
         </div>

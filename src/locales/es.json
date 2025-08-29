@@ -202,9 +202,9 @@
     "types": "Tipos",
     "clearFilters": "Limpiar",
     "stats": "Estadísticas",
-    "totalCategories": "Total Categorías:",
-    "totalProducts": "Total Productos:",
-    "filtered": "Filtradas:",
+    "totalCategories": "Total Categorías",
+    "totalProducts": "Total Productos",
+    "filtered": "Filtradas",
     "brandsLabel": "Marcas",
     "sort": {
       "label": "Ordenar por",
@@ -251,13 +251,31 @@
     "activeFilters": "Filtros activos",
     "summary": "Resumen",
     "filteredResults": "Resultados filtrados:",
-    "currentPageLabel": "Página actual:",
+    "currentPageLabel": "Página actual",
     "searchBrands": "Buscar marcas",
     "showResults": "Mostrar {count} resultados",
     "viewProduct": "Ver {name}"
   },
   "home": {
-    "title": "Inicio"
+    "title": "Inicio",
+    "banner": {
+      "popularProducts": {
+        "title": "Productos Populares",
+        "description": "Descubre nuestros productos tecnológicos más queridos, desde smartphones hasta laptops, todos diseñados para mejorar tu estilo de vida digital."
+      },
+      "ipadPro": {
+        "title": "iPad Pro",
+        "description": "La experiencia definitiva en tablet con chip M2, pantalla Liquid Retina XDR y batería de todo el día para creatividad y productividad."
+      },
+      "samsungGalaxy": {
+        "title": "Samsung Galaxy",
+        "description": "Experimenta la innovación con tecnología de cámara de vanguardia, pantalla AMOLED impresionante y rendimiento potente en tu bolsillo."
+      },
+      "macbookPro": {
+        "title": "MacBook Pro",
+        "description": "Laptop de grado profesional con chip M3, pantalla Liquid Retina brillante y hasta 22 horas de batería para flujos de trabajo exigentes."
+      }
+    }
   },
   "refund": {
     "title": "Política de Reembolsos y Devoluciones"
@@ -446,6 +464,7 @@
     "selectStorageOrSize": "Seleccionar {type}",
     "size": "Tamaño",
     "addToCart": "Añadir al carrito",
+    "added": "Añadido",
     "freeDelivery": "Envío gratuito",
     "deliveryTime": "1-2 días",
     "inStock": "En stock",
@@ -470,7 +489,26 @@
     "comment": "Comentario",
     "submitReview": "Enviar reseña",
     "viewMore": "Ver más",
-    "viewLess": "Ver menos"
+    "viewLess": "Ver menos",
+    "toggleFavorite": "Alternar favorito",
+    "upcoming": "Próximamente",
+    "buy": "Comprar",
+    "notAvailable": "N/A",
+    "invalidProductId": "ID de producto inválido ({id}). No se puede añadir a la lista de deseos.",
+    "userNotAuthenticated": "Usuario no autenticado - por favor inicia sesión",
+    "addedToWishlist": "Producto añadido a la lista de deseos",
+    "removedFromWishlist": "Producto eliminado de la lista de deseos",
+    "wishlistStateError": "El estado no cambió como se esperaba - revisa la consola para más detalles",
+    "unknownError": "Error desconocido"
+  },
+    "auth": {
+    "verify": {
+      "error": "Error verificando usuario",
+      "goToLogin": "Ir a iniciar sesión",
+      "registerAgain": "Registrarse de nuevo",
+      "success": "Registro exitoso",
+      "successMessage": "Te has registrado exitosamente."
+    }
   },
   "debug": {
     "productVariantData": "DEBUG: Datos del producto y variante (ELIMINAR MÁS TARDE)"

@@ -12,9 +12,16 @@ const selectImage = (index: number) => {
   selectedImageIndex.value = index
 }
 const selectColor = (color: string) => {
-  selectedColor.value = color
-  const imageIndex = productImages.value.findIndex(img => typeof img === 'string' && img.includes(color.toLowerCase()))
-  if (imageIndex !== -1) selectedImageIndex.value = imageIndex
+  // Only change image if color is different from current selection
+  if (selectedColor.value !== color) {
+    selectedColor.value = color
+
+    // Select a random image from available images to simulate different product variant
+    if (productImages.value.length > 0) {
+      const randomIndex = Math.floor(Math.random() * productImages.value.length)
+      selectedImageIndex.value = randomIndex
+    }
+  }
 }
 const selectStorage = (size: string) => {
   selectedStorage.value = size
@@ -591,6 +598,7 @@ if (typeof window !== 'undefined') {
 // === Cart Functionality ===
 const wishlistLoading = ref(false)
 const cartLoading = ref(false)
+const addedToCart = ref(false)
 const addToCart = async () => {
   if (!isAuthenticated.value) {
     toast.error('Please log in to add products to your cart', {
@@ -662,6 +670,14 @@ const addToCart = async () => {
 
     if (result.success) {
       console.log('🟢 [CATALOG PRODUCT DETAILS] Product added to cart successfully')
+
+      // Show success state on button
+      addedToCart.value = true
+
+      // Reset the success state after 3 seconds
+      setTimeout(() => {
+        addedToCart.value = false
+      }, 3000)
 
       loadingToast.success('Product added to your cart!', {
         title: 'Added Successfully',
@@ -865,7 +881,7 @@ const fetchProductVariants = async (productId: number) => {
 <template>
   <div :class="['min-h-screen', pageBackgroundClasses]">
     <!-- Breadcrumb -->
-  <div :class="['pt-[85px] lg:pt-0', cardClasses]">
+    <div :class="['pt-[85px] lg:pt-0', cardClasses]">
       <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <BreadcrumbNav :breadcrumbs="breadcrumbs" />
       </div>
@@ -873,7 +889,9 @@ const fetchProductVariants = async (productId: number) => {
 
     <!-- Loading State -->
     <div v-if="loading" :class="['flex justify-center items-center py-12', pageBackgroundClasses]">
-      <div :class="['animate-spin rounded-full h-12 w-12 border-b-2', textClasses.includes('dark:text-white') ? 'border-black dark:border-white' : 'border-black']"></div>
+      <div
+        :class="['animate-spin rounded-full h-12 w-12 border-b-2', textClasses.includes('dark:text-white') ? 'border-black dark:border-white' : 'border-black']">
+      </div>
       <span :class="['ml-3', textSecondaryClasses]">Cargando producto...</span>
     </div>
 
@@ -886,11 +904,12 @@ const fetchProductVariants = async (productId: number) => {
 
     <!-- Product Details -->
     <div v-else :class="['max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8', pageBackgroundClasses]">
-  <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+      <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <!-- Left Column - Product Images -->
         <div class="space-y-4">
           <!-- Main Product Image -->
-            <div :class="['w-full h-[400px] lg:h-[500px] flex items-center justify-center rounded-2xl overflow-hidden', cardClasses]">
+          <div
+            :class="['w-full h-[400px] lg:h-[500px] flex items-center justify-center rounded-2xl overflow-hidden', cardClasses]">
             <img :src="currentImage" :alt="currentProduct.name"
               class="object-cover w-full h-full rounded-2xl product-image-hover" />
           </div>
@@ -931,7 +950,8 @@ const fetchProductVariants = async (productId: number) => {
 
           <!-- Color Selection -->
           <div v-if="availableColors.length > 0" class="flex items-center gap-4">
-            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.selectColor') }}</span>
+            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.selectColor')
+            }}</span>
             <div class="flex space-x-3">
               <button v-for="color in availableColors" :key="color" @click="selectColor(color)" :class="[
                 'w-8 h-8 rounded-full border-2 transition-all',
@@ -959,17 +979,18 @@ const fetchProductVariants = async (productId: number) => {
 
           <!-- Storage Display (for Mobile & Compute) - fallback for when no variants -->
           <div v-else-if="isMobileComputeCategory && currentProduct.specifications?.storage" class="space-y-3">
-            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.storage') }}</span>
-            <div
-              :class="['px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium', cardClasses]">
+            <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.storage')
+            }}</span>
+            <div :class="['px-6 py-3 border rounded-[8px] font-srProDisplay text-sm font-medium', cardClasses]">
               {{ currentProduct.specifications?.storage ?? '' }}
             </div>
           </div>
 
           <!-- Stock Information -->
-            <div v-if="currentVariant || productVariants.length > 0" class="space-y-2">
+          <div v-if="currentVariant || productVariants.length > 0" class="space-y-2">
             <div class="flex items-center gap-2">
-              <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.stock') }}</span>
+              <span :class="['font-srProDisplay text-sm font-medium', textSecondaryClasses]">{{ t('product.stock')
+              }}</span>
               <span :class="[
                 'font-srProDisplay text-sm font-semibold',
                 isInStock ? 'text-success' : 'text-error'
@@ -983,8 +1004,7 @@ const fetchProductVariants = async (productId: number) => {
           </div>
 
           <!-- DEBUG: Raw product data -->
-           <div v-if="product"
-            :class="['p-4 space-y-3 border rounded', cardClasses]">
+          <div v-if="product" :class="['p-4 space-y-3 border rounded', cardClasses]">
             <h3 :class="['text-sm font-bold', textClasses]">{{ t('debug.productVariantData') }}</h3>
             <div :class="['space-y-1 text-xs', textMutedClasses]">
               <p><strong>Category:</strong> {{ product?.category ?? '' }}</p>
@@ -1270,7 +1290,7 @@ const fetchProductVariants = async (productId: number) => {
               </span>
             </button>
             <button @click="addToCart"
-              :disabled="cartLoading || !isInStock || (!selectedColor && availableColors.length > 0) || (!selectedStorage && availableSizes.length > 0)"
+              :disabled="cartLoading || !isInStock || (!selectedColor && availableColors.length > 0) || (!selectedStorage && availableSizes.length > 0) || addedToCart"
               :class="['flex-1 py-4 px-6 rounded-[6px] font-srProDisplay text-sm font-medium transition-colors', buttonPrimaryClasses]">
               <span v-if="cartLoading" class="flex items-center justify-center">
                 <div class="w-4 h-4 mr-2 border-b-2 border-white rounded-full animate-spin"></div>
@@ -1286,7 +1306,14 @@ const fetchProductVariants = async (productId: number) => {
                 {{ t('product.selectColor') }}
               </span>
               <span v-else-if="availableSizes.length > 0 && !selectedStorage">
-                {{ t('product.selectStorageOrSize', { type: availableSizes.length > 0 && availableSizes[0].includes('GB') ? t('product.storage') : t('product.size') }) }}
+                {{ t('product.selectStorageOrSize', {
+                  type: availableSizes.length > 0 &&
+                    availableSizes[0].includes('GB') ? t('product.storage') : t('product.size')
+                }) }}
+              </span>
+              <span v-else-if="addedToCart">
+                <v-icon name="hi-check" scale="1.2" class="mr-2" />
+                {{ t('product.added') }}
               </span>
               <span v-else>
                 {{ t('product.addToCart') }}
@@ -1320,7 +1347,8 @@ const fetchProductVariants = async (productId: number) => {
               </div>
               <div>
                 <p :class="['text-xs', textMutedClasses]">{{ t('product.guaranteed') }}</p>
-                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">{{ t('product.guaranteeTime') }}</p>
+                <p :class="['font-srProDisplay text-sm font-semibold', textClasses]">{{ t('product.guaranteeTime') }}
+                </p>
               </div>
             </div>
           </div>
@@ -1333,8 +1361,8 @@ const fetchProductVariants = async (productId: number) => {
       <div :class="['w-full max-w-[1640px] rounded-2xl shadow-sm px-8 py-10', cardClasses]">
         <div class="flex items-center justify-between mb-2">
           <h2 :class="['text-2xl font-semibold', textClasses]">{{ t('product.details') }}</h2>
-          <button @click="toggleDetails" :class="['p-1 transition-colors rounded', hoverClasses]"
-            type="button" aria-label="Toggle details section">
+          <button @click="toggleDetails" :class="['p-1 transition-colors rounded', hoverClasses]" type="button"
+            aria-label="Toggle details section">
             <v-icon name="hi-chevron-down"
               :class="['w-5 h-5 transition-transform duration-200', textSecondaryClasses, { 'rotate-180': detailsCollapsed }]"
               scale="1.2" />
@@ -1360,14 +1388,15 @@ const fetchProductVariants = async (productId: number) => {
                 showAllDetails ? '' : 'max-h-[600px]',
               ]" style="position: relative">
                 <div :style="showAllDetails
-                    ? ''
-                    : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
+                  ? ''
+                  : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
                   ">
                   <!-- Mobile & Compute Template Details -->
                   <template v-if="isMobileComputeCategory && hasMobileComputeSpecs">
                     <!-- Display Section -->
                     <div>
-                      <h3 :class="['mt-8 mb-4 text-xl font-semibold', textClasses]">{{ t('product.displayAndScreen') }}</h3>
+                      <h3 :class="['mt-8 mb-4 text-xl font-semibold', textClasses]">{{ t('product.displayAndScreen') }}
+                      </h3>
                       <div :class="['border-t', dividerClasses]">
                         <div v-if="currentProduct.specifications?.screenSize"
                           :class="['flex items-center py-4 border-b', dividerClasses]">
@@ -1469,7 +1498,8 @@ const fetchProductVariants = async (productId: number) => {
                     </div>
                     <!-- Input Features Section -->
                     <div>
-                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">{{ t('product.inputFeatures') }}</h3>
+                      <h3 :class="['mt-12 mb-4 text-xl font-semibold', textClasses]">{{ t('product.inputFeatures') }}
+                      </h3>
                       <div :class="['border-t', dividerClasses]">
                         <div v-if="currentProduct.specifications?.switchType"
                           :class="['flex items-center py-4 border-b', dividerClasses]">
@@ -1563,9 +1593,9 @@ const fetchProductVariants = async (productId: number) => {
                   <div class="flex">
                     <v-icon v-for="star in 5" :key="star" :name="star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'
                       " :class="star <= Math.floor(reviewStats.averageRating)
-                      ? 'text-yellow-400'
-                      : textMutedClasses
-                    " scale="1.1" />
+                        ? 'text-yellow-400'
+                        : textMutedClasses
+                        " scale="1.1" />
                   </div>
                 </div>
               </div>
@@ -1575,7 +1605,8 @@ const fetchProductVariants = async (productId: number) => {
                 <h3 :class="['text-base font-semibold mb-4', textClasses]">{{ t('product.ratingBreakdown') }}</h3>
                 <div class="space-y-3">
                   <div class="flex items-center gap-3">
-                    <span :class="['text-sm w-20 flex-shrink-0', textSecondaryClasses]">{{ t('product.excellent') }}</span>
+                    <span :class="['text-sm w-20 flex-shrink-0', textSecondaryClasses]">{{ t('product.excellent')
+                    }}</span>
                     <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.excellent / reviewStats.totalReviews) * 100 + '%',
@@ -1602,7 +1633,8 @@ const fetchProductVariants = async (productId: number) => {
                     <span :class="['w-6 text-xs text-right', ratingCountClasses]">{{ reviewStats.average }}</span>
                   </div>
                   <div class="flex items-center gap-3">
-                    <span :class="['flex-shrink-0 w-20 text-sm', ratingTextClasses]">{{ t('product.belowAverage') }}</span>
+                    <span :class="['flex-shrink-0 w-20 text-sm', ratingTextClasses]">{{ t('product.belowAverage')
+                    }}</span>
                     <div :class="['flex-1 h-2', progressBarBgClasses]">
                       <div class="h-2 transition-all duration-300 bg-yellow-400 rounded-full" :style="{
                         width: (reviewStats.belowAverage / reviewStats.totalReviews) * 100 + '%',
@@ -1638,9 +1670,9 @@ const fetchProductVariants = async (productId: number) => {
                   <div class="flex">
                     <v-icon v-for="star in 5" :key="star" :name="star <= Math.floor(reviewStats.averageRating) ? 'bi-star-fill' : 'bi-star'
                       " :class="star <= Math.floor(reviewStats.averageRating)
-                      ? 'text-yellow-400'
-                      : textMutedClasses
-                    " scale="1.2" />
+                        ? 'text-yellow-400'
+                        : textMutedClasses
+                        " scale="1.2" />
                   </div>
                 </div>
               </div>
@@ -1715,7 +1747,9 @@ const fetchProductVariants = async (productId: number) => {
                     aria-label="Close">
                     <v-icon name="hi-x" scale="1.2" />
                   </button>
-                  <h3 :class="['text-lg lg:text-xl font-semibold mb-4 pr-8', textClasses]">{{ t('product.leaveReview') }}</h3>
+                  <h3 :class="['text-lg lg:text-xl font-semibold mb-4 pr-8', textClasses]">{{ t('product.leaveReview')
+                  }}
+                  </h3>
                   <form @submit.prevent="submitReview">
                     <div class="mb-4">
                       <label :class="['block mb-2 font-medium', textClasses]">{{ t('product.rating') }}</label>
@@ -1789,29 +1823,28 @@ const fetchProductVariants = async (productId: number) => {
                 showAllReviews ? '' : 'max-h-[400px] lg:max-h-[600px]',
               ]" style="position: relative">
                 <div :style="showAllReviews
-                    ? ''
-                    : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
+                  ? ''
+                  : 'mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #fff 70%, transparent 100%);'
                   ">
                   <div v-for="review in displayedReviews" :key="review.id" class="relative mb-4 lg:mb-6">
-                    <div class="flex items-start gap-3 lg:gap-4 rounded-[10px] w-auto h-auto p-4 lg:p-8" :style="{ background: 'var(--color-input-background)' }">
+                    <div class="flex items-start gap-3 lg:gap-4 rounded-[10px] w-auto h-auto p-4 lg:p-8"
+                      :style="{ background: 'var(--color-input-background)' }">
 
                       <!-- Avatar -->
                       <div class="flex-shrink-0 w-10 h-10 lg:w-12 lg:h-12">
 
                         <!-- Show image only when a valid avatar URL exists and it hasn't errored -->
-                        <img
-                          v-if="review.userAvatar && !erroredAvatars.has(review.id)"
-                          :src="review.userAvatar"
+                        <img v-if="review.userAvatar && !erroredAvatars.has(review.id)" :src="review.userAvatar"
                           :alt="`${review.userName || 'User'} avatar`"
                           class="object-cover w-10 h-10 border-2 border-white rounded-full shadow-lg lg:w-12 lg:h-12 avatar-hover"
                           @error="(e) => handleAvatarError(e, review.id ?? review.userName)" />
 
                         <!-- Fallback when there is no avatar or the image failed to load -->
-                        <div
-                          v-if="!review.userAvatar || erroredAvatars.has(review.id)"
-                          class="flex items-center justify-center w-10 h-10 rounded-full bg-surface shadow-lg lg:w-12 lg:h-12 avatar-hover"
-                        >
-                          <span class="text-xs font-semibold text-white lg:text-sm">{{ getUserInitials(review.userName || 'Anonymous') }}</span>
+                        <div v-if="!review.userAvatar || erroredAvatars.has(review.id)"
+                          class="flex items-center justify-center w-10 h-10 rounded-full shadow-lg bg-surface lg:w-12 lg:h-12 avatar-hover">
+                          <span class="text-xs font-semibold text-white lg:text-sm">{{ getUserInitials(review.userName
+                            ||
+                            'Anonymous') }}</span>
                         </div>
                       </div>
 
@@ -1860,12 +1893,7 @@ const fetchProductVariants = async (productId: number) => {
 
 
     <!-- Related Products Section -->
-    <RelatedProducts
-      :product-id="parseInt(props.productId)"
-      :limit="3"
-      :collapsible="true"
-      :show-title="true"
-    />
+    <RelatedProducts :product-id="parseInt(props.productId)" :limit="3" :collapsible="true" :show-title="true" />
   </div>
 </template>
 

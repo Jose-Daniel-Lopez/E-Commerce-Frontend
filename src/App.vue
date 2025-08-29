@@ -55,7 +55,7 @@ onMounted(() => {
     <!-- Toast Notifications -->
     <ToastContainer />
 
-  <!-- Scroll to top button -->
-  <ScrollToTop />
+    <!-- Scroll to top button -->
+    <ScrollToTop />
   </div>
 </template>

@@ -44,13 +44,16 @@ export const useShippingAddressStore = defineStore('shippingAddresses', () => {
     error.value = null
 
     try {
-      const response = await api.get(`/shippingAddresses/${userId}`)
+      const response = await api.get(`/users/${userId}/shippingAddresses`)
 
-      // Handle single address response
-      if (response.data) {
+      // Handle array response
+      if (Array.isArray(response.data)) {
+        shippingAddresses.value = response.data.map(convertApiResponseToAddress)
+      } else if (response.data) {
+        // Handle single address response (fallback)
         const addressData: ShippingAddressApiResponse = response.data
         const address = convertApiResponseToAddress(addressData)
-        shippingAddresses.value = [address] // Wrap single address in array
+        shippingAddresses.value = [address]
       } else {
         shippingAddresses.value = []
       }
