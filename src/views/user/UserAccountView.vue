@@ -1,19 +1,5 @@
 <template>
   <div class="user-account-page animate-fadeInUp user-account-layout" :class="pageBackgroundClasses">
-    <!-- Debug Panel - Only shown in development -->
-    <DebugPanel
-      :show-debug-panel="showDebugPanel"
-      :debug-data="{
-        username: user?.username,
-        theme: themeStore.selectedTheme,
-        wishlistCount: wishlistProducts.length,
-        ordersCount: orders.length,
-        refundsCount: refunds.length,
-        addressesCount: addresses.length,
-        reviewsCount: reviews.length
-      }"
-      @toggle="toggleDebugPanel"
-    />
     <Wrapper class="py-8">
       <!-- SEO and Accessibility improvements -->
       <div class="sr-only">
@@ -256,7 +242,6 @@ const AvatarSelector = defineAsyncComponent(() => import('@/components/users/Ava
 const ChangePasswordModal = defineAsyncComponent(() => import('@/components/users/ChangePasswordModal.vue'))
 
 // Import new refactored components
-import DebugPanel from '@/components/user/DebugPanel.vue'
 import AccountNavigation from '@/components/user/AccountNavigation.vue'
 import ProfileSection from '@/components/user/ProfileSection.vue'
 import OrdersSection from '@/components/user/OrdersSection.vue'
@@ -268,10 +253,6 @@ import SettingsSection from '@/components/user/SettingsSection.vue'
 
 import axios from '@/lib/axios'
 import type { ShippingAddress } from '@/types/shippingAddress'
-
-// Performance optimizations
-const showDebug = ref(import.meta.env.DEV) // Debug toggle state - show by default in dev mode
-const showDebugPanel = computed(() => import.meta.env.DEV && showDebug.value) // Only show in dev mode
 
 // Language composable for global language sync
 const { currentLocale, availableLocales, changeLanguage } = useLanguage()
@@ -1001,27 +982,8 @@ const fetchDetailedOrderInfo = async (orderId: number): Promise<OrderType> => {
   }
 }
 
-// Debug panel toggle function
-const toggleDebugPanel = () => {
-  showDebug.value = !showDebug.value
-  console.log(`🛠️ Debug panel ${showDebug.value ? 'enabled' : 'disabled'}`)
-}
-
-// Keyboard shortcut handler for debug panel
-const handleDebugKeyboard = (event: KeyboardEvent) => {
-  if ((event.ctrlKey || event.metaKey) && event.key === 'd' && import.meta.env.DEV) {
-    event.preventDefault()
-    toggleDebugPanel()
-  }
-}
-
 onMounted(async () => {
   // Theme initialization is now handled by the store in main.ts
-
-  // Add keyboard shortcut for debug panel (Ctrl+D or Cmd+D)
-  if (import.meta.env.DEV) {
-    document.addEventListener('keydown', handleDebugKeyboard)
-  }
 
   // Performance optimization: Load critical data first, then lazy load other sections
   if (authStore.isAuthenticated && authStore.user?.id) {
@@ -1112,11 +1074,6 @@ onUnmounted(() => {
   document.body.classList.remove('nav-open')
   // Restore body scrolling in case modal was open
   document.body.style.overflow = 'auto'
-
-  // Remove keyboard event listener for debug panel
-  if (import.meta.env.DEV) {
-    document.removeEventListener('keydown', handleDebugKeyboard)
-  }
 })
 
 const refreshProfile = async () => {
@@ -1448,16 +1405,5 @@ const removeFromWishlist = async (productId: number, productName: string) => {
 .focus\:ring-2:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
-}
-
-/* Legacy debug transitions - keep for compatibility */
-.fade-debug-enter-active,
-.fade-debug-leave-active {
-  transition: opacity 0.15s ease-out;
-}
-
-.fade-debug-enter-from,
-.fade-debug-leave-to {
-  opacity: 0;
 }
 </style>
