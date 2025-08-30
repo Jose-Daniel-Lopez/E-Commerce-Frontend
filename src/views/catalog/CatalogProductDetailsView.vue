@@ -565,36 +565,6 @@ const submitReview = async () => {
   }
 }
 
-// Debug helper function (available in browser console as window.debugReview)
-const debugReviewSubmission = () => {
-  console.log('=== REVIEW SUBMISSION DEBUG INFO ===')
-  console.log('Props:', props)
-  console.log('Product ID (raw):', props.productId)
-  console.log('Product ID (parsed):', parseInt(props.productId))
-  console.log('Is Authenticated:', isAuthenticated.value)
-  console.log('Current User:', user.value)
-  console.log('User ID:', user.value?.id)
-  console.log('Review Rating:', reviewRating.value)
-  console.log('Review Comment:', reviewComment.value)
-  console.log('Review Errors:', reviewErrors.value)
-  console.log('Review Submitting:', reviewSubmitting.value)
-  console.log('Show Review Modal:', showReviewModal.value)
-
-  const testPayload = {
-    rating: reviewRating.value || 5,
-    comment: reviewComment.value || 'Test review',
-    productId: parseInt(props.productId),
-    userId: user.value?.id,
-  }
-  console.log('Test payload would be:', testPayload)
-  console.log('===================================')
-}
-
-// Expose debug function to window for console access
-if (typeof window !== 'undefined') {
-  ; (window as Window & typeof globalThis & { debugReview?: () => void }).debugReview = debugReviewSubmission
-}
-
 // === Cart Functionality ===
 const wishlistLoading = ref(false)
 const cartLoading = ref(false)
@@ -1000,25 +970,6 @@ const fetchProductVariants = async (productId: number) => {
             </div>
             <div v-if="currentVariant" :class="['text-xs', textMutedClasses]">
               {{ t('product.sku') }}: {{ currentVariant?.sku ?? '' }}
-            </div>
-          </div>
-
-          <!-- DEBUG: Raw product data -->
-          <div v-if="product" :class="['p-4 space-y-3 border rounded', cardClasses]">
-            <h3 :class="['text-sm font-bold', textClasses]">{{ t('debug.productVariantData') }}</h3>
-            <div :class="['space-y-1 text-xs', textMutedClasses]">
-              <p><strong>Category:</strong> {{ product?.category ?? '' }}</p>
-              <p><strong>Is Mobile/Compute:</strong> {{ isMobileComputeCategory }}</p>
-              <p><strong>Is Input/Control:</strong> {{ isInputControlCategory }}</p>
-              <p><strong>Has Specifications:</strong> {{ !!product?.specifications }}</p>
-              <p><strong>Available Colors:</strong> {{ availableColors.join(', ') }}</p>
-              <p><strong>Available Sizes:</strong> {{ availableSizes.join(', ') }}</p>
-              <p><strong>Selected Color:</strong> {{ selectedColor }}</p>
-              <p><strong>Selected Storage:</strong> {{ selectedStorage }}</p>
-              <p><strong>Current Variant:</strong> {{ currentVariant?.sku || 'None' }}</p>
-              <p><strong>Current Stock:</strong> {{ currentStock }}</p>
-              <p><strong>Is In Stock:</strong> {{ isInStock }}</p>
-              <p><strong>Total Variants:</strong> {{ productVariants.length }}</p>
             </div>
           </div>
 

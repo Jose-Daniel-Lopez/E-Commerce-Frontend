@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// Debug panel state
-const showDebug = ref(false)
 import BreadcrumbNav from '@/components/shared/BreadcrumbNav.vue'
 import DualRangeSlider from '@/components/shared/DualRangeSlider.vue'
 import { useThemeClasses } from '@/composables/useThemeClasses'
@@ -33,8 +31,6 @@ const {
   catalogSearchInputClasses,
   catalogMobileFilterClasses,
   catalogSortSelectClasses,
-  catalogDebugPanelClasses,
-  catalogDebugTextClasses,
   buttonPrimaryClasses,
   cardClasses,
   hoverClasses,
@@ -508,31 +504,6 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
     <div :class="['pt-[85px] lg:pt-0', pageBackgroundClasses]">
       <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <BreadcrumbNav :breadcrumbs="breadcrumbs" />
-      </div>
-    </div>
-
-    <!-- Debug Panel - Mobile optimized -->
-    <div class="fixed bottom-4 right-4 z-50 max-w-[300px] sm:max-w-[420px] w-full">
-      <div :class="catalogDebugPanelClasses">
-        <div class="flex items-center justify-between mb-2">
-          <span :class="['text-xs font-bold sm:text-sm', catalogDebugTextClasses]">🛠️ All Products Debug</span>
-          <button @click="showDebug = !showDebug" :class="['text-xs underline', catalogDebugTextClasses]">
-            {{ showDebug ? 'Hide' : 'Show' }}
-          </button>
-        </div>
-        <transition name="fade-debug">
-          <div v-show="showDebug" :class="catalogDebugTextClasses">
-            <div><b>User:</b> {{ user?.username || 'Not logged in' }}</div>
-            <div><b>Total Products:</b> {{ productStore.products.length }}</div>
-            <div><b>Filtered Products:</b> {{ filteredProducts.length }}</div>
-            <div><b>Server Pagination:</b> {{ productStore.pagination.page + 1 }} / {{ productStore.pagination.totalPages }}</div>
-            <div><b>Total Elements:</b> {{ productStore.pagination.totalElements }}</div>
-            <div><b>Available Categories:</b> {{ availableCategories.map(c => c.name).join(', ') }}</div>
-            <div><b>Active Brands:</b> {{ productStore.brands.filter(b => b.checked).length }}</div>
-            <div><b>Active Categories:</b> {{ availableCategories.filter(c => c.checked).length }}</div>
-            <div><b>Current Page:</b> {{ currentPage }} / {{ totalPages }}</div>
-          </div>
-        </transition>
       </div>
     </div>
 
@@ -1255,14 +1226,6 @@ watch(() => productStore.pagination.page, (newBackendPage) => {
   -webkit-line-clamp: 2;
   line-clamp: 2;
   overflow: hidden;
-}
-
-/* Debug panel fade */
-.fade-debug-enter-active, .fade-debug-leave-active {
-  transition: opacity 0.2s;
-}
-.fade-debug-enter-from, .fade-debug-leave-to {
-  opacity: 0;
 }
 
 /* Remove default button focus styles */
