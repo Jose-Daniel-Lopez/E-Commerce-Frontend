@@ -465,18 +465,10 @@ const submitReview = async () => {
       userId,
     }
 
-    console.log('Making API request to:', 'http://localhost:8080/api/reviews')
+    console.log('Making API request to reviews endpoint')
     console.log('Request payload:', reviewPayload)
-    console.log('Request headers will include:', {
-      'Content-Type': 'application/json'
-    })
 
-    const response = await axios.post('http://localhost:8080/api/reviews', reviewPayload, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      timeout: 10000, // 10 second timeout
-    })
+    const response = await api.post('/reviews', reviewPayload)
 
     console.log('Review submission successful!')
     console.log('Response status:', response.status)
