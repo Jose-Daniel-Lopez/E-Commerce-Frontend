@@ -74,8 +74,6 @@ const {
   catalogFilterLabelClasses,
   catalogClearFilterClasses,
   catalogFilterSummaryClasses,
-  catalogDebugPanelClasses,
-  catalogDebugTextClasses,
   loadingSpinnerClasses,
   errorMessageClasses,
   emptyStateContainerClasses,
@@ -91,8 +89,6 @@ const {
 // ============================================================================
 // UI & FILTER STATE
 // ============================================================================
-// Debug mode for developers (toggle via UI)
-const showDebug = ref(false)
 
 // Pagination
 const currentPage = ref(1)
@@ -450,41 +446,6 @@ onMounted(async () => {
     <div :class="cardClasses" class="pt-[85px] lg:pt-0">
       <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <BreadcrumbNav :breadcrumbs="breadcrumbs" />
-      </div>
-    </div>
-
-    <!-- Debug Panel (DEV ONLY) -->
-    <div class="fixed bottom-4 right-4 z-50 max-w-[300px] sm:max-w-[420px] w-full">
-      <div :class="catalogDebugPanelClasses">
-        <div class="flex items-center justify-between mb-2">
-          <span :class="['text-xs font-bold sm:text-sm', textClasses]">{{ $t('catalog.debugPanelTitle') }}</span>
-          <button @click="showDebug = !showDebug" :class="['text-xs underline', textClasses]">
-            {{ showDebug ? $t('common.hide') : $t('common.show') }}
-          </button>
-        </div>
-        <transition name="fade-debug">
-          <div v-show="showDebug" :class="catalogDebugTextClasses">
-            <div><b>{{ $t('catalog.debug.user') }}:</b> {{ user }}</div>
-            <div><b>{{ $t('catalog.debug.wishlistId') }}:</b> {{ wishlistStore.wishlistId }}</div>
-            <div><b>{{ $t('catalog.debug.wishlistCount') }}:</b> {{ wishlistProducts.length }}</div>
-            <div><b>{{ $t('catalog.debug.wishlistProductIds') }}:</b> {{ wishlistProducts.map(p => p.id).join(', ') }}</div>
-            <div><b>{{ $t('catalog.debug.currentPage') }}:</b> {{ currentPage }} / {{ totalPages }}</div>
-            <div><b>{{ $t('catalog.debug.itemsPerPage') }}:</b> {{ itemsPerPage }}</div>
-            <div><b>{{ $t('catalog.debug.filteredProducts') }}:</b> {{ filteredProducts.length }}</div>
-            <div><b>{{ $t('catalog.debug.checkedBrands') }}:</b> {{ productStore.brands.filter(b => b.checked).map(b => b.name).join(', ') }}</div>
-            <div><b>{{ $t('catalog.debug.priceRange') }}:</b> ${{ priceRange[0] }} - ${{ priceRange[1] }}</div>
-            <div><b>{{ $t('catalog.debug.sortBy') }}:</b> {{ sortBy }}</div>
-            <div><b>{{ $t('catalog.debug.category') }}:</b> {{ actualCategoryName }}</div>
-            <div><b>{{ $t('catalog.debug.displayName') }}:</b> {{ categoryDisplayName }}</div>
-            <button
-              @click="console.log('🧪 [TEST] Debug button clicked!'); goToProductDetails(76)"
-              :class="buttonPrimaryClasses"
-              class="px-2 py-1 mt-2 text-xs rounded"
-            >
-              {{ $t('catalog.debugTestButton', { id: 76 }) }}
-            </button>
-          </div>
-        </transition>
       </div>
     </div>
 
@@ -1036,14 +997,6 @@ onMounted(async () => {
   -webkit-line-clamp: 2;
   line-clamp: 2;
   overflow: hidden;
-}
-.fade-debug-enter-active,
-.fade-debug-leave-active {
-  transition: opacity 0.2s;
-}
-.fade-debug-enter-from,
-.fade-debug-leave-to {
-  opacity: 0;
 }
 button:focus {
   outline: none;
