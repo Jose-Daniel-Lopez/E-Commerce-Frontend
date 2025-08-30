@@ -40,10 +40,22 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      console.warn('🔴 [AXIOS] 401 Unauthorized response received:', {
+        url: error.config?.url,
+        method: error.config?.method,
+        data: error.config?.data,
+        message: error.response?.data?.message || 'No message provided'
+      })
+
       // Clear stored auth data and redirect to login
       localStorage.removeItem('authToken')
       localStorage.removeItem('user')
-      window.location.href = '/login'
+
+      // Only redirect if not already on login page to avoid infinite loops
+      if (window.location.pathname !== '/login' && !window.location.pathname.includes('/login')) {
+        console.warn('🔴 [AXIOS] Redirecting to login due to 401 error')
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   },

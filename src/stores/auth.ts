@@ -407,8 +407,8 @@ export const useAuthStore = defineStore('auth', () => {
     return await fetchUserAddresses()
   }
 
-  // Initialize auth on store creation
-  initializeAuth()
+  // Note: initializeAuth() is called explicitly in main.ts
+  // Do not call it here to avoid double initialization
 
   // --- Return ---
   return {

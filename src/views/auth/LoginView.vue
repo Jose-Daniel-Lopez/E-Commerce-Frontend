@@ -98,12 +98,16 @@ const handleSubmit = async (): Promise<void> => {
   clearGlobalError() // Clear any previous errors
 
   try {
+    console.log('🟡 [LOGIN] Attempting login for:', form.value.email)
+
     const result = await authStore.login({
       email: form.value.email.trim(),
       password: form.value.password,
     })
 
     if (result?.success) {
+      console.log('🟢 [LOGIN] Login successful, redirecting to account page')
+
       // Show success toast notification
       toast.success('Welcome back! You have been successfully logged in.', {
         title: 'Login Successful',
@@ -112,20 +116,26 @@ const handleSubmit = async (): Promise<void> => {
 
       // Small delay to show the toast before navigation
       setTimeout(async () => {
-        // DEBUG: Why is this not working in deployment?
-        // await router.push({ name: 'userAccount' })
-           await router.push("/account")
+        await router.push({ name: 'userAccount' })
       }, 500)
     } else {
+      console.log('🔴 [LOGIN] Login failed:', result?.error)
       setGlobalError(result?.error || 'Login failed. Please try again.')
-      // Also show error toast for better UX
-      toast.error(result?.error || 'Login failed. Please try again.', {
+
+      // Show specific error messages for better UX
+      const isInvalidCredentials = result?.error?.toLowerCase().includes('invalid') ||
+                                   result?.error?.toLowerCase().includes('password') ||
+                                   result?.error?.toLowerCase().includes('email')
+
+      toast.error(isInvalidCredentials
+        ? 'Invalid email or password. Please check your credentials and try again.'
+        : result?.error || 'Login failed. Please try again.', {
         title: 'Login Failed',
         duration: 6000,
       })
     }
   } catch (err) {
-    console.error('Login error:', err)
+    console.error('🔴 [LOGIN] Unexpected login error:', err)
     const errorMessage = 'An unexpected error occurred. Please try again.'
     setGlobalError(errorMessage)
     toast.error(errorMessage, {
