@@ -15,19 +15,19 @@ export function getCloudinaryUrl(imageId: string, options: {
 } = {}): string {
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'tejon-tech';
   const baseUrl = `https://res.cloudinary.com/${cloudName}/image/upload`;
-  
+
   // Build transformation string
   const transformations = [];
-  
+
   if (options.width) transformations.push(`w_${options.width}`);
   if (options.height) transformations.push(`h_${options.height}`);
   if (options.quality) transformations.push(`q_${options.quality}`);
   if (options.format) transformations.push(`f_${options.format}`);
   if (options.crop) transformations.push(`c_${options.crop}`);
-  
+
   // Auto optimization
   transformations.push('f_auto', 'q_auto');
-  
+
   const transformationString = transformations.join(',');
   return `${baseUrl}/${transformationString}/e-commerce/${imageId}`;
 }
@@ -40,9 +40,9 @@ export function getCloudinaryUrl(imageId: string, options: {
  */
 export function getProductImage(productName: string | undefined, options = {}): string {
   if (!productName) return getCloudinaryUrl('logo', options);
-  
+
   const productLower = productName.toLowerCase();
-  
+
   // Map product names to Cloudinary image IDs
   const productImageMap: Record<string, string> = {
     'iphone 14': 'Iphone-14-pro-purple',
@@ -54,14 +54,14 @@ export function getProductImage(productName: string | undefined, options = {}): 
     'samsung': 'Galaxy-Z-Mobile',
     'galaxy': 'Galaxy-Z-Mobile'
   };
-  
+
   // Find matching product
   for (const [key, imageId] of Object.entries(productImageMap)) {
     if (productLower.includes(key)) {
       return getCloudinaryUrl(imageId, options);
     }
   }
-  
+
   return getCloudinaryUrl('logo', options);
 }
 
@@ -85,9 +85,14 @@ export function getCategoryImage(category: string, options = {}): string {
     accessories: 'categories-accessories',
     smartwatches: 'categories-smartwatches',
     mice: 'categories-mice',
-    keyboards: 'categories-keyboards'
+    keyboards: 'categories-keyboards',
+    controllers: 'categories-controllers',
+    handhelds: 'categories-handhelds',
+    'handheld consoles': 'categories-handhelds',
+    'gaming controllers': 'categories-controllers',
+    smarthome: 'categories-smarthome'
   };
-  
+
   const imageId = categoryMap[category.toLowerCase()] || 'logo';
   return getCloudinaryUrl(imageId, options);
 }
