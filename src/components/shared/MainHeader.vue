@@ -56,7 +56,7 @@
             </div>
           </li>
           <li class="block p-3 duration-300 hover:bg-blue-200 lg:p-0 hover:lg:bg-transparent hover:lg:text-foreground">
-            <router-link to="/about" class="block">
+            <router-link to="/about" class="block whitespace-nowrap">
               {{ $t('nav.about') }}
             </router-link>
           </li>
