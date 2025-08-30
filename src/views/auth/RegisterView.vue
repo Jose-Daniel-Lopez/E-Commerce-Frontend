@@ -183,8 +183,9 @@ const handleSubmit = async (): Promise<void> => {
     })
 
     if (data.user && data.user.verificationToken) {
-      // Build verification link
-      const verificationLink = `${window.location.origin}/verify?token=${data.user.verificationToken}`
+      // Build verification link with base URL
+      const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, '') // Remove trailing slash
+      const verificationLink = `${window.location.origin}${baseUrl}/verify?token=${data.user.verificationToken}`
 
       // Send verification email
       try {
