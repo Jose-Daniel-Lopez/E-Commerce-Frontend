@@ -210,10 +210,20 @@ const handleSubmit = async (): Promise<void> => {
     await router.push({ name: 'login' })
   } catch (err: unknown) {
     console.error('Registration error:', err)
-    const error_obj = err as { response?: { status?: number } }
+    const error_obj = err as { response?: { status?: number; data?: { message?: string; error?: string } } }
 
     if (error_obj.response?.status === 409) {
-      setGlobalError('Email already exists')
+      // Check if the error message contains information about which field is duplicated
+      const errorMessage = error_obj.response.data?.message || error_obj.response.data?.error || ''
+      console.log('409 Error message:', errorMessage) // Debug log
+
+      if (errorMessage.toLowerCase().includes('username')) {
+        setGlobalError('Username already exists')
+      } else if (errorMessage.toLowerCase().includes('email')) {
+        setGlobalError('Email already exists')
+      } else {
+        setGlobalError('Username or email already exists')
+      }
     } else if (error_obj.response?.status === 400) {
       setGlobalError('Bad registration data')
     } else {
