@@ -21,14 +21,15 @@ interface RegisterForm {
 }
 
 interface RegisterResponse {
-  token?: string
+  message: string
   user?: {
     id: number
     username: string
     email: string
     role: string
-    verificationToken?: string
+    // Note: user object may contain additional HATEOAS links from backend
   }
+  verificationToken?: string
 }
 
 const router = useRouter()
@@ -182,9 +183,9 @@ const handleSubmit = async (): Promise<void> => {
       role: form.value.role,
     })
 
-    if (data.user && data.user.verificationToken) {
+    if (data.user && data.verificationToken) {
       // Build verification link
-      const verificationLink = `${window.location.origin}/verify?token=${data.user.verificationToken}`
+      const verificationLink = `${window.location.origin}/verify?token=${data.verificationToken}`
 
       // Send verification email
       try {
