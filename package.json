@@ -17,7 +17,9 @@
     "install-browsers": "npx playwright install",
     "migrate-images": "node scripts/migrate-images-to-cloudinary.cjs",
     "update-image-paths": "node scripts/update-image-paths.cjs",
-    "cloudinary-migration": "node scripts/cloudinary-migration.cjs"
+    "cloudinary-migration": "node scripts/cloudinary-migration.cjs",
+    "playwright-test": "npx playwright test",
+    "playwright-test-report": "npx playwright show-report"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
