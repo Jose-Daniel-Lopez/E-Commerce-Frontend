@@ -1,39 +1,305 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { useScrollToTop } from '@/composables/useScrollToTop'
 
+/**
+ * Creates a Vue Router instance with lazy-loaded routes and navigation guards.
+ * Uses HTML5 history mode for clean URLs (e.g., /catalog instead of #/catalog).
+ *
+ * Routes are grouped by functionality (e.g., main pages, catalog, auth).
+ * Some routes require authentication or specific roles, enforced via `meta` fields.
+ */
 const router = createRouter({
+  // Uses HTML5 history mode; base URL is set from environment variable
   history: createWebHistory(import.meta.env.BASE_URL),
+
+  /**
+   * Handles scroll position for all navigations.
+   * @param to - The target route.
+   * @param from - The route being left.
+   * @param savedPosition - The saved scroll position (if any) from browser back/forward.
+   * @returns The desired scroll position.
+   */
+  scrollBehavior(to, from, savedPosition) {
+    // If a saved position exists (from back/forward buttons), use it.
+    if (savedPosition) {
+      return savedPosition
+    }
+    // Otherwise, scroll to the top of the page.
+    return { top: 0, behavior: 'smooth' }
+  },
+
   routes: [
+    // ========================
+    // Main Static Pages
+    // ========================
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/HomeView.vue'),
+      component: () => import('../views/home/HomeView.vue'),
+      meta: { title: 'Home' }
     },
     {
-      path: '/users',
-      name: 'users',
-      component: () => import('../views/UsersView.vue'),
+      path: '/about',
+      name: 'about',
+      component: () => import('../views/home/AboutView.vue'),
+      meta: { title: 'About Us' }
     },
     {
-      path: '/products',
-      name: 'products',
-      component: () => import('../views/ProductsView.vue'),
+      path: '/contact',
+      name: 'contact',
+      component: () => import('../views/home/ContactView.vue'),
+      meta: { title: 'Contact' }
+    },
+
+    // ========================
+    // Policy Routes (Terms, Privacy, Refund & Return)
+    // ========================
+    {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('../views/home/TermsView.vue'),
+      meta: { title: 'Terms & Conditions' }
     },
     {
-      path: '/categories',
-      name: 'categories',
-      component: () => import('../views/CategoriesView.vue'),
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('../views/home/PrivacyView.vue'),
+      meta: { title: 'Privacy Policy' }
     },
     {
-      path: '/categories/:categoryId/products',
+      path: '/refund',
+      name: 'refund',
+      component: () => import('../views/home/RefundView.vue'),
+      meta: { title: 'Refund & Return Policy' }
+    },
+
+    // ========================
+    // Product Catalog & Details
+    // ========================
+    {
+      path: '/catalog',
+      name: 'catalog',
+      component: () => import('../views/catalog/CatalogView.vue'),
+      meta: { title: 'Product Catalog' }
+    },
+    {
+      path: '/catalog/all-products',
+      name: 'allProducts',
+      component: () => import('../views/catalog/CatalogAllProductsView.vue'),
+      meta: { title: 'All Products' }
+    },
+    {
+      path: '/search',
+      name: 'searchResults',
+      component: () => import('../views/catalog/SearchResultsView.vue'),
+      meta: { title: 'Search Results' }
+    },
+    {
+      path: '/catalog/:categoryName',
       name: 'categoryProducts',
-      component: () => import('../views/CategoryProductsView.vue'),
+      component: () => import('../views/catalog/CatalogCategoryView.vue'),
+      meta: { title: 'Category Products' },
+      props: true
     },
     {
-      path: '/users/:userId/productReviews',
-      name: 'userReviews',
-      component: () => import('../views/UserReviewsView.vue'),
+      path: '/catalog/:categoryName/:productId',
+      name: 'productDetails',
+      component: () => import('../views/catalog/CatalogProductDetailsView.vue'),
+      meta: { title: 'Product Details' },
+      props: true // Pass route params (like productId) as props to the component
+    },
+
+    // ========================
+    // Shopping Cart & Wishlist
+    // ========================
+    {
+      path: '/cart',
+      name: 'shoppingCart',
+      component: () => import('../views/cart/ShoppingCartView.vue'),
+      meta: {
+        requiresAuth: true,
+        title: 'Shopping Cart'
+      }
+    },
+    {
+      path: '/wishlist',
+      name: 'wishlist',
+      component: () => import('../views/home/WishlistView.vue'),
+      meta: {
+        requiresAuth: true,
+        title: 'Wishlist'
+      }
+    },
+
+    // ========================
+    // Checkout Process (Multi-Step)
+    // ========================
+    {
+      path: '/checkoutAddress',
+      name: 'checkoutAddress',
+      component: () => import('../views/checkout/CheckoutAddressView.vue'),
+      meta: {
+        requiresAuth: true,
+        title: 'Shipping Address'
+      }
+    },
+    {
+      path: '/checkoutShipping',
+      name: 'checkoutShipping',
+      component: () => import('../views/checkout/CheckoutShippingView.vue'),
+      meta: {
+        requiresAuth: true,
+        title: 'Shipping Method'
+      }
+    },
+    {
+      path: '/checkoutPayment',
+      name: 'checkoutPayment',
+      component: () => import('../views/checkout/CheckoutPaymentView.vue'),
+      meta: {
+        requiresAuth: true,
+        title: 'Payment'
+      }
+    },
+
+    // ========================
+    // User Account & Profile
+    // ========================
+    {
+      path: '/account',
+      name: 'userAccount',
+      component: () => import('../views/user/UserAccountView.vue'),
+      meta: {
+        requiresAuth: true,
+        title: 'My Account'
+      }
+    },
+
+    // ========================
+    // Authentication Routes
+    // ========================
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/auth/LoginView.vue'),
+      meta: { title: 'Log In' }
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/auth/RegisterView.vue'),
+      meta: { title: 'Create Account' }
+    },
+    {
+      path: '/verify',
+      name: 'verify',
+      component: () => import('../views/auth/VerifyView.vue'),
+      meta: { title: 'Verify Email' }
+    },
+
+    // ========================
+    // Test and Demo Routes
+    // ========================
+    {
+      path: '/toast-demo',
+      name: 'toastDemo',
+      component: () => import('../views/testing/ToastDemo.vue'),
+      meta: { title: 'Toast Demo' }
+    },
+    {
+      path: '/slider-demo',
+      name: 'sliderDemo',
+      component: () => import('../views/testing/DualRangeSliderTest.vue'),
+      meta: { title: 'Slider Demo' }
+    },
+    {
+      path: '/error-demo',
+      name: 'errorDemo',
+      component: () => import('../views/testing/ErrorDemo.vue'),
+      meta: { title: 'Error Pages Demo' }
+    },
+
+    // ========================
+    // Error Pages
+    // ========================
+    {
+      path: '/error/:errorCode(400|401|403|404|500|502)',
+      name: 'error',
+      component: () => import('../views/shared/ErrorView.vue'),
+      props: route => ({ errorCode: parseInt(route.params.errorCode as string) }),
+      meta: { title: 'Error' }
+    },
+
+    // ========================
+    // Catch All / 404 Route
+    // ========================
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'notFound',
+      component: () => import('../views/shared/ErrorView.vue'),
+      props: { errorCode: 404 },
+      meta: { title: '404 - Page Not Found' }
     }
-  ],
+  ]
 })
 
+// ========================
+// Global Navigation Guard
+// ========================
+// Protects routes based on authentication and role using the `meta` field
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+
+  // 1. Redirect unauthenticated users trying to access protected routes
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    console.warn(`Access denied to ${to.fullPath}: authentication required`)
+    return next({ name: 'login' })
+  }
+
+  // 2. Redirect non-admin users trying to access admin-only routes
+  if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    console.warn(`Access denied to ${to.fullPath}: admin role required`)
+    return next({ name: 'userAccount' })
+  }
+
+  // 3. Redirect authenticated users away from login/register pages
+  if (['login', 'register'].includes(to.name as string) && authStore.isAuthenticated) {
+    console.info(`Authenticated user redirected from ${String(to.name)} to account`)
+    return next({ name: 'userAccount' })
+  }
+
+  // 4. Allow navigation to proceed
+  next()
+})
+
+// ========================
+// Robust Scroll to Top Handler
+// ========================
+// Ensures scroll to top works reliably with all types of navigation
+router.afterEach(async (to, from) => {
+  // Skip if navigating to the same route
+  if (to.path === from.path) {
+    return
+  }
+
+  // Use the robust scrollToTop composable
+  const { scrollToTop } = useScrollToTop()
+
+  try {
+    // Wait for the smooth scroll to complete
+    await scrollToTop(true)
+  } catch (error) {
+    // Fallback if smooth scroll fails
+    console.warn('Router scroll to top failed, using fallback:', error)
+    const { forceScrollToTop } = useScrollToTop()
+    forceScrollToTop()
+  }
+})
+
+/**
+ * Export the configured router instance for use in the Vue app.
+ * Ensures consistent routing behavior with lazy loading, authentication checks,
+ * and semantic route organization.
+ */
 export default router

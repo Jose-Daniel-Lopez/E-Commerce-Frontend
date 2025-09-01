@@ -1,0 +1,543 @@
+{
+  "checkout": {
+    "summary": "Summary",
+    "address": "Address",
+    "noAddress": "No address selected",
+    "shipmentMethod": "Shipping method",
+    "noShipping": "No shipping method selected",
+    "subtotal": "Subtotal",
+    "estimatedTax": "Estimated tax",
+    "estimatedShipping": "Estimated shipping & tax",
+    "total": "Total",
+    "payment": "Payment",
+    "selectAddress": "Select address"
+  },
+  "cart": {
+    "title": "Shopping cart",
+    "loading": "Loading cart...",
+    "error": "Error loading cart.",
+    "empty": "Your cart is empty.",
+    "addToCart": "Add to cart",
+    "addedToCart": "Added to cart"
+  },
+  "productsSection": {
+    "tabs": {
+      "new": "New",
+      "popular": "Popular",
+      "upcoming": "Upcoming"
+    },
+    "noData": "No data available"
+  },
+  "nav": {
+    "home": "Home",
+    "categories": "Categories",
+    "products": "Products",
+    "about": "About",
+    "contact": "Contact",
+    "cart": "Cart",
+    "orders": "Orders",
+    "profile": "Profile"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "account": "My account"
+  },
+  "about": {
+    "title": "About us",
+    "description": "We are an e-commerce store dedicated to offering high-quality products with a minimalist, elegant approach. Our mission is to provide a simple and enjoyable shopping experience for all our customers.",
+    "values": {
+      "quality": {
+        "title": "Quality",
+        "description": "Carefully selected products that meet the highest quality standards."
+      },
+      "innovation": {
+        "title": "Innovation",
+        "description": "The latest technologies and trends in electronic devices and accessories."
+      },
+      "support": {
+        "title": "Support",
+        "description": "Exceptional customer service to ensure a seamless shopping experience."
+      }
+    },
+    "featuredProducts": {
+      "title": "Our featured products",
+      "iphone": {
+        "title": "iPhone 14 Pro",
+        "description": "Premium mobile experience"
+      },
+      "macbook": {
+        "title": "MacBook Pro",
+        "description": "Professional computing power"
+      },
+      "airpods": {
+        "title": "AirPods Pro",
+        "description": "Excellence in wireless audio"
+      }
+    },
+    "cta": {
+      "title": "Ready to shop?",
+      "description": "Explore our full collection of premium products and find the perfect device for you.",
+      "shopNow": "Shop now",
+      "contact": "Contact us"
+    }
+  },
+  "shop": {
+    "title": "Our shop",
+    "description": "Discover our selection of cutting-edge tech products. From phones to accessories, find everything you need.",
+    "categories": {
+      "allCategories": "All categories",
+      "allProducts": "All products",
+      "price": "Price",
+      "brands": "Brands",
+      "buyNow": "Buy now",
+      "smartphones": "Smartphones",
+      "tablets": "Tablets",
+      "laptops": "Laptops",
+      "handhelds": "Handheld consoles",
+      "keyboards": "Keyboards",
+      "mice": "Mice",
+      "controllers": "Controllers"
+    },
+    "product": "product",
+    "products": "products",
+    "productAddToCart": "Add to cart",
+    "productAddedToCart": "Added to cart",
+    "productOutOfStock": "Out of stock",
+    "empty": {
+      "title": "No categories available",
+      "description": "No categories were found to display."
+    },
+    "retry": "Retry",
+    "loadingCategories": "Loading categories...",
+    "noCategories": "No categories available.",
+    "cta": {
+      "title": "Can't find what you're looking for?",
+      "description": "Contact our team and we'll help you find the perfect product.",
+      "contact": "Contact"
+    }
+  },
+  "contact": {
+    "title": "Contact us",
+    "information": {
+      "title": "Information",
+      "email": {
+        "title": "Email",
+        "info": "info{'@'}tejontech.com",
+        "support": "support{'@'}tejontech.com"
+      },
+      "phone": {
+        "title": "Phone",
+        "number": "+34 91 123 45 67",
+        "hours": "Mon - Fri: 9:00 - 18:00"
+      },
+      "location": {
+        "title": "Location",
+        "address": "Gran Vía Street, 123",
+        "city": "28013 Madrid, Spain"
+      },
+      "responseTime": {
+        "title": "Response time",
+        "description": "We usually reply within 24 hours",
+        "businessHours": "During business hours: within 4 hours"
+      }
+    },
+    "form": {
+      "title": "Send message",
+      "fields": {
+        "fullName": {
+          "label": "Full name",
+          "placeholder": "Enter your full name"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "your{'@'}email.com"
+        },
+        "subject": {
+          "label": "Subject",
+          "placeholder": "How can we help you?"
+        },
+        "message": {
+          "label": "Message",
+          "placeholder": "Describe your inquiry or message..."
+        },
+        "contactMethod": {
+          "label": "Preferred contact method",
+          "email": "Email",
+          "phone": "Phone"
+        }
+      },
+      "submit": "Send message"
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "questions": {
+        "delivery": {
+          "question": "What is the delivery time?",
+          "answer": "Standard delivery takes 2 to 3 business days on the mainland and 3 to 5 days in the Balearic and Canary Islands."
+        },
+        "payment": {
+          "question": "What payment methods do you accept?",
+          "answer": "We accept all major credit/debit cards (Visa, Mastercard, American Express), PayPal, Apple Pay and Google Pay."
+        },
+        "returns": {
+          "question": "Can I return a product?",
+          "answer": "Yes, you have 30 days to return any product in perfect condition. Return shipping costs are your responsibility."
+        }
+      }
+    }
+  },
+  "catalog": {
+    "title": "Catalog",
+    "price": "Price",
+    "brands": "Brands",
+    "buyNow": "Buy now",
+    "allProducts": "All products",
+    "category": "Category",
+    "categories": "Categories",
+    "searchCategories": "Search categories",
+    "searchPlaceholder": "Search",
+    "categoriesFound": "{count} categories found",
+    "noCategoriesFound": "No categories found",
+    "noCategoriesMatch": "No categories match your search",
+    "types": "Types",
+    "clearFilters": "Clear",
+    "stats": "Statistics",
+    "totalCategories": "Total categories",
+    "totalProducts": "Total products",
+    "filtered": "Filtered",
+    "brandsLabel": "Brands",
+    "sort": {
+      "label": "Sort by",
+      "nameAZ": "Name A-Z",
+      "nameZA": "Name Z-A",
+      "mostProducts": "Most products",
+      "leastProducts": "Least products",
+      "rating": "By rating",
+      "priceLow": "Price: Low to High",
+      "priceHigh": "Price: High to Low"
+    },
+    "viewProducts": "View products",
+    "relatedProducts": "Related products",
+    "toggleRelatedProducts": "Toggle related products section",
+    "startingAt": "Starting at",
+    "viewDetails": "View details",
+    "noRelatedProducts": "No related products found",
+    "relatedProductsError": "Could not load related products",
+    "debugPanelTitle": "Debug panel",
+    "debugTestButton": "Navigation test (ID: {id})",
+    "debug": {
+      "user": "User",
+      "wishlistId": "Wishlist ID",
+      "wishlistCount": "Wishlist count",
+      "wishlistProductIds": "Wishlist product IDs",
+      "currentPage": "Current page",
+      "itemsPerPage": "Items per page",
+      "filteredProducts": "Filtered products",
+      "checkedBrands": "Checked brands",
+      "priceRange": "Price range",
+      "sortBy": "Sort by",
+      "category": "Category",
+      "displayName": "Display name"
+    },
+    "filters": "Filters",
+    "filtersTitle": "Filters",
+    "activeBadge": "Active",
+    "productsFound": "{count} products found",
+    "loadingProducts": "Loading products...",
+    "noProductsFound": "No products found",
+    "noProductsMatchFilters": "No product matches your current filters",
+    "noProductsInCategory": "No products found in this category",
+    "clearAllFilters": "Clear all filters",
+    "activeFilters": "Active filters",
+    "summary": "Summary",
+    "filteredResults": "Filtered results:",
+    "currentPageLabel": "Current page",
+    "searchBrands": "Search brands",
+    "showResults": "Show {count} results",
+    "viewProduct": "View {name}"
+  },
+  "home": {
+    "title": "Home",
+    "banner": {
+      "popularProducts": {
+        "title": "Popular Products",
+        "description": "Discover our most loved tech products, from smartphones to laptops, all designed to enhance your digital lifestyle."
+      },
+      "ipadPro": {
+        "title": "iPad Pro",
+        "description": "The ultimate tablet experience with M2 chip, Liquid Retina XDR display, and all-day battery life for creativity and productivity."
+      },
+      "samsungGalaxy": {
+        "title": "Samsung Galaxy",
+        "description": "Experience innovation with cutting-edge camera technology, stunning AMOLED display, and powerful performance in your pocket."
+      },
+      "macbookPro": {
+        "title": "MacBook Pro",
+        "description": "Professional-grade laptop with M3 chip, brilliant Liquid Retina display, and up to 22 hours of battery life for demanding workflows."
+      }
+    }
+  },
+  "refund": {
+    "title": "Refund & Returns Policy"
+  },
+  "terms": {
+    "title": "Terms & Conditions"
+  },
+  "privacy": {
+    "title": "Privacy Policy"
+  },
+  "smartphones": {
+    "title": "Smartphones"
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "loading": "Loading...",
+    "error": "Error loading wishlist.",
+    "removeError": "Could not remove the product.",
+    "empty": "Your wishlist is empty.",
+    "emptyDescription": "Browse products and add your favorites here.",
+    "goToCatalog": "Go to catalog",
+    "viewProduct": "View product",
+    "details": "View details",
+    "remove": "Remove",
+    "loginRequired": "Please log in to add products to your wishlist",
+    "productNotFound": "Product not found",
+    "updateError": "Error updating wishlist"
+  },
+  "errors": {
+    "productNotFound": "Product not found",
+    "wishlistUpdateError": "Error updating wishlist"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "price": "Price",
+    "category": "Category",
+    "brand": "Brand",
+    "stock": "Stock",
+    "addToCart": "Add to cart",
+    "buyNow": "Buy now"
+  },
+  "account": {
+    "navigation": "Navigation",
+    "title": "My account",
+    "profile": {
+      "title": "Profile",
+      "editButton": "Edit profile",
+      "cancelButton": "Cancel",
+      "refreshButton": "Refresh",
+      "memberSince": "Member since",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "editModal": {
+        "title": "Edit profile",
+        "nameLabel": "Full name",
+        "namePlaceholder": "Enter your full name",
+        "emailLabel": "Email",
+        "emailPlaceholder": "your{'@'}email.com",
+        "locationLabel": "Location",
+        "locationPlaceholder": "Enter your location",
+        "avatarTitle": "Profile picture",
+        "avatarDescription": "Upload a new profile picture. Only JPG, PNG or GIF files are allowed.",
+        "changeAvatarButton": "Change photo",
+        "cancelButton": "Cancel",
+        "saveButton": "Save changes"
+      }
+    },
+    "orders": {
+      "title": "My orders",
+      "viewAll": "View all orders",
+      "order": "Order",
+      "viewDetails": "View details",
+      "empty": "You don't have any orders yet.",
+      "emptyMessage": "You haven't placed any orders yet."
+    },
+    "refunds": {
+      "title": "Refunds & returns",
+      "refund": "Refund",
+      "viewDetails": "View details",
+      "empty": "No refunds or returns found."
+    },
+    "wishlist": {
+      "title": "Wishlist",
+      "viewAll": "View all",
+      "addToCart": "Add to cart",
+      "empty": {
+        "title": "Your wishlist is empty",
+        "description": "Start browsing and add products you like!"
+      },
+      "emptyMessage": "You have no products in your wishlist."
+    },
+    "addresses": {
+      "title": "My addresses",
+      "addButton": "Add new address"
+    },
+    "reviews": {
+      "title": "My reviews",
+      "reviews": "Reviews",
+      "empty": "You haven't written any reviews yet."
+    },
+    "settings": {
+      "title": "Settings",
+      "language": {
+        "title": "Language",
+        "description": "Choose your preferred language"
+      },
+      "theme": {
+        "title": "App theme",
+        "description": "Select your preferred theme"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "description": "Manage your notification preferences"
+      },
+      "security": {
+        "title": "Security",
+        "description": "Manage your account security",
+        "changePasswordButton": "Change password"
+      }
+    }
+  },
+  "discountProducts": {
+    "title": "Discounted products"
+  },
+  "footer": {
+    "location": "Location",
+    "headOffice": "Head Office: Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+    "emailLabel": "Email",
+    "emailAddress": "tejontech{'@'}gmail.com",
+    "support": "Support",
+    "supportHours": "9AM - 8PM",
+    "supportPhone": "16744",
+    "about": "About",
+    "contact": "Contact",
+    "terms": "Terms & Conditions",
+    "privacy": "Privacy Policy",
+    "refund": "Refund & Returns Policy"
+  },
+  "hero": {
+    "smallTitle": "Pro. Beyond.",
+    "bigTitle": "iPhone 14",
+    "bigTitleBold": "Pro",
+    "description": "Built to change everything for the better. For everyone.",
+    "buttonText": "Show more"
+  },
+  "product": {
+    "selectColor": "Select color:",
+    "storage": "Storage",
+    "stock": "Stock:",
+    "stockAvailable": "{count} available",
+    "outOfStock": "Out of stock",
+    "sku": "SKU",
+    "screenSize": "Screen size",
+    "cpu": "CPU",
+    "gpu": "GPU",
+    "ram": "RAM",
+    "refreshRate": "Refresh rate",
+    "camera": "Camera",
+    "frontCamera": "Front camera",
+    "battery": "Battery",
+    "os": "OS",
+    "dpi": "DPI",
+    "pollingRate": "Polling rate",
+    "switchType": "Switch type",
+    "backlighting": "Backlighting",
+    "programmable": "Programmable",
+    "batteryLife": "Battery life",
+    "ergonomic": "Ergonomic",
+    "more": "more...",
+    "less": "less...",
+    "adding": "Adding...",
+    "loginToWishlist": "Log in to add to wishlist",
+    "alreadyInWishlist": "Already in wishlist",
+    "addToWishlist": "Add to wishlist",
+    "loginToCart": "Log in to add to cart",
+    "selectStorageOrSize": "Select {type}",
+    "size": "Size",
+    "addToCart": "Add to cart",
+    "added": "Added",
+    "freeDelivery": "Free delivery",
+    "deliveryTime": "1-2 days",
+    "inStock": "In stock",
+    "today": "Today",
+    "guaranteed": "Guaranteed",
+    "guaranteeTime": "1 year",
+    "details": "Details",
+    "displayAndScreen": "Display & screen",
+    "performance": "Performance",
+    "operatingSystem": "Operating system",
+    "rearCamera": "Rear camera",
+    "batteryCapacity": "Battery capacity",
+    "reviews": "Reviews",
+    "excellent": "Excellent",
+    "good": "Good",
+    "average": "Average",
+    "belowAverage": "Below average",
+    "poor": "Poor",
+    "leaveComment": "Leave a comment",
+    "leaveReview": "Leave a review",
+    "rating": "Rating",
+    "comment": "Comment",
+    "submitReview": "Submit review",
+    "viewMore": "View more",
+    "viewLess": "View less",
+    "toggleFavorite": "Toggle favorite",
+    "upcoming": "Upcoming",
+    "buy": "Buy",
+    "notAvailable": "N/A",
+    "invalidProductId": "Invalid product ID ({id}). Cannot add to wishlist.",
+    "userNotAuthenticated": "User not authenticated - please log in",
+    "addedToWishlist": "Product added to wishlist",
+    "removedFromWishlist": "Product removed from wishlist",
+    "wishlistStateError": "State didn't change as expected - check console for details",
+    "unknownError": "Unknown error"
+  },
+  "auth": {
+    "verify": {
+      "error": "Error verifying user",
+      "goToLogin": "Go to login",
+      "registerAgain": "Register again",
+      "success": "Registration successful",
+      "successMessage": "You have been successfully registered."
+    }
+  },
+  "debug": {
+    "productVariantData": "DEBUG: Product and variant data (REMOVE LATER)"
+  },
+  "wip": {
+    "tooltip": "Work in progress - This feature is still under development",
+    "text": "WIP",
+    "translationTooltip": "The translation system is still under development. Some texts may not be translated or may be inaccurate.",
+    "themeTooltip": "The theme system is still under development. The light theme may contain unfinished parts."
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "lightTooltip": "Light",
+    "darkTooltip": "Dark",
+    "systemTooltip": "System"
+  },
+  "search": {
+    "button": "Search",
+    "title": "No results for your search",
+    "resultsFor": "Results for: {query}",
+    "products": "Products",
+    "placeholder": "Search products, categories...",
+    "noResults": "No results found",
+    "noResultsFor": "No results found for: {query}",
+    "recentSearches": "Recent searches",
+    "checkSpelling": "Check your spelling",
+    "tryGeneralKeywords": "Try more general keywords",
+    "browseCategories": "Browse categories"
+  }
+}

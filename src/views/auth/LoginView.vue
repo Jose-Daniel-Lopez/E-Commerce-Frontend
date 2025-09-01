@@ -1,0 +1,297 @@
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import { useToast } from '@/composables/useToast'
+import { useThemeClasses } from '@/composables/useThemeClasses'
+import Wrapper from '@/components/shared/Wrapper.vue'
+import FloatingInput from '@/components/shared/FloatingInput.vue'
+import PasswordInput from '@/components/shared/PasswordInput.vue'
+import ErrorAlert from '@/components/shared/ErrorAlert.vue'
+import SubmitButton from '@/components/shared/SubmitButton.vue'
+import { useFormValidation, validationRules } from '@/composables/useFormValidation'
+import WipTag from '@/components/shared/WipTag.vue'
+
+
+interface LoginForm {
+  email: string
+  password: string
+}
+
+const router = useRouter()
+const authStore = useAuthStore()
+const toast = useToast()
+// Theme classes
+const {
+  pageBackgroundClasses,
+  cardClasses,
+  textClasses,
+  textMutedClasses
+} = useThemeClasses()
+
+const form = ref<LoginForm>({
+  email: '',
+  password: '',
+})
+const loading = ref(false)
+const rememberMe = ref(false)
+
+// Form validation setup
+const {
+  globalError,
+  registerField,
+  updateField,
+  validateForm,
+  hasFieldError,
+  setGlobalError,
+  clearGlobalError,
+} = useFormValidation()
+
+/**
+ * Initialize form validation rules
+ */
+onMounted(() => {
+  registerField('email', form.value.email, [
+    validationRules.required('Email is required'),
+    validationRules.email('Please enter a valid email address'),
+  ])
+
+  registerField('password', form.value.password, [
+    validationRules.required('Password is required'),
+    validationRules.minLength(6, 'Password must be at least 6 characters long'),
+  ])
+})
+
+/**
+ * Handle email input changes
+ */
+const handleEmailChange = (value: string) => {
+  form.value.email = value
+  updateField('email', value)
+}
+
+/**
+ * Handle password input changes
+ */
+const handlePasswordChange = (value: string) => {
+  form.value.password = value
+  updateField('password', value)
+}
+
+/**
+ * Handles the login process and manages authentication feedback
+ *
+ * @description
+ * Manages the complete login flow including:
+ * - Form validation
+ * - Loading state management
+ * - API call to authentication store
+ * - Success/error handling and user feedback with toast notifications
+ * - Navigation after successful login
+ */
+const handleSubmit = async (): Promise<void> => {
+  const { isValid } = validateForm()
+
+  if (!isValid) return
+
+  loading.value = true
+  clearGlobalError() // Clear any previous errors
+
+  try {
+    console.log('🟡 [LOGIN] Attempting login for:', form.value.email)
+
+    const result = await authStore.login({
+      email: form.value.email.trim(),
+      password: form.value.password,
+    })
+
+    if (result?.success) {
+      console.log('🟢 [LOGIN] Login successful, redirecting to account page')
+
+      // Show success toast notification
+      toast.success('Welcome back! You have been successfully logged in.', {
+        title: 'Login Successful',
+        duration: 4000,
+      })
+
+      // Small delay to show the toast before navigation
+      setTimeout(async () => {
+        await router.push({ name: 'userAccount' })
+      }, 500)
+    } else {
+      console.log('🔴 [LOGIN] Login failed:', result?.error)
+      setGlobalError(result?.error || 'Login failed. Please try again.')
+
+      // Show specific error messages for better UX
+      const isInvalidCredentials = result?.error?.toLowerCase().includes('invalid') ||
+                                   result?.error?.toLowerCase().includes('password') ||
+                                   result?.error?.toLowerCase().includes('email')
+
+      toast.error(isInvalidCredentials
+        ? 'Invalid email or password. Please check your credentials and try again.'
+        : result?.error || 'Login failed. Please try again.', {
+        title: 'Login Failed',
+        duration: 6000,
+      })
+    }
+  } catch (err) {
+    console.error('🔴 [LOGIN] Unexpected login error:', err)
+    const errorMessage = 'An unexpected error occurred. Please try again.'
+    setGlobalError(errorMessage)
+    toast.error(errorMessage, {
+      title: 'Login Error',
+      duration: 6000,
+    })
+  } finally {
+    loading.value = false
+  }
+}
+</script>
+
+<template>
+  <div :class="['min-h-screen flex items-center justify-center', pageBackgroundClasses]">
+    <!-- Centered card with two sections: image and form -->
+    <div
+      class="flex max-[900px]:flex-col w-[850px] max-w-full min-h-[520px] max-[900px]:w-screen max-[900px]:h-auto max-[900px]:rounded-none rounded-2xl shadow-2xl overflow-hidden mx-auto"
+      :class="cardClasses"
+    >
+      <!-- Left: welcoming image for visual appeal -->
+      <div
+        class="flex-1 min-w-[320px] max-[900px]:hidden bg-cover bg-center bg-no-repeat"
+        style="background-image: url('https://res.cloudinary.com/tejon-tech/image/upload/v1756151696/e-commerce/login.webp')"
+      ></div>
+      <!-- Right: login form for user authentication -->
+      <div
+        class="flex-1 min-w-[320px] max-[900px]:w-full max-[900px]:min-w-0 flex items-center justify-center"
+      >
+        <Wrapper class="w-full max-w-[400px] px-6 py-8 rounded-[20px]">
+          <div class="w-full max-w-md animate-[fadeInUp_0.8s_ease-out]">
+            <!-- Welcome header -->
+            <div class="mb-8 text-center">
+              <h1 :class="['font-srProDisplay text-3xl font-semibold mb-2', textClasses]">
+                Welcome back
+              </h1>
+              <p :class="['font-srProDisplay text-sm', textMutedClasses]">
+                Sign in to continue to your account
+              </p>
+            </div>
+            <!-- Login form card -->
+            <div
+              class="p-8 transition-all duration-500 bg-surface/80 backdrop-blur-sm rounded-2xl hover:bg-surface/90"
+              role="main"
+              aria-label="Login form"
+            >
+              <!-- Error message display -->
+              <ErrorAlert
+                :message="globalError"
+                :show="!!globalError"
+                @dismiss="clearGlobalError"
+              />
+
+              <form @submit.prevent="handleSubmit" class="space-y-6" novalidate>
+                <!-- Email input field -->
+                <FloatingInput
+                  id="email"
+                  label="Email Address"
+                  :model-value="form.email"
+                  type="email"
+                  autocomplete="email"
+                  :required="true"
+                  animation-class="animate-[fadeInUp_0.6s_ease-out_0.2s_both]"
+                  :has-error="hasFieldError('email').value"
+                  @update:model-value="handleEmailChange"
+                />
+
+                <!-- Password input field with visibility toggle -->
+                <PasswordInput
+                  id="password"
+                  label="Password"
+                  :model-value="form.password"
+                  autocomplete="current-password"
+                  :required="true"
+                  animation-class="animate-[fadeInUp_0.6s_ease-out_0.3s_both]"
+                  :has-error="hasFieldError('password').value"
+                  @update:model-value="handlePasswordChange"
+                />
+                <!-- Remember me and forgot password options -->
+                <div class="flex items-center justify-between">
+                  <label class="flex items-center cursor-pointer group">
+                    <input
+                      v-model="rememberMe"
+                      type="checkbox"
+                      class="appearance-none w-4 h-4 border border-border rounded-sm bg-input cursor-pointer relative flex-shrink-0 mr-3 hover:border-muted checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-3 after:h-3 after:bg-[url('data:image/svg+xml,%3csvg%20viewBox%3D%270%200%2016%2016%27%20fill%3D%27white%27%20xmlns%3D%27http://www.w3.org/2000/svg%27%3e%3cpath%20d%3D%27m13.854%203.646a.5.5%200%200%201%200%20.708l-7%207a.5.5%200%200%201-.708%200l-3.5-3.5a.5.5%200%201%201%20.708-.708L6.5%2010.293l6.646-6.647a.5.5%200%200%201%20.708%200z%27/%3e%3c/svg%3e')] after:bg-contain after:bg-no-repeat after:bg-center after:opacity-0 checked:after:opacity-100 transition-all duration-200"
+                    />
+                    <span
+                      :class="['font-srProDisplay text-sm group-hover:text-primary transition-colors duration-200', textMutedClasses]"
+                      >Remember me <WipTag variant="compact" :show-icon="false" text="WIP" tooltip="Work In Progress. Set to always on." /></span
+                    >
+                  </label>
+                  <a
+                    href="#"
+                    :class="['font-srProDisplay text-sm hover:text-primary hover:underline transition-all duration-200 cursor-pointer', textMutedClasses]"
+                  >
+                    Forgot password? <WipTag variant="compact" :show-icon="false" text="WIP" tooltip="Work In Progress. Yet to be implemented." />
+                  </a>
+                </div>
+                <!-- Sign in button with loading state -->
+                <SubmitButton
+                  :loading="loading"
+                  text="Sign In"
+                  loading-text="Signing in..."
+                  :aria-describedby="globalError ? 'login-error' : undefined"
+                />
+              </form>
+              <!-- Sign up link for new users -->
+              <div class="pt-6 mt-8 border-t border-border">
+                <p :class="['text-center font-srProDisplay text-sm', textMutedClasses]">
+                  Don't have an account?
+                  <RouterLink
+                    to="/register"
+                    class="ml-1 font-medium transition-all duration-200 cursor-pointer text-primary hover:underline"
+                    >Create one here</RouterLink
+                  >
+                </p>
+              </div>
+            </div>
+            <!-- Footer with terms and privacy notice -->
+            <div class="mt-8 text-center">
+              <p class="text-xs font-srProDisplay text-muted-foreground">
+                By signing in, you agree to our
+                <router-link :to="{ name: 'terms' }" class="cursor-pointer text-primary hover:underline">terms of service</router-link>
+                and
+                <router-link :to="{ name: 'privacy' }" class="cursor-pointer text-primary hover:underline">privacy policy</router-link>
+              </p>
+            </div>
+          </div>
+        </Wrapper>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+/* Component-specific styles only */
+/* Hide browser password visibility toggles since we have our own */
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear,
+input[type='password']::-webkit-credentials-auto-fill-button,
+input[type='password']::-webkit-input-password-toggle-button,
+input[type='password']::-webkit-input-clear-button {
+  display: none !important;
+}
+
+input[type='text']::-ms-reveal,
+input[type='text']::-ms-clear,
+input[type='text']::-webkit-credentials-auto-fill-button,
+input[type='text']::-webkit-input-password-toggle-button,
+input[type='text']::-webkit-input-clear-button {
+  display: none !important;
+}
+
+/* Component-specific backdrop filter support */
+@supports (backdrop-filter: blur(10px)) {
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+  }
+}
+</style>

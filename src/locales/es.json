@@ -1,0 +1,543 @@
+{
+  "checkout": {
+    "summary": "Resumen",
+    "address": "Dirección",
+    "noAddress": "No hay dirección seleccionada",
+    "shipmentMethod": "Método de envío",
+    "noShipping": "No se ha seleccionado un método de envío",
+    "subtotal": "Subtotal",
+    "estimatedTax": "Impuestos estimados",
+    "estimatedShipping": "Envío e impuestos estimados",
+    "total": "Total",
+    "payment": "Pago",
+    "selectAddress": "Seleccionar dirección"
+  },
+  "cart": {
+    "title": "Carrito de compras",
+    "loading": "Cargando carrito...",
+    "error": "Error al cargar el carrito.",
+    "empty": "Tu carrito está vacío.",
+    "addToCart": "Añadir al carrito",
+    "addedToCart": "Añadido al carrito"
+  },
+  "productsSection": {
+    "tabs": {
+      "new": "Nuevos",
+      "popular": "Populares",
+      "upcoming": "Próximamente"
+    },
+    "noData": "No hay datos disponibles"
+  },
+  "nav": {
+    "home": "Inicio",
+    "categories": "Categorías",
+    "products": "Productos",
+    "about": "Acerca de",
+    "contact": "Contáctanos",
+    "cart": "Carrito",
+    "orders": "Pedidos",
+    "profile": "Perfil"
+  },
+  "breadcrumbs": {
+    "home": "Inicio",
+    "account": "Mi cuenta"
+  },
+  "about": {
+    "title": "Acerca de nosotros",
+    "description": "Somos una tienda de comercio electrónico dedicada a ofrecer productos de alta calidad con un enfoque minimalista y elegante. Nuestra misión es proporcionar una experiencia de compra sencilla y agradable para todos nuestros clientes.",
+    "values": {
+      "quality": {
+        "title": "Calidad",
+        "description": "Productos cuidadosamente seleccionados que cumplen con los más altos estándares de calidad."
+      },
+      "innovation": {
+        "title": "Innovación",
+        "description": "Las últimas tecnologías y tendencias en dispositivos electrónicos y accesorios."
+      },
+      "support": {
+        "title": "Soporte",
+        "description": "Atención al cliente excepcional para garantizar una experiencia de compra perfecta."
+      }
+    },
+    "featuredProducts": {
+      "title": "Nuestros productos destacados",
+      "iphone": {
+        "title": "iPhone 14 Pro",
+        "description": "Experiencia premium en móvil"
+      },
+      "macbook": {
+        "title": "MacBook Pro",
+        "description": "Potencia informática profesional"
+      },
+      "airpods": {
+        "title": "AirPods Pro",
+        "description": "Excelencia en audio inalámbrico"
+      }
+    },
+    "cta": {
+      "title": "¿Preparado para comprar?",
+      "description": "Descubre nuestra colección completa de productos premium y encuentra el dispositivo perfecto para ti.",
+      "shopNow": "Comprar ahora",
+      "contact": "Contáctanos"
+    }
+  },
+  "shop": {
+    "title": "Nuestra tienda",
+    "description": "Descubre nuestra selección de productos tecnológicos de última generación. Desde móviles hasta accesorios, encuentra todo lo que necesitas.",
+    "categories": {
+      "allCategories": "Todas las categorías",
+      "allProducts": "Todos los productos",
+      "price": "Precio",
+      "brands": "Marcas",
+      "buyNow": "Comprar ahora",
+      "smartphones": "Móviles",
+      "tablets": "Tablets",
+      "laptops": "Portátiles",
+      "handhelds": "Consolas portátiles",
+      "keyboards": "Teclados",
+      "mice": "Ratones",
+      "controllers": "Mandos"
+    },
+    "product": "producto",
+    "products": "productos",
+    "productAddToCart": "Añadir al carrito",
+    "productAddedToCart": "Añadido al carrito",
+    "productOutOfStock": "Sin stock",
+    "empty": {
+      "title": "No hay categorías disponibles",
+      "description": "No se encontraron categorías para mostrar."
+    },
+    "retry": "Reintentar",
+    "loadingCategories": "Cargando categorías...",
+    "noCategories": "No hay categorías disponibles.",
+    "cta": {
+      "title": "¿No encuentras lo que buscas?",
+      "description": "Contacta con nuestro equipo y te ayudaremos a encontrar el producto perfecto para ti.",
+      "contact": "Contactar"
+    }
+  },
+  "contact": {
+    "title": "Contáctanos",
+    "information": {
+      "title": "Información",
+      "email": {
+        "title": "Correo electrónico",
+        "info": "info{'@'}tejontech.com",
+        "support": "soporte{'@'}tejontech.com"
+      },
+      "phone": {
+        "title": "Teléfono",
+        "number": "+34 91 123 45 67",
+        "hours": "Lun - Vie: 9:00 - 18:00"
+      },
+      "location": {
+        "title": "Ubicación",
+        "address": "Calle Gran Vía, 123",
+        "city": "28013 Madrid, España"
+      },
+      "responseTime": {
+        "title": "Tiempo de respuesta",
+        "description": "Normalmente respondemos en 24 horas",
+        "businessHours": "En horario laboral: en 4 horas"
+      }
+    },
+    "form": {
+      "title": "Enviar mensaje",
+      "fields": {
+        "fullName": {
+          "label": "Nombre completo",
+          "placeholder": "Introduce tu nombre completo"
+        },
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "tu{'@'}email.com"
+        },
+        "subject": {
+          "label": "Asunto",
+          "placeholder": "¿En qué podemos ayudarte?"
+        },
+        "message": {
+          "label": "Mensaje",
+          "placeholder": "Describe tu consulta o mensaje..."
+        },
+        "contactMethod": {
+          "label": "Método de contacto preferido",
+          "email": "Correo electrónico",
+          "phone": "Teléfono"
+        }
+      },
+      "submit": "Enviar mensaje"
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "questions": {
+        "delivery": {
+          "question": "¿Cuál es el tiempo de entrega?",
+          "answer": "La entrega estándar tarda entre 2 y 3 días laborables en la península y entre 3 y 5 días en Baleares y Canarias."
+        },
+        "payment": {
+          "question": "¿Qué métodos de pago aceptáis?",
+          "answer": "Aceptamos todas las tarjetas de crédito/débito principales (Visa, Mastercard, American Express), PayPal, Apple Pay y Google Pay."
+        },
+        "returns": {
+          "question": "¿Puedo devolver un producto?",
+          "answer": "Sí, tienes 30 días para devolver cualquier producto en perfectas condiciones. Los gastos de envío de devolución corren por tu cuenta."
+        }
+      }
+    }
+  },
+  "catalog": {
+    "title": "Catálogo",
+    "price": "Precio",
+    "brands": "Marcas",
+    "buyNow": "Comprar ahora",
+    "allProducts": "Todos los productos",
+    "category": "Categoría",
+    "categories": "Categorías",
+    "searchCategories": "Buscar Categorías",
+    "searchPlaceholder": "Buscar",
+    "categoriesFound": "{count} categorías encontradas",
+    "noCategoriesFound": "No se encontraron categorías",
+    "noCategoriesMatch": "No hay categorías que coincidan con tu búsqueda",
+    "types": "Tipos",
+    "clearFilters": "Limpiar",
+    "stats": "Estadísticas",
+    "totalCategories": "Total Categorías",
+    "totalProducts": "Total Productos",
+    "filtered": "Filtradas",
+    "brandsLabel": "Marcas",
+    "sort": {
+      "label": "Ordenar por",
+      "nameAZ": "Nombre A-Z",
+      "nameZA": "Nombre Z-A",
+    "mostProducts": "Más productos",
+    "leastProducts": "Menos productos",
+    "rating": "Por valoración",
+    "priceLow": "Precio: Menor a Mayor",
+    "priceHigh": "Precio: Mayor a Menor"
+    },
+    "viewProducts": "Ver Productos",
+    "relatedProducts": "Productos Relacionados",
+    "toggleRelatedProducts": "Alternar sección de productos relacionados",
+    "startingAt": "Desde",
+    "viewDetails": "Ver Detalles",
+    "noRelatedProducts": "No se encontraron productos relacionados",
+    "relatedProductsError": "No se pudieron cargar los productos relacionados",
+    "debugPanelTitle": "Panel de depuración",
+    "debugTestButton": "Prueba de navegación (ID: {id})",
+    "debug": {
+      "user": "Usuario",
+      "wishlistId": "ID de lista",
+      "wishlistCount": "Conteo de lista",
+      "wishlistProductIds": "IDs de productos en la lista",
+      "currentPage": "Páginas actual",
+      "itemsPerPage": "Elementos por página",
+      "filteredProducts": "Productos filtrados",
+      "checkedBrands": "Marcas seleccionadas",
+      "priceRange": "Rango de precios",
+      "sortBy": "Ordenar por",
+      "category": "Categoría",
+      "displayName": "Nombre para mostrar"
+    },
+    "filters": "Filtros",
+    "filtersTitle": "Filtros",
+    "activeBadge": "Activo",
+    "productsFound": "{count} productos encontrados",
+    "loadingProducts": "Cargando productos...",
+    "noProductsFound": "No se encontraron productos",
+    "noProductsMatchFilters": "Ningún producto coincide con tus filtros actuales",
+    "noProductsInCategory": "No se encontraron productos en esta categoría",
+    "clearAllFilters": "Limpiar todos los filtros",
+    "activeFilters": "Filtros activos",
+    "summary": "Resumen",
+    "filteredResults": "Resultados filtrados:",
+    "currentPageLabel": "Página actual",
+    "searchBrands": "Buscar marcas",
+    "showResults": "Mostrar {count} resultados",
+    "viewProduct": "Ver {name}"
+  },
+  "home": {
+    "title": "Inicio",
+    "banner": {
+      "popularProducts": {
+        "title": "Productos Populares",
+        "description": "Descubre nuestros productos tecnológicos más queridos, desde smartphones hasta laptops, todos diseñados para mejorar tu estilo de vida digital."
+      },
+      "ipadPro": {
+        "title": "iPad Pro",
+        "description": "La experiencia definitiva en tablet con chip M2, pantalla Liquid Retina XDR y batería de todo el día para creatividad y productividad."
+      },
+      "samsungGalaxy": {
+        "title": "Samsung Galaxy",
+        "description": "Experimenta la innovación con tecnología de cámara de vanguardia, pantalla AMOLED impresionante y rendimiento potente en tu bolsillo."
+      },
+      "macbookPro": {
+        "title": "MacBook Pro",
+        "description": "Laptop de grado profesional con chip M3, pantalla Liquid Retina brillante y hasta 22 horas de batería para flujos de trabajo exigentes."
+      }
+    }
+  },
+  "refund": {
+    "title": "Política de Reembolsos y Devoluciones"
+  },
+  "terms": {
+    "title": "Términos y Condiciones"
+  },
+  "privacy": {
+    "title": "Política de Privacidad"
+  },
+  "smartphones": {
+    "title": "Smartphones"
+  },
+  "wishlist": {
+    "title": "Lista de deseos",
+    "loading": "Cargando...",
+    "error": "Error al cargar la lista.",
+    "removeError": "No se pudo eliminar el producto.",
+    "empty": "Tu lista de deseos está vacía.",
+    "emptyDescription": "Busca productos y añade tus favoritos aquí.",
+    "goToCatalog": "Ir al catálogo",
+    "viewProduct": "Ver producto",
+    "details": "Ver detalles",
+    "remove": "Quitar",
+    "loginRequired": "Por favor inicia sesión para añadir productos a tu lista de deseos",
+    "productNotFound": "Producto no encontrado",
+    "updateError": "Error al actualizar la lista de deseos"
+  },
+  "errors": {
+    "productNotFound": "Producto no encontrado",
+    "wishlistUpdateError": "Error al actualizar la lista de deseos"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "price": "Precio",
+    "category": "Categoría",
+    "brand": "Marca",
+    "stock": "Stock",
+    "addToCart": "Añadir al carrito",
+    "buyNow": "Comprar ahora"
+  },
+  "account": {
+    "navigation": "Navegación",
+    "title": "Mi cuenta",
+    "profile": {
+      "title": "Perfil",
+      "editButton": "Editar perfil",
+      "cancelButton": "Cancelar",
+      "refreshButton": "Refrescar",
+      "memberSince": "Miembro desde",
+      "verified": "Verificado",
+      "unverified": "No verificado",
+      "editModal": {
+        "title": "Editar perfil",
+        "nameLabel": "Nombre completo",
+        "namePlaceholder": "Introduce tu nombre completo",
+        "emailLabel": "Correo electrónico",
+        "emailPlaceholder": "tu{'@'}email.com",
+        "locationLabel": "Ubicación",
+        "locationPlaceholder": "Introduce tu ubicación",
+        "avatarTitle": "Foto de perfil",
+        "avatarDescription": "Sube una nueva foto de perfil. Solo se permiten archivos JPG, PNG o GIF.",
+        "changeAvatarButton": "Cambiar foto",
+        "cancelButton": "Cancelar",
+        "saveButton": "Guardar cambios"
+      }
+    },
+    "orders": {
+      "title": "Mis pedidos",
+      "viewAll": "Ver todos los pedidos",
+      "order": "Pedido",
+      "viewDetails": "Ver detalles",
+      "empty": "Aún no tienes pedidos.",
+      "emptyMessage": "Aún no has realizado ningún pedido."
+    },
+    "refunds": {
+      "title": "Reembolsos y devoluciones",
+      "refund": "Reembolso",
+      "viewDetails": "Ver detalles",
+      "empty": "No se encontraron reembolsos ni devoluciones."
+    },
+    "wishlist": {
+      "title": "Lista de deseos",
+      "viewAll": "Ver todo",
+      "addToCart": "Añadir al carrito",
+      "empty": {
+        "title": "Tu lista de deseos está vacía",
+        "description": "¡Comienza a navegar y agrega productos que te gusten!"
+      },
+      "emptyMessage": "No tienes productos en tu lista de deseos."
+    },
+    "addresses": {
+      "title": "Mis direcciones",
+      "addButton": "Añadir nueva dirección"
+    },
+    "reviews": {
+      "title": "Mis reseñas",
+      "reviews": "Reseñas",
+      "empty": "Aún no has escrito ninguna reseña."
+    },
+    "settings": {
+      "title": "Configuración",
+      "language": {
+        "title": "Idioma",
+        "description": "Elige tu idioma preferido"
+      },
+      "theme": {
+        "title": "Tema de la aplicación",
+        "description": "Selecciona tu tema preferido"
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "description": "Gestiona tus preferencias de notificación"
+      },
+      "security": {
+        "title": "Seguridad",
+        "description": "Gestiona la seguridad de tu cuenta",
+        "changePasswordButton": "Cambiar contraseña"
+      }
+    }
+  },
+  "discountProducts": {
+    "title": "Productos en descuento"
+  },
+  "footer": {
+    "location": "Ubicación",
+    "headOffice": "Oficina Principal: Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+  "emailLabel": "Correo electrónico",
+  "emailAddress": "tejontech{'@'}gmail.com",
+    "support": "Soporte",
+    "supportHours": "9AM - 8PM",
+    "supportPhone": "16744",
+    "about": "Acerca de",
+    "contact": "Contáctanos",
+    "terms": "Términos y Condiciones",
+    "privacy": "Política de Privacidad",
+    "refund": "Política de Reembolsos y Devoluciones"
+  },
+  "hero": {
+    "smallTitle": "Pro. Beyond.",
+    "bigTitle": "iPhone 14",
+    "bigTitleBold": "Pro",
+    "description": "Creado para cambiarlo todo para mejor. Para todos.",
+    "buttonText": "Mostrar más"
+  },
+  "product": {
+    "selectColor": "Seleccionar color:",
+    "storage": "Almacenamiento",
+    "stock": "Stock:",
+    "stockAvailable": "{count} disponibles",
+    "outOfStock": "Sin stock",
+    "sku": "SKU",
+    "screenSize": "Tamaño de pantalla",
+    "cpu": "CPU",
+    "gpu": "GPU",
+    "ram": "RAM",
+    "refreshRate": "Frecuencia de actualización",
+    "camera": "Cámara",
+    "frontCamera": "Cámara frontal",
+    "battery": "Batería",
+    "os": "SO",
+    "dpi": "DPI",
+    "pollingRate": "Frecuencia de sondeo",
+    "switchType": "Tipo de interruptor",
+    "backlighting": "Retroiluminación",
+    "programmable": "Programable",
+    "batteryLife": "Duración de batería",
+    "ergonomic": "Ergonómico",
+    "more": "más...",
+    "less": "menos...",
+    "adding": "Añadiendo...",
+    "loginToWishlist": "Inicia sesión para añadir a la lista",
+    "alreadyInWishlist": "Ya está en la lista",
+    "addToWishlist": "Añadir a la lista",
+    "loginToCart": "Inicia sesión para añadir al carrito",
+    "selectStorageOrSize": "Seleccionar {type}",
+    "size": "Tamaño",
+    "addToCart": "Añadir al carrito",
+    "added": "Añadido",
+    "freeDelivery": "Envío gratuito",
+    "deliveryTime": "1-2 días",
+    "inStock": "En stock",
+    "today": "Hoy",
+    "guaranteed": "Garantizado",
+    "guaranteeTime": "1 año",
+    "details": "Detalles",
+    "displayAndScreen": "Pantalla y visualización",
+    "performance": "Rendimiento",
+    "operatingSystem": "Sistema Operativo",
+    "rearCamera": "Cámara Trasera",
+    "batteryCapacity": "Capacidad de Batería",
+    "reviews": "Reseñas",
+    "excellent": "Excelente",
+    "good": "Bueno",
+    "average": "Promedio",
+    "belowAverage": "Por debajo del promedio",
+    "poor": "Pobre",
+    "leaveComment": "Dejar un comentario",
+    "leaveReview": "Dejar una reseña",
+    "rating": "Calificación",
+    "comment": "Comentario",
+    "submitReview": "Enviar reseña",
+    "viewMore": "Ver más",
+    "viewLess": "Ver menos",
+    "toggleFavorite": "Alternar favorito",
+    "upcoming": "Próximamente",
+    "buy": "Comprar",
+    "notAvailable": "N/A",
+    "invalidProductId": "ID de producto inválido ({id}). No se puede añadir a la lista de deseos.",
+    "userNotAuthenticated": "Usuario no autenticado - por favor inicia sesión",
+    "addedToWishlist": "Producto añadido a la lista de deseos",
+    "removedFromWishlist": "Producto eliminado de la lista de deseos",
+    "wishlistStateError": "El estado no cambió como se esperaba - revisa la consola para más detalles",
+    "unknownError": "Error desconocido"
+  },
+    "auth": {
+    "verify": {
+      "error": "Error verificando usuario",
+      "goToLogin": "Ir a iniciar sesión",
+      "registerAgain": "Registrarse de nuevo",
+      "success": "Registro exitoso",
+      "successMessage": "Te has registrado exitosamente."
+    }
+  },
+  "debug": {
+    "productVariantData": "DEBUG: Datos del producto y variante (ELIMINAR MÁS TARDE)"
+  }
+  ,"wip": {
+  "tooltip": "Trabajo en curso - Esta característica aún está en desarrollo",
+  "text": "WIP",
+  "translationTooltip": "El sistema de traducción aún está en desarrollo. Algunos textos pueden no estar traducidos o ser inexactos.",
+  "themeTooltip": "El sistema de temas aún está en desarrollo. El tema claro puede presentar partes sin terminar."
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema",
+    "lightTooltip": "Claro",
+    "darkTooltip": "Oscuro",
+    "systemTooltip": "Sistema"
+  },
+  "search": {
+    "button": "Buscar",
+    "title": "No hay resultados para tu búsqueda",
+    "resultsFor": "Resultados para: {query}",
+    "products": "Productos",
+    "placeholder": "Buscar productos, categorías...",
+    "noResults": "No se encontraron resultados",
+    "noResultsFor": "No se encontraron resultados para: {query}",
+    "recentSearches": "Búsquedas recientes",
+    "checkSpelling": "Verifica la ortografía",
+    "tryGeneralKeywords": "Intenta con palabras clave generales",
+    "browseCategories": "Explorar categorías"
+  }
+}

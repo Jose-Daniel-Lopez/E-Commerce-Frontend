@@ -1,22 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
-
-export interface Product {
-  id: number
-  name: string
-  description: string
-  basePrice: number
-  totalStock: number
-  category?: {
-    id: number
-    name: string
-  }
-}
+import api from '@/lib/axios'
+import type { Product } from '@/types/Product'
 
 export interface Category {
   id: number
   name: string
+  icon: string
   products?: Array<Product>
 }
 
@@ -42,14 +32,24 @@ export const useCategoriesStore = defineStore('categories', () => {
     error.value = ''
 
     try {
-      const response = await axios.get('http://localhost:8080/api/categories')
-      // Si usas Spring Data REST, las categorías están en response.data._embedded.categories
+      const response = await api.get('/categories')
+
+      // Check if response contains embedded categories
       categories.value = response.data._embedded
         ? response.data._embedded.categories
         : response.data
+
+      // Load products for each category
+      for (const category of categories.value) {
+        try {
+          await fetchCategoryWithProducts(category.id)
+        } catch (err) {
+          console.warn(`Could not load products for category ${category.id}:`, err)
+        }
+      }
     } catch (err) {
       console.error('Error fetching categories:', err)
-      error.value = 'Error al cargar las categorías'
+      error.value = 'Error loading categories'
     } finally {
       loading.value = false
     }
@@ -57,9 +57,7 @@ export const useCategoriesStore = defineStore('categories', () => {
 
   const fetchCategoryWithProducts = async (categoryId: number) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/categories/${categoryId}/products`,
-      )
+      const response = await api.get(`/categories/${categoryId}/products`)
       const products = response.data._embedded ? response.data._embedded.products : response.data
 
       // Actualizar la categoría con sus productos
@@ -107,20 +105,6 @@ export const useCategoriesStore = defineStore('categories', () => {
     error.value = ''
   }
 
-  const getCategoryIcon = (categoryName: string) => {
-    const name = categoryName.toLowerCase()
-    if (name.includes('electrónic') || name.includes('electronic')) return '🔌'
-    if (name.includes('ropa') || name.includes('cloth')) return '👕'
-    if (name.includes('ordenadores') || name.includes('computers')) return '💻'
-    if (name.includes('audio')) return '🔊'
-    if (name.includes('dispositivos moviles') || name.includes('mobile devices')) return '📱'
-    if (name.includes('deporte') || name.includes('sport')) return '⚽'
-    if (name.includes('belleza') || name.includes('beauty')) return '💄'
-    if (name.includes('juguete') || name.includes('toy')) return '🧸'
-    if (name.includes('comida') || name.includes('food')) return '🍕'
-    return '📦'
-  }
-
   return {
     // State
     categories,
@@ -139,6 +123,5 @@ export const useCategoriesStore = defineStore('categories', () => {
     getCategoryById,
     getProductCount,
     clearCategories,
-    getCategoryIcon,
   }
 })

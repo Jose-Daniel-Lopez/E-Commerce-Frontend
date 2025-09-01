@@ -1,62 +1,61 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
+import MainHeader from '@/components/shared/MainHeader.vue'
+import SubnavBar from '@/components/shared/Subnav.vue'
+import Footer from '@/components/shared/Footer.vue'
+import ToastContainer from '@/components/shared/ToastContainer.vue'
+import ScrollToTop from '@/components/shared/ScrollToTop.vue'
+import { useCategoriesStore } from '@/stores/categories'
+import { computed, onMounted } from 'vue'
+
+const categoriesStore = useCategoriesStore()
+
+// Normalizar categorías para SubnavBar
+const subnavCategories = computed(() =>
+  categoriesStore.categories.map((category) => ({
+    name: category.name,
+    icon: category.icon,
+    slug: category.name
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[áàäâã]/g, 'a')
+      .replace(/[éèëê]/g, 'e')
+      .replace(/[íìïî]/g, 'i')
+      .replace(/[óòöôõ]/g, 'o')
+      .replace(/[úùüû]/g, 'u')
+      .replace(/[ñ]/g, 'n')
+      .replace(/[ç]/g, 'c')
+      .replace(/[^a-z0-9-]/g, ''),
+  })),
+)
+
+onMounted(() => {
+  if (!categoriesStore.hasCategories) {
+    categoriesStore.fetchCategories()
+  }
+})
 </script>
 
 <template>
-  <!-- Modern Header with Tailwind -->
-  <header
-    class="bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50"
-  >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <!-- Logo/Brand -->
-        <div class="flex-shrink-0">
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-            <span class="text-emerald-600 dark:text-emerald-400">E</span>-Commerce
-          </h1>
-        </div>
+  <div id="app" class="bg-white">
+    <!-- Header Component -->
+    <MainHeader />
 
-        <!-- Navigation -->
-        <nav class="flex space-x-8">
-          <RouterLink
-            to="/"
-            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
-            active-class="text-emerald-600 dark:text-emerald-400 border-emerald-500"
-          >
-            <v-icon name="hi-home" scale="1.1" />
-            <span>Home</span>
-          </RouterLink>
-          <RouterLink
-            to="/users"
-            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
-            active-class="text-emerald-600 dark:text-emerald-400 border-emerald-500"
-          >
-            <v-icon name="hi-users" scale="1.1" />
-            <span>Users</span>
-          </RouterLink>
-          <RouterLink
-            to="/products"
-            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
-            active-class="text-emerald-600 dark:text-emerald-400 border-emerald-500"
-          >
-            <v-icon name="hi-shopping-bag" scale="1.1" />
-            <span>Products</span>
-          </RouterLink>
-          <RouterLink
-            to="/categories"
-            class="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 border-b-2 border-transparent hover:border-emerald-500"
-            active-class="text-emerald-600 dark:text-emerald-400 border-emerald-500"
-          >
-            <v-icon name="hi-view-grid" scale="1.1" />
-            <span>Categories</span>
-          </RouterLink>
-        </nav>
-      </div>
-    </div>
-  </header>
+    <!-- Subnav Component -->
+    <SubnavBar :categories="subnavCategories" />
 
-  <!-- Main Content -->
-  <main class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <RouterView />
-  </main>
+    <!-- Main Content -->
+    <main>
+      <RouterView />
+    </main>
+
+    <!-- Footer Component -->
+    <Footer />
+
+    <!-- Toast Notifications -->
+    <ToastContainer />
+
+    <!-- Scroll to top button -->
+    <ScrollToTop />
+  </div>
 </template>

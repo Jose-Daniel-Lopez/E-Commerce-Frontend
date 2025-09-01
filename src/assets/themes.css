@@ -1,0 +1,125 @@
+/*
+  themes.css
+  Centralized color palette and theme variables.
+  Optimized for accessibility, contrast, readability, and modern UX.
+  Follows WCAG 2.1 AA/AAA standards and modern design system practices.
+*/
+
+/* =========================
+   Light Theme (Elegant Sophistication)
+   ✅ Sophisticated grays, rich navy, refined blues
+   ✅ Layered backgrounds with intentional contrast and depth
+   ========================= */
+:root {
+  /* ✨ Brand Colors - Sophisticated, trustworthy, premium */
+  --color-primary: #1e40af;              /* Deep navy blue — authoritative and premium */
+  --color-secondary: #475569;            /* Rich charcoal gray — sophisticated contrast */
+  --color-accent: #3b82f6;               /* Bright blue accent — modern and vibrant */
+
+  /* 🖋️ Text & Foreground - Elegant contrast hierarchy */
+  --color-text: #0f172a;                 /* Deep slate — sophisticated, readable */
+  --color-muted: #475569;                /* Charcoal gray — clear secondary text */
+  --color-muted-foreground: #64748b;     /* Cool gray — subtle but readable */
+
+  /* 🏗️ Backgrounds & Surfaces - Layered sophistication */
+  --color-background: #f8fafc;           /* Soft blue-white — elegant canvas */
+  --surface-bg: #ffffff;                 /* Pure white cards — clean contrast */
+  --subnav-bg: #f1f5f9;                  /* Light slate — subtle navigation background */
+  --subnav-hover: #e2e8f0;               /* Slate hover — noticeable interaction */
+  --header-bg: #ffffff;                  /* Clean white header — premium feel */
+  --color-input-background: #ffffff;     /* White inputs — crisp and clean */
+
+  /* 🔲 Borders & Dividers - Refined definition */
+  --color-border: #cbd5e1;               /* Cool gray border — present but elegant */
+  --color-input-border: #94a3b8;         /* Medium gray — clear input definition */
+
+  /* 🧱 Surface Variations - Sophisticated elevation */
+  --color-surface-secondary: #f1f5f9;    /* Light slate — secondary surface */
+  --color-surface-tertiary: #e2e8f0;     /* Medium slate — tertiary surface */
+  --color-surface-hover: #cbd5e1;        /* Slate hover — clear interaction feedback */
+
+  /* ✅❌⚠️ Feedback Colors - Sophisticated and clear */
+  --color-success: #059669;              /* Rich emerald — premium success state */
+  --color-warning: #d97706;              /* Warm amber — elegant warning */
+  --color-error: #dc2626;                /* Deep red — clear but not harsh */
+
+  /* 🟩🟨🟥 Feedback Backgrounds - Elegant tints */
+  --color-success-bg: #ecfdf5;           /* Soft mint background */
+  --color-warning-bg: #fef3c7;           /* Warm cream background */
+  --color-error-bg: #fef2f2;             /* Soft rose background */
+  --color-primary-bg: #eff6ff;           /* Light blue background */
+
+  /* 🛒 E-commerce Specific - Elegant and engaging */
+  --color-cart: #dc2626;                 /* Deep red — urgency with sophistication */
+  --color-favorite: #be185d;             /* Deep pink — emotional engagement */
+  --color-discount: #ea580c;             /* Rich orange — attention without being loud */
+  --color-price: #0f172a;                /* Deep slate — premium pricing display */
+
+  /* 🧍‍♂️ Foreground on Brand Colors */
+  --color-primary-foreground: #ffffff;   /* White on primary — crisp */
+  --color-secondary-foreground: #ffffff;
+  --color-success-foreground: #ffffff;
+  --color-warning-foreground: #0a0a0a;   /* Dark text on soft yellow — readable */
+  --color-error-foreground: #ffffff;
+
+  /* 📝 Typography */
+  --font-figtree: 'Figtree', sans-serif;
+  --font-srProDisplay: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* 📏 Utility */
+  --breakpoint-xs: 420px;
+}
+
+/* =========================
+   Dark Theme Overrides
+   ========================= */
+.dark,
+[data-theme="dark"] {
+  /* Backgrounds - Deep, comfortable darks */
+  --color-background: #0f172a;          /* gray-900: Deep blue-black, avoids eye strain */
+  --surface-bg: #1e293b;                /* gray-800: Cards, panels */
+  --subnav-bg: #1e293b;                 /* gray-900: Slightly lifted subnav */
+  --subnav-hover: #334155;              /* gray-700: Hover background for subnav in dark mode */
+  --header-bg: #0f172a;                 /* gray-900: Cohesive header */
+  --color-input-background: #334155;    /* gray-700: Inputs */
+
+  /* Text & Foreground */
+  --color-text: #f1f5f9;                /* gray-100: Soft white text, 15.5:1 on gray-900 */
+  --color-muted: #cbd5e1;               /* gray-300: Secondary text, ≥ 4.5:1 on gray-800+ */
+  --color-muted-foreground: #94a3b8;    /* gray-400: Helper text, ≥ 3:1 on dark */
+
+  /* Brand Colors - Lightened for dark mode visibility */
+  --color-primary: #3b82f6;             /* Blue-500: Bright but not glowing */
+  --color-secondary: #818cf8;           /* Indigo-400: Secondary emphasis */
+  --color-accent: #60a5fa;              /* Blue-400: Hover/focus states */
+
+  /* Borders */
+  --color-border: #475569;              /* gray-600: Clean separation */
+  --color-input-border: #475569;
+
+  /* Surface Variations */
+  --color-surface-secondary: #334155;   /* gray-700: Secondary surface */
+  --color-surface-tertiary: #475569;    /* gray-600: Tertiary surface */
+  --color-surface-hover: #475569;       /* gray-600: Hover state surface */
+
+  /* Feedback - Bright but not harsh */
+  --color-success: #10b981;             /* Emerald-500: Clear and readable */
+  --color-warning: #f59e0b;             /* Amber-500: Consistent across themes */
+  --color-error: #ef4444;               /* Red-500: Bright, visible on dark */
+
+  /* Feedback Background Colors */
+  --color-success-bg: #065f46;          /* Emerald-800: Dark success background */
+  --color-warning-bg: #92400e;          /* Amber-800: Dark warning background */
+  --color-error-bg: #991b1b;            /* Red-800: Dark error background */
+  --color-primary-bg: #1e40af;          /* Blue-800: Dark primary background */
+
+  /* E-commerce - Softer but still visible */
+  --color-cart: #ef4444;                /* Red-500: Clear without being aggressive */
+  --color-favorite: #f472b6;            /* Pink-400: Warm and visible */
+  --color-discount: #fb923c;            /* Orange-400: Friendly highlight */
+  --color-price: #34d399;               /* Emerald-400: Positive, readable */
+
+  /* Foreground on Brand Colors (used when primary is background) */
+  --color-primary-foreground: #ffffff;  /* White on primary buttons/chips */
+  --color-secondary-foreground: #ffffff;
+}
