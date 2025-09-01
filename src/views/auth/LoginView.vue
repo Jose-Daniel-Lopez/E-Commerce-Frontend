@@ -247,9 +247,9 @@ const handleSubmit = async (): Promise<void> => {
             <div class="mt-8 text-center">
               <p class="text-xs font-srProDisplay text-muted-foreground">
                 By signing in, you agree to our
-                <router-link :to="{ name: 'terms' }" class="cursor-pointer text-primary hover:underline">terms of service</router-link>
+                <router-link target="_blank" rel="noopener noreferrer" :to="{ name: 'terms' }" class="cursor-pointer text-primary hover:underline">terms of service</router-link>
                 and
-                <router-link :to="{ name: 'privacy' }" class="cursor-pointer text-primary hover:underline">privacy policy</router-link>
+                <router-link target="_blank" rel="noopener noreferrer" :to="{ name: 'privacy' }" class="cursor-pointer text-primary hover:underline">privacy policy</router-link>
               </p>
             </div>
           </div>

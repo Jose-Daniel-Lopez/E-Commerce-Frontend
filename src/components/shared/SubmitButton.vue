@@ -1,7 +1,7 @@
 <template>
   <button
     type="submit"
-    :disabled="loading"
+    :disabled="loading || disabled"
     :class="buttonClasses"
     :aria-describedby="ariaDescribedby"
   >
@@ -27,6 +27,7 @@ interface Props {
   ariaDescribedby?: string
   variant?: 'primary' | 'secondary'
   size?: 'sm' | 'md' | 'lg'
+  disabled?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -38,7 +39,12 @@ const props = withDefaults(defineProps<Props>(), {
 
 const buttonClasses = computed(() => [
   // Base classes
-  'w-full font-srProDisplay font-medium rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg focus:outline-none cursor-pointer',
+  'w-full font-srProDisplay font-medium rounded-xl transition-all duration-300 focus:outline-none',
+
+  // Hover and active states (only when not disabled)
+  {
+    'transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-lg cursor-pointer': !props.disabled && !props.loading,
+  },
 
   // Size variants
   {
@@ -57,7 +63,7 @@ const buttonClasses = computed(() => [
 
   // Disabled state
   {
-    'disabled:opacity-50 disabled:cursor-not-allowed': props.loading,
+    'opacity-50 cursor-not-allowed': props.loading || props.disabled,
   },
 
   // Animation

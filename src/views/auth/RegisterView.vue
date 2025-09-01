@@ -509,11 +509,11 @@ const handleSubmit = async (): Promise<void> => {
                         :class="['font-srProDisplay text-sm group-hover:text-primary transition-colors duration-200', textMutedClasses]"
                       >
                         I agree to the
-                        <router-link :to="{ name: 'terms' }" class="text-primary hover:underline cursor-pointer"
+                        <router-link target="_blank" rel="noopener noreferrer" :to="{ name: 'terms' }" class="text-primary hover:underline cursor-pointer"
                           >Terms of Service</router-link
                         >
                         and
-                        <router-link :to="{ name: 'privacy' }" class="text-primary hover:underline cursor-pointer"
+                        <router-link target="_blank" rel="noopener noreferrer" :to="{ name: 'privacy' }" class="text-primary hover:underline cursor-pointer"
                           >Privacy Policy </router-link
                         >
                       </span>
@@ -523,6 +523,7 @@ const handleSubmit = async (): Promise<void> => {
 
                 <!-- Submit Button -->
                 <SubmitButton
+                  :disabled="!termsAccepted"
                   :loading="loading"
                   text="Create Account"
                   loading-text="Creating Account..."
@@ -535,6 +536,8 @@ const handleSubmit = async (): Promise<void> => {
                 <p :class="['text-center font-srProDisplay text-sm', textMutedClasses]">
                   Already have an account?
                   <RouterLink
+                    target="_blank"
+                    rel="noopener noreferrer"
                     to="/login"
                     class="font-medium text-primary hover:underline ml-1 cursor-pointer"
                     >Sign in</RouterLink
